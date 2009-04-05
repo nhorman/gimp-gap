@@ -102,14 +102,14 @@ static gdouble  gtab_aspect[GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS] =  { 0.0, 1.5, 1
 
 static gint     gtab_coder[GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS] =
                  { GAP_GVE_FFMPEG_CODER_TYPE_00_VLC
-		 , GAP_GVE_FFMPEG_CODER_TYPE_01_AC
-		 };
+                 , GAP_GVE_FFMPEG_CODER_TYPE_01_AC
+                 };
 
 static gint     gtab_predictor[GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS] =
                  { GAP_GVE_FFMPEG_PREDICTOR_00_LEFT
-		 , GAP_GVE_FFMPEG_PREDICTOR_01_PLANE
-		 , GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN
-		 };
+                 , GAP_GVE_FFMPEG_PREDICTOR_01_PLANE
+                 , GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN
+                 };
 
 static gint     gtab_cmp_func[GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS] =
                  { GAP_GVE_FFMPEG_CMP_00_SAD
@@ -127,7 +127,7 @@ static gint     gtab_cmp_func[GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS] =
                  , GAP_GVE_FFMPEG_CMP_12_W97
                  , GAP_GVE_FFMPEG_CMP_13_DCTMAX
                  , GAP_GVE_FFMPEG_CMP_14_CHROMA
-		 };
+                 };
 
 /* lists of all available fileformats and codecs
  * (lists are built at runtime by ffmpeg specific query)
@@ -243,9 +243,9 @@ p_replace_combo_file_format(GapGveFFMpegGlobalParams *gpp)
   }
 
   g_object_set_data (G_OBJECT (gpp->ff_fileformat_combo)
-	            , GAP_ENC_FFGUI_COMBO_STRLIST
-		    , (gpointer)glist_fileformat
-		    );
+                    , GAP_ENC_FFGUI_COMBO_STRLIST
+                    , (gpointer)glist_fileformat
+                    );
 
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (gpp->ff_fileformat_combo)
                              , l_active_idx,
@@ -293,9 +293,9 @@ p_replace_combo_vid_codec(GapGveFFMpegGlobalParams *gpp)
        if(gap_debug)
        {
           printf("p_replace_combo_vid_codec: val[%d]: %s\n"
-	         , (int)l_idx
-		 , menu_name
-		 );
+                 , (int)l_idx
+                 , menu_name
+                 );
        }
        elem_vid_codec = (t_string_combo_elem *) g_malloc0(sizeof(t_string_combo_elem));
        elem_vid_codec->menu_idx = l_idx;
@@ -317,9 +317,9 @@ p_replace_combo_vid_codec(GapGveFFMpegGlobalParams *gpp)
   }
 
   g_object_set_data (G_OBJECT (gpp->ff_vid_codec_combo)
-	            , GAP_ENC_FFGUI_COMBO_STRLIST
-		    , (gpointer)glist_vid_codec
-		    );
+                    , GAP_ENC_FFGUI_COMBO_STRLIST
+                    , (gpointer)glist_vid_codec
+                    );
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (gpp->ff_vid_codec_combo)
                              , l_active_idx,
                               G_CALLBACK (on_ff_vid_codec_combo),
@@ -367,9 +367,9 @@ p_replace_combo_aud_codec(GapGveFFMpegGlobalParams *gpp)
        if(gap_debug)
        {
           printf("p_replace_combo_aud_codec: val[%d]: %s\n"
-	        , (int)l_idx
-		, menu_name
-		);
+                , (int)l_idx
+                , menu_name
+                );
        }
        elem_aud_codec = (t_string_combo_elem *) g_malloc0(sizeof(t_string_combo_elem));
        elem_aud_codec->menu_idx = l_idx;
@@ -391,9 +391,9 @@ p_replace_combo_aud_codec(GapGveFFMpegGlobalParams *gpp)
   }
 
   g_object_set_data (G_OBJECT (gpp->ff_aud_codec_combo)
-	            , GAP_ENC_FFGUI_COMBO_STRLIST
-		    , (gpointer)glist_aud_codec
-		    );
+                    , GAP_ENC_FFGUI_COMBO_STRLIST
+                    , (gpointer)glist_aud_codec
+                    );
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (gpp->ff_aud_codec_combo)
                              , l_active_idx,
                               G_CALLBACK (on_ff_aud_codec_combo),
@@ -486,11 +486,11 @@ gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_cod
        && (gpp->evl.pal_height  > 0))
        {
          recomand_size = g_strdup_printf("   Recommanded Framesize : %d x %d (PAL)  %d x %d (NTSC)"
-	                                  ,(int)gpp->evl.pal_width
-	                                  ,(int)gpp->evl.pal_height
-	                                  ,(int)gpp->evl.ntsc_width
-	                                  ,(int)gpp->evl.ntsc_height
-					  );
+                                          ,(int)gpp->evl.pal_width
+                                          ,(int)gpp->evl.pal_height
+                                          ,(int)gpp->evl.ntsc_width
+                                          ,(int)gpp->evl.ntsc_height
+                                          );
        }
        else
        {
@@ -506,7 +506,7 @@ gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_cod
                                , default_vid_codec
                                , default_aud_codec
                                , ofmt->extensions
-			       , recomand_size
+                               , recomand_size
                                );
        g_free(recomand_size);
      }
@@ -572,19 +572,19 @@ gap_get_combo_string_by_idx(gpointer string_combo_elem_list, gint idx)
     {
       printf("gap_get_combo_string_by_idx: glist_vid_codec  ptr:%d\n"
             ,(int)string_combo_elem_list
-	    );
+            );
     }
     if(string_combo_elem_list == (gpointer)glist_aud_codec)
     {
       printf("gap_get_combo_string_by_idx: glist_aud_codec  ptr:%d\n"
             ,(int)string_combo_elem_list
-	    );
+            );
     }
     if(string_combo_elem_list == (gpointer)glist_fileformat)
     {
       printf("gap_get_combo_string_by_idx: glist_fileformat  ptr:%d\n"
             ,(int)string_combo_elem_list
-	    );
+            );
     }
   }
 
@@ -1024,7 +1024,7 @@ p_init_entry_widgets(GapGveFFMpegGlobalParams *gpp)
     printf("p_init_entry_widgets gpp:%d  adr of evl: %d\n"
           , (int)gpp
           , (int)(&gpp->evl)
-	  );
+          );
     printf("gpp->evl.passlogfile %s\n", gpp->evl.passlogfile);
   }
 
@@ -1189,7 +1189,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo
                            , _("The output multimedia fileformat")
-			   , NULL);
+                           , NULL);
 
   /* ff_fileformat_combo_menu and callback are replaced later
    * in procedure p_replace_combo_file_format
@@ -1271,18 +1271,18 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   /* the audio bitrate combo */
   combo = gimp_int_combo_box_new ("32",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_00_32,
                                   "40",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_01_40,
-				  "48",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_02_48,
-				  "56",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_03_56,
-				  "64",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_04_64,
-				  "80",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_05_80,
-				  "96",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_06_96,
-				  "112",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_07_112,
-				  "128",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_08_128,
-				  "160",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_09_160,
-				  "192",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_10_192,
-				  "224",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_11_224,
-				  "256",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_12_256,
-				  "320",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_13_320,
+                                  "48",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_02_48,
+                                  "56",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_03_56,
+                                  "64",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_04_64,
+                                  "80",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_05_80,
+                                  "96",   GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_06_96,
+                                  "112",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_07_112,
+                                  "128",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_08_128,
+                                  "160",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_09_160,
+                                  "192",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_10_192,
+                                  "224",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_11_224,
+                                  "256",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_12_256,
+                                  "320",  GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_13_320,
                                   NULL);
 
   gpp->ff_aud_bitrate_combo = combo;
@@ -2457,10 +2457,10 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (checkbutton
                         , _("Bypass the FFMPEG Vidoencoder where inputframes can "
-			    "be copied 1:1 from an input MPEG videofile."
-			    "This experimental feature provides lossless MPEG "
-			    "video cut, but works only for the MPEG Fileformats.")
-			, NULL);
+                            "be copied 1:1 from an input MPEG videofile."
+                            "This experimental feature provides lossless MPEG "
+                            "video cut, but works only for the MPEG Fileformats.")
+                        , NULL);
   g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                     G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -3761,7 +3761,7 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
                          gimp_standard_help_func, GAP_HELP_ID_FFMPEG_PARAMS,
 
                          GTK_STOCK_OPEN, GAP_ENC_FFMPEG_RESPONSE_OPEN,
-			 GTK_STOCK_SAVE, GAP_ENC_FFMPEG_RESPONSE_SAVE,
+                         GTK_STOCK_SAVE, GAP_ENC_FFMPEG_RESPONSE_SAVE,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);

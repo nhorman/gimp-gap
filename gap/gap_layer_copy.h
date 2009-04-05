@@ -57,14 +57,14 @@ gint32 gap_layer_copy_to_image (gint32 dst_image_id,
 gboolean gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id);
 gboolean gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
                               , gint32 src_drawable_id, guint src_channel_pick
-			      , gboolean shadow);
+                              , gboolean shadow);
 
 gint32 gap_layer_new_from_buffer(gint32 dst_image_id
                                 , gint32 width
-				, gint32 height
-				, gint32 bpp
-				, guchar *data
-				);
+                                , gint32 height
+                                , gint32 bpp
+                                , guchar *data
+                                );
 void   gap_layer_clear_to_color(gint32 layer_id
                              ,gdouble red
                              ,gdouble green

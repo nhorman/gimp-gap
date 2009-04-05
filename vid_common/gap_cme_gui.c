@@ -105,7 +105,7 @@ static GapGveEncList*  pdb_find_video_encoders(void);
 static void            p_replace_combo_encodername(GapCmeGlobalParams *gpp);
 static void            p_get_range_from_type (GapCmeGlobalParams *gpp
                            , GapLibTypeInputRange range_type
-			   , gint32 *lower
+                           , gint32 *lower
                            , gint32 *upper
                            );
 static void            p_get_range_and_type (GapCmeGlobalParams *gpp
@@ -221,9 +221,9 @@ gap_cme_gui_pdb_call_encoder_gui_plugin(GapCmeGlobalParams *gpp)
   gpp->val.gui_proc_thread =
       g_thread_create((GThreadFunc)gap_cme_gui_thread_async_pdb_call
                      , NULL  /* data */
-		     , joinable
-		     , NULL  /* GError **error (NULL dont report errors) */
-		     );
+                     , joinable
+                     , NULL  /* GError **error (NULL dont report errors) */
+                     );
 
   if(gap_debug) printf("MASTER: After g_thread_create\n");
 #else
@@ -723,7 +723,7 @@ p_replace_combo_encodername(GapCmeGlobalParams *gpp)
 static void
 p_get_range_from_type (GapCmeGlobalParams *gpp
                            , GapLibTypeInputRange range_type
-			   , gint32 *lower
+                           , gint32 *lower
                            , gint32 *upper
                            )
 {
@@ -737,22 +737,22 @@ p_get_range_from_type (GapCmeGlobalParams *gpp
 
         gstb = &global_stb;
         *upper = gstb->total_stroyboard_frames;
-	if(*upper > 0)
-	{
+        if(*upper > 0)
+        {
           *lower = 1;
-	}
+        }
       }
       break;
     case GAP_RNGTYPE_LAYER:
       {
-	gint          l_nlayers;
-	gint32       *l_layers_list;
+        gint          l_nlayers;
+        gint32       *l_layers_list;
 
 
-	l_layers_list = gimp_image_get_layers(gpp->val.image_ID, &l_nlayers);
-	g_free(l_layers_list);
-	*lower = 0;
-	*upper = l_nlayers -1;
+        l_layers_list = gimp_image_get_layers(gpp->val.image_ID, &l_nlayers);
+        g_free(l_layers_list);
+        *lower = 0;
+        *upper = l_nlayers -1;
       }
       break;
     default:
@@ -938,14 +938,14 @@ p_update_aud_info (GapCmeGlobalParams *gpp
      /* check for WAV file or valid audio playlist, and get audio informations */
      l_rc = gap_audio_playlist_wav_file_check(audioname
                      , &samplerate
-		     , &channels
+                     , &channels
                      , &bytes_per_sample
-		     , &bits
-		     , &samples
-		     , &all_playlist_references
-		     , &valid_playlist_references
-		     , gpp->val.samplerate          /* desired_samplerate */
-		     );
+                     , &bits
+                     , &samples
+                     , &all_playlist_references
+                     , &valid_playlist_references
+                     , gpp->val.samplerate          /* desired_samplerate */
+                     );
 
      if(gap_debug)
      {
@@ -970,10 +970,10 @@ p_update_aud_info (GapCmeGlobalParams *gpp
        if(all_playlist_references > 0)
        {
          /* audioname is a audio playlist with references to
-	  * audiofiles for multiple audio track encding
-	  * valid_playlist_references holds the number of valid tracks
-	  * (where samplerate matches the desired samplerate and bits == 16)
-	  */
+          * audiofiles for multiple audio track encding
+          * valid_playlist_references holds the number of valid tracks
+          * (where samplerate matches the desired samplerate and bits == 16)
+          */
          g_snprintf(txt, sizeof(txt), _("List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d")
                                   , (int)all_playlist_references
                                   , (int)valid_playlist_references
@@ -1084,7 +1084,7 @@ gap_cme_gui_upd_wgt_sensitivity (GapCmeGlobalParams *gpp)
       if((gstb->aud_total_sec > 0.0)
       && (gstb->vidhand_open_ok))
       {
-	sensitive = TRUE;
+        sensitive = TRUE;
       }
     }
   }
@@ -1734,11 +1734,11 @@ p_thread_storyboard_file(gpointer data)
   vidhand = gap_gve_story_open_extended_video_handle
            ( FALSE   /* dont ignore video */
            , FALSE   /* dont ignore audio */
-	   , l_create_audio_tmp_files
+           , l_create_audio_tmp_files
            , &gstb->progress
            , &gstb->status_msg[0]
            , sizeof(gstb->status_msg)
-	   , GAP_RNGTYPE_STORYBOARD
+           , GAP_RNGTYPE_STORYBOARD
            , NULL      /* use no imagename */
            , gpp->val.storyboard_file
            , NULL      /* use no basename */
@@ -1784,10 +1784,10 @@ p_thread_storyboard_file(gpointer data)
          gap_gve_story_create_composite_audiofile(vidhand, l_composite_audio);
          if(g_file_test(l_composite_audio, G_FILE_TEST_EXISTS))
          {
-	    g_snprintf(gstb->composite_audio, sizeof(gstb->composite_audio)
-	              , "%s"
-		      ,l_composite_audio
-		      );
+            g_snprintf(gstb->composite_audio, sizeof(gstb->composite_audio)
+                      , "%s"
+                      ,l_composite_audio
+                      );
 
             if(gap_debug) gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
             gap_gve_story_drop_audio_cache();
@@ -1920,9 +1920,9 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
   gpp->val.gui_proc_thread =
       g_thread_create((GThreadFunc)p_thread_storyboard_file
                      , NULL  /* data */
-		     , joinable
-		     , NULL  /* GError **error (NULL dont report errors) */
-		     );
+                     , joinable
+                     , NULL  /* GError **error (NULL dont report errors) */
+                     );
 
   if(gap_debug) printf("MASTER: After storyborad g_thread_create\n");
 
@@ -1955,8 +1955,8 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
 
       if(gap_arr_ok_cancel_dialog(_("Storyboardfile Check")
                                ,_("Storyboardfile Check")
-			       ,1
-			       ,argv
+                               ,1
+                               ,argv
                                ))
       {
         do_processing = TRUE;
@@ -2464,16 +2464,16 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
 
   l_radio_pressed = (gpp->val.input_mode == GAP_RNGTYPE_FRAMES);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Input is a sequence of frame images"), NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                     , (gpointer)GAP_RNGTYPE_FRAMES
-		    );
+                    );
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_input_mode_radio_callback),
-		     gpp);
+                     G_CALLBACK (p_input_mode_radio_callback),
+                     gpp);
 
 
   l_idx = 1;
@@ -2487,16 +2487,16 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
 
   l_radio_pressed = (gpp->val.input_mode == GAP_RNGTYPE_LAYER);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Input is all the layers of one image"), NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                     , (gpointer)GAP_RNGTYPE_LAYER
-		    );
+                    );
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_input_mode_radio_callback),
-		     gpp);
+                     G_CALLBACK (p_input_mode_radio_callback),
+                     gpp);
 
 
 
@@ -2511,18 +2511,18 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
 
   l_radio_pressed = (gpp->val.input_mode == GAP_RNGTYPE_STORYBOARD);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Input is videoclips and frames, defined via storyboard file. "
                                           "(specify the storyboard filename in the extras tab)")
-					  , NULL);
+                                          , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                     , (gpointer)GAP_RNGTYPE_STORYBOARD
-		    );
+                    );
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_input_mode_radio_callback),
-		     gpp);
+                     G_CALLBACK (p_input_mode_radio_callback),
+                     gpp);
 
 
   /* attach radio_table */
@@ -2598,7 +2598,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0)
-			    , label);
+                            , label);
 
 
   /* the Audio Options notebook tab */
@@ -2610,7 +2610,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1)
-			     , label);
+                             , label);
 
 
   /* the Audio Tool notebook tab */
@@ -2622,7 +2622,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2)
-			     , label);
+                             , label);
 
 
 
@@ -2635,7 +2635,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3)
-			     , label);
+                             , label);
 
   /* add the Encoding notebook tab */
   label = gtk_label_new (_("Encoding"));
@@ -2647,7 +2647,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 4)
-			    , label);
+                            , label);
 
 
   /* the output frame */
@@ -3023,9 +3023,9 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gimp_help_set_help_data (button
                           , _("create a composite audiofile "
                               "as mixdown of all audio tracks in the "
-			      "storyboard file and use the created composite audiofile "
-			      "as input for encoding")
-		          , NULL);
+                              "storyboard file and use the created composite audiofile "
+                              "as input for encoding")
+                          , NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_stb_audio_clicked),
                       gpp);
@@ -3034,9 +3034,9 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
 
   /* the  storyboard helptext & parsing report label */
   label = gtk_label_new (_("Storyboardfiles are textfiles that are used to\n"
-			   "assemble a video from a list of single images,\n"
-			   "frameranges, videoclips, gif animations or audiofiles.\n"
-			   "(see STORYBOARD_FILE_DOC.txt for details)"));
+                           "assemble a video from a list of single images,\n"
+                           "frameranges, videoclips, gif animations or audiofiles.\n"
+                           "(see STORYBOARD_FILE_DOC.txt for details)"));
   gpp->cme__label_storyboard_helptext   = label;
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table1), label, 0, 3, row, row+1,
@@ -3300,11 +3300,11 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (entry
                    , _("Name of audiofile (.wav 16 bit mono or stereo samples preferred). "
-		       "Optionally you may select a textfile that contains a list "
-		       "of file names referring to audio files. "
-		       "Each of those audio files will be encoded as a separate audio track.")
-		   , NULL)
-		   ;
+                       "Optionally you may select a textfile that contains a list "
+                       "of file names referring to audio files. "
+                       "Each of those audio files will be encoded as a separate audio track.")
+                   , NULL)
+                   ;
   g_signal_connect (G_OBJECT (entry), "changed",
                       G_CALLBACK (on_cme__entry_audio1_changed),
                       gpp);
@@ -3447,10 +3447,10 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   /* the resample general information label */
   label = gtk_label_new (_("\nNote:\n"
                            "if you set samplerate lower than\n"
-			   "rate of the WAV file, you lose sound quality,\n"
-			   "but higher samplerates can not improve the\n"
-			   "quality of the original sound.")
-			 );
+                           "rate of the WAV file, you lose sound quality,\n"
+                           "but higher samplerates can not improve the\n"
+                           "quality of the original sound.")
+                         );
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
@@ -4295,9 +4295,9 @@ gap_cme_gui_start_video_encoder_as_thread(GapCmeGlobalParams *gpp)
   gpp->productive_encoder_thread =
       g_thread_create((GThreadFunc)gap_cme_encoder_worker_thread
                      , gpp  /* data */
-		     , joinable
-		     , NULL  /* GError **error (NULL dont report errors) */
-		     );
+                     , joinable
+                     , NULL  /* GError **error (NULL dont report errors) */
+                     );
 
   if(gap_debug)
   {

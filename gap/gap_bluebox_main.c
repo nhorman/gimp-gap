@@ -69,8 +69,8 @@ static GimpParamDef args_bluebox[] =
     {GIMP_PDB_COLOR, "keycolor",    "Select Pixels to be treansparent by this KeyColor" },
     {GIMP_PDB_INT32, "thres_mode",  "0 .. use the 3 threshold values for RGB\n"
                                     "1 .. use the 3 threshold values for HSV\n"
-				    "2 .. use only one simple Threshold\n"
-				    "3 .. use all 6 threshold values for HSV and RGB"},
+                                    "2 .. use only one simple Threshold\n"
+                                    "3 .. use all 6 threshold values for HSV and RGB"},
     {GIMP_PDB_FLOAT, "thres_r", "threshold value 0.0 upto 1.0 for RED value   (ignored in thers_modes 1 and 2)"},
     {GIMP_PDB_FLOAT, "thres_g", "threshold value 0.0 upto 1.0 for GREEN value (ignored in thers_modes 1 and 2)"},
     {GIMP_PDB_FLOAT, "thres_b", "threshold value 0.0 upto 1.0 for BLUE value  (ignored in thers_modes 1 and 2)"},
@@ -80,9 +80,9 @@ static GimpParamDef args_bluebox[] =
     {GIMP_PDB_FLOAT, "thres", "threshold value 0.0 upto 1.0 (ignored in thers_modes 0, 1 and 3)"},
     {GIMP_PDB_FLOAT, "tolerance", "alpha tolerance value 0.0 upto 1.0\n"
                                   "0.0 makes hard pixel selection by color threshold(s)\n"
-				  "greater values allow more or less variable Alpha Values\n"
-				  "for the selected Pixels within the threshold(s)\n"
-				  "depending on their difference to the keycolor"},
+                                  "greater values allow more or less variable Alpha Values\n"
+                                  "for the selected Pixels within the threshold(s)\n"
+                                  "depending on their difference to the keycolor"},
     {GIMP_PDB_INT32, "grow",  "Grow the Selection in Pixels (negative values for shrinking the selection)"},
     {GIMP_PDB_INT32, "feather_edges", "TRUE: feather edges using feather_radius, FALSE: sharp edges (do not blur the selection)"},
     {GIMP_PDB_FLOAT, "feather_radius", "Feather Radius (makes the selection smooth)"},
@@ -100,9 +100,9 @@ static GimpParamDef args_bluebox[] =
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 
 GimpPlugInInfo PLUG_IN_INFO =
@@ -166,14 +166,14 @@ query ()
   gimp_install_procedure(GAP_BLUEBOX_PLUGIN_NAME,
                          "The bluebox effectfilter makes the specified color transparent",
                          "This plug-in selects pixels in the specified drawable by keycolor "
-  			 "and makes the Selected Pixels transparent. "
-			 "If there is a selection at calling time, then operate only "
-  			 "on Pixels that are already selected (where selection value is > 0) "
- 			 "The Slection by color follows threshold values "
- 			 "The thresholds operate on RGB or HSV colormodel, "
- 			 "depending on the thres_mode parameter. "
- 			 "The selection by keycolor can be smoothed (by feather_radius) "
-  			 "and/or extended by a grow value.",
+                         "and makes the Selected Pixels transparent. "
+                         "If there is a selection at calling time, then operate only "
+                         "on Pixels that are already selected (where selection value is > 0) "
+                         "The Slection by color follows threshold values "
+                         "The thresholds operate on RGB or HSV colormodel, "
+                         "depending on the thres_mode parameter. "
+                         "The selection by keycolor can be smoothed (by feather_radius) "
+                         "and/or extended by a grow value.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_bluebox_version,
@@ -239,52 +239,52 @@ run(const gchar *name
       {
         case GIMP_RUN_INTERACTIVE:
           {
-	    /*  Possibly retrieve data  */
-	    gimp_get_data (GAP_BLUEBOX_DATA_KEY_VALS, &bbp->vals);
+            /*  Possibly retrieve data  */
+            gimp_get_data (GAP_BLUEBOX_DATA_KEY_VALS, &bbp->vals);
             l_rc = gap_bluebox_dialog(bbp);
             if(l_rc < 0)
-	    {
+            {
               status = GIMP_PDB_CANCEL;
-	    }
+            }
           }
-	  break;
+          break;
         case GIMP_RUN_NONINTERACTIVE:
-	  {
-	    if (n_params != G_N_ELEMENTS (args_bluebox))
-	      {
-		status = GIMP_PDB_CALLING_ERROR;
-	      }
-	    else
-	      {
-		bbp->vals.keycolor = param[3].data.d_color;
-		bbp->vals.thres_mode = param[4].data.d_int32;
-		bbp->vals.thres_r = param[5].data.d_float;
-		bbp->vals.thres_g = param[6].data.d_float;
-		bbp->vals.thres_b = param[7].data.d_float;
-		bbp->vals.thres_h = param[8].data.d_float;
-		bbp->vals.thres_s = param[9].data.d_float;
-		bbp->vals.thres_v = param[10].data.d_float;
-		bbp->vals.thres   = param[11].data.d_float;
-		bbp->vals.tolerance = param[12].data.d_float;
-		bbp->vals.grow         = (gdouble)param[13].data.d_int32;
-		bbp->vals.feather_edges  = param[14].data.d_int32;
-		bbp->vals.feather_radius = param[15].data.d_float;
-		bbp->vals.source_alpha   = param[16].data.d_float;
-		bbp->vals.target_alpha   = param[17].data.d_float;
+          {
+            if (n_params != G_N_ELEMENTS (args_bluebox))
+              {
+                status = GIMP_PDB_CALLING_ERROR;
+              }
+            else
+              {
+                bbp->vals.keycolor = param[3].data.d_color;
+                bbp->vals.thres_mode = param[4].data.d_int32;
+                bbp->vals.thres_r = param[5].data.d_float;
+                bbp->vals.thres_g = param[6].data.d_float;
+                bbp->vals.thres_b = param[7].data.d_float;
+                bbp->vals.thres_h = param[8].data.d_float;
+                bbp->vals.thres_s = param[9].data.d_float;
+                bbp->vals.thres_v = param[10].data.d_float;
+                bbp->vals.thres   = param[11].data.d_float;
+                bbp->vals.tolerance = param[12].data.d_float;
+                bbp->vals.grow         = (gdouble)param[13].data.d_int32;
+                bbp->vals.feather_edges  = param[14].data.d_int32;
+                bbp->vals.feather_radius = param[15].data.d_float;
+                bbp->vals.source_alpha   = param[16].data.d_float;
+                bbp->vals.target_alpha   = param[17].data.d_float;
 
                 bbp->run_flag = TRUE;
-	      }
+              }
           }
-	  break;
+          break;
         case GIMP_RUN_WITH_LAST_VALS:
-	  {
-	    /*  Possibly retrieve data  */
-	    gimp_get_data (GAP_BLUEBOX_DATA_KEY_VALS, &bbp->vals);
-	    bbp->run_flag = TRUE;
+          {
+            /*  Possibly retrieve data  */
+            gimp_get_data (GAP_BLUEBOX_DATA_KEY_VALS, &bbp->vals);
+            bbp->run_flag = TRUE;
           }
-	  break;
-	default:
-	  break;
+          break;
+        default:
+          break;
       }
   }
 

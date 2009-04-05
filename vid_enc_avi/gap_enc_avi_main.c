@@ -140,7 +140,7 @@ query ()
     {GIMP_PDB_STRING, "storyboard_file", "textfile with list of one or more framesequences"},
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
-				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+                                    "2 ... image is ignored, input is specified by storyboard_file parameter."},
     {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_avi_enc = sizeof(args_avi_enc) / sizeof(args_avi_enc[0]);
@@ -689,7 +689,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
     gint32 l_total_framecount;
     l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
                                          ,gpp->val.image_ID
-				         ,gpp->val.storyboard_file
+                                         ,gpp->val.storyboard_file
                                          ,gpp->ainfo.basename
                                          ,gpp->ainfo.extension
                                          ,gpp->val.range_from
@@ -771,11 +771,11 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
       printf("AVI 4byte code for codec_name: %s\n", codec_name);
     }
     AVI_set_video( l_avifile
-        	 , gpp->val.vid_width
-        	 , gpp->val.vid_height
-        	 , gpp->val.framerate
-        	 , codec_name           /* char *compressor  one of "RGB", "JPEG"  ... */
-        	 );
+                 , gpp->val.vid_width
+                 , gpp->val.vid_height
+                 , gpp->val.framerate
+                 , codec_name           /* char *compressor  one of "RGB", "JPEG"  ... */
+                 );
 
     g_free(codec_name);
   }
@@ -885,8 +885,8 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
                                            , l_video_chunk_ptr
                                            , &l_video_frame_chunk_size  /* actual chunk size (incl. header) */
                                            , l_maxSizeOfRawFrame        /* IN max size */
-					   , gpp->val.framerate
-					   , l_max_master_frame_nr
+                                           , gpp->val.framerate
+                                           , l_max_master_frame_nr
                                            , &l_video_frame_chunk_hdr_size
                                            , l_check_flags
                                            );
@@ -931,7 +931,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         l_cnt_encoded_frames++;
         if (gap_debug)
         {
-	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
+          printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
         }
 
         l_keyframe = TRUE;  /* TRUE: keyframe is independent image (I frame or uncompressed)
@@ -982,14 +982,14 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 
             /* fill buffer with raw 24bit data, optional flipped.
              * it seems that some AVI players (for instance the WinDVD player)
-	     *  require the inverse row order than gimp,
-	     *  and other players (like gmplayer on unix) does not need vflipped images.
+             *  require the inverse row order than gimp,
+             *  and other players (like gmplayer on unix) does not need vflipped images.
              */
             l_vflip = FALSE;
             if(epp->raw_vflip != 0)
-	    {
-	      l_vflip = TRUE;
-	    }
+            {
+              l_vflip = TRUE;
+            }
             buffer = gap_gve_raw_BGR_drawable_encode(l_drawable, &l_FRAME_size, l_vflip, l_app0_buffer, l_app0_len);
           }
 #ifdef ENABLE_LIBXVIDCORE
@@ -1006,22 +1006,22 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         {
           /* store the compressed video frame */
           if (gap_debug) printf("GAP_AVI: Writing frame nr. %d, size %d\n",
-                        	(int)l_cur_frame_nr, (int)l_FRAME_size);
+                                (int)l_cur_frame_nr, (int)l_FRAME_size);
           AVI_write_frame(l_avifile, buffer, l_FRAME_size, l_keyframe);
           /* free the (un)compressed Frame data buffer */
           g_free(buffer);
         }
-	else
-	{
-	  /* the CODEC delivered a NULL buffer
-	   * there is something essential wrong (TERMINATE)
-	   */
-	  g_message(_("ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d")
-	           , epp->codec_name
-		   , (int)l_cur_frame_nr
-		   );
-	  l_rc = -1;
-	}
+        else
+        {
+          /* the CODEC delivered a NULL buffer
+           * there is something essential wrong (TERMINATE)
+           */
+          g_message(_("ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d")
+                   , epp->codec_name
+                   , (int)l_cur_frame_nr
+                   );
+          l_rc = -1;
+        }
 
         gimp_drawable_detach (l_drawable);
         /* destroy the tmp image */

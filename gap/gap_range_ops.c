@@ -267,7 +267,7 @@ p_anim_sizechange_dialog(GapAnimInfo *ainfo_ptr, GapRangeOpsAsiz asiz_mode,
      return -1;
   }
 
-}	/* end p_anim_sizechange_dialog */
+}       /* end p_anim_sizechange_dialog */
 
 
 /* ============================================================================
@@ -284,7 +284,7 @@ static int
 p_range_dialog(GapAnimInfo *ainfo_ptr,
                long *range_from, long *range_to,
                char *title, char *hline, gint cnt,
-	       const char *help_id)
+               const char *help_id)
 {
   static GapArrArg  argv[4];
   gint              argc;
@@ -350,7 +350,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
      return -1;
   }
 
-}	/* end p_range_dialog */
+}       /* end p_range_dialog */
 
 /* ============================================================================
  * p_convert_indexed_dialog
@@ -362,21 +362,21 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
  */
 static long
 p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
-		      gint32 *palette_type, gint32 *alpha_dither, gint32 *remove_unused,
+                      gint32 *palette_type, gint32 *alpha_dither, gint32 *remove_unused,
                       char *palette,   gint len_palette)
 {
 #define ARGC_INDEXED 6
   static GapArrArg  argv[ARGC_INDEXED];
   static char *radio_paltype[4]  = { N_("Generate Optimal Palette")
                                    , N_("WEB Palette")
-				   , N_("Use Custom Palette")
-				   , N_("Use Black/White (1-Bit) Palette")
-				   };
+                                   , N_("Use Custom Palette")
+                                   , N_("Use Black/White (1-Bit) Palette")
+                                   };
   static char *radio_dither[4]  = { N_("Floyd-Steinberg Color Dithering (Normal)")
                                   , N_("Floyd-Steinberg Color Dithering (Reduced Color Bleeding)")
-				  , N_("Positioned Color Dithering")
+                                  , N_("Positioned Color Dithering")
                                   , N_("No Color Dithering")
-				  };
+                                  };
   static int gettextize_loop = 0;
 
   for (;gettextize_loop < 4; gettextize_loop++)
@@ -485,7 +485,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
                       GimpImageBaseType *dest_type, gint32 *dest_colors, gint32 *dest_dither,
                       char *basename, gint len_base,
                       char *extension, gint len_ext,
-		      gint32 *palette_type, gint32 *alpha_dither, gint32 *remove_unused,
+                      gint32 *palette_type, gint32 *alpha_dither, gint32 *remove_unused,
                       char *palette,   gint len_palette)
 {
   static GapArrArg  argv[8];
@@ -530,9 +530,9 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   argv[4].label_txt = _("Extension:");
   argv[4].help_txt  = _("The extension of resulting frames is also used to define the fileformat. "
                         "Please note that fileformats differ in capabilities to store information for "
-			"multiple layers and other things. "
-			"Some fileformats may require converting to another imagetype "
-			"and/or flattening the frames.");
+                        "multiple layers and other things. "
+                        "Some fileformats may require converting to another imagetype "
+                        "and/or flattening the frames.");
   argv[4].text_buf_len = len_ext;
   argv[4].text_buf_ret = extension;
 
@@ -541,7 +541,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   argv[5].label_txt = _("Imagetype:");
   argv[5].help_txt  = _("Convert to another imagetype, or keep imagetype as it is. "
                         "Most fileformats can't handle all types and may require a conversion."
-			"Example: GIF can not handle RGB and requires convert to indexed imagetype.");
+                        "Example: GIF can not handle RGB and requires convert to indexed imagetype.");
   argv[5].radio_argc  = 4;
   argv[5].radio_argv = radio_args;
   argv[5].radio_ret  = 0;
@@ -550,7 +550,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   argv[6].label_txt = _("Flatten:");
   argv[6].help_txt  = _("Flatten all resulting frames. Most fileformats can not handle multiple layers "
                         "and need flattened frames (flattening does melt down all layers to one composite layer)."
-			"Example: JPEG can not handle multiple layers and requires flattened frames.");
+                        "Example: JPEG can not handle multiple layers and requires flattened frames.");
   argv[6].int_ret   = 1;
 
   gap_arr_arg_init(&argv[7], GAP_ARR_WGT_HELP_BUTTON);
@@ -576,7 +576,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
            *dest_type = GIMP_INDEXED;
            break;
         default:
-	  *dest_type = 9444;   /*  huh ??  */
+          *dest_type = 9444;   /*  huh ??  */
            break;
       }
       *flatten     = (long)(argv[6].int_ret);
@@ -591,16 +591,16 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
        {
           /* Open a 2.nd dialog for the Dither Options */
           if(0 != p_convert_indexed_dialog(dest_colors,
-	                                   dest_dither,
-					   palette_type,
-					   alpha_dither,
-					   remove_unused,
-					   palette,
-					   len_palette
-	    ))
-	  {
+                                           dest_dither,
+                                           palette_type,
+                                           alpha_dither,
+                                           remove_unused,
+                                           palette,
+                                           len_palette
+            ))
+          {
              return -1;
-	  }
+          }
        }
 
        if(0 != gap_lib_chk_framechange(ainfo_ptr))
@@ -613,7 +613,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   {
      return -1;
   }
-}		/* end p_convert_dialog */
+}               /* end p_convert_dialog */
 
 /* ============================================================================
  * p_range_to_multilayer_dialog
@@ -631,9 +631,9 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
                long *framrate, char *frame_basename, gint len_frame_basename,
                char *title, char *hline,
 
-	       gint32 *layersel_mode, gint32 *layersel_case,
-	       gint32 *sel_invert, char *sel_pattern,
-	       gint32 *selection_mode)
+               gint32 *layersel_mode, gint32 *layersel_case,
+               gint32 *sel_invert, char *sel_pattern,
+               gint32 *selection_mode)
 {
   static GapArrArg  argv[13];
   int argc;
@@ -673,11 +673,11 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   static char *selection_help[3] = { N_("Pick layers at full size. "
                                         "Ignore all pixel selections in all frames"),
                                      N_("Pick only the selected pixels. "
-				        "Use the selection from the invoking frame "
-				        "as fixed selection in all handled frames."),
+                                        "Use the selection from the invoking frame "
+                                        "as fixed selection in all handled frames."),
                                      N_("Pick only the selected pixels. "
-					"Use the individual selection "
-					"as it is in each handled frame.")
+                                        "Use the individual selection "
+                                        "as it is in each handled frame.")
                                   };
 
   static int gettextize_radio = 0, gettextize_layersel = 0, gettextize_sel = 0;
@@ -758,7 +758,7 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   argv[7].label_txt = _("Layer Pattern:");
   argv[7].entry_width = 140;       /* pixel */
   argv[7].help_txt  = _("String to identify layer(s) by name or by layerstack position numbers. "
-			"Example: 0,3-5");
+                        "Example: 0,3-5");
   argv[7].text_buf_len = MAX_LAYERNAME;
   argv[7].text_buf_ret = sel_pattern;
 
@@ -822,7 +822,7 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
      return -1;
   }
 
-}	/* end p_range_to_multilayer_dialog */
+}       /* end p_range_to_multilayer_dialog */
 
 
 /* ============================================================================
@@ -836,9 +836,9 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
                       long range_from, long range_to,
                       long flatten_mode, long bg_visible,
                       long framerate, char *frame_basename,
-		      gint32 layersel_mode, gint32 layersel_case,
-		      gint32 sel_invert, char *sel_pattern,
-		      gint32 selection_mode)
+                      gint32 layersel_mode, gint32 layersel_case,
+                      gint32 sel_invert, char *sel_pattern,
+                      gint32 selection_mode)
 {
   GimpImageBaseType l_type;
   guint   l_width, l_height;
@@ -946,7 +946,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
       /* copy the initial selection to the newly create image */
       gap_layer_copy_content(l_new_selection_channel_id  /* dst_drawable_id  */
                             , l_initial_selection_channel_id   /* src_drawable_id  */
-			    );
+                            );
       /* invert the (copied initial selection) in the newly create image */
       gimp_selection_invert(l_new_image_id);
 
@@ -1009,10 +1009,10 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
       {
          /* set BG_Layer invisible */
          gimp_drawable_set_visible(l_tmp_layer_id, FALSE);
-	 if(l_layli_ptr[l_vidx].selected)
-	 {
-	   l_nvisible--;
-	 }
+         if(l_layli_ptr[l_vidx].selected)
+         {
+           l_nvisible--;
+         }
       }
     }
 
@@ -1056,7 +1056,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
         if(!gimp_selection_is_empty(l_tmp_image_id))
         {
           gimp_selection_invert(l_tmp_image_id);
-	  gimp_edit_clear(l_tmp_layer_id);
+          gimp_edit_clear(l_tmp_layer_id);
         }
       }
 
@@ -1075,9 +1075,9 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
         gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
 
         if(l_clear_selected_area)
-	{
-	  gimp_edit_clear(l_cp_layer_id);
-	}
+        {
+          gimp_edit_clear(l_cp_layer_id);
+        }
 
         l_nlayers_result++;
 
@@ -1091,8 +1091,8 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
         if (frame_basename == NULL)  frame_basename = "frame_[######]";
         if (*frame_basename == '\0') frame_basename = "frame_[######]";
 
-	gap_match_substitute_framenr(&l_layername[0], sizeof(l_layername),
-	                      frame_basename, (long)l_cur_frame_nr);
+        gap_match_substitute_framenr(&l_layername[0], sizeof(l_layername),
+                              frame_basename, (long)l_cur_frame_nr);
         gimp_drawable_set_name(l_cp_layer_id, &l_layername[0]);
 
         gimp_drawable_set_visible(l_cp_layer_id, l_visible);
@@ -1124,7 +1124,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
 error:
   gimp_image_delete(l_new_image_id);
   return -1;
-}	/* end p_frames_to_multilayer */
+}       /* end p_frames_to_multilayer */
 
 
 
@@ -1136,10 +1136,10 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
                              long range_from, long range_to,
                              long flatten_mode, long bg_visible,
                              long   framerate,
-			     char  *frame_basename, int frame_basename_len,
-			     gint32 layersel_mode, gint32 layersel_case,
-			     gint32 sel_invert, char *sel_pattern,
-			     gint32 selection_mode)
+                             char  *frame_basename, int frame_basename_len,
+                             gint32 layersel_mode, gint32 layersel_case,
+                             gint32 sel_invert, char *sel_pattern,
+                             gint32 selection_mode)
 {
   gint32  new_image_id;
   gint32  l_rc;
@@ -1162,13 +1162,13 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
     {
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
-	 l_framerate = 24.0;
+         l_framerate = 24.0;
          vin_ptr = gap_vin_get_all(ainfo_ptr->basename);
          if(vin_ptr)
-	 {
-	   if(vin_ptr->framerate > 0) l_framerate = vin_ptr->framerate;
-	   g_free(vin_ptr);
-	 }
+         {
+           if(vin_ptr->framerate > 0) l_framerate = vin_ptr->framerate;
+           g_free(vin_ptr);
+         }
          g_snprintf(frame_basename, frame_basename_len, "frame_[######] (%dms)", (int)(1000/l_framerate));
          framerate = 0;
          l_rc = p_range_to_multilayer_dialog (ainfo_ptr, &l_from, &l_to,
@@ -1176,23 +1176,23 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
                                 &framerate, frame_basename, frame_basename_len,
                                 _("Frames to Image"),
                                 _("Create Multilayer-Image from Frames"),
-				&l_layersel_mode, &layersel_case,
-				&sel_invert, &l_sel_pattern[0],
-				&l_selection_mode
-				);
+                                &l_layersel_mode, &layersel_case,
+                                &sel_invert, &l_sel_pattern[0],
+                                &l_selection_mode
+                                );
       }
       else
       {
          l_from = range_from;
          l_to   = range_to;
          l_rc = 0;
-	 l_layersel_mode    = layersel_mode;
-	 l_layersel_case    = layersel_case;
-	 l_sel_invert       = sel_invert;
-	 l_selection_mode   = selection_mode;
+         l_layersel_mode    = layersel_mode;
+         l_layersel_case    = layersel_case;
+         l_sel_invert       = sel_invert;
+         l_selection_mode   = selection_mode;
 
          strncpy(&l_sel_pattern[0], sel_pattern, sizeof(l_sel_pattern) -1);
-	 l_sel_pattern[sizeof(l_sel_pattern) -1] = '\0';
+         l_sel_pattern[sizeof(l_sel_pattern) -1] = '\0';
       }
 
       if(l_rc >= 0)
@@ -1200,9 +1200,9 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
          new_image_id = p_frames_to_multilayer(ainfo_ptr, l_from, l_to,
                                                flatten_mode, bg_visible,
                                                framerate, frame_basename,
-					       l_layersel_mode, layersel_case,
-					       sel_invert, &l_sel_pattern[0],
-					       l_selection_mode);
+                                               l_layersel_mode, layersel_case,
+                                               sel_invert, &l_sel_pattern[0],
+                                               l_selection_mode);
          gimp_display_new(new_image_id);
          l_rc = new_image_id;
       }
@@ -1211,7 +1211,7 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
   }
 
   return(l_rc);
-}	/* end gap_range_to_multilayer */
+}       /* end gap_range_to_multilayer */
 
 /* ============================================================================
  * p_type_convert
@@ -1220,7 +1220,7 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
  */
 static int
 p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors, gint32 dest_dither,
-	       gint32 palette_type, gint32  alpha_dither, gint32  remove_unused,  char *palette)
+               gint32 palette_type, gint32  alpha_dither, gint32  remove_unused,  char *palette)
 {
   gboolean  l_rc;
   gboolean  l_alpha_dither;
@@ -1280,7 +1280,7 @@ p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors,
 
   if (l_rc) return 0;
   return -1;
-}	/* end p_type_convert */
+}       /* end p_type_convert */
 
 /* ============================================================================
  * p_frames_convert
@@ -1305,7 +1305,7 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
                  char *save_proc_name, char *new_basename, char *new_extension,
                  int flatten,
                  GimpImageBaseType dest_type, gint32 dest_colors, gint32 dest_dither,
-		 gint32  palette_type, gint32  alpha_dither, gint32  remove_unused,  char   *palette)
+                 gint32  palette_type, gint32  alpha_dither, gint32  remove_unused,  char   *palette)
 {
   GimpRunMode l_run_mode;
   gint32  l_tmp_image_id;
@@ -1398,33 +1398,33 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
        if(gap_debug) fprintf(stderr, "DEBUG: p_frames_convert flatten tmp image'\n");
 
         /* hof:
-	 * we add dummy layers to make sure that flatten works on any kind of image.
-	 * even if the image had no layer at all, or all its layers were invisible.
-	 *   (flatten need at least 2 layers and at least one visible layer to work.
-	 *    if just invisible layers are flattened
-	 *    we do not get a resulting layer (returned l_layer_id == -1)
-	 */
+         * we add dummy layers to make sure that flatten works on any kind of image.
+         * even if the image had no layer at all, or all its layers were invisible.
+         *   (flatten need at least 2 layers and at least one visible layer to work.
+         *    if just invisible layers are flattened
+         *    we do not get a resulting layer (returned l_layer_id == -1)
+         */
         l_dummy_layer_id = gimp_layer_new(l_tmp_image_id, "dummy",
                                  1,
-				 1,
-				 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
+                                 1,
+                                 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
                                  100.0,     /* Opacity full opaque */
                                  0);        /* NORMAL */
          gimp_image_add_layer(l_tmp_image_id, l_dummy_layer_id, 0);
-	 gimp_layer_set_offsets(l_dummy_layer_id, -1, -1);
+         gimp_layer_set_offsets(l_dummy_layer_id, -1, -1);
 
-	 if(l_nlayers == 0)
-	 {
-	   /* on empty images we need 2 dummies to make flatten happy */
+         if(l_nlayers == 0)
+         {
+           /* on empty images we need 2 dummies to make flatten happy */
            l_dummy_layer_id = gimp_layer_new(l_tmp_image_id, "dummy2",
                                    1,
-				   1,
-				   ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
+                                   1,
+                                   ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
                                    100.0,     /* Opacity full opaque */
                                    0);        /* NORMAL */
            gimp_image_add_layer(l_tmp_image_id, l_dummy_layer_id, 0);
-	   gimp_layer_set_offsets(l_dummy_layer_id, -1, -1);
-	 }
+           gimp_layer_set_offsets(l_dummy_layer_id, -1, -1);
+         }
 
 
        /* flatten current frame image (reduce to single layer) */
@@ -1443,7 +1443,7 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
        {
           /* have to convert to desired type (RGB, INDEXED, GRAYSCALE) */
           p_type_convert(l_tmp_image_id, dest_type, dest_colors, dest_dither,
-	                 palette_type, alpha_dither, remove_unused, palette);
+                         palette_type, alpha_dither, remove_unused, palette);
        }
 
 
@@ -1486,8 +1486,8 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
              if(l_rc < 0)
              {
                gap_arr_msg_win(ainfo_ptr->run_mode, _("Convert Frames: Save operation failed.\n"
-						"Desired save plugin can't handle type\n"
-						"or desired save plugin not available."));
+                                                "Desired save plugin can't handle type\n"
+                                                "or desired save plugin not available."));
              }
           }
           if(l_run_mode == GIMP_RUN_INTERACTIVE)
@@ -1537,7 +1537,7 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
 
 
   return l_rc;
-}	/* end p_frames_convert */
+}       /* end p_frames_convert */
 
 
 
@@ -1584,7 +1584,7 @@ int p_image_sizechange(gint32 image_id,
 
   if(l_rc) return 0;
   return -1;
-}	/* end p_image_sizechange */
+}       /* end p_image_sizechange */
 
 /* ============================================================================
  * p_anim_sizechange
@@ -1682,7 +1682,7 @@ p_anim_sizechange(GapAnimInfo *ainfo_ptr,
   }   /* end while loop over all frames*/
 
   return l_rc;
-}	/* end  p_anim_sizechange */
+}       /* end  p_anim_sizechange */
 
 
 
@@ -1714,7 +1714,7 @@ gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
          l_rc = p_range_dialog (ainfo_ptr, &l_from, &l_to,
                                 _("Flatten Frames"),
                                 _("Select Frame Range"), 2,
-				GAP_HELP_ID_FLATTEN);
+                                GAP_HELP_ID_FLATTEN);
 
       }
       else
@@ -1748,7 +1748,7 @@ gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
     return -1;
   }
   return(l_rc);
-}	/* end gap_range_flatten */
+}       /* end gap_range_flatten */
 
 
 
@@ -1871,7 +1871,7 @@ p_frames_layer_del(GapAnimInfo *ainfo_ptr,
 
 
   return l_rc;
-}	/* end p_frames_layer_del */
+}       /* end p_frames_layer_del */
 
 
 /* ============================================================================
@@ -1902,7 +1902,7 @@ gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
          l_rc = p_range_dialog (ainfo_ptr, &l_from, &l_to,
                                 _("Delete Layers in Frames"),
                                 _("Select Frame Range & Stack Position"), 3,
-				GAP_HELP_ID_LAYER_DEL);
+                                GAP_HELP_ID_LAYER_DEL);
          l_position = l_rc;
 
       }
@@ -1938,7 +1938,7 @@ gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
     return -1;
   }
   return(l_rc);
-}	/* end gap_range_layer_del */
+}       /* end gap_range_layer_del */
 
 
 /* ============================================================================
@@ -1961,7 +1961,7 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
                       gint32     palette_type,
                       gint32     alpha_dither,
                       gint32     remove_unused,
-		      char   *palette)
+                      char   *palette)
 {
   gint32  l_rc;
   long   l_from, l_to;
@@ -2000,13 +2000,13 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
          /* p_convert_dialog : select destination type
           * to find out extension
           */
-	 strcpy(l_palette, "Default");
+         strcpy(l_palette, "Default");
          l_rc = p_convert_dialog (ainfo_ptr, &l_from, &l_to, &l_flatten,
                                   &l_dest_type, &l_dest_colors, &l_dest_dither,
                                   &l_basename[0], sizeof(l_basename),
                                   &l_extension[0], sizeof(l_extension),
-				  &l_palette_type, &l_alpha_dither, &l_remove_unused,
-				  &l_palette[0], sizeof(l_palette));
+                                  &l_palette_type, &l_alpha_dither, &l_remove_unused,
+                                  &l_palette[0], sizeof(l_palette));
 
       }
       else
@@ -2051,10 +2051,10 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
                                     l_dest_type,
                                     l_dest_colors,
                                     l_dest_dither,
-				    l_palette_type,
-				    l_alpha_dither,
-				    l_remove_unused,
-				    l_palette);
+                                    l_palette_type,
+                                    l_alpha_dither,
+                                    l_remove_unused,
+                                    l_palette);
             g_free(l_basename_ptr);
             if((l_rc >= 0)  &&  (run_mode == GIMP_RUN_INTERACTIVE))
             {
@@ -2067,7 +2067,7 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
   }
 
   return(l_rc);
-}	/* end gap_range_conv */
+}       /* end gap_range_conv */
 
 
 
@@ -2147,4 +2147,4 @@ gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, gint3
   }
 
   return(l_rc);
-}	/* end gap_range_anim_sizechange */
+}       /* end gap_range_anim_sizechange */

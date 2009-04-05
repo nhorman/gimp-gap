@@ -60,10 +60,10 @@ gap_story_sox_exec_resample(char *in_audiofile
   l_cmd = g_strdup_printf("IN='%s';OUT='%s';RATE=%d;%s %s\n"
            , in_audiofile               /* input audio file */
            , out_audiofile              /* output audio file (tmp 16-bit wav file) */
-	   , (int)samplerate
+           , (int)samplerate
            , util_sox
            , util_sox_options
-	   );
+           );
 
   if(gap_debug)
   {

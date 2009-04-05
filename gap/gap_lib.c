@@ -119,7 +119,7 @@
 
 
 #ifdef G_OS_WIN32
-#include <process.h>		/* For _getpid() */
+#include <process.h>            /* For _getpid() */
 #endif
 
 /* GAP includes */
@@ -250,12 +250,12 @@ p_set_active_layer_by_pos(gint32 image_id
       l_name = gimp_drawable_get_name(l_matching_layer_id);
       printf("p_set_active_layer_by_pos SET layer_id %d '%s' as ACTIVE\n"
             , (int)l_matching_layer_id
-	    , l_name
-	    );
+            , l_name
+            );
       if(l_name)
       {
         g_free(l_name);
-      }	    
+      }     
     }
     return (TRUE);
   }
@@ -328,79 +328,79 @@ p_set_active_layer_by_name(gint32 image_id
 
         if(g_utf8_validate(l_layer_name, -1, NULL))
         {
-	  const char *uni_ref_ptr;
-	  const char *uni_nam_ptr;
+          const char *uni_ref_ptr;
+          const char *uni_nam_ptr;
 
           uni_ref_ptr = ref_layer_name;
-	  uni_nam_ptr = l_layer_name;
+          uni_nam_ptr = l_layer_name;
 
-	  /* check how many characters of the name are equal */
+          /* check how many characters of the name are equal */
           l_len = g_utf8_strlen(l_layer_name, -1);
           for(ii=0; ii < MIN(l_len, l_ref_len); ii++)
-	  {
-	    gunichar refname_char;
-	    gunichar layername_char;
-	    
-	    refname_char = g_utf8_get_char(uni_ref_ptr);
-	    layername_char = g_utf8_get_char(uni_nam_ptr);
+          {
+            gunichar refname_char;
+            gunichar layername_char;
+            
+            refname_char = g_utf8_get_char(uni_ref_ptr);
+            layername_char = g_utf8_get_char(uni_nam_ptr);
 
-	    if(g_unichar_toupper(layername_char) == g_unichar_toupper(refname_char))
-	    {
-	      /* best score for matching character */
-	      l_score += 8;
-	      if(layername_char == refname_char)
-	      {
-		if(ii==0)
-		{
-	          /* prepare bonus for matching in case sensitivity */
-	          l_case_bonus = 4;
-		}
-	      }
-	      else
-	      {
-		/* lost the bonus for exact matching in case sensitivity */
-		l_case_bonus = 0;
-	      }
-	    }
-	    else
-	    {
+            if(g_unichar_toupper(layername_char) == g_unichar_toupper(refname_char))
+            {
+              /* best score for matching character */
+              l_score += 8;
+              if(layername_char == refname_char)
+              {
+                if(ii==0)
+                {
+                  /* prepare bonus for matching in case sensitivity */
+                  l_case_bonus = 4;
+                }
+              }
+              else
+              {
+                /* lost the bonus for exact matching in case sensitivity */
+                l_case_bonus = 0;
+              }
+            }
+            else
+            {
               break;
-	    }
-	    uni_ref_ptr = g_utf8_find_next_char(uni_ref_ptr, NULL);
-	    uni_nam_ptr = g_utf8_find_next_char(uni_nam_ptr, NULL);
-	  }
+            }
+            uni_ref_ptr = g_utf8_find_next_char(uni_ref_ptr, NULL);
+            uni_nam_ptr = g_utf8_find_next_char(uni_nam_ptr, NULL);
+          }
 
-	  l_score += l_case_bonus;
-	  if(l_len == l_ref_len)
-	  {
-	    /* extra score for equal length */
-	    l_score += 2;
-	  }
+          l_score += l_case_bonus;
+          if(l_len == l_ref_len)
+          {
+            /* extra score for equal length */
+            l_score += 2;
+          }
         }
 
-	g_free(l_layer_name);
+        g_free(l_layer_name);
       }
       
       if(l_score == l_max_score)
       {
-	/* stackposition is checked as secondary criterium
-	 * (score +1) in case there are more names matching
-	 * in the same number of characters
-	 */
-	l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
-	if(!l_is_onion)
-	{
+        /* stackposition is checked as secondary criterium
+         * (score +1) in case there are more names matching
+         * in the same number of characters
+         */
+        l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
+        if(!l_is_onion)
+        {
           if(l_pos == ref_layer_stackpos)
           {
             l_score += 1;
           }
           l_pos++;
-	}
+        }
       }
       if(l_score > l_max_score)
       {
         l_matching_layer_id = l_layer_id;
-	l_max_score = l_score;
+        l_max_score = l_score;
       }
     }
     
@@ -418,12 +418,12 @@ p_set_active_layer_by_name(gint32 image_id
       l_name = gimp_drawable_get_name(l_matching_layer_id);
       printf("p_set_active_layer_by_name SET layer_id %d '%s' as ACTIVE\n"
             , (int)l_matching_layer_id
-	    , l_name
-	    );
+            , l_name
+            );
       if(l_name)
       {
         g_free(l_name);
-      }	    
+      }     
     }
     return (TRUE);
   }
@@ -523,7 +523,7 @@ p_do_active_layer_tracking(gint32 image_id
 }  /* end p_do_active_layer_tracking */
 
 
-		
+                
 
 /* ============================================================================
  * gap_lib_file_exists
@@ -560,7 +560,7 @@ gap_lib_file_exists(const char *fname)
   }
 
   return(1);
-}	/* end gap_lib_file_exists */
+}       /* end gap_lib_file_exists */
 
 /* ============================================================================
  * gap_lib_searchpath_for_exefile
@@ -604,15 +604,15 @@ gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
       exe_fullname = g_build_filename(dirpath, exefile, NULL);
       if(g_file_test (exe_fullname, G_FILE_TEST_IS_EXECUTABLE) )
       {
-	/* the executable was found at exe_fullname,
-	 * set break flag and keep that name as return value
-	 */
+        /* the executable was found at exe_fullname,
+         * set break flag and keep that name as return value
+         */
         break_flag = TRUE;
       }
       else
       {
         g_free(exe_fullname);
-	exe_fullname = NULL;
+        exe_fullname = NULL;
       }
       dirpath = pp;
       dirpath++;       /* start of next directoryname in the path string */
@@ -663,10 +663,10 @@ gap_lib_image_file_copy(char *fname, char *fname_copy)
 int
 gap_lib_file_copy(char *fname, char *fname_copy)
 {
-  FILE	      *l_fp;
+  FILE        *l_fp;
   char                     *l_buffer;
   struct stat               l_stat_buf;
-  long	       l_len;
+  long         l_len;
 
   if(gap_debug) printf("gap_lib_file_copy src:%s dst:%s\n", fname, fname_copy);
 
@@ -687,7 +687,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   }
 
   /* load File into Buffer */
-  l_fp = g_fopen(fname, "rb");		    /* open read */
+  l_fp = g_fopen(fname, "rb");              /* open read */
   if(l_fp == NULL)
   {
     fprintf (stderr, "open(read) error on '%s'\n", fname);
@@ -697,7 +697,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   fread(l_buffer, 1, (size_t)l_len, l_fp);
   fclose(l_fp);
 
-  l_fp = g_fopen(fname_copy, "wb");		    /* open write */
+  l_fp = g_fopen(fname_copy, "wb");                 /* open write */
   if(l_fp == NULL)
   {
     fprintf (stderr, "file_copy: open(write) error on '%s' \n", fname_copy);
@@ -713,7 +713,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   fclose(l_fp);
   g_free(l_buffer);
   return 0;           /* all done OK */
-}	/* end gap_lib_file_copy */
+}       /* end gap_lib_file_copy */
 
 
 /* ============================================================================
@@ -1002,8 +1002,8 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
        while(l_nr_chk >= 0)
        {
          /* check if frame is on disk with 6-digit style framenumber
-	  * (we check 6-digit style first because this is the GAP default style)
-	  */
+          * (we check 6-digit style first because this is the GAP default style)
+          */
          g_snprintf(l_fname, l_len, "%s%06ld%s", basename, l_nr_chk, extension);
          if (gap_lib_file_exists(l_fname))
          {
@@ -1026,10 +1026,10 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
             l_digits_used = 7;
             break;
          }
-	 
+         
 
 
-	 
+         
          /* check if frame is on disk with 4-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%04ld%s", basename, l_nr_chk, extension);
          if (gap_lib_file_exists(l_fname))
@@ -1524,7 +1524,7 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
   ainfo_ptr->first_frame_nr = MIN(l_minnr, l_maxnr);
 
   return 0;           /* OK */
-}	/* end gap_lib_dir_ainfo */
+}       /* end gap_lib_dir_ainfo */
 
 
 /* ============================================================================
@@ -1644,13 +1644,13 @@ gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
     {
        gap_arr_msg_win(ainfo_ptr->run_mode,
          _("Operation cancelled.\n"
-	   "Current frame was changed while dialog was open."));
+           "Current frame was changed while dialog was open."));
     }
     gap_lib_free_ainfo(&l_ainfo_ptr);
   }
 
   return l_rc;
-}	/* end gap_lib_chk_framechange */
+}       /* end gap_lib_chk_framechange */
 
 /* ============================================================================
  * gap_lib_chk_framerange
@@ -1666,14 +1666,14 @@ gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr)
   if(ainfo_ptr->frame_cnt == 0)
   {
      gap_arr_msg_win(ainfo_ptr->run_mode,
-	       _("Operation cancelled.\n"
+               _("Operation cancelled.\n"
                  "GAP video plug-ins only work with filenames\n"
                  "that end in numbers like _000001.xcf.\n"
                  "==> Rename your image, then try again."));
      return -1;
   }
   return 0;
-}	/* end gap_lib_chk_framerange */
+}       /* end gap_lib_chk_framerange */
 
 /* ============================================================================
  * p_gzip
@@ -1727,7 +1727,7 @@ p_gzip (char *orig_name, char *new_name, char *zip)
   g_free(l_cmd);
   return l_tmpname;
 
-}	/* end p_gzip */
+}       /* end p_gzip */
 
 /* ============================================================================
  * p_decide_save_as
@@ -1768,9 +1768,9 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
   l_basename = gap_lib_alloc_basename(final_sav_name, &l_number);
 
   l_key_save_as_mode = g_strdup_printf("GIMP_GAP_SAVE_MODE_%s%s"
-		       ,l_basename
-		       ,l_extension
-		       );
+                       ,l_basename
+                       ,l_extension
+                       );
 
   gimp_get_data (l_key_save_as_mode, &l_save_as_mode);
 
@@ -1816,12 +1816,12 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 
       if(strcmp(l_val_gimprc, "yes") == 0)
       {
-	l_save_as_mode = 1;
+        l_save_as_mode = 1;
         l_ask = FALSE;
       }
       if(strcmp(l_val_gimprc, "no") == 0)
       {
-	l_save_as_mode = 0;
+        l_save_as_mode = 0;
         l_ask = FALSE;
       }
 
@@ -1848,17 +1848,17 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
       l_argc             = 3;
 
       l_msg = g_strdup_printf(_("You are using another file format than xcf.\n"
-				"Save operations may result in loss of layer information.\n\n"
-				"To configure flattening for this fileformat\n"
-				"(permanent for all further sessions) please add the line:\n"
-				"(%s %s)\n"
-				"to your gimprc file.")
-			     , l_key_gimprc
-			     , "\"yes\""
-			     );
+                                "Save operations may result in loss of layer information.\n\n"
+                                "To configure flattening for this fileformat\n"
+                                "(permanent for all further sessions) please add the line:\n"
+                                "(%s %s)\n"
+                                "to your gimprc file.")
+                             , l_key_gimprc
+                             , "\"yes\""
+                             );
       l_save_as_mode =  gap_arr_buttons_dialog (_("Fileformat Warning")
-                                        	,l_msg
-						, l_argc, l_argv, -1);
+                                                ,l_msg
+                                                , l_argc, l_argv, -1);
       g_free(l_msg);
     }
 
@@ -1894,8 +1894,8 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 
     l_sav_rc = p_lib_save_named_image_1(image_id
                              , sav_name
-			     , l_run_mode
-			     , FALSE      /* do not enable_thumbnailsave */
+                             , l_run_mode
+                             , FALSE      /* do not enable_thumbnailsave */
                              , l_basename
                              , l_extension
                              );
@@ -1905,7 +1905,7 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
   g_free(l_extension);
 
   return l_sav_rc;
-}	/* end p_decide_save_as */
+}       /* end p_decide_save_as */
 
 /* ============================================================================
  * gap_lib_gap_check_save_needed
@@ -1991,12 +1991,12 @@ p_lib_save_jpg_non_interactive(gint32 image_id, gint32 l_drawable_id, const char
    */
   GimpParam *l_params;
   l_params = gimp_run_procedure ("file_jpeg_save",
-			       &l_retvals,
-			       GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-			       GIMP_PDB_IMAGE,    image_id,
-			       GIMP_PDB_DRAWABLE, l_drawable_id,
-			       GIMP_PDB_STRING, sav_name,
-			       GIMP_PDB_STRING, sav_name, /* raw name ? */
+                               &l_retvals,
+                               GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                               GIMP_PDB_IMAGE,    image_id,
+                               GIMP_PDB_DRAWABLE, l_drawable_id,
+                               GIMP_PDB_STRING, sav_name,
+                               GIMP_PDB_STRING, sav_name, /* raw name ? */
                                GIMP_PDB_FLOAT,  save_vals->quality / 100.0,
                                GIMP_PDB_FLOAT,  save_vals->smoothing,
                                GIMP_PDB_INT32,  save_vals->optimize,
@@ -2006,7 +2006,7 @@ p_lib_save_jpg_non_interactive(gint32 image_id, gint32 l_drawable_id, const char
                                GIMP_PDB_INT32,  save_vals->baseline,
                                GIMP_PDB_INT32,  save_vals->restart,
                                GIMP_PDB_INT32,  save_vals->dct,
-			       GIMP_PDB_END);
+                               GIMP_PDB_END);
   if (l_params[0].data.d_status == GIMP_PDB_SUCCESS)
   {
      if(gap_debug)
@@ -2071,9 +2071,9 @@ p_lib_save_named_image_1(gint32 image_id, const char *sav_name, GimpRunMode run_
   jpg_save_vals = NULL;
   
   l_key_save_vals_jpg = g_strdup_printf("GIMP_GAP_SAVE_VALS_JPG_%s%s"
-		       ,l_basename
-		       ,l_extension
-		       );
+                       ,l_basename
+                       ,l_extension
+                       );
 
   if(gap_debug)
   {
@@ -2111,10 +2111,10 @@ p_lib_save_named_image_1(gint32 image_id, const char *sav_name, GimpRunMode run_
 
   l_sav_rc = p_lib_save_named_image2(image_id
                            , sav_name
-			   , run_mode
-			   , FALSE      /* do not enable_thumbnailsave */
+                           , run_mode
+                           , FALSE      /* do not enable_thumbnailsave */
                            , jpg_save_vals
-			   );
+                           );
   if (jpg_save_vals != NULL)
   {
     g_free(jpg_save_vals);
@@ -2206,10 +2206,10 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
   {
     l_rc = gimp_file_save(run_mode,
                    image_id,
-		   l_drawable_id,
-		   sav_name,
-		   sav_name /* raw name ? */
-		   );
+                   l_drawable_id,
+                   sav_name,
+                   sav_name /* raw name ? */
+                   );
   }
 
 
@@ -2250,7 +2250,7 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
   }
   return image_id;
 
-}	/* end p_lib_save_named_image2 */
+}       /* end p_lib_save_named_image2 */
 
 gint32
 gap_lib_save_named_image(gint32 image_id, const char *sav_name, GimpRunMode run_mode)
@@ -2265,11 +2265,11 @@ gap_lib_save_named_image(gint32 image_id, const char *sav_name, GimpRunMode run_
 
   l_rc = p_lib_save_named_image_1(image_id
                             , sav_name
-			    , run_mode
-			    , TRUE      /* enable_thumbnailsave */
+                            , run_mode
+                            , TRUE      /* enable_thumbnailsave */
                             , l_basename
                             , l_extension
-			    );
+                            );
   g_free(l_extension);
   g_free(l_basename);
 
@@ -2368,13 +2368,13 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
      * the drawable is ignored. (we can supply a dummy value)
      */
     l_params = gimp_run_procedure ("gimp_xcf_save",
-			         &l_retvals,
-			         GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-			         GIMP_PDB_IMAGE,    image_id,
-			         GIMP_PDB_DRAWABLE, 0,
-			         GIMP_PDB_STRING, l_tmpname,
-			         GIMP_PDB_STRING, l_tmpname, /* raw name ? */
-			         GIMP_PDB_END);
+                                 &l_retvals,
+                                 GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_IMAGE,    image_id,
+                                 GIMP_PDB_DRAWABLE, 0,
+                                 GIMP_PDB_STRING, l_tmpname,
+                                 GIMP_PDB_STRING, l_tmpname, /* raw name ? */
+                                 GIMP_PDB_END);
     if(gap_debug)
     {
       printf("DEBUG: after   xcf  gap_lib_save_named_frame: '%s'\n", l_tmpname);
@@ -2437,9 +2437,9 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
          }
          
          if(0 == gap_lib_file_copy(l_tmpname, sav_name))
-	 {
-	    g_remove(l_tmpname);
-	 }
+         {
+            g_remove(l_tmpname);
+         }
          else
          {
             printf("ERROR in gap_lib_save_named_frame: can't rename %s to %s\n"
@@ -2478,7 +2478,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
 
   return l_rc;
 
-}	/* end gap_lib_save_named_frame */
+}       /* end gap_lib_save_named_frame */
 
 
 /* ============================================================================
@@ -2519,7 +2519,7 @@ p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr)
     }
   }
   return 0;
-}	/* end p_save_old_frame */
+}       /* end p_save_old_frame */
 
 
 
@@ -2563,9 +2563,9 @@ gap_lib_load_image (char *lod_name)
   if(gap_debug) printf("DEBUG: before   gap_lib_load_image: '%s'\n", l_tmpname);
 
   l_tmp_image_id = gimp_file_load(GIMP_RUN_NONINTERACTIVE,
-		l_tmpname,
-		l_tmpname  /* raw name ? */
-		);
+                l_tmpname,
+                l_tmpname  /* raw name ? */
+                );
 
   if(gap_debug) printf("DEBUG: after    gap_lib_load_image: '%s' id=%d\n\n",
                                l_tmpname, (int)l_tmp_image_id);
@@ -2579,7 +2579,7 @@ gap_lib_load_image (char *lod_name)
 
   return l_tmp_image_id;
 
-}	/* end gap_lib_load_image */
+}       /* end gap_lib_load_image */
 
 
 
@@ -2646,7 +2646,7 @@ gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
 
    printf("GAP: Error: PDB call of gimp_displays_reconnect failed\n");
    return (-1);
-}	/* end gap_lib_load_named_frame */
+}       /* end gap_lib_load_named_frame */
 
 
 
@@ -2801,7 +2801,7 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
   }
 
   return(image_id);
-}	/* end gap_lib_replace_image */
+}       /* end gap_lib_replace_image */
 
 
 

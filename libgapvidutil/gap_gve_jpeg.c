@@ -93,8 +93,8 @@ typedef struct {
 
 #if 0
 struct jpeg_destination_mgr {
-  JOCTET * next_output_byte;	/* => next byte to write in buffer */
-  size_t free_in_buffer;	/* # of byte spaces remaining in buffer */
+  JOCTET * next_output_byte;    /* => next byte to write in buffer */
+  size_t free_in_buffer;        /* # of byte spaces remaining in buffer */
 
   JMETHOD(void, init_destination, (j_compress_ptr cinfo));
   JMETHOD(boolean, empty_output_buffer, (j_compress_ptr cinfo));
@@ -146,7 +146,7 @@ empty_output_buffer (j_compress_ptr cinfo)
   memjpeg_dest_mgr * dest = (memjpeg_dest_mgr *) cinfo->dest;
 
   printf("EMERGENCY in gap_movtar: The jpeg memory compression\n is limited to 256 kb/frame !\n"
-	 "Consult gz@lysator.liu.se to fix this problem !\n");
+         "Consult gz@lysator.liu.se to fix this problem !\n");
   ERREXIT(cinfo, JERR_FILE_WRITE);
 
   dest->pub.next_output_byte = dest->buffer;
@@ -190,10 +190,10 @@ jpeg_memio_dest (j_compress_ptr cinfo, guchar *memjpeg, size_t **remaining)
    /*  printf("GAP_MOVTAR: Running jpeg_memio_dest !\n");
     */
   if (cinfo->dest == NULL)
-    {	/* first time for this JPEG object? */
+    {   /* first time for this JPEG object? */
       cinfo->dest = (struct jpeg_destination_mgr *)
-	(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
-				    sizeof(memjpeg_dest_mgr));
+        (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
+                                    sizeof(memjpeg_dest_mgr));
     }
 
   dest = (memjpeg_dest_mgr *) cinfo->dest;
@@ -218,8 +218,8 @@ jpeg_memio_dest (j_compress_ptr cinfo, guchar *memjpeg, size_t **remaining)
 
 guchar *
 gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced, gint32 *JPEG_size,
-			       gint32 jpeg_quality, gint32 odd_even, gint32 use_YUV411,
-			       void *app0_buffer, gint32 app0_length)
+                               gint32 jpeg_quality, gint32 odd_even, gint32 use_YUV411,
+                               void *app0_buffer, gint32 app0_length)
 {
   GimpPixelRgn pixel_rgn;
   GimpImageType drawable_type;
@@ -301,7 +301,7 @@ gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced
   cinfo.image_height = drawable->height;
   /* colorspace of input image */
   cinfo.in_color_space = (drawable_type == GIMP_RGB_IMAGE ||
-			  drawable_type == GIMP_RGBA_IMAGE)
+                          drawable_type == GIMP_RGBA_IMAGE)
     ? JCS_RGB : JCS_GRAYSCALE;
   /* Now use the library's routine to set default compression parameters.
    * (You must set at least cinfo.in_color_space before calling this,
@@ -347,46 +347,46 @@ gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced
       data = (guchar *) g_malloc0 (rowstride * gimp_tile_height ());
 
       for (y = (odd_even) ? 1 : 0; (odd_even) ? (y >= 0) : (y <= 1); (odd_even) ? (y--) : (y++))
-	{
-	  if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: interlaced picture, now coding %s lines\n",
-				  y ? "odd" : "even");
+        {
+          if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: interlaced picture, now coding %s lines\n",
+                                  y ? "odd" : "even");
 
-	  jpeg_start_compress (&cinfo, TRUE);
+          jpeg_start_compress (&cinfo, TRUE);
 
-	  /* Step 4.1: Write the app0 marker out */
-	  if(app0_buffer)
-	    jpeg_write_marker(&cinfo,
-			  JPEG_APP0,
-			      app0_buffer,
-			      app0_length);
+          /* Step 4.1: Write the app0 marker out */
+          if(app0_buffer)
+            jpeg_write_marker(&cinfo,
+                          JPEG_APP0,
+                              app0_buffer,
+                              app0_length);
 
-	  while (cinfo.next_scanline < cinfo.image_height)
-	    {
-	      if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: Line %d !", cinfo.next_scanline);
-	      gimp_pixel_rgn_get_rect (&pixel_rgn, data, 0, 2 * cinfo.next_scanline + y,
-				       cinfo.image_width, 1);
+          while (cinfo.next_scanline < cinfo.image_height)
+            {
+              if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: Line %d !", cinfo.next_scanline);
+              gimp_pixel_rgn_get_rect (&pixel_rgn, data, 0, 2 * cinfo.next_scanline + y,
+                                       cinfo.image_width, 1);
 
-	      /* Get rid of all the bad stuff (tm) (= get the right pixel order for JPEG encoding) */
-	      t = temp;
-	      s = data;
-	      i = cinfo.image_width;
+              /* Get rid of all the bad stuff (tm) (= get the right pixel order for JPEG encoding) */
+              t = temp;
+              s = data;
+              i = cinfo.image_width;
 
-	      while (i--)
-		{
-		  for (j = 0; j < cinfo.input_components; j++)
-		    *t++ = *s++;
-		  if (has_alpha)  /* ignore alpha channel */
-		    s++;
-		}
+              while (i--)
+                {
+                  for (j = 0; j < cinfo.input_components; j++)
+                    *t++ = *s++;
+                  if (has_alpha)  /* ignore alpha channel */
+                    s++;
+                }
 
-	      src += 2*rowstride;
-	      jpeg_write_scanlines (&cinfo, (JSAMPARRAY) &temp, 1);
-	    }
+              src += 2*rowstride;
+              jpeg_write_scanlines (&cinfo, (JSAMPARRAY) &temp, 1);
+            }
 
-	  jpeg_finish_compress(&cinfo);
-	  totalsize += (OUTPUT_BUF_SIZE - *JPEG_buf_remain);
-	  /* JPEG_data = (guchar *)realloc(JPEG_data, sizeof(guchar)* *JPEG_size); */
-	}
+          jpeg_finish_compress(&cinfo);
+          totalsize += (OUTPUT_BUF_SIZE - *JPEG_buf_remain);
+          /* JPEG_data = (guchar *)realloc(JPEG_data, sizeof(guchar)* *JPEG_size); */
+        }
       /* fprintf(stderr, "2 fields written.\n"); */
     }
   else
@@ -401,10 +401,10 @@ gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced
 
       /* Step 4.1: Write the app0 marker out */
       if(app0_buffer)
-	jpeg_write_marker(&cinfo,
-			  JPEG_APP0,
-			  app0_buffer,
-			  app0_length);
+        jpeg_write_marker(&cinfo,
+                          JPEG_APP0,
+                          app0_buffer,
+                          app0_length);
 
       /* Step 5: while (scan lines remain to be written) */
       /*           jpeg_write_scanlines(...); */
@@ -424,32 +424,32 @@ gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced
       src = NULL;
 
       while (cinfo.next_scanline < cinfo.image_height)
-	{
-	  if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: Line %d !", cinfo.next_scanline);
-	  if ((cinfo.next_scanline % gimp_tile_height ()) == 0)
-	    {
-	      yend = cinfo.next_scanline + gimp_tile_height ();
-	      yend = MIN (yend, cinfo.image_height);
-	      gimp_pixel_rgn_get_rect (&pixel_rgn, data, 0, cinfo.next_scanline, cinfo.image_width,
-				       (yend - cinfo.next_scanline));
-	      src = data;
-	    }
+        {
+          if (jpeg_debug) fprintf(stderr, "GAP_AVI: encode_jpeg: Line %d !", cinfo.next_scanline);
+          if ((cinfo.next_scanline % gimp_tile_height ()) == 0)
+            {
+              yend = cinfo.next_scanline + gimp_tile_height ();
+              yend = MIN (yend, cinfo.image_height);
+              gimp_pixel_rgn_get_rect (&pixel_rgn, data, 0, cinfo.next_scanline, cinfo.image_width,
+                                       (yend - cinfo.next_scanline));
+              src = data;
+            }
 
-	  t = temp;
-	  s = src;
-	  i = cinfo.image_width;
+          t = temp;
+          s = src;
+          i = cinfo.image_width;
 
-	  while (i--)
-	    {
-	      for (j = 0; j < cinfo.input_components; j++)
-		*t++ = *s++;
-	      if (has_alpha)  /* ignore alpha channel */
-		s++;
-	    }
+          while (i--)
+            {
+              for (j = 0; j < cinfo.input_components; j++)
+                *t++ = *s++;
+              if (has_alpha)  /* ignore alpha channel */
+                s++;
+            }
 
-	  src += rowstride;
-	  jpeg_write_scanlines (&cinfo, (JSAMPARRAY) &temp, 1);
-	}
+          src += rowstride;
+          jpeg_write_scanlines (&cinfo, (JSAMPARRAY) &temp, 1);
+        }
 
       /* Step 6: Finish compression */
       jpeg_finish_compress (&cinfo);

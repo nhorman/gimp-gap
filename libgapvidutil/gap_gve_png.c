@@ -68,21 +68,21 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
    {
      printf("GAP: PNG encode via call of %s on filename: %s, image_id:%d, drawable_id:%d %s\n"
             , l_called_proc
-	    , filename
+            , filename
             , image_id
             , drawable_id
-	    );
+            );
    }
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE /* runmode */,
-				 GIMP_PDB_IMAGE,     image_id,
-				 GIMP_PDB_DRAWABLE,  drawable_id,
-				 GIMP_PDB_STRING,    filename,
-				 GIMP_PDB_STRING,    filename,
-				 GIMP_PDB_INT32,     png_interlaced,
-				 GIMP_PDB_INT32,     png_compression,
+                                 GIMP_PDB_IMAGE,     image_id,
+                                 GIMP_PDB_DRAWABLE,  drawable_id,
+                                 GIMP_PDB_STRING,    filename,
+                                 GIMP_PDB_STRING,    filename,
+                                 GIMP_PDB_INT32,     png_interlaced,
+                                 GIMP_PDB_INT32,     png_compression,
                                  GIMP_PDB_INT32,     0,      /* Write bKGD chunk?  */
                                  GIMP_PDB_INT32,     0,      /* Write gAMA chunk?  */
                                  GIMP_PDB_INT32,     0,      /* Write oFFs chunk?  */
@@ -101,12 +101,12 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
    gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed on filename: %s, image_id:%d, drawable_id:%d, d_status:%d %s\n"
           , l_called_proc
-	  , filename
+          , filename
           , image_id
           , drawable_id
           , (int)return_vals[0].data.d_status
           , p_status_to_string(return_vals[0].data.d_status)
-	  );
+          );
    return(FALSE);
 
 }  /* end p_save_as_tmp_png_file */
@@ -128,8 +128,8 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
  */
 guchar *
 gap_gve_png_drawable_encode_png(GimpDrawable *drawable, gint32 png_interlaced, gint32 *PNG_size,
-			       gint32 png_compression,
-			       void *app0_buffer, gint32 app0_length)
+                               gint32 png_compression,
+                               void *app0_buffer, gint32 app0_length)
 {
   guchar *buffer;
   guchar *PNG_data;

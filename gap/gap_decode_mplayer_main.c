@@ -65,9 +65,9 @@ int gap_debug = 0;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -101,30 +101,30 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(GAP_MPLAYER_PLUGIN_NAME,
-			 "This plugin calls mplayer to split any video to video frames. "
-			 "MPlayer 1.0 must be installed on your system.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPlayer based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mplayer), nreturn_vals,
-			 args_mplayer, return_vals);
+                         "This plugin calls mplayer to split any video to video frames. "
+                         "MPlayer 1.0 must be installed on your system.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("MPlayer based extraction..."),
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_mplayer), nreturn_vals,
+                         args_mplayer, return_vals);
 
   gimp_install_procedure(GAP_MPLAYER_PLUGIN_NAME_TOOLBOX,
-			 "This plugin calls mplayer to split any video to video frames. "
-			 "MPlayer 1.0 must be installed on your system.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPlayer based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mplayer_ext), nreturn_vals,
-			 args_mplayer_ext, return_vals);
+                         "This plugin calls mplayer to split any video to video frames. "
+                         "MPlayer 1.0 must be installed on your system.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("MPlayer based extraction..."),
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_mplayer_ext), nreturn_vals,
+                         args_mplayer_ext, return_vals);
 
 
   {
@@ -142,15 +142,15 @@ query ()
     gimp_plugin_menu_register (GAP_MPLAYER_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
   }
 
-}	/* end query */
+}       /* end query */
 
 
 
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals)
+              , GimpParam **return_vals)
 {
   const char *l_env;
   
@@ -202,36 +202,36 @@ static void run(const gchar *name
       if (status == GIMP_PDB_SUCCESS)
       {
         gpp = &mplayer_gpp;
-	
-	/* setup default values (for the 1.st call per session) */
+        
+        /* setup default values (for the 1.st call per session) */
         gpp->video_filename[0] = '\0';
         gpp->audio_filename[0] = '\0';
-	gpp->number_of_frames  = 100;
-	gpp->vtrack            = 1;
-	gpp->atrack            = 1;
-	gpp->png_compression   = 0;
-	gpp->jpg_quality       = 86;
-	gpp->jpg_optimize      = 100;
-	gpp->jpg_smooth        = 0;
-	gpp->jpg_progressive   = FALSE;
-	gpp->jpg_baseline      = TRUE;
+        gpp->number_of_frames  = 100;
+        gpp->vtrack            = 1;
+        gpp->atrack            = 1;
+        gpp->png_compression   = 0;
+        gpp->jpg_quality       = 86;
+        gpp->jpg_optimize      = 100;
+        gpp->jpg_smooth        = 0;
+        gpp->jpg_progressive   = FALSE;
+        gpp->jpg_baseline      = TRUE;
         gpp->start_hour        = 0;
         gpp->start_minute      = 0;
         gpp->start_second      = 0;
 
-	gpp->img_format        = MPENC_JPEG;
-	gpp->silent            = FALSE;
-	gpp->autoload          = TRUE;
-	gpp->run_mplayer_asynchron = TRUE;
-	
+        gpp->img_format        = MPENC_JPEG;
+        gpp->silent            = FALSE;
+        gpp->autoload          = TRUE;
+        gpp->run_mplayer_asynchron = TRUE;
+        
         g_snprintf(gpp->basename, sizeof(gpp->basename), "frame_");
 
-	gimp_get_data(GAP_MPLAYER_PLUGIN_NAME, gpp);
+        gimp_get_data(GAP_MPLAYER_PLUGIN_NAME, gpp);
         mplayer_gpp.run_mode = run_mode;
-	
+        
         l_rc = gap_mplayer_decode(gpp);
-	
-	gimp_set_data(GAP_MPLAYER_PLUGIN_NAME, gpp, sizeof(mplayer_gpp));
+        
+        gimp_set_data(GAP_MPLAYER_PLUGIN_NAME, gpp, sizeof(mplayer_gpp));
       }
   }
 

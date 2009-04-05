@@ -115,7 +115,7 @@ gap_lock_check_for_lock(gint32 image_id, GimpRunMode run_mode)
     g_free(l_locktab);
   }
   return(FALSE);
-}	/* end gap_lock_check_for_lock */
+}       /* end gap_lock_check_for_lock */
 
 
 /* ============================================================================
@@ -181,7 +181,7 @@ gap_lock_set_lock(gint32 image_id)
   }
   g_free(l_locktab);
   
-}	/* end gap_lock_set_lock */
+}       /* end gap_lock_set_lock */
 
 
 /* ============================================================================
@@ -220,4 +220,4 @@ gap_lock_remove_lock(gint32 image_id)
     }
     g_free(l_locktab);
   }
-}	/* end gap_lock_remove_lock */
+}       /* end gap_lock_remove_lock */

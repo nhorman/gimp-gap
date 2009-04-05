@@ -126,10 +126,10 @@ gint  gap_debug = 0;  /* 0.. no debug, 1 .. print debug messages */
  */
 static void
 p_delta_gdouble (gdouble  *val,
-		 gdouble   val_from,
-		 gdouble   val_to,
-		 gint32   total_steps,
-		 gdouble  current_step)
+                 gdouble   val_from,
+                 gdouble   val_to,
+                 gint32   total_steps,
+                 gdouble  current_step)
 {
     gdouble     delta;
 
@@ -141,10 +141,10 @@ p_delta_gdouble (gdouble  *val,
 
 static void
 p_delta_gint32 (gint32  *val,
-		 gint32   val_from,
-		 gint32   val_to,
-		 gint32   total_steps,
-		 gdouble  current_step)
+                 gint32   val_from,
+                 gint32   val_to,
+                 gint32   total_steps,
+                 gdouble  current_step)
 {
     gdouble     delta;
 
@@ -162,10 +162,10 @@ p_delta_gint32 (gint32  *val,
 
 gint32
 p_gimp_hue_saturation (gint32 drawable_id,
-		   gint32 hue_range,
-		   gdouble hue_offset,
-		   gdouble lightness,
-		   gdouble saturation
+                   gint32 hue_range,
+                   gdouble hue_offset,
+                   gdouble lightness,
+                   gdouble saturation
                    )
 {
    static char     *l_procname = "gimp_hue_saturation";
@@ -189,7 +189,7 @@ p_gimp_hue_saturation (gint32 drawable_id,
    gimp_destroy_params(return_vals, nreturn_vals);
    printf("Error: PDB call of %s failed status:%d\n", l_procname, (int)return_vals[0].data.d_status);
    return(-1);
-}	/* end p_gimp_hue_saturation */
+}       /* end p_gimp_hue_saturation */
 
 static void
 p_run_huesat_tool(gint32 drawable_id, wr_huesat_val_t *cuvals)
@@ -251,11 +251,11 @@ query (void)
   /* the actual installation of the bend plugin */
   gimp_install_procedure (PLUG_IN_NAME,
                           PLUG_IN_DESCRIPTION,
-  			 "This Plugin is a wrapper to call the GIMP Hue Saturation Color Tool (gimp_hue_saturation)"
-			 " it has a simplified Dialog (without preview) where you can enter the parameters"
-			 " this wrapper is useful for animated filtercalls and provides "
-			 " a PDB interface that runs in GIMP_RUN_WITH_LAST_VALUES mode"
-			 " and also provides an Iterator Procedure for animated calls"
+                         "This Plugin is a wrapper to call the GIMP Hue Saturation Color Tool (gimp_hue_saturation)"
+                         " it has a simplified Dialog (without preview) where you can enter the parameters"
+                         " this wrapper is useful for animated filtercalls and provides "
+                         " a PDB interface that runs in GIMP_RUN_WITH_LAST_VALUES mode"
+                         " and also provides an Iterator Procedure for animated calls"
                           ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
@@ -439,16 +439,16 @@ run(const gchar *name
      /* Run the main function */
      if(wcd->run)
      {
-	gimp_image_undo_group_start (l_image_id);
-	p_run_huesat_tool(l_drawable_id, &l_cuvals);
+        gimp_image_undo_group_start (l_image_id);
+        p_run_huesat_tool(l_drawable_id, &l_cuvals);
         l_handled_drawable_id = l_drawable_id;
-	gimp_image_undo_group_end (l_image_id);
+        gimp_image_undo_group_end (l_image_id);
 
-	/* Store variable states for next run */
-	if (run_mode == GIMP_RUN_INTERACTIVE)
-	{
-	  gimp_set_data(PLUG_IN_NAME, &l_cuvals, sizeof(l_cuvals));
-	}
+        /* Store variable states for next run */
+        if (run_mode == GIMP_RUN_INTERACTIVE)
+        {
+          gimp_set_data(PLUG_IN_NAME, &l_cuvals, sizeof(l_cuvals));
+        }
      }
      else
      {
@@ -465,7 +465,7 @@ run(const gchar *name
   values[0].data.d_status = status;
   values[1].data.d_int32 = l_handled_drawable_id;   /* return the id of handled layer */
 
-}	/* end run */
+}       /* end run */
 
 
 /*
@@ -515,10 +515,10 @@ wr_huesat_response (GtkWidget *widget,
     case GTK_RESPONSE_OK:
       if(wcd)
       {
-	if (GTK_WIDGET_VISIBLE (wcd->shell))
-	  gtk_widget_hide (wcd->shell);
+        if (GTK_WIDGET_VISIBLE (wcd->shell))
+          gtk_widget_hide (wcd->shell);
 
-	wcd->run = TRUE;
+        wcd->run = TRUE;
       }
 
     default:
@@ -526,11 +526,11 @@ wr_huesat_response (GtkWidget *widget,
       if(wcd)
       {
         dialog = wcd->shell;
-	if(dialog)
-	{
+        if(dialog)
+        {
           wcd->shell = NULL;
           gtk_widget_destroy (dialog);
-	}
+        }
       }
       gtk_main_quit ();
       break;
@@ -582,7 +582,7 @@ do_dialog (wr_huesat_val_t *cuvals)
   /*  The dialog1 and main vbox  */
   dialog1 = gimp_dialog_new (_("Hue-Saturation"), "hue_saturation_wrapper",
                                NULL, 0,
-			       gimp_standard_help_func, PLUG_IN_HELP_ID,
+                               gimp_standard_help_func, PLUG_IN_HELP_ID,
 
                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                GTK_STOCK_OK,     GTK_RESPONSE_OK,
@@ -598,14 +598,14 @@ do_dialog (wr_huesat_val_t *cuvals)
 
 
   g_signal_connect (G_OBJECT (dialog1), "response",
-		      G_CALLBACK (wr_huesat_response),
-		      wcd);
+                      G_CALLBACK (wr_huesat_response),
+                      wcd);
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 2);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog1)->vbox), vbox,
-		      TRUE, TRUE, 0);
+                      TRUE, TRUE, 0);
   gtk_widget_show (vbox);
 
   dialog_vbox1 = GTK_DIALOG (dialog1)->vbox;

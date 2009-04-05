@@ -70,10 +70,10 @@ GapStoryRenderAudioRangeElem * gap_story_render_audio_new_audiorange_element(Gap
                       ,GapStoryRenderAudioRangeElem *known_aud_list /* NULL or list of already known ranges */
                       ,GapStoryRenderErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select audiotrack number 1 upto 99 for GAP_AUT_MOVIE */
-		      ,gboolean create_audio_tmp_files
-		      ,gdouble min_play_sec
-		      ,gdouble max_play_sec
-		      ,GapStoryRenderVidHandle *vidhand  /* for progress */
+                      ,gboolean create_audio_tmp_files
+                      ,gdouble min_play_sec
+                      ,gdouble max_play_sec
+                      ,GapStoryRenderVidHandle *vidhand  /* for progress */
                       );
 
 void     gap_story_render_audio_add_aud_list(GapStoryRenderVidHandle *vidhand, GapStoryRenderAudioRangeElem *aud_elem);

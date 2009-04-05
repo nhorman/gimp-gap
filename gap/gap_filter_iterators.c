@@ -156,11 +156,11 @@ p_alloc_plugin_data(char *key)
 }
 
 typedef struct {
-	guchar color[3];
+        guchar color[3];
 } t_color;
 
 typedef struct {
-	gint color[3];
+        gint color[3];
 } t_gint_color;
 
 typedef struct t_CML_PARAM
@@ -169,8 +169,8 @@ typedef struct t_CML_PARAM
   gint    composition;
   gint    arrange;
   gint    cyclic_range;
-  gdouble mod_rate;		/* diff / old-value */
-  gdouble env_sensitivity;	/* self-diff : env-diff */
+  gdouble mod_rate;             /* diff / old-value */
+  gdouble env_sensitivity;      /* self-diff : env-diff */
   gint    diffusion_dist;
   gdouble ch_sensitivity;
   gint    range_num;
@@ -1703,141 +1703,141 @@ void p_delta_channel_mixer_ch_type(t_channel_mixer_ch_type *val, t_channel_mixer
  */
 static t_iter_ALT_tab   g_iter_ALT_tab[] =
 {
-    { "plug-in-alienmap2", 		p_plug_in_alienmap2_iter_ALT }
-  , { "plug-in-cml-explorer",  		p_plug_in_cml_explorer_iter_ALT }
-  , { "plug-in-CentralReflection",  	p_plug_in_CentralReflection_iter_ALT }
-  , { "plug-in-Twist",  		p_plug_in_Twist_iter_ALT }
-/*, { "plug-in-alienmap",  		p_plug_in_alienmap_iter_ALT }                          */
-/*, { "plug-in-align-layers",  		p_plug_in_align_layers_iter_ALT }                  */
-  , { "plug-in-alpha2color",  		p_plug_in_alpha2color_iter_ALT }
-  , { "plug-in-anamorphose",  		p_plug_in_anamorphose_iter_ALT }
-/*, { "plug-in-animationoptimize", 	p_plug_in_animationoptimize_iter_ALT }        */
-/*, { "plug-in-animationplay",  	p_plug_in_animationplay_iter_ALT }                */
-/*, { "plug-in-animationunoptimize", 	p_plug_in_animationunoptimize_iter_ALT }    */
-  , { "plug-in-apply-canvas",  		p_plug_in_apply_canvas_iter_ALT }
-  , { "plug-in-applylens",  		p_plug_in_applylens_iter_ALT }
-/*, { "plug-in-autocrop",  		p_plug_in_autocrop_iter_ALT }                          */
-/*, { "plug-in-autostretch-hsv",  	p_plug_in_autostretch_hsv_iter_ALT }            */
-  , { "plug-in-blinds",  		p_plug_in_blinds_iter_ALT }
-/*, { "plug-in-blur",  			p_plug_in_blur_iter_ALT }                                  */
-  , { "plug-in-blur2",  		p_plug_in_blur2_iter_ALT }
-/*, { "plug-in-blur-randomize",  	p_plug_in_blur_randomize_iter_ALT }              */
-  , { "plug-in-borderaverage",  	p_plug_in_borderaverage_iter_ALT }
-  , { "plug-in-bump-map",  		p_plug_in_bump_map_iter_ALT }
-/*, { "plug-in-c-astretch",  		p_plug_in_c_astretch_iter_ALT }                      */
-  , { "plug-in-cartoon", 		p_plug_in_cartoon_iter_ALT }
-  , { "plug-in-checkerboard",  		p_plug_in_checkerboard_iter_ALT }
-/*, { "plug-in-color-adjust",  		p_plug_in_color_adjust_iter_ALT }                  */
-  , { "plug-in-color-map",  		p_plug_in_color_map_iter_ALT }
-  , { "plug-in-colorify",  		p_plug_in_colorify_iter_ALT }
-  , { "plug-in-colortoalpha", 		p_plug_in_colortoalpha_iter_ALT }
-  , { "plug-in-colors-channel-mixer", 	p_plug_in_colors_channel_mixer_iter_ALT }
-/*, { "plug-in-compose",  		p_plug_in_compose_iter_ALT }                            */
-  , { "plug-in-convmatrix",  		p_plug_in_convmatrix_iter_ALT }
-  , { "plug-in-cubism",  		p_plug_in_cubism_iter_ALT }
-/*, { "plug-in-decompose",  		p_plug_in_decompose_iter_ALT }                        */
-/*, { "plug-in-deinterlace",  		p_plug_in_deinterlace_iter_ALT }                    */
-  , { "plug-in-depth-merge",  		p_plug_in_depth_merge_iter_ALT }
-  , { "plug-in-despeckle",  		p_plug_in_despeckle_iter_ALT }
-  , { "plug-in-destripe",  		p_plug_in_destripe_iter_ALT }
-  , { "plug-in-diffraction",  		p_plug_in_diffraction_iter_ALT }
-  , { "plug-in-displace",  		p_plug_in_displace_iter_ALT }
-/*, { "plug-in-ditherize",  		p_plug_in_ditherize_iter_ALT }                        */
-  , { "plug-in-dog",  			p_plug_in_dog_iter_ALT }
-  , { "plug-in-edge",  			p_plug_in_edge_iter_ALT }
-  , { "plug-in-emboss",  		p_plug_in_emboss_iter_ALT }
-  , { "plug-in-encript",  		p_plug_in_encript_iter_ALT }
-  , { "plug-in-engrave",  		p_plug_in_engrave_iter_ALT }
-  , { "plug-in-exchange",  		p_plug_in_exchange_iter_ALT }
-/*, { "plug-in-export-palette",  	p_plug_in_export_palette_iter_ALT }              */
-  , { "plug-in-figures",  		p_plug_in_figures_iter_ALT }
-/*, { "plug-in-film",  			p_plug_in_film_iter_ALT }                                  */
-/*, { "plug-in-filter-pack",  		p_plug_in_filter_pack_iter_ALT }                    */
-  , { "plug-in-flame",  		p_plug_in_flame_iter_ALT }
-  , { "plug-in-flarefx",  		p_plug_in_flarefx_iter_ALT }
-  , { "plug-in-fractal-trace",  	p_plug_in_fractal_trace_iter_ALT }
-  , { "plug-in-gauss",  		p_plug_in_gauss_iter_ALT }
-/*, { "plug-in-gfig",  			p_plug_in_gfig_iter_ALT }                                  */
-  , { "plug-in-gflare",  		p_plug_in_gflare_iter_ALT }
-  , { "plug-in-gimpressionist",  	p_plug_in_gimpressionist_iter_ALT }
-  , { "plug-in-glasstile",  		p_plug_in_glasstile_iter_ALT }
-/*, { "plug-in-gradmap",  		p_plug_in_gradmap_iter_ALT }                            */
-  , { "plug-in-grid",  			p_plug_in_grid_iter_ALT }
-/*, { "plug-in-guillotine",  		p_plug_in_guillotine_iter_ALT }                      */
-  , { "plug-in-holes",  		p_plug_in_holes_iter_ALT }
-/*, { "plug-in-hot",  			p_plug_in_hot_iter_ALT }                                    */
-/*, { "plug-in-ifs-compose",  		p_plug_in_ifs_compose_iter_ALT }                    */
-  , { "plug-in-illusion",  		p_plug_in_illusion_iter_ALT }
-/*, { "plug-in-image-rot270",  		p_plug_in_image_rot270_iter_ALT }                  */
-/*, { "plug-in-image-rot90",  		p_plug_in_image_rot90_iter_ALT }                    */
-/*, { "plug-in-iwarp",  		p_plug_in_iwarp_iter_ALT }                                */
-  , { "plug-in-jigsaw",  		p_plug_in_jigsaw_iter_ALT }
-  , { "plug-in-julia",  		p_plug_in_julia_iter_ALT }
-/*, { "plug-in-laplace",  		p_plug_in_laplace_iter_ALT }                            */
-/*, { "plug-in-layer-rot270", 		p_plug_in_layer_rot270_iter_ALT }                  */
-/*, { "plug-in-layer-rot90",  		p_plug_in_layer_rot90_iter_ALT }                    */
-/*, { "plug-in-layers-import",  	p_plug_in_layers_import_iter_ALT }                */
-  , { "plug-in-lic",  			p_plug_in_lic_iter_ALT }
-  , { "plug-in-lighting",  		p_plug_in_lighting_iter_ALT }
-  , { "plug-in-magic-eye",  		p_plug_in_magic_eye_iter_ALT }
-/*, { "plug-in-mail-image",  		p_plug_in_mail_image_iter_ALT }                      */
-  , { "plug-in-mandelbrot",  		p_plug_in_mandelbrot_iter_ALT }
-  , { "plug-in-map-object",  		p_plug_in_map_object_iter_ALT }
-/*, { "plug-in-max-rgb",  		p_plug_in_max_rgb_iter_ALT }                            */
-  , { "plug-in-maze",  			p_plug_in_maze_iter_ALT }
-  , { "plug-in-mblur",  		p_plug_in_mblur_iter_ALT }
-  , { "plug-in-mosaic",  		p_plug_in_mosaic_iter_ALT }
-  , { "plug-in-neon",  			p_plug_in_neon_iter_ALT }
-  , { "plug-in-newsprint",  		p_plug_in_newsprint_iter_ALT }
-  , { "plug-in-nlfilt",  		p_plug_in_nlfilt_iter_ALT }
-  , { "plug-in-rgb-noise",  		p_plug_in_noisify_iter_ALT }
-/*, { "plug-in-normalize",  		p_plug_in_normalize_iter_ALT }                        */
-  , { "plug-in-nova",  			p_plug_in_nova_iter_ALT }
-  , { "plug-in-oilify",  		p_plug_in_oilify_iter_ALT }
-  , { "plug-in-pagecurl",  		p_plug_in_pagecurl_iter_ALT }
-  , { "plug-in-papertile",  		p_plug_in_papertile_iter_ALT }
-  , { "plug-in-photocopy",  		p_plug_in_photocopy_iter_ALT }
-  , { "plug-in-pixelize",  		p_plug_in_pixelize_iter_ALT }
-  , { "plug-in-plasma",  		p_plug_in_plasma_iter_ALT }
-  , { "plug-in-polar-coords",  		p_plug_in_polar_coords_iter_ALT }
-/*, { "plug-in-qbist",  		p_plug_in_qbist_iter_ALT }                                */
-  , { "plug-in-randomize",  		p_plug_in_randomize_iter_ALT }
-  , { "plug-in-randomize-hurl",  	p_plug_in_randomize_hurl_iter_ALT }
-  , { "plug-in-randomize-pick",  	p_plug_in_randomize_pick_iter_ALT }
-  , { "plug-in-randomize-slur",  	p_plug_in_randomize_slur_iter_ALT }
-  , { "plug-in-refract",  		p_plug_in_refract_iter_ALT }
-  , { "plug-in-retinex",  		p_plug_in_retinex_iter_ALT }
-  , { "plug-in-ripple",  		p_plug_in_ripple_iter_ALT }
-/*, { "plug-in-rotate",  		p_plug_in_rotate_iter_ALT }                              */
-  , { "plug-in-sample-colorize",  	p_plug_in_sample_colorize_iter_ALT }
-  , { "plug-in-hsv-noise",  		p_plug_in_scatter_hsv_iter_ALT }
-  , { "plug-in-sel-gauss", 		p_plug_in_sel_gauss_iter_ALT }
-/*, { "plug-in-semiflatten",  		p_plug_in_semiflatten_iter_ALT }                    */
-  , { "plug-in-sharpen",  		p_plug_in_sharpen_iter_ALT }
-  , { "plug-in-shift",  		p_plug_in_shift_iter_ALT }
-  , { "plug-in-sinus",  		p_plug_in_sinus_iter_ALT }
-  , { "plug-in-small-tiles",  		p_plug_in_small_tiles_iter_ALT }
-/*, { "plug-in-smooth-palette",  	p_plug_in_smooth_palette_iter_ALT }              */
-  , { "plug-in-sobel",  		p_plug_in_sobel_iter_ALT }
-  , { "plug-in-softglow",  		p_plug_in_softglow_iter_ALT }
-  , { "plug-in-solid-noise",  		p_plug_in_solid_noise_iter_ALT }
-  , { "plug-in-sparkle",  		p_plug_in_sparkle_iter_ALT }
-  , { "plug-in-spread",  		p_plug_in_spread_iter_ALT }
-  , { "plug-in-struc",  		p_plug_in_struc_iter_ALT }
-/*, { "plug-in-the-egg",  		p_plug_in_the_egg_iter_ALT }                            */
-/*, { "plug-in-threshold-alpha",  	p_plug_in_threshold_alpha_iter_ALT }            */
-/*, { "plug-in-tile",  			p_plug_in_tile_iter_ALT }                                  */
-  , { "plug-in-tileit",  		p_plug_in_tileit_iter_ALT }
-  , { "plug-in-universal-filter",  	p_plug_in_universal_filter_iter_ALT }
-  , { "plug-in-unsharp-mask", 		p_plug_in_unsharp_mask_iter_ALT }
-  , { "plug-in-video",  		p_plug_in_video_iter_ALT }
-/*, { "plug-in-vinvert",  		p_plug_in_vinvert_iter_ALT }                            */
-  , { "plug-in-vpropagate",  		p_plug_in_vpropagate_iter_ALT }
-  , { "plug-in-warp",  			p_plug_in_warp_iter_ALT }
-  , { "plug-in-waves",  		p_plug_in_waves_iter_ALT }
-  , { "plug-in-whirl-pinch",  		p_plug_in_whirl_pinch_iter_ALT }
-  , { "plug-in-wind",  			p_plug_in_wind_iter_ALT }
-/*, { "plug-in-zealouscrop",  		p_plug_in_zealouscrop_iter_ALT }                    */
+    { "plug-in-alienmap2",              p_plug_in_alienmap2_iter_ALT }
+  , { "plug-in-cml-explorer",           p_plug_in_cml_explorer_iter_ALT }
+  , { "plug-in-CentralReflection",      p_plug_in_CentralReflection_iter_ALT }
+  , { "plug-in-Twist",                  p_plug_in_Twist_iter_ALT }
+/*, { "plug-in-alienmap",               p_plug_in_alienmap_iter_ALT }                          */
+/*, { "plug-in-align-layers",           p_plug_in_align_layers_iter_ALT }                  */
+  , { "plug-in-alpha2color",            p_plug_in_alpha2color_iter_ALT }
+  , { "plug-in-anamorphose",            p_plug_in_anamorphose_iter_ALT }
+/*, { "plug-in-animationoptimize",      p_plug_in_animationoptimize_iter_ALT }        */
+/*, { "plug-in-animationplay",          p_plug_in_animationplay_iter_ALT }                */
+/*, { "plug-in-animationunoptimize",    p_plug_in_animationunoptimize_iter_ALT }    */
+  , { "plug-in-apply-canvas",           p_plug_in_apply_canvas_iter_ALT }
+  , { "plug-in-applylens",              p_plug_in_applylens_iter_ALT }
+/*, { "plug-in-autocrop",               p_plug_in_autocrop_iter_ALT }                          */
+/*, { "plug-in-autostretch-hsv",        p_plug_in_autostretch_hsv_iter_ALT }            */
+  , { "plug-in-blinds",                 p_plug_in_blinds_iter_ALT }
+/*, { "plug-in-blur",                   p_plug_in_blur_iter_ALT }                                  */
+  , { "plug-in-blur2",                  p_plug_in_blur2_iter_ALT }
+/*, { "plug-in-blur-randomize",         p_plug_in_blur_randomize_iter_ALT }              */
+  , { "plug-in-borderaverage",          p_plug_in_borderaverage_iter_ALT }
+  , { "plug-in-bump-map",               p_plug_in_bump_map_iter_ALT }
+/*, { "plug-in-c-astretch",             p_plug_in_c_astretch_iter_ALT }                      */
+  , { "plug-in-cartoon",                p_plug_in_cartoon_iter_ALT }
+  , { "plug-in-checkerboard",           p_plug_in_checkerboard_iter_ALT }
+/*, { "plug-in-color-adjust",           p_plug_in_color_adjust_iter_ALT }                  */
+  , { "plug-in-color-map",              p_plug_in_color_map_iter_ALT }
+  , { "plug-in-colorify",               p_plug_in_colorify_iter_ALT }
+  , { "plug-in-colortoalpha",           p_plug_in_colortoalpha_iter_ALT }
+  , { "plug-in-colors-channel-mixer",   p_plug_in_colors_channel_mixer_iter_ALT }
+/*, { "plug-in-compose",                p_plug_in_compose_iter_ALT }                            */
+  , { "plug-in-convmatrix",             p_plug_in_convmatrix_iter_ALT }
+  , { "plug-in-cubism",                 p_plug_in_cubism_iter_ALT }
+/*, { "plug-in-decompose",              p_plug_in_decompose_iter_ALT }                        */
+/*, { "plug-in-deinterlace",            p_plug_in_deinterlace_iter_ALT }                    */
+  , { "plug-in-depth-merge",            p_plug_in_depth_merge_iter_ALT }
+  , { "plug-in-despeckle",              p_plug_in_despeckle_iter_ALT }
+  , { "plug-in-destripe",               p_plug_in_destripe_iter_ALT }
+  , { "plug-in-diffraction",            p_plug_in_diffraction_iter_ALT }
+  , { "plug-in-displace",               p_plug_in_displace_iter_ALT }
+/*, { "plug-in-ditherize",              p_plug_in_ditherize_iter_ALT }                        */
+  , { "plug-in-dog",                    p_plug_in_dog_iter_ALT }
+  , { "plug-in-edge",                   p_plug_in_edge_iter_ALT }
+  , { "plug-in-emboss",                 p_plug_in_emboss_iter_ALT }
+  , { "plug-in-encript",                p_plug_in_encript_iter_ALT }
+  , { "plug-in-engrave",                p_plug_in_engrave_iter_ALT }
+  , { "plug-in-exchange",               p_plug_in_exchange_iter_ALT }
+/*, { "plug-in-export-palette",         p_plug_in_export_palette_iter_ALT }              */
+  , { "plug-in-figures",                p_plug_in_figures_iter_ALT }
+/*, { "plug-in-film",                   p_plug_in_film_iter_ALT }                                  */
+/*, { "plug-in-filter-pack",            p_plug_in_filter_pack_iter_ALT }                    */
+  , { "plug-in-flame",                  p_plug_in_flame_iter_ALT }
+  , { "plug-in-flarefx",                p_plug_in_flarefx_iter_ALT }
+  , { "plug-in-fractal-trace",          p_plug_in_fractal_trace_iter_ALT }
+  , { "plug-in-gauss",                  p_plug_in_gauss_iter_ALT }
+/*, { "plug-in-gfig",                   p_plug_in_gfig_iter_ALT }                                  */
+  , { "plug-in-gflare",                 p_plug_in_gflare_iter_ALT }
+  , { "plug-in-gimpressionist",         p_plug_in_gimpressionist_iter_ALT }
+  , { "plug-in-glasstile",              p_plug_in_glasstile_iter_ALT }
+/*, { "plug-in-gradmap",                p_plug_in_gradmap_iter_ALT }                            */
+  , { "plug-in-grid",                   p_plug_in_grid_iter_ALT }
+/*, { "plug-in-guillotine",             p_plug_in_guillotine_iter_ALT }                      */
+  , { "plug-in-holes",                  p_plug_in_holes_iter_ALT }
+/*, { "plug-in-hot",                    p_plug_in_hot_iter_ALT }                                    */
+/*, { "plug-in-ifs-compose",            p_plug_in_ifs_compose_iter_ALT }                    */
+  , { "plug-in-illusion",               p_plug_in_illusion_iter_ALT }
+/*, { "plug-in-image-rot270",           p_plug_in_image_rot270_iter_ALT }                  */
+/*, { "plug-in-image-rot90",            p_plug_in_image_rot90_iter_ALT }                    */
+/*, { "plug-in-iwarp",                  p_plug_in_iwarp_iter_ALT }                                */
+  , { "plug-in-jigsaw",                 p_plug_in_jigsaw_iter_ALT }
+  , { "plug-in-julia",                  p_plug_in_julia_iter_ALT }
+/*, { "plug-in-laplace",                p_plug_in_laplace_iter_ALT }                            */
+/*, { "plug-in-layer-rot270",           p_plug_in_layer_rot270_iter_ALT }                  */
+/*, { "plug-in-layer-rot90",            p_plug_in_layer_rot90_iter_ALT }                    */
+/*, { "plug-in-layers-import",          p_plug_in_layers_import_iter_ALT }                */
+  , { "plug-in-lic",                    p_plug_in_lic_iter_ALT }
+  , { "plug-in-lighting",               p_plug_in_lighting_iter_ALT }
+  , { "plug-in-magic-eye",              p_plug_in_magic_eye_iter_ALT }
+/*, { "plug-in-mail-image",             p_plug_in_mail_image_iter_ALT }                      */
+  , { "plug-in-mandelbrot",             p_plug_in_mandelbrot_iter_ALT }
+  , { "plug-in-map-object",             p_plug_in_map_object_iter_ALT }
+/*, { "plug-in-max-rgb",                p_plug_in_max_rgb_iter_ALT }                            */
+  , { "plug-in-maze",                   p_plug_in_maze_iter_ALT }
+  , { "plug-in-mblur",                  p_plug_in_mblur_iter_ALT }
+  , { "plug-in-mosaic",                 p_plug_in_mosaic_iter_ALT }
+  , { "plug-in-neon",                   p_plug_in_neon_iter_ALT }
+  , { "plug-in-newsprint",              p_plug_in_newsprint_iter_ALT }
+  , { "plug-in-nlfilt",                 p_plug_in_nlfilt_iter_ALT }
+  , { "plug-in-rgb-noise",              p_plug_in_noisify_iter_ALT }
+/*, { "plug-in-normalize",              p_plug_in_normalize_iter_ALT }                        */
+  , { "plug-in-nova",                   p_plug_in_nova_iter_ALT }
+  , { "plug-in-oilify",                 p_plug_in_oilify_iter_ALT }
+  , { "plug-in-pagecurl",               p_plug_in_pagecurl_iter_ALT }
+  , { "plug-in-papertile",              p_plug_in_papertile_iter_ALT }
+  , { "plug-in-photocopy",              p_plug_in_photocopy_iter_ALT }
+  , { "plug-in-pixelize",               p_plug_in_pixelize_iter_ALT }
+  , { "plug-in-plasma",                 p_plug_in_plasma_iter_ALT }
+  , { "plug-in-polar-coords",           p_plug_in_polar_coords_iter_ALT }
+/*, { "plug-in-qbist",                  p_plug_in_qbist_iter_ALT }                                */
+  , { "plug-in-randomize",              p_plug_in_randomize_iter_ALT }
+  , { "plug-in-randomize-hurl",         p_plug_in_randomize_hurl_iter_ALT }
+  , { "plug-in-randomize-pick",         p_plug_in_randomize_pick_iter_ALT }
+  , { "plug-in-randomize-slur",         p_plug_in_randomize_slur_iter_ALT }
+  , { "plug-in-refract",                p_plug_in_refract_iter_ALT }
+  , { "plug-in-retinex",                p_plug_in_retinex_iter_ALT }
+  , { "plug-in-ripple",                 p_plug_in_ripple_iter_ALT }
+/*, { "plug-in-rotate",                 p_plug_in_rotate_iter_ALT }                              */
+  , { "plug-in-sample-colorize",        p_plug_in_sample_colorize_iter_ALT }
+  , { "plug-in-hsv-noise",              p_plug_in_scatter_hsv_iter_ALT }
+  , { "plug-in-sel-gauss",              p_plug_in_sel_gauss_iter_ALT }
+/*, { "plug-in-semiflatten",            p_plug_in_semiflatten_iter_ALT }                    */
+  , { "plug-in-sharpen",                p_plug_in_sharpen_iter_ALT }
+  , { "plug-in-shift",                  p_plug_in_shift_iter_ALT }
+  , { "plug-in-sinus",                  p_plug_in_sinus_iter_ALT }
+  , { "plug-in-small-tiles",            p_plug_in_small_tiles_iter_ALT }
+/*, { "plug-in-smooth-palette",         p_plug_in_smooth_palette_iter_ALT }              */
+  , { "plug-in-sobel",                  p_plug_in_sobel_iter_ALT }
+  , { "plug-in-softglow",               p_plug_in_softglow_iter_ALT }
+  , { "plug-in-solid-noise",            p_plug_in_solid_noise_iter_ALT }
+  , { "plug-in-sparkle",                p_plug_in_sparkle_iter_ALT }
+  , { "plug-in-spread",                 p_plug_in_spread_iter_ALT }
+  , { "plug-in-struc",                  p_plug_in_struc_iter_ALT }
+/*, { "plug-in-the-egg",                p_plug_in_the_egg_iter_ALT }                            */
+/*, { "plug-in-threshold-alpha",        p_plug_in_threshold_alpha_iter_ALT }            */
+/*, { "plug-in-tile",                   p_plug_in_tile_iter_ALT }                                  */
+  , { "plug-in-tileit",                 p_plug_in_tileit_iter_ALT }
+  , { "plug-in-universal-filter",       p_plug_in_universal_filter_iter_ALT }
+  , { "plug-in-unsharp-mask",           p_plug_in_unsharp_mask_iter_ALT }
+  , { "plug-in-video",                  p_plug_in_video_iter_ALT }
+/*, { "plug-in-vinvert",                p_plug_in_vinvert_iter_ALT }                            */
+  , { "plug-in-vpropagate",             p_plug_in_vpropagate_iter_ALT }
+  , { "plug-in-warp",                   p_plug_in_warp_iter_ALT }
+  , { "plug-in-waves",                  p_plug_in_waves_iter_ALT }
+  , { "plug-in-whirl-pinch",            p_plug_in_whirl_pinch_iter_ALT }
+  , { "plug-in-wind",                   p_plug_in_wind_iter_ALT }
+/*, { "plug-in-zealouscrop",            p_plug_in_zealouscrop_iter_ALT }                    */
 
 };  /* end g_iter_ALT_tab */
 
@@ -1869,16 +1869,16 @@ static void p_install_proc_iter_ALT(char *name)
   l_blurb_text = g_strdup_printf("This procedure calculates the modified values for one iterationstep for the call of %s", name);
 
   gimp_install_procedure(l_iter_proc_name,
-			 l_blurb_text,
-			 "",
-			 "Wolfgang Hofer",
-			 "Wolfgang Hofer",
-			 "Nov. 2007",
-			 NULL,    /* do not appear in menus */
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_iter), nreturn_vals,
-			 args_iter, return_vals);
+                         l_blurb_text,
+                         "",
+                         "Wolfgang Hofer",
+                         "Wolfgang Hofer",
+                         "Nov. 2007",
+                         NULL,    /* do not appear in menus */
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_iter), nreturn_vals,
+                         args_iter, return_vals);
 
   g_free(l_iter_proc_name);
   g_free(l_blurb_text);

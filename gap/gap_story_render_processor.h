@@ -145,8 +145,8 @@ GapStoryRenderVidHandle *  gap_story_render_open_vid_handle_from_stb(
                           );
 
 GapStoryRenderVidHandle *  gap_story_render_open_vid_handle(
-			   GapLibTypeInputRange input_mode
-			  ,gint32 image_id 
+                           GapLibTypeInputRange input_mode
+                          ,gint32 image_id 
                           ,const char *storyboard_file
                           ,const char *basename
                           ,const char *ext
@@ -158,11 +158,11 @@ GapStoryRenderVidHandle *  gap_story_render_open_vid_handle(
 GapStoryRenderVidHandle *  gap_story_render_open_extended_video_handle(
                            gboolean ignore_audio
                           ,gboolean igore_video
-			  ,gboolean create_audio_tmp_files
+                          ,gboolean create_audio_tmp_files
                           ,gdouble  *progress_ptr
                           ,char *status_msg
                           ,gint32 status_msg_len
-			  ,GapLibTypeInputRange input_mode
+                          ,GapLibTypeInputRange input_mode
                           ,const char *imagename
                           ,const char *storyboard_file
                           ,const char *basename

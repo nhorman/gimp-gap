@@ -21,7 +21,7 @@
 #    define bind_textdomain_codeset(Domain, Codeset) (Domain)
 #endif
 
-#define INIT_I18N()	G_STMT_START{                  \
+#define INIT_I18N()     G_STMT_START{                  \
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);         \
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");  \
   textdomain (GETTEXT_PACKAGE);                        \

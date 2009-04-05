@@ -102,7 +102,7 @@ p_gap_thumb_init(void)
   {
     global_creator_software = g_strdup_printf ("gap%d.%d"
                                        , GAP_MAJOR_VERSION
-				       , GAP_MINOR_VERSION);
+                                       , GAP_MINOR_VERSION);
   }
 
   if (gimp_thumb_init(global_creator_software, thumb_basedir))
@@ -242,62 +242,62 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
 
           thumbnail = gimp_thumbnail_new();
           if(thumbnail)
-	  {
-	    gimp_thumbnail_set_filename(thumbnail, filename_src, &error);
+          {
+            gimp_thumbnail_set_filename(thumbnail, filename_src, &error);
             pixbuf = gimp_thumbnail_load_thumb(thumbnail, enum_value->value, &error);
 
             if(pixbuf)
             {
-	      gint  l_width, l_height, l_num_layers;
-	      gchar *l_type_str;
+              gint  l_width, l_height, l_num_layers;
+              gchar *l_type_str;
 
               if(gap_debug) printf("p_copy_png_thumb: pixbuf: %d\n", (int)pixbuf);
 
-	      l_width = 1;
-	      l_height = 1;
-	      l_num_layers = 1;
-	      l_type_str = NULL;
+              l_width = 1;
+              l_height = 1;
+              l_num_layers = 1;
+              l_type_str = NULL;
               g_object_get (thumbnail
-	                   , "image-width",      &l_width
-			   , "image-height",     &l_height
-			   , "image-type",       &l_type_str
-			   , "image-num-layers", &l_num_layers
-			   , NULL);
+                           , "image-width",      &l_width
+                           , "image-height",     &l_height
+                           , "image-type",       &l_type_str
+                           , "image-num-layers", &l_num_layers
+                           , NULL);
 
               /* set new filename (does also set uri and reset all other TAGs */
-	      gimp_thumbnail_set_filename(thumbnail, filename_dst, &error);
-	      gimp_thumbnail_peek_image(thumbnail);
+              gimp_thumbnail_set_filename(thumbnail, filename_dst, &error);
+              gimp_thumbnail_peek_image(thumbnail);
 
               /* copy TAGs for width,height,type,num_layers */
               if(l_type_str)
-	      {
-		g_object_set (thumbnail,
-        		      "image-width",      l_width,
-        		      "image-height",     l_height,
-        		      "image-type",       l_type_str,
-        		      "image-num-layers", l_num_layers,
-        		      NULL);
+              {
+                g_object_set (thumbnail,
+                              "image-width",      l_width,
+                              "image-height",     l_height,
+                              "image-type",       l_type_str,
+                              "image-num-layers", l_num_layers,
+                              NULL);
                 g_free(l_type_str);
-	      }
-	      else
-	      {
-		g_object_set (thumbnail,
-        		      "image-width",      l_width,
-        		      "image-height",     l_height,
-        		      "image-num-layers", l_num_layers,
-        		      NULL);
-	      }
+              }
+              else
+              {
+                g_object_set (thumbnail,
+                              "image-width",      l_width,
+                              "image-height",     l_height,
+                              "image-num-layers", l_num_layers,
+                              NULL);
+              }
 
 
               gimp_thumbnail_save_thumb(thumbnail
-		                         , pixbuf
-					 , global_creator_software
+                                         , pixbuf
+                                         , global_creator_software
                                          , &error
-					 );
+                                         );
               g_object_unref(pixbuf);
-	    }
-	    g_object_unref(thumbnail);
-	  }
+            }
+            g_object_unref(thumbnail);
+          }
           g_free(dst_png_thumb_full);
         }
 
@@ -539,7 +539,7 @@ gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
 GdkPixbuf *
 gap_thumb_file_load_pixbuf_thumbnail(char* filename
                                     , gint32 *th_width
-				    , gint32 *th_height
+                                    , gint32 *th_height
                                     , gint32 *th_bpp)
 {
   GimpThumbnail *thumbnail;
@@ -587,13 +587,13 @@ gap_thumb_file_load_pixbuf_thumbnail(char* filename
         has_alpha = gdk_pixbuf_get_has_alpha(pixbuf);
         rowstride = gdk_pixbuf_get_rowstride(pixbuf);
 
-	printf("gap_thumb_file_load_thumbnail:\n");
-	printf(" width: %d\n", (int)width );
-	printf(" height: %d\n", (int)height );
-	printf(" nchannels: %d\n", (int)nchannels );
-	printf(" pix_data: %d\n", (int)pix_data );
-	printf(" has_alpha: %d\n", (int)has_alpha );
-	printf(" rowstride: %d\n", (int)rowstride );
+        printf("gap_thumb_file_load_thumbnail:\n");
+        printf(" width: %d\n", (int)width );
+        printf(" height: %d\n", (int)height );
+        printf(" nchannels: %d\n", (int)nchannels );
+        printf(" pix_data: %d\n", (int)pix_data );
+        printf(" has_alpha: %d\n", (int)has_alpha );
+        printf(" rowstride: %d\n", (int)rowstride );
       }
 
       *th_width = width;
@@ -606,7 +606,7 @@ gap_thumb_file_load_pixbuf_thumbnail(char* filename
 
   return (pixbuf);
 
-}	/* end gap_thumb_file_load_pixbuf_thumbnail */
+}       /* end gap_thumb_file_load_pixbuf_thumbnail */
 
 /* -----------------------------
  * gap_thumb_file_load_thumbnail
@@ -644,7 +644,7 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
 
   pixbuf = gap_thumb_file_load_pixbuf_thumbnail(filename
                                     , th_width
-				    , th_height
+                                    , th_height
                                     , th_bpp);
 
   if(pixbuf)
@@ -674,8 +674,8 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
       {
         *th_data_count =  rowstride * height;
         *th_data = g_malloc(*th_data_count);
-	memcpy(*th_data, pix_data, *th_data_count);
-	rc = TRUE; /* OK */
+        memcpy(*th_data, pix_data, *th_data_count);
+        rc = TRUE; /* OK */
       }
     }
 
@@ -684,5 +684,5 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
 
   return (rc);
 
-}	/* end gap_thumb_file_load_thumbnail */
+}       /* end gap_thumb_file_load_thumbnail */
 

@@ -236,16 +236,16 @@ on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
       if(gap_debug) printf("WGT is: gpp->ff_intra_checkbutton\n");
       if (checkbutton->active)
       {
-	 l_sensitive = FALSE;
+         l_sensitive = FALSE;
       }
       else
       {
-	 l_sensitive = TRUE;
+         l_sensitive = TRUE;
       }
       if(gpp->ff_gop_size_spinbutton)
       {
-	 gtk_widget_set_sensitive(gpp->ff_gop_size_spinbutton, l_sensitive);
-	 gtk_widget_set_sensitive(gpp->ff_b_frames_spinbutton, l_sensitive);
+         gtk_widget_set_sensitive(gpp->ff_gop_size_spinbutton, l_sensitive);
+         gtk_widget_set_sensitive(gpp->ff_b_frames_spinbutton, l_sensitive);
       }
     }
     if((GtkWidget *)checkbutton ==  gpp->ff_aspect_checkbutton)
@@ -253,15 +253,15 @@ on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
       if(gap_debug) printf("WGT is: gpp->ff_aspect_checkbutton\n");
       if (checkbutton->active)
       {
-	 l_sensitive = TRUE;
+         l_sensitive = TRUE;
       }
       else
       {
-	 l_sensitive = FALSE;
+         l_sensitive = FALSE;
       }
       if(gpp->ff_aspect_combo)
       {
-	 gtk_widget_set_sensitive(gpp->ff_aspect_combo, l_sensitive);
+         gtk_widget_set_sensitive(gpp->ff_aspect_combo, l_sensitive);
       }
     }
 
@@ -458,8 +458,8 @@ on_ff_gint32_combo  (GtkWidget     *widget,
   { 
     printf("CB: on_ff_gint32_combo index: val_ptr: %d %d\n"
            , (int)val_ptr
-	   , (int)value
-	   );
+           , (int)value
+           );
   }
 }  /* end on_ff_gint32_combo */
 
@@ -651,8 +651,8 @@ on_ffpar_ok_button_clicked              (GtkButton       *button,
    
    gimp_set_data(GAP_FFPAR_FILE_KEY
                 ,&gpp->ffpar_filename[0]
-		,sizeof(gpp->ffpar_filename)
-		);
+                ,sizeof(gpp->ffpar_filename)
+                );
    
    if(gpp->ffpar_save_flag)
    {
@@ -721,7 +721,7 @@ p_create_ffpar_fileselection (GapGveFFMpegGlobalParams *gpp, gboolean save_flag)
   if(gpp->ffpar_filename[0] != '\0')
   {
     gtk_file_selection_set_filename (GTK_FILE_SELECTION (ffpar_fileselection),
-				   gpp->ffpar_filename);
+                                   gpp->ffpar_filename);
   }
 
   ffpar_ok_button = GTK_FILE_SELECTION (ffpar_fileselection)->ok_button;

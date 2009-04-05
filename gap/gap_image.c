@@ -140,7 +140,7 @@ void gap_image_prevent_empty_image(gint32 image_id)
      gimp_image_add_layer(image_id, l_layer_id, 0);
   }
 
-}	/* end gap_image_prevent_empty_image */
+}       /* end gap_image_prevent_empty_image */
 
 
 

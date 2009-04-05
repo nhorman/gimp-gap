@@ -79,9 +79,9 @@ GVA_create_libmpeg3_toc(int argc, char *argv[]
                 , t_GVA_Handle *gvahand
     , int *ret_total_frames)
 {
-	int i, j, l;
-	char *src = 0, *dst = 0;
-	int verbose = 0;
+        int i, j, l;
+        char *src = 0, *dst = 0;
+        int verbose = 0;
         gdouble progress_stepsize;
 
         progress_stepsize = 1.0 / (gdouble)(MAX(gvahand->total_frames, 1000));
@@ -90,114 +90,114 @@ GVA_create_libmpeg3_toc(int argc, char *argv[]
         {
           printf("GVA_create_libmpeg3_toc: gvahand->total_frames: %d  stepsize:%.6f\n"
                , (int)gvahand->total_frames
-	       , (float)progress_stepsize
-	       );
+               , (float)progress_stepsize
+               );
         }
         *ret_total_frames = -1; // hof: 
 
 
 
-	if(argc < 3)
-	{
-		fprintf(stderr, "Table of contents generator version %d.%d.%d\n"
-			"Create a table of contents for a DVD or mpeg stream.\n"
-			"Usage: mpeg3toc <path> <output>\n"
-			"\n"
-			"-v Print tracking information\n"
-			"\n"
-			"The path should be absolute unless you plan\n"
-			"to always run your movie editor from the same directory\n"
-			"as the filename.  For renderfarms the filesystem prefix\n"
-			"should be / and the movie directory mounted under the same\n"
-			"directory on each node.\n\n"
-			"Example: mpeg3toc -v /cdrom/video_ts/vts_01_0.ifo titanic.toc\n",
-			mpeg3_major(),
-			mpeg3_minor(),
-			mpeg3_release());
-		exit(1);
-	}
+        if(argc < 3)
+        {
+                fprintf(stderr, "Table of contents generator version %d.%d.%d\n"
+                        "Create a table of contents for a DVD or mpeg stream.\n"
+                        "Usage: mpeg3toc <path> <output>\n"
+                        "\n"
+                        "-v Print tracking information\n"
+                        "\n"
+                        "The path should be absolute unless you plan\n"
+                        "to always run your movie editor from the same directory\n"
+                        "as the filename.  For renderfarms the filesystem prefix\n"
+                        "should be / and the movie directory mounted under the same\n"
+                        "directory on each node.\n\n"
+                        "Example: mpeg3toc -v /cdrom/video_ts/vts_01_0.ifo titanic.toc\n",
+                        mpeg3_major(),
+                        mpeg3_minor(),
+                        mpeg3_release());
+                exit(1);
+        }
 
-	for(i = 1; i < argc; i++)
-	{
-		if(!strcmp(argv[i], "-v"))
-		{
-			verbose = 1;
-		}
-		else
-		if(argv[i][0] == '-')
-		{
-			fprintf(stderr, "Unrecognized command %s\n", argv[i]);
-			exit(1);
-		}
-		else
-		if(!src)
-		{
-			src = argv[i];
-		}
-		else
-		if(!dst)
-		{
-			dst = argv[i];
-		}
-		else
-		{
-			fprintf(stderr, "Ignoring argument \"%s\"\n", argv[i]);
-		}
-	}
+        for(i = 1; i < argc; i++)
+        {
+                if(!strcmp(argv[i], "-v"))
+                {
+                        verbose = 1;
+                }
+                else
+                if(argv[i][0] == '-')
+                {
+                        fprintf(stderr, "Unrecognized command %s\n", argv[i]);
+                        exit(1);
+                }
+                else
+                if(!src)
+                {
+                        src = argv[i];
+                }
+                else
+                if(!dst)
+                {
+                        dst = argv[i];
+                }
+                else
+                {
+                        fprintf(stderr, "Ignoring argument \"%s\"\n", argv[i]);
+                }
+        }
 
-	if(!src)
-	{
-		fprintf(stderr, "source path not supplied.\n");
-		exit(1);
-	}
+        if(!src)
+        {
+                fprintf(stderr, "source path not supplied.\n");
+                exit(1);
+        }
 
-	if(!dst)
-	{
-		fprintf(stderr, "destination path not supplied.\n");
-		exit(1);
-	}
+        if(!dst)
+        {
+                fprintf(stderr, "destination path not supplied.\n");
+                exit(1);
+        }
 
 
 
-	int64_t total_bytes;
-	mpeg3_t *file = mpeg3_start_toc(src, dst, &total_bytes);
-	if(!file)
+        int64_t total_bytes;
+        mpeg3_t *file = mpeg3_start_toc(src, dst, &total_bytes);
+        if(!file)
         {
           return 1;;
         }
-	
-	while(1)
-	{
-		int64_t bytes_processed = 0;
-		mpeg3_do_toc(file, &bytes_processed);
+        
+        while(1)
+        {
+                int64_t bytes_processed = 0;
+                mpeg3_do_toc(file, &bytes_processed);
 
-	        /* hof: handle GUI user cancel request */
-	        {
+                /* hof: handle GUI user cancel request */
+                {
                       gvahand->percentage_done = CLAMP((bytes_processed / MAX(1, total_bytes)), 0.0, 1.0);
                       gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
                       if(gap_debug)
-		      {
-		        printf("MPEG3TOC: CANCEL(v):%d FPTR:%d\n"
-                	      , (int)gvahand->cancel_operation
+                      {
+                        printf("MPEG3TOC: CANCEL(v):%d FPTR:%d\n"
+                              , (int)gvahand->cancel_operation
                               , (int)gvahand->fptr_progress_callback
-			      );
-		      }
+                              );
+                      }
                       if(gvahand->cancel_operation)
                       {
                          mpeg3_stop_toc(file);
                          return 1;
                       }
-	        }
+                }
             
 
-		if(bytes_processed >= total_bytes) break;
-	}
+                if(bytes_processed >= total_bytes) break;
+        }
 
-	mpeg3_stop_toc(file);
+        mpeg3_stop_toc(file);
 
 
         *ret_total_frames = p_get_total_frames_from_toc(dst, (int)gvahand->vid_track);
 
-	return 0;
+        return 0;
 }
 

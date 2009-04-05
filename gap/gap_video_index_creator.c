@@ -1168,10 +1168,10 @@ p_print_vref_list (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRe
      }
 
      printf("%3s %-90.90s %s\n"
-      	    , label             /* visible number starting at 1 */
-	    , video_filename
-	    , processing_status
-	    );
+            , label             /* visible number starting at 1 */
+            , video_filename
+            , processing_status
+            );
 
 
      g_free (label);
@@ -1209,7 +1209,7 @@ p_tree_fill (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRef  *vr
   vipp->store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model (GTK_TREE_VIEW (vipp->tv)
                           ,GTK_TREE_MODEL (vipp->store)
-			  );
+                          );
   g_object_unref (vipp->store);
 
   count_elem = 0;
@@ -1250,11 +1250,11 @@ p_tree_fill (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRef  *vr
 
      gtk_list_store_append (vipp->store, &iter);
      gtk_list_store_set (vipp->store, &iter
-    		        ,0, numtxt            /* internal invisible number starting at 0 */
-    		        ,1, label             /* visible number starting at 1 */
-		        ,2, video_filename
-			,3, processing_status
-		        ,-1);
+                        ,0, numtxt            /* internal invisible number starting at 0 */
+                        ,1, label             /* visible number starting at 1 */
+                        ,2, video_filename
+                        ,3, processing_status
+                        ,-1);
 
      if(currentFlag == TRUE)
      {
@@ -1274,11 +1274,11 @@ p_tree_fill (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRef  *vr
     gtk_list_store_append (vipp->store, &iter);
 
     gtk_list_store_set (vipp->store, &iter
-    		       ,0, "-1"
-		       ,1, " "
-		       ,2, _("** Empty **")
-    		       ,3, " "
-		       ,-1);
+                       ,0, "-1"
+                       ,1, " "
+                       ,2, _("** Empty **")
+                       ,3, " "
+                       ,-1);
   }
 
   gtk_tree_model_get_iter_first (GTK_TREE_MODEL (vipp->store), &iter);
@@ -1311,10 +1311,10 @@ p_create_video_list_widget(GapVideoIndexCreatorProgressParams *vipp, GtkWidget *
 
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window),
-				       GTK_SHADOW_IN);
+                                       GTK_SHADOW_IN);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-				  GTK_POLICY_AUTOMATIC,
-				  GTK_POLICY_ALWAYS);
+                                  GTK_POLICY_AUTOMATIC,
+                                  GTK_POLICY_ALWAYS);
   gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 0);
   gtk_widget_show (scrolled_window);
 
@@ -1325,22 +1325,22 @@ p_create_video_list_widget(GapVideoIndexCreatorProgressParams *vipp, GtkWidget *
     (GTK_CELL_RENDERER_TEXT (renderer), 1);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (vipp->tv),
-					       -1, _("Nr"),
-					       renderer,
-					       "text", 1,
-					       NULL);
+                                               -1, _("Nr"),
+                                               renderer,
+                                               "text", 1,
+                                               NULL);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (vipp->tv),
-					       -1, _("videofile"),
-					       renderer,
-					       "text", 2,
-					       NULL);
+                                               -1, _("videofile"),
+                                               renderer,
+                                               "text", 2,
+                                               NULL);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (vipp->tv),
-					       -1, _("Status"),
-					       renderer,
-					       "text", 3,
-					       NULL);
+                                               -1, _("Status"),
+                                               renderer,
+                                               "text", 3,
+                                               NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (vipp->tv), TRUE);
 
   gtk_widget_set_size_request (vipp->tv, 840 /*WIDTH*/, 250 /*HEIGHT*/);

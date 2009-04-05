@@ -100,16 +100,16 @@ extern int gap_debug;
 static inline gdouble     p_get_tolerance(gdouble dist);
 static void               p_clip_gimp_pixel_fetcher_get_pixel(GimpPixelFetcher *pft
                                    ,GimpDrawable     *drawable
-				   ,gint xi
-				   ,gint yi
-				   ,guchar *pixel
-				   );
+                                   ,gint xi
+                                   ,gint yi
+                                   ,guchar *pixel
+                                   );
 static void               p_bilinear_get_pixel(GimpPixelFetcher *pft
-				         , GimpDrawable     *drawable
+                                         , GimpDrawable     *drawable
                                          , gdouble needx
                                          , gdouble needy
                                          , guchar *dest
-					 , gint dst_bpp
+                                         , gint dst_bpp
                                          );
 static gdouble            p_linear_advance(gdouble total_steps
                                      ,gdouble current_step
@@ -120,31 +120,31 @@ static inline gint        p_calc_sector(GapMorphWorkPoint *wp, gdouble dx, gdoub
 static inline gint        p_calc_angle_core(GapMorphWorkPoint *wp, gdouble dx, gdouble dy, gint num_sectors);
 static gint               p_calc_angle(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y);
 static void               p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
-        			      , gint32        in_x
-        			      , gint32        in_y
-        			      , gdouble *out_pick_x
-				      , gdouble *out_pick_y
-        			      );
+                                      , gint32        in_x
+                                      , gint32        in_y
+                                      , gdouble *out_pick_x
+                                      , gdouble *out_pick_y
+                                      );
 static void               p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
                                       , gint32        in_x
                                       , gint32        in_y
-				      , gint          set_idx
-				      , gdouble      *out_pick_x
-				      , gdouble      *out_pick_y
+                                      , gint          set_idx
+                                      , gdouble      *out_pick_x
+                                      , gdouble      *out_pick_y
                                       );
 static void               p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
                                       , GapMorphWarpCoreAPI *wcap_2
-		                      , gdouble       wp_mix_factor
+                                      , gdouble       wp_mix_factor
                                       , gint32        in_x
                                       , gint32        in_y
-				      , gdouble      *out_pick_x
-				      , gdouble      *out_pick_y
+                                      , gdouble      *out_pick_x
+                                      , gdouble      *out_pick_y
                                       );
 GapMorphWorkPoint *       p_calculate_work_point_movement(gdouble total_steps
                                ,gdouble current_step
-			       ,GapMorphWorkPoint *master_list
-			       ,gint32 src_layer_id
-			       ,gint32 dst_layer_id
+                               ,GapMorphWorkPoint *master_list
+                               ,gint32 src_layer_id
+                               ,gint32 dst_layer_id
                                ,gint32 curr_width
                                ,gint32 curr_height
                                ,gboolean forward_move
@@ -191,7 +191,7 @@ p_get_tolerance(gdouble dist)
   factor = (dist - GAP_MORPH_NEAR_RADIUS) / GAP_MORPH_FAR_RADIUS;
   return(  (GAP_MORPH_TOL_FACT_NEAR * (1 -factor)) 
          + (GAP_MORPH_TOL_FACT_FAR *  factor)
-	);
+        );
 }  /* end  p_get_tolerance */
 
 static void
@@ -317,12 +317,12 @@ gap_moprh_exec_save_workpointfile(const char *filename
 GapMorphWorkPoint *
 p_load_workpointfile(const char *filename
                                  , gint32 src_layer_id
-				 , gint32 dst_layer_id
-				 , gint32 *tween_steps
-				 , gdouble *affect_radius
-				 , gdouble *gravity_intensity
-				 , gboolean *use_gravity
-				 , gboolean *use_quality_wp_selection
+                                 , gint32 dst_layer_id
+                                 , gint32 *tween_steps
+                                 , gdouble *affect_radius
+                                 , gdouble *gravity_intensity
+                                 , gboolean *use_gravity
+                                 , gboolean *use_quality_wp_selection
                                  , GimpRunMode run_mode
                                  )
 {
@@ -449,10 +449,10 @@ p_load_workpointfile(const char *filename
            if(l_cnt >= 1)
            {
              *gravity_intensity = MAX(0,l_farr[0]);
-	     if(*gravity_intensity > 0.0)
-	     {
-	       *use_gravity = TRUE;
-	     }
+             if(*gravity_intensity > 0.0)
+             {
+               *use_gravity = TRUE;
+             }
            }
            else
            {
@@ -470,11 +470,11 @@ p_load_workpointfile(const char *filename
            l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
-	     *use_quality_wp_selection = FALSE;
+             *use_quality_wp_selection = FALSE;
              if(l_farr[0] != 0)
-	     {
-	       *use_quality_wp_selection = TRUE;
-	     }
+             {
+               *use_quality_wp_selection = TRUE;
+             }
            }
            else
            {
@@ -543,14 +543,14 @@ gap_moprh_exec_load_workpointfile(const char *filename
   
   wp_list = p_load_workpointfile(filename
                                 ,mgup->mgpp->osrc_layer_id
-				,mgup->mgpp->fdst_layer_id
-				,&mgup->mgpp->tween_steps
-				,&mgup->mgpp->affect_radius
-				,&mgup->mgpp->gravity_intensity
-				,&mgup->mgpp->use_gravity
-				,&mgup->mgpp->use_quality_wp_selection
+                                ,mgup->mgpp->fdst_layer_id
+                                ,&mgup->mgpp->tween_steps
+                                ,&mgup->mgpp->affect_radius
+                                ,&mgup->mgpp->gravity_intensity
+                                ,&mgup->mgpp->use_gravity
+                                ,&mgup->mgpp->use_quality_wp_selection
                                 ,mgup->mgpp->run_mode
-				);
+                                );
   return(wp_list);
 }  /* end gap_moprh_exec_load_workpointfile */
 
@@ -563,9 +563,9 @@ gap_moprh_exec_load_workpointfile(const char *filename
  */
 static GapMorphWarpCoreAPI*
 p_load_workpoint_set(const char *filename
-		    ,GapMorphGlobalParams  *mgpp
-		    ,GapMorphExeLayerstack *mlayers
-		    )
+                    ,GapMorphGlobalParams  *mgpp
+                    ,GapMorphExeLayerstack *mlayers
+                    )
 {
   GapMorphWarpCoreAPI *wps;
   gint32              tween_steps;
@@ -573,14 +573,14 @@ p_load_workpoint_set(const char *filename
   wps = g_new(GapMorphWarpCoreAPI ,1);
   wps->wp_list = p_load_workpointfile(filename
                                 ,mgpp->osrc_layer_id
-				,mgpp->fdst_layer_id
-				,&tween_steps
-				,&wps->affect_radius
-				,&wps->gravity_intensity
-				,&wps->use_gravity
-				,&wps->use_quality_wp_selection
+                                ,mgpp->fdst_layer_id
+                                ,&tween_steps
+                                ,&wps->affect_radius
+                                ,&wps->gravity_intensity
+                                ,&wps->use_gravity
+                                ,&wps->use_quality_wp_selection
                                 ,mgpp->run_mode
-				);
+                                );
   if(wps->wp_list == NULL)
   {
     wps->wp_list = mgpp->master_wp_list;
@@ -601,7 +601,7 @@ p_load_workpoint_set(const char *filename
 static void
 p_build_wp_set_table(GapMorphGlobalParams  *mgpp
                     ,GapMorphExeLayerstack *mlayers
-		    )
+                    )
 {
   long lower_num;
   long upper_num;
@@ -643,9 +643,9 @@ p_build_wp_set_table(GapMorphGlobalParams  *mgpp
     {
       wp_filename = g_strdup_printf("%s%02d%s"
                                    ,lower_basename
-				   ,(int)ii
-				   ,lower_ext
-				   );
+                                   ,(int)ii
+                                   ,lower_ext
+                                   );
       if(g_file_test(wp_filename, G_FILE_TEST_EXISTS))
       {
         mlayers->available_wp_sets++;
@@ -659,20 +659,20 @@ p_build_wp_set_table(GapMorphGlobalParams  *mgpp
     {
       wp_filename = g_strdup_printf("%s%02d%s"
                                    ,lower_basename
-				   ,(int)ii
-				   ,lower_ext
-				   );
+                                   ,(int)ii
+                                   ,lower_ext
+                                   );
       if(g_file_test(wp_filename, G_FILE_TEST_EXISTS))
       {
         if(wp_idx < mlayers->available_wp_sets)
-	{
-	  if(gap_debug)
-	  {
-	    printf("p_build_wp_set_table: LOADING workpoint file: %s\n", wp_filename);
-	  }
-	  mlayers->tab_wp_sets[wp_idx] = p_load_workpoint_set(wp_filename, mgpp, mlayers);
-	}
-	wp_idx++;
+        {
+          if(gap_debug)
+          {
+            printf("p_build_wp_set_table: LOADING workpoint file: %s\n", wp_filename);
+          }
+          mlayers->tab_wp_sets[wp_idx] = p_load_workpoint_set(wp_filename, mgpp, mlayers);
+        }
+        wp_idx++;
       }
       g_free(wp_filename);
     }
@@ -758,10 +758,10 @@ gap_morph_exec_find_dst_drawable(gint32 image_id, gint32 layer_id)
 static void
 p_clip_gimp_pixel_fetcher_get_pixel(GimpPixelFetcher *pft
                                    ,GimpDrawable     *drawable
-				   ,gint xi
-				   ,gint yi
-				   ,guchar *pixel
-				   )
+                                   ,gint xi
+                                   ,gint yi
+                                   ,guchar *pixel
+                                   )
 {
   if((xi >= 0)
   && (yi >= 0)
@@ -791,10 +791,10 @@ static void
 p_bilinear_get_pixel(GimpPixelFetcher *pft
                     ,GimpDrawable     *drawable
                     , gdouble needx
-		    , gdouble needy
-		    , guchar *dest
-		    , gint dst_bpp
-		    )
+                    , gdouble needy
+                    , guchar *dest
+                    , gint dst_bpp
+                    )
 {
   guchar  pixel[4][4];
   guchar  values[4];
@@ -1012,23 +1012,23 @@ p_calc_angle(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
     wp->sqr_dist = (dx * dx ) + (dy * dy);
     wp->dist = sqrt(wp->sqr_dist);
 
-	adx = abs(dx);
-	ady = abs(dy);
+        adx = abs(dx);
+        ady = abs(dy);
         if(adx > ady)
-	{
-	  wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
-	}
-	else
-	{
-	  if(dy != 0)
-	  {
-	    wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
-	  }
-	  else
-	  {
-	    wp->xy_relation = 0;
-	  }
-	}
+        {
+          wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
+        }
+        else
+        {
+          if(dy != 0)
+          {
+            wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
+          }
+          else
+          {
+            wp->xy_relation = 0;
+          }
+        }
 
     return(p_calc_angle_core(wp, dx, dy, GAP_MORPH_8_SEKTORS));
   }
@@ -1059,7 +1059,7 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
             , gint32        in_x
             , gint32        in_y
             , gdouble *out_pick_x
-	    , gdouble *out_pick_y
+            , gdouble *out_pick_y
             )
 {
   register GapMorphWorkPoint *wp;
@@ -1119,52 +1119,52 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
     {
       if(wp->sqr_dist < 1)
       {
-	new_vektor_x = (wp->src_x - wp->dst_x);
-	new_vektor_y = (wp->src_y - wp->dst_y);
+        new_vektor_x = (wp->src_x - wp->dst_x);
+        new_vektor_y = (wp->src_y - wp->dst_y);
 
-	if(direct_hit_flag)
-	{
+        if(direct_hit_flag)
+        {
           vektor_x = (new_vektor_x + vektor_x) / 2.0;
           vektor_y = (new_vektor_y + vektor_y) / 2.0;
-	}
-	else
-	{
+        }
+        else
+        {
           vektor_x = new_vektor_x;
           vektor_y = new_vektor_y;
-	}
-	direct_hit_flag = TRUE;
+        }
+        direct_hit_flag = TRUE;
       }
       else
       {
         wp->is_alive = TRUE;
 
-	/* sektor index 8 sectors */
+        /* sektor index 8 sectors */
         sek_idx = p_calc_sector(wp, dx, dy);
-	wp->sek_idx = sek_idx;
+        wp->sek_idx = sek_idx;
 
-	if((wp_sek = wp_sektor_tab[sek_idx]) != NULL)
-	{
-	  /* there is already a workpoint for this sektor */
-	  if(wp->sqr_dist <= wp_sek->sqr_dist)
-	  {
-	    /* set current workpoint as the new nearest point for this sektor */
-	    wp_sektor_tab[sek_idx] = wp;
-	  }
-	  else
-	  {
-	    continue;
-	  }
-	}
-	else
-	{
-	  /* found 1.st workpint for this sektor */
-	  wp_sektor_tab[sek_idx] = wp;
-	}
-	wp->next_sek = NULL;  /* init empty sektors list */
+        if((wp_sek = wp_sektor_tab[sek_idx]) != NULL)
+        {
+          /* there is already a workpoint for this sektor */
+          if(wp->sqr_dist <= wp_sek->sqr_dist)
+          {
+            /* set current workpoint as the new nearest point for this sektor */
+            wp_sektor_tab[sek_idx] = wp;
+          }
+          else
+          {
+            continue;
+          }
+        }
+        else
+        {
+          /* found 1.st workpint for this sektor */
+          wp_sektor_tab[sek_idx] = wp;
+        }
+        wp->next_sek = NULL;  /* init empty sektors list */
         if(wp->sqr_dist < min_sqr_dist)
-	{
+        {
           min_sqr_dist = wp->sqr_dist;
-	}
+        }
 
       }
     }
@@ -1194,70 +1194,70 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
 
       for(sek_idx = 0; sek_idx < GAP_MORPH_8_SEKTORS; sek_idx++)
       {
-	wp_sek = wp_sektor_tab[sek_idx];
+        wp_sek = wp_sektor_tab[sek_idx];
 
-	if(wp_sek)
-	{
- 	  GapMorphWorkPoint *wp_l_sek;  /* left neigbour sektor */
-	  GapMorphWorkPoint *wp_r_sek;  /* right neigbour sektor */
+        if(wp_sek)
+        {
+          GapMorphWorkPoint *wp_l_sek;  /* left neigbour sektor */
+          GapMorphWorkPoint *wp_r_sek;  /* right neigbour sektor */
           gdouble l_tol;
           gdouble r_tol;
 
           /* xy_relation is the representation of the angle
-	   * (is used to compare for similar angle in steps 10tiems finer than the 8 sektors.
-	   *  and is faster to calculate than the real angle)
-	   */
-	  adx = abs(in_x - wp_sek->dst_x);
-	  ady = abs(in_y - wp_sek->dst_y);
+           * (is used to compare for similar angle in steps 10tiems finer than the 8 sektors.
+           *  and is faster to calculate than the real angle)
+           */
+          adx = abs(in_x - wp_sek->dst_x);
+          ady = abs(in_y - wp_sek->dst_y);
           if(adx > ady)
-	  {
-	    wp_sek->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
-	  }
-	  else
-	  {
-	    if(ady != 0)
-	    {
-	      wp_sek->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
-	    }
-	    else
-	    {
-	      wp_sek->xy_relation = 0;
-	    }
-	  }
+          {
+            wp_sek->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
+          }
+          else
+          {
+            if(ady != 0)
+            {
+              wp_sek->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
+            }
+            else
+            {
+              wp_sek->xy_relation = 0;
+            }
+          }
 
-	  wp_l_sek = wp_sektor_tab[tab_l1_idx[sek_idx]];
-	  wp_r_sek = wp_sektor_tab[tab_r1_idx[sek_idx]];
-	  if(wp_l_sek == NULL)
-	  {
-	    wp_l_sek = wp_sektor_tab[tab_l2_idx[sek_idx]];
-	  }
-	  if(wp_r_sek == NULL)
-	  {
+          wp_l_sek = wp_sektor_tab[tab_l1_idx[sek_idx]];
+          wp_r_sek = wp_sektor_tab[tab_r1_idx[sek_idx]];
+          if(wp_l_sek == NULL)
+          {
+            wp_l_sek = wp_sektor_tab[tab_l2_idx[sek_idx]];
+          }
+          if(wp_r_sek == NULL)
+          {
              wp_r_sek = wp_sektor_tab[tab_r2_idx[sek_idx]];
-	  }
+          }
 
-	  if(wp_l_sek)
-	  {
+          if(wp_l_sek)
+          {
             if(wp_r_sek)
-	    {
+            {
               l_tol = wp_l_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR;
-	      r_tol = wp_r_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR;
+              r_tol = wp_r_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR;
               tab_tol[sek_idx] = MIN(MAX(l_tol, r_tol), (wp_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR));
-	    }
-	    else
-	    {
+            }
+            else
+            {
               tab_tol[sek_idx] = wp_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR;
-	    }
-	  }
-	  else
-	  {
+            }
+          }
+          else
+          {
             tab_tol[sek_idx] = wp_sek->sqr_dist * GAP_MORPH_TOL_FAKTOR;
-	  }
-	}
-	else
-	{
+          }
+        }
+        else
+        {
           tab_tol[sek_idx] = limit_sqr_dist;
-	}
+        }
       }
 
     }
@@ -1275,67 +1275,67 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
       {
         sek_idx = CLAMP(wp->sek_idx, 0, (GAP_MORPH_8_SEKTORS -1));
 
-	if(wp->sqr_dist <= tab_tol[sek_idx])
-	{
-	  gboolean sel_flag;
-	  
-	  sel_flag = TRUE;
-	  
+        if(wp->sqr_dist <= tab_tol[sek_idx])
+        {
+          gboolean sel_flag;
+          
+          sel_flag = TRUE;
+          
           /* xy_relation is the representation of the angle
-	   * (is used to compare for similar angle in steps 10tiems finer than the 8 sektors.
-	   *  and is faster to calculate than the real angle)
-	   */
-	  adx = abs(in_x - wp->dst_x);
-	  ady = abs(in_y - wp->dst_y);
+           * (is used to compare for similar angle in steps 10tiems finer than the 8 sektors.
+           *  and is faster to calculate than the real angle)
+           */
+          adx = abs(in_x - wp->dst_x);
+          ady = abs(in_y - wp->dst_y);
           if(adx > ady)
-	  {
-	    wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
-	  }
-	  else
-	  {
-	    if(ady != 0)
-	    {
-	      wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
-	    }
-	    else
-	    {
-	      wp->xy_relation = 0;
-	    }
-	  }
-	  
-	  
-	  for(wp_sek = wp_sektor_tab[sek_idx]; wp_sek != NULL; wp_sek = (GapMorphWorkPoint *)wp_sek->next_sek)
-	  {
-	    if(wp_sek == wp)
-	    {
-	      sel_flag = FALSE;  /* dont add the same point twice to the sektors list */
-	      continue;
-	    }
-	    if((wp_sek->is_alive) 
-	    && (wp->xy_relation == wp_sek->xy_relation))  /* check for (nearly) same angle */
-	    {
-	      if(wp->sqr_dist <  wp_sek->sqr_dist)
-	      {
-	        /* discard the (farer) point from the sektor list by flag
-		 * (is faster than remove the list element)
-		 */
+          {
+            wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (ady / adx)));
+          }
+          else
+          {
+            if(ady != 0)
+            {
+              wp->xy_relation = (gint)(0.5 + (GAP_MORPH_XY_REL_FAKTOR * (adx / ady)));
+            }
+            else
+            {
+              wp->xy_relation = 0;
+            }
+          }
+          
+          
+          for(wp_sek = wp_sektor_tab[sek_idx]; wp_sek != NULL; wp_sek = (GapMorphWorkPoint *)wp_sek->next_sek)
+          {
+            if(wp_sek == wp)
+            {
+              sel_flag = FALSE;  /* dont add the same point twice to the sektors list */
+              continue;
+            }
+            if((wp_sek->is_alive) 
+            && (wp->xy_relation == wp_sek->xy_relation))  /* check for (nearly) same angle */
+            {
+              if(wp->sqr_dist <  wp_sek->sqr_dist)
+              {
+                /* discard the (farer) point from the sektor list by flag
+                 * (is faster than remove the list element)
+                 */
                 wp_sek->is_alive = FALSE;
-	      }
-	      else
-	      {
-	        sel_flag = FALSE;
-	      }
-	      break;
-	    }
-	  }
-	  
-	  if(sel_flag)
-	  {
-	    /* add wp to the sektor list */
-	    wp->next_sek = wp_sektor_tab[sek_idx];
-	    wp_sektor_tab[sek_idx] = wp;
-	  }
-	}
+              }
+              else
+              {
+                sel_flag = FALSE;
+              }
+              break;
+            }
+          }
+          
+          if(sel_flag)
+          {
+            /* add wp to the sektor list */
+            wp->next_sek = wp_sektor_tab[sek_idx];
+            wp_sektor_tab[sek_idx] = wp;
+          }
+        }
       }
     }
     
@@ -1348,28 +1348,28 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
       for(wp=wp_sektor_tab[sek_idx]; wp != NULL; wp = (GapMorphWorkPoint *)wp->next_sek)
       {
         if((wp->is_alive) 
-	&& (wp->sqr_dist <= tab_tol[sek_idx]))
-	{
-	  wp->dist = sqrt(wp->sqr_dist);
+        && (wp->sqr_dist <= tab_tol[sek_idx]))
+        {
+          wp->dist = sqrt(wp->sqr_dist);
           if(wcap->printf_flag)
-	  {
-	     /* this is a debug feature for tuning the warp algorithm */
-	     printf("sek: %02d, ang: %.2f, dist:%.3f, sqr_dist: %.3f TAB_TOL:%.3f SELECTED\n"
-	           ,(int)sek_idx
-		   ,(float)wp->angle_deg
-		   ,(float)wp->dist
-		   ,(float)wp->sqr_dist
-		   ,(float)tab_tol[sek_idx]
-		   );
-	  }
-	  
-	  /* add point to selection list */
-	  wp->next_selected = wp_selected_list;
-	  wp_selected_list = wp;
+          {
+             /* this is a debug feature for tuning the warp algorithm */
+             printf("sek: %02d, ang: %.2f, dist:%.3f, sqr_dist: %.3f TAB_TOL:%.3f SELECTED\n"
+                   ,(int)sek_idx
+                   ,(float)wp->angle_deg
+                   ,(float)wp->dist
+                   ,(float)wp->sqr_dist
+                   ,(float)tab_tol[sek_idx]
+                   );
+          }
+          
+          /* add point to selection list */
+          wp->next_selected = wp_selected_list;
+          wp_selected_list = wp;
 
           wp->inv_dist = 1.0 / wp->dist;
           sum_inv_dist += wp->inv_dist;
-	}
+        }
       }
     }    /* end  for(sek_idx..) */
     
@@ -1380,7 +1380,7 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
       wp->gravity = 1.0;
       if(wcap->use_gravity)
       {
-	wp->gravity -= pow((MIN(wp->sqr_dist,wcap->sqr_affect_radius) / wcap->sqr_affect_radius) , wcap->gravity_intensity);
+        wp->gravity -= pow((MIN(wp->sqr_dist,wcap->sqr_affect_radius) / wcap->sqr_affect_radius) , wcap->gravity_intensity);
       }
 
       new_vektor_x = (wp->src_x - wp->dst_x);
@@ -1394,12 +1394,12 @@ p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
       {
         wp->warp_weight = weight;
         printf("wp->src_x/y:  %.3f / %.3f  wp->dst_x/y: %.3f / %.3f sek_idx: %d xy_rel:%d dist:%.3f weight: %.7f vek: %.3f / %.3f \n"
-	      , (float)wp->src_x
+              , (float)wp->src_x
               , (float)wp->src_y
               , (float)wp->dst_x
               , (float)wp->dst_y
-	      , (int)  wp->sek_idx
-	      , (int)  wp->xy_relation
+              , (int)  wp->sek_idx
+              , (int)  wp->xy_relation
               , (float)wp->dist
               , (float)weight
               , (float)vektor_x
@@ -1433,14 +1433,14 @@ void
 gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                                       , gint32        in_x
                                       , gint32        in_y
-				      , gdouble       scale_x
-				      , gdouble       scale_y
-				      , gboolean      use_quality_wp_selection
-				      , gboolean      use_gravity
-				      , gdouble       gravity_intensity
-				      , gdouble       affect_radius
-				      , gdouble *out_pick_x
-				      , gdouble *out_pick_y
+                                      , gdouble       scale_x
+                                      , gdouble       scale_y
+                                      , gboolean      use_quality_wp_selection
+                                      , gboolean      use_gravity
+                                      , gdouble       gravity_intensity
+                                      , gdouble       affect_radius
+                                      , gdouble *out_pick_x
+                                      , gdouble *out_pick_y
                                       )
 {
   GapMorphWarpCoreAPI  wcap_struct;
@@ -1493,7 +1493,7 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                    ,in_y
                    ,&pick_x
                    ,&pick_y
-		   );
+                   );
 
 
 #else
@@ -1507,10 +1507,10 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                        ,yy
                        ,&pick_x
                        ,&pick_y
-		       );
-       sum_pick_x += pick_x;		       
+                       );
+       sum_pick_x += pick_x;                   
        sum_pick_y += pick_y;
-       nn++;		       
+       nn++;                   
     }
   }
   
@@ -1524,7 +1524,7 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                    ,in_y
                    ,out_pick_x
                    ,out_pick_y
-		   );
+                   );
 
 #endif
 
@@ -1550,9 +1550,9 @@ static void
 p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
             , gint32        in_x
             , gint32        in_y
-	    , gint          set_idx
-	    , gdouble      *out_pick_x
-	    , gdouble      *out_pick_y
+            , gint          set_idx
+            , gdouble      *out_pick_x
+            , gdouble      *out_pick_y
             )
 {
   gdouble            pick_x;
@@ -1570,7 +1570,7 @@ p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
                        ,in_y
                        ,out_pick_x
                        ,out_pick_y
-		       );
+                       );
 
 #else
   /* the implementation of the   p_pixel_warp_core
@@ -1584,8 +1584,8 @@ p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
    * number of p_pixel_warp_core calls
    */
   nn = 0;
-  sum_pick_x = 0;		       
-  sum_pick_y = 0;		       
+  sum_pick_x = 0;                      
+  sum_pick_y = 0;                      
   for(xx=MAX(0,in_x -3); xx <= in_x +3; xx+=3)
   {
     for(yy=MAX(0,in_y -3); yy <= in_y +3; yy+=3)
@@ -1596,15 +1596,15 @@ p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
       {
         pcp = &gloabl_pick_cache[ii][set_idx];
         if ((pcp->valid)
-	&&  (pcp->xx == xx)
-	&&  (pcp->yy == yy))
-	{
-	  pick_x = pcp->pick_x;
-	  pick_y = pcp->pick_y;
-	  
-	  /* printf("** CACHE HIT\n"); */
-	  break;
-	}
+        &&  (pcp->xx == xx)
+        &&  (pcp->yy == yy))
+        {
+          pick_x = pcp->pick_x;
+          pick_y = pcp->pick_y;
+          
+          /* printf("** CACHE HIT\n"); */
+          break;
+        }
       }
       if(ii == GAP_MORPH_PCK_CACHE_SIZE)
       {
@@ -1614,24 +1614,24 @@ p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
                        ,yy
                        ,&pick_x
                        ,&pick_y
-		       );
+                       );
          /* save pick koords in cache table */
          pcp = &gloabl_pick_cache[gloabl_pick_cache_idx[set_idx]][set_idx];
 
-	 pcp->xx     = xx;
-	 pcp->yy     = yy;
-	 pcp->pick_x = pick_x;
-	 pcp->pick_y = pick_y;
-	 pcp->valid  = TRUE;
-	 gloabl_pick_cache_idx[set_idx]++;
-	 if(gloabl_pick_cache_idx[set_idx] >= GAP_MORPH_PCK_CACHE_SIZE)
-	 {
-	   gloabl_pick_cache_idx[set_idx] = 0;
-	 }
+         pcp->xx     = xx;
+         pcp->yy     = yy;
+         pcp->pick_x = pick_x;
+         pcp->pick_y = pick_y;
+         pcp->valid  = TRUE;
+         gloabl_pick_cache_idx[set_idx]++;
+         if(gloabl_pick_cache_idx[set_idx] >= GAP_MORPH_PCK_CACHE_SIZE)
+         {
+           gloabl_pick_cache_idx[set_idx] = 0;
+         }
        }
        sum_pick_x += (pick_x - ((in_x - xx) * wcap->scale_x));
        sum_pick_y += (pick_y - ((in_y - yy) * wcap->scale_y));
-       nn++;		       
+       nn++;                   
     }
   }
   *out_pick_x = sum_pick_x / (gdouble)nn;
@@ -1648,11 +1648,11 @@ p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
 static void
 p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
                       ,GapMorphWarpCoreAPI *wcap_2
-		      ,gdouble wp_mix_factor
+                      ,gdouble wp_mix_factor
                       , gint32        in_x
                       , gint32        in_y
-		      , gdouble      *out_pick_x
-		      , gdouble      *out_pick_y
+                      , gdouble      *out_pick_x
+                      , gdouble      *out_pick_y
                       )
 {
   gdouble            pick_x_1;
@@ -1668,22 +1668,22 @@ p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
   if(wp_mix_factor != 0.0)
   {
     p_pixel_warp_pick(wcap_1
-	  , in_x
-	  , in_y
-	  , 0                      /* set_idx */
-	  , &pick_x_1
-	  , &pick_y_1
+          , in_x
+          , in_y
+          , 0                      /* set_idx */
+          , &pick_x_1
+          , &pick_y_1
           );
   }
   
   if(wp_mix_factor != 1.0)
   {
     p_pixel_warp_pick(wcap_1
-	  , in_x
-	  , in_y
-	  , 1                      /* set_idx */
-	  , &pick_x_2
-	  , &pick_y_2
+          , in_x
+          , in_y
+          , 1                      /* set_idx */
+          , &pick_x_2
+          , &pick_y_2
           );
   }
   
@@ -1717,9 +1717,9 @@ p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
 GapMorphWorkPoint *
 p_calculate_work_point_movement(gdouble total_steps
                                ,gdouble current_step
-			       ,GapMorphWorkPoint *master_list
-			       ,gint32 src_layer_id
-			       ,gint32 dst_layer_id
+                               ,GapMorphWorkPoint *master_list
+                               ,gint32 src_layer_id
+                               ,gint32 dst_layer_id
                                ,gint32 curr_width
                                ,gint32 curr_height
                                ,gboolean forward_move
@@ -1834,10 +1834,10 @@ p_layer_warp_move (GapMorphWorkPoint     *wp_list_1
                   ,GapMorphWorkPoint     *wp_list_2
                   , gint32                src_layer_id
                   , gint32                dst_layer_id
-		  , GapMorphGlobalParams *mgpp
-		  , GapMorphWarpCoreAPI  *p1
-		  , GapMorphWarpCoreAPI  *p2
-		  , gdouble               wp_mix_factor
+                  , GapMorphGlobalParams *mgpp
+                  , GapMorphWarpCoreAPI  *p1
+                  , GapMorphWarpCoreAPI  *p2
+                  , gdouble               wp_mix_factor
                   )
 {
   GapMorphWarpCoreAPI  wcap_struct_1;
@@ -1954,45 +1954,45 @@ p_layer_warp_move (GapMorphWorkPoint     *wp_list_1
      for (y = 0; y < dstPR.h; y++)
      {
         pixel_ptr = dest;
-	l_row = dstPR.y + y;
-	
+        l_row = dstPR.y + y;
+        
         for (x = 0; x < dstPR.w; x++)
-	{
+        {
            gdouble            pick_x;
            gdouble            pick_y;
-	   
-	   l_col = dstPR.x + x;
-	   if(mgpp->have_workpointsets)
-	   {
-	     /* pick based on 2 sets of workpoints */
+           
+           l_col = dstPR.x + x;
+           if(mgpp->have_workpointsets)
+           {
+             /* pick based on 2 sets of workpoints */
              p_pixel_warp_multipick(wcap_1  /// XXXXX list1
-	           , wcap_2                 /// XXXXX list2
-		   , wp_mix_factor
-		   , l_col
-		   , l_row
-		   , &pick_x
-		   , &pick_y
+                   , wcap_2                 /// XXXXX list2
+                   , wp_mix_factor
+                   , l_col
+                   , l_row
+                   , &pick_x
+                   , &pick_y
                    );
-	   }
-	   else
-	   {
-	     /* pick based on a single set of workpoints */
+           }
+           else
+           {
+             /* pick based on a single set of workpoints */
              p_pixel_warp_pick(wcap_1
-	           , l_col
-		   , l_row
-		   , 0                      /* set_idx */
-		   , &pick_x
-		   , &pick_y
+                   , l_col
+                   , l_row
+                   , 0                      /* set_idx */
+                   , &pick_x
+                   , &pick_y
                    );
-	   }
+           }
            p_bilinear_get_pixel (src_pixfet
-	                        ,src_drawable
-				,pick_x
-				,pick_y
-				,pixel_ptr
-				,dst_drawable->bpp);
+                                ,src_drawable
+                                ,pick_x
+                                ,pick_y
+                                ,pixel_ptr
+                                ,dst_drawable->bpp);
            pixel_ptr += dstPR.bpp;
-	}
+        }
         dest += dstPR.rowstride;
      }
      
@@ -2044,8 +2044,8 @@ p_mix_layers (gint32  curr_image_id
                   ,gint32  bg_layer_id
                   ,gint32  top_layer_id
                   ,gint32  curr_width
-		  ,gint32  curr_height
-		  ,gdouble curr_mix_factor  /* 0.0 <= mix <= 1.0 */
+                  ,gint32  curr_height
+                  ,gdouble curr_mix_factor  /* 0.0 <= mix <= 1.0 */
                   )
 {
   gint32        dst_layer_id;
@@ -2158,18 +2158,18 @@ p_mix_layers (gint32  curr_image_id
         pixel_ptr = dest;
         top_ptr = top;
         bg_ptr = bg;
-	
+        
         for (x = 0; x < dstPR.rowstride ; x++)
-	{
-	   gdouble val;
-	   
-	   val = MIX_VALUE(curr_mix_factor, (gdouble)(*bg_ptr), (gdouble)(*top_ptr));
-	   *pixel_ptr = (guchar)val;
-	   
+        {
+           gdouble val;
+           
+           val = MIX_VALUE(curr_mix_factor, (gdouble)(*bg_ptr), (gdouble)(*top_ptr));
+           *pixel_ptr = (guchar)val;
+           
            pixel_ptr++;
            top_ptr++;
            bg_ptr++;
-	}
+        }
         dest += dstPR.rowstride;
         top  += topPR.rowstride;
         bg   += bgPR.rowstride;
@@ -2202,7 +2202,7 @@ static gint32
 p_create_morph_tween_frame(gint32 total_steps
                           ,gint32 current_step
                           ,GapMorphGlobalParams *mgpp
-			  ,GapMorphExeLayerstack *mlayers
+                          ,GapMorphExeLayerstack *mlayers
                           )
 {
    GimpDrawable *dst_drawable;
@@ -2374,8 +2374,8 @@ p_create_morph_tween_frame(gint32 total_steps
        curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
                                                      ,(gdouble)current_step
                                                      ,wp_set_1->wp_list
-						     ,mgpp->osrc_layer_id
-						     ,mgpp->fdst_layer_id
+                                                     ,mgpp->osrc_layer_id
+                                                     ,mgpp->fdst_layer_id
                                                      ,curr_width
                                                      ,curr_height
                                                      ,forward_move
@@ -2384,8 +2384,8 @@ p_create_morph_tween_frame(gint32 total_steps
        curr_wp_list_2 = p_calculate_work_point_movement((gdouble)total_steps
                                                      ,(gdouble)current_step
                                                      ,wp_set_2->wp_list
-						     ,mgpp->osrc_layer_id
-						     ,mgpp->fdst_layer_id
+                                                     ,mgpp->osrc_layer_id
+                                                     ,mgpp->fdst_layer_id
                                                      ,curr_width
                                                      ,curr_height
                                                      ,forward_move
@@ -2394,13 +2394,13 @@ p_create_morph_tween_frame(gint32 total_steps
        /* warp the BG layer */
        p_layer_warp_move ( curr_wp_list_1
                          , curr_wp_list_2
-                	 , src_layer_id
-                	 , bg_layer_id
-			 , mgpp
-			 , wp_set_1
-			 , wp_set_2
-			 , wp_mix_factor
-                	 );
+                         , src_layer_id
+                         , bg_layer_id
+                         , mgpp
+                         , wp_set_1
+                         , wp_set_2
+                         , wp_mix_factor
+                         );
        gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
        gap_morph_exec_free_workpoint_list(&curr_wp_list_2);
      }
@@ -2410,8 +2410,8 @@ p_create_morph_tween_frame(gint32 total_steps
        curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
                                                      ,(gdouble)current_step
                                                      ,mgpp->master_wp_list
-						     ,mgpp->osrc_layer_id
-						     ,mgpp->fdst_layer_id
+                                                     ,mgpp->osrc_layer_id
+                                                     ,mgpp->fdst_layer_id
                                                      ,curr_width
                                                      ,curr_height
                                                      ,forward_move
@@ -2420,13 +2420,13 @@ p_create_morph_tween_frame(gint32 total_steps
        /* warp the BG layer */
        p_layer_warp_move ( curr_wp_list_1
                          , NULL
-                	 , src_layer_id
-                	 , bg_layer_id
-			 , mgpp
-			 , NULL
-			 , NULL
-			 , wp_mix_factor
-                	 );
+                         , src_layer_id
+                         , bg_layer_id
+                         , mgpp
+                         , NULL
+                         , NULL
+                         , wp_mix_factor
+                         );
 
        gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
      }
@@ -2440,8 +2440,8 @@ p_create_morph_tween_frame(gint32 total_steps
      curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
                                                    ,(gdouble)current_step
                                                    ,wp_set_1->wp_list
-						   ,mgpp->osrc_layer_id
-						   ,mgpp->fdst_layer_id
+                                                   ,mgpp->osrc_layer_id
+                                                   ,mgpp->fdst_layer_id
                                                    ,curr_width
                                                    ,curr_height
                                                    ,forward_move
@@ -2450,8 +2450,8 @@ p_create_morph_tween_frame(gint32 total_steps
      curr_wp_list_2 = p_calculate_work_point_movement((gdouble)total_steps
                                                    ,(gdouble)current_step
                                                    ,wp_set_2->wp_list
-						   ,mgpp->osrc_layer_id
-						   ,mgpp->fdst_layer_id
+                                                   ,mgpp->osrc_layer_id
+                                                   ,mgpp->fdst_layer_id
                                                    ,curr_width
                                                    ,curr_height
                                                    ,forward_move
@@ -2462,10 +2462,10 @@ p_create_morph_tween_frame(gint32 total_steps
                        , curr_wp_list_2
                        , dst_layer_id
                        , top_layer_id
-		       , mgpp
-		       , wp_set_1
-		       , wp_set_2
-		       , wp_mix_factor
+                       , mgpp
+                       , wp_set_1
+                       , wp_set_2
+                       , wp_mix_factor
                        );
 
      gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
@@ -2477,8 +2477,8 @@ p_create_morph_tween_frame(gint32 total_steps
      curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
                                                    ,(gdouble)current_step
                                                    ,mgpp->master_wp_list
-						   ,mgpp->osrc_layer_id
-						   ,mgpp->fdst_layer_id
+                                                   ,mgpp->osrc_layer_id
+                                                   ,mgpp->fdst_layer_id
                                                    ,curr_width
                                                    ,curr_height
                                                    ,forward_move
@@ -2489,10 +2489,10 @@ p_create_morph_tween_frame(gint32 total_steps
                        , NULL
                        , dst_layer_id
                        , top_layer_id
-		       , mgpp
-		       , NULL
-		       , NULL
-		       , wp_mix_factor
+                       , mgpp
+                       , NULL
+                       , NULL
+                       , wp_mix_factor
                        );
 
      gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
@@ -2513,11 +2513,11 @@ p_create_morph_tween_frame(gint32 total_steps
    merged_layer_id = 
    p_mix_layers(curr_image_id
                ,bg_layer_id
-	       ,top_layer_id
-	       ,curr_width
-	       ,curr_height
-	       ,(gdouble)(curr_opacity / 100.0)
-	       );
+               ,top_layer_id
+               ,curr_width
+               ,curr_height
+               ,(gdouble)(curr_opacity / 100.0)
+               );
 
    /* DEBUG code: show duplicate of the temporary tween image */
    if(FALSE)
@@ -2575,7 +2575,7 @@ p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerst
     
     mlayers->src_layers = gimp_image_get_layers (src_image_id
                                              ,&mlayers->src_nlayers
-				             );
+                                             );
     for(ii=0; ii < mlayers->src_nlayers; ii++)
     {
       if(gap_debug)
@@ -2586,7 +2586,7 @@ p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerst
       {
         mlayers->src1_idx = ii;  /* src at 1.st step */
         mlayers->src2_idx = ii;  /* src at last step */
-	break;
+        break;
       }
     }
   }
@@ -2598,7 +2598,7 @@ p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerst
     dst_image_id = gimp_drawable_get_image(mgpp->fdst_layer_id);
     mlayers->dst_layers = gimp_image_get_layers (dst_image_id
                                              ,&mlayers->dst_nlayers
-				             );
+                                             );
     for(ii=0; ii < mlayers->dst_nlayers; ii++)
     {
 
@@ -2607,7 +2607,7 @@ p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerst
       if(mlayers->dst_layers[ii] == mgpp->fdst_layer_id)
       {
         mlayers->dst2_idx = ii;  /* dst at last step */
-	break;
+        break;
       }
     }
   }
@@ -2632,16 +2632,16 @@ p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerst
       {
         gint32 tmp;
         /* source layer is above the destination layer
-	 * in this case swap src with dst layer
-	 */
-	tmp = mgpp->fdst_layer_id;
-	mgpp->fdst_layer_id = mgpp->osrc_layer_id;
-	mgpp->osrc_layer_id = tmp;
-	
-	tmp = mlayers->dst2_idx;
-	mlayers->dst2_idx = mlayers->src1_idx;
-	mlayers->src1_idx = tmp;
-	mlayers->src2_idx = tmp;
+         * in this case swap src with dst layer
+         */
+        tmp = mgpp->fdst_layer_id;
+        mgpp->fdst_layer_id = mgpp->osrc_layer_id;
+        mgpp->osrc_layer_id = tmp;
+        
+        tmp = mlayers->dst2_idx;
+        mlayers->dst2_idx = mlayers->src1_idx;
+        mlayers->src1_idx = tmp;
+        mlayers->src2_idx = tmp;
       }
       tween_steps = 1 + (mlayers->src1_idx - mlayers->dst2_idx );
     }
@@ -2750,7 +2750,7 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
       if(l_layers_list[ii] == mgpp->fdst_layer_id)
       {
         dst_stack_position = ii +1;
-	break;
+        break;
       }
     }
     if(l_layers_list)
@@ -2784,7 +2784,7 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
     new_layer_id = p_create_morph_tween_frame(total_steps
                           ,current_step
                           ,mgpp
-			  ,mlayers
+                          ,mlayers
                           );
     if(new_layer_id < 0)
     {
@@ -2798,14 +2798,14 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
       
       if(mgpp->create_tween_layers)
       {
-	cp_layer_id = gap_layer_copy_to_dest_image(dst_image_id
+        cp_layer_id = gap_layer_copy_to_dest_image(dst_image_id
                                      ,new_layer_id
                                      ,100.0           /* Opacity */
                                      ,0               /* NORMAL */
                                      ,&l_src_offset_x
                                      ,&l_src_offset_y
                                      );
-	gimp_image_add_layer(dst_image_id
+        gimp_image_add_layer(dst_image_id
                             , cp_layer_id
                             , dst_stack_position
                             );
@@ -2816,7 +2816,7 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
 
         /* replace content of current dst_layer[ii] by content of new_layer_id */
         ii = mlayers->dst1_idx - (current_step -1);
-	gap_layer_copy_content(mlayers->dst_layers[ii], new_layer_id);
+        gap_layer_copy_content(mlayers->dst_layers[ii], new_layer_id);
       }
       tween_image_id = gimp_drawable_get_image(new_layer_id);
       gimp_image_delete(tween_image_id);
@@ -2917,11 +2917,11 @@ p_create_simple_fade_tween_frame(gint32 total_steps
    merged_layer_id = 
    p_mix_layers(curr_image_id
                ,bg_layer_id
-	       ,top_layer_id
-	       ,curr_width
-	       ,curr_height
-	       ,(gdouble)(curr_opacity / 100.0)
-	       );
+               ,top_layer_id
+               ,curr_width
+               ,curr_height
+               ,(gdouble)(curr_opacity / 100.0)
+               );
  
    mgpp->master_progress += mgpp->layer_progress_step;
 
@@ -3010,7 +3010,7 @@ gap_morph_render_one_of_n_tweens(GapMorphGlobalParams *mgpp, gdouble total_steps
     new_layer_id = p_create_morph_tween_frame(total_steps
                           ,current_step
                           ,mgpp
-			  ,mlayers
+                          ,mlayers
                           );
   }
   return (gap_image_merge_to_specified_layer(new_layer_id, GIMP_CLIP_TO_IMAGE));

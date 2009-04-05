@@ -115,17 +115,17 @@ static void     p_check_audio_peaks(GapStoryRenderVidHandle *vidhand
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 static void     p_extract_audioblock(t_GVA_Handle *gvahand
-                		     , FILE  *fp_wav
-                		     , gdouble samples_to_extract
-				     , int audio_channels
-				     , int sample_rate
-				     , GapStoryRenderVidHandle *vidhand  /* for progress */
-                		     );
+                                     , FILE  *fp_wav
+                                     , gdouble samples_to_extract
+                                     , int audio_channels
+                                     , int sample_rate
+                                     , GapStoryRenderVidHandle *vidhand  /* for progress */
+                                     );
 static void     p_extract_audiopart(t_GVA_Handle *gvahand
                                    , char *wavfilename
                                    , gdouble min_play_sec
                                    , gdouble max_play_sec
-				   , GapStoryRenderVidHandle *vidhand  /* for progress */
+                                   , GapStoryRenderVidHandle *vidhand  /* for progress */
                                    );
 #endif
 
@@ -199,7 +199,7 @@ gap_story_render_remove_tmp_audiofiles(GapStoryRenderVidHandle *vidhand)
       if(gap_debug)
       {
         printf("gap_story_render_remove_tmp_audiofiles tmp_audiofile: %s\n"
-	      , aud_elem->tmp_audiofile);
+              , aud_elem->tmp_audiofile);
       }
       
       /* delete tmp_audiofile if still exists
@@ -207,11 +207,11 @@ gap_story_render_remove_tmp_audiofiles(GapStoryRenderVidHandle *vidhand)
        */
       if(g_file_test(aud_elem->tmp_audiofile, G_FILE_TEST_EXISTS))
       {
-	if(gap_debug)
-	{
-	  printf("gap_story_render_remove_tmp_audiofiles removing: %s\n"
-		, aud_elem->tmp_audiofile);
-	}
+        if(gap_debug)
+        {
+          printf("gap_story_render_remove_tmp_audiofiles removing: %s\n"
+                , aud_elem->tmp_audiofile);
+        }
         g_remove(aud_elem->tmp_audiofile);
       }
       g_free(aud_elem->tmp_audiofile);
@@ -496,12 +496,12 @@ p_get_audio_sample(GapStoryRenderVidHandle *vidhand        /* IN  */
         if((l_byte_idx < 0) || (l_byte_idx >= ac_elem->segment_bytelength  /*aud_elem->aud_bytelength */ ))
         {
           printf("p_get_audio_sample: **ERROR INDEX OVERFLOW: %d (segment_bytelength: %d aud_bytelength: %d)\n"
-	         "  file:%s\n"
+                 "  file:%s\n"
                  , (int)l_byte_idx
                  , (int)ac_elem->segment_bytelength
                  , (int)aud_elem->aud_bytelength
-		 , ac_elem->filename
-		 );
+                 , ac_elem->filename
+                 );
           return;
         }
 
@@ -747,9 +747,9 @@ static void
 p_extract_audioblock(t_GVA_Handle *gvahand
                    , FILE  *fp_wav
                    , gdouble samples_to_extract
-		   , int audio_channels
-		   , int sample_rate
-		   , GapStoryRenderVidHandle *vidhand
+                   , int audio_channels
+                   , int sample_rate
+                   , GapStoryRenderVidHandle *vidhand
                    )
 {
   static unsigned short *left_ptr;
@@ -810,13 +810,13 @@ p_extract_audioblock(t_GVA_Handle *gvahand
        */
       for(l_ii=0; l_ii < l_to_read; l_ii++)
       {
-	 gap_audio_wav_write_gint16(fp_wav, *l_lptr);
-	 l_lptr++;
-	 if(audio_channels > 1)
-	 {
+         gap_audio_wav_write_gint16(fp_wav, *l_lptr);
+         l_lptr++;
+         if(audio_channels > 1)
+         {
            gap_audio_wav_write_gint16(fp_wav, *l_rptr);
            l_rptr++;
-	 }
+         }
        }
     }
 
@@ -830,12 +830,12 @@ p_extract_audioblock(t_GVA_Handle *gvahand
     {
       if(fp_wav)
       {
-	g_snprintf(vidhand->status_msg, vidhand->status_msg_len
+        g_snprintf(vidhand->status_msg, vidhand->status_msg_len
                   , _("extracting audio to tmp audiofile"));
       }
       else
       {
-	g_snprintf(vidhand->status_msg, vidhand->status_msg_len
+        g_snprintf(vidhand->status_msg, vidhand->status_msg_len
                   , _("seeking audio"));
       }
     }
@@ -867,7 +867,7 @@ p_extract_audiopart(t_GVA_Handle *gvahand
                    , char *wavfilename
                    , gdouble min_play_sec
                    , gdouble max_play_sec
-		   , GapStoryRenderVidHandle *vidhand  /* for progress */
+                   , GapStoryRenderVidHandle *vidhand  /* for progress */
                    )
 {
   static int l_audio_channels;
@@ -923,12 +923,12 @@ p_extract_audiopart(t_GVA_Handle *gvahand
       if(samples_to_skip > 0)
       {
         p_extract_audioblock(gvahand
-	                    ,NULL      /* dont write to file */
-			    ,samples_to_skip
-			    ,l_audio_channels
-			    ,l_sample_rate
-			    ,vidhand
-			    );
+                            ,NULL      /* dont write to file */
+                            ,samples_to_skip
+                            ,l_audio_channels
+                            ,l_sample_rate
+                            ,vidhand
+                            );
       }
       if(gap_debug)
       {
@@ -936,12 +936,12 @@ p_extract_audiopart(t_GVA_Handle *gvahand
       }
 
       p_extract_audioblock(gvahand
-	                  ,fp_wav      /* now write to file */
-			  ,samples_to_extract
-			  ,l_audio_channels
-			  ,l_sample_rate
-			  ,vidhand
-			  );
+                          ,fp_wav      /* now write to file */
+                          ,samples_to_extract
+                          ,l_audio_channels
+                          ,l_sample_rate
+                          ,vidhand
+                          );
 
       /* close wavfile */
       fclose(fp_wav);
@@ -1031,10 +1031,10 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
                       ,GapStoryRenderAudioRangeElem *known_aud_list /* NULL or list of already known ranges */
                       ,GapStoryRenderErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select audiotrack number 1 upto 99 for GAP_AUT_MOVIE */
-		      ,gboolean create_audio_tmp_files
-		      ,gdouble min_play_sec
+                      ,gboolean create_audio_tmp_files
+                      ,gdouble min_play_sec
                       ,gdouble max_play_sec
-		      ,GapStoryRenderVidHandle *vidhand  /* for progress */
+                      ,GapStoryRenderVidHandle *vidhand  /* for progress */
                       )
 {
   GapStoryRenderAudioRangeElem *aud_known;
@@ -1196,7 +1196,7 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
              aud_elem->samples           = gvahand->total_aud_samples;  /* sometimes this is not an exact value, but just a guess */
              aud_elem->byteoffset_data   = 0;                           /* no headeroffset for audiopart loaded from videofiles */
              
-	     if(gap_debug)
+             if(gap_debug)
              {
                printf("AFTER GVA_open_read: %s\n", aud_elem->audiofile);
                printf("   samplerate:      %d\n", (int)aud_elem->samplerate );
@@ -1207,130 +1207,130 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 
              if(create_audio_tmp_files)
              {
-		     if ((aud_elem->samplerate == master_samplerate)
-		     && ((aud_elem->channels == 2) || (aud_elem->channels == 1)))
-		     {
-		       /* audio part of the video is OK, extract 1:1 as wavfile */
-		       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
+                     if ((aud_elem->samplerate == master_samplerate)
+                     && ((aud_elem->channels == 2) || (aud_elem->channels == 1)))
+                     {
+                       /* audio part of the video is OK, extract 1:1 as wavfile */
+                       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
 
-		       if(gap_debug)
+                       if(gap_debug)
                        {
                          printf("Extracting Audiopart as file:%s\n", aud_elem->tmp_audiofile);
                        }
-		       p_extract_audiopart(gvahand
-					  , aud_elem->tmp_audiofile
-					  , min_play_sec
-					  , max_play_sec
-					  , vidhand
-					  );
-		       GVA_close(gvahand);
-		     }
-		     else
-		     {
-		       char *l_wavfilename;
-		       long samplerate;
-		       long channels;
-		       long bytes_per_sample;
-		       long bits;
-		       long samples;
-		       int      l_rc;
+                       p_extract_audiopart(gvahand
+                                          , aud_elem->tmp_audiofile
+                                          , min_play_sec
+                                          , max_play_sec
+                                          , vidhand
+                                          );
+                       GVA_close(gvahand);
+                     }
+                     else
+                     {
+                       char *l_wavfilename;
+                       long samplerate;
+                       long channels;
+                       long bytes_per_sample;
+                       long bits;
+                       long samples;
+                       int      l_rc;
 
-		       /* extract the audiopart for resample */
-		       l_wavfilename = gimp_temp_name("tmp.wav");
-		       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
+                       /* extract the audiopart for resample */
+                       l_wavfilename = gimp_temp_name("tmp.wav");
+                       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
 
-		       if(gap_debug)
+                       if(gap_debug)
                        {
                          printf("Resample Audiopart in file:%s outfile: %s\n"
                             , l_wavfilename
                             , aud_elem->tmp_audiofile
                             );
                        }
-		       p_extract_audiopart(gvahand
-					  , l_wavfilename
-					  , min_play_sec
-					  , max_play_sec
-					  , vidhand
-					  );
-		       GVA_close(gvahand);
-		       
-		       
-		       if(vidhand->status_msg)
-		       {
-			 g_snprintf(vidhand->status_msg, vidhand->status_msg_len
-			           , _("converting audio (via external programm)")
-				   );
-		       }
-		       /* fake some dummy progress */
-		       *vidhand->progress = 0.05;
+                       p_extract_audiopart(gvahand
+                                          , l_wavfilename
+                                          , min_play_sec
+                                          , max_play_sec
+                                          , vidhand
+                                          );
+                       GVA_close(gvahand);
+                       
+                       
+                       if(vidhand->status_msg)
+                       {
+                         g_snprintf(vidhand->status_msg, vidhand->status_msg_len
+                                   , _("converting audio (via external programm)")
+                                   );
+                       }
+                       /* fake some dummy progress */
+                       *vidhand->progress = 0.05;
 
-		       if(gap_debug)
+                       if(gap_debug)
                        {
                          printf("calling externeal Resample program: %s %s\n"
                             , util_sox
                             , util_sox_options
                             );
                        }
-		       gap_story_sox_exec_resample(l_wavfilename
-				       ,aud_elem->tmp_audiofile
-				       ,master_samplerate
-				       ,util_sox               /* the extern converter program */
-				       ,util_sox_options       /* options for the converter */
-				       );
+                       gap_story_sox_exec_resample(l_wavfilename
+                                       ,aud_elem->tmp_audiofile
+                                       ,master_samplerate
+                                       ,util_sox               /* the extern converter program */
+                                       ,util_sox_options       /* options for the converter */
+                                       );
 
-			/* check again (with the resampled copy in tmp_audiofile
-			 * that should have been created by gap_story_sox_exec_resample
-			 * (if convert was OK)
-			 */
-			l_rc = gap_audio_wav_file_check(aud_elem->tmp_audiofile
-				, &samplerate, &channels
-				, &bytes_per_sample, &bits, &samples);
+                        /* check again (with the resampled copy in tmp_audiofile
+                         * that should have been created by gap_story_sox_exec_resample
+                         * (if convert was OK)
+                         */
+                        l_rc = gap_audio_wav_file_check(aud_elem->tmp_audiofile
+                                , &samplerate, &channels
+                                , &bytes_per_sample, &bits, &samples);
 
-			/* delete the extracted wavfile after resampling (keep just the resampled variant) */
-			g_remove(l_wavfilename);
-			g_free(l_wavfilename);
+                        /* delete the extracted wavfile after resampling (keep just the resampled variant) */
+                        g_remove(l_wavfilename);
+                        g_free(l_wavfilename);
 
-			if((l_rc == 0)
-			&& ((bits == 16)    || (bits == 8))
-			&& ((channels == 2) || (channels == 1))
-			&& (samplerate == master_samplerate))
-			{
-			  /* audio file is OK */
-			   aud_elem->samplerate        = samplerate;
-			   aud_elem->channels          = channels;
-			   aud_elem->bytes_per_sample  = bytes_per_sample;
-			   aud_elem->samples           = samples;
-			   aud_elem->byteoffset_data   = 44;
-			   /* TODO: gap_audio_wav_file_check should return the real offset
-			    * of the 1.st audio_sample databyte in the wav file.
-			    */
-			}
-			else
-			{
-			  char *l_errtxt;
-			  /* conversion failed, cant use that file, delete tmp_audiofile now */
+                        if((l_rc == 0)
+                        && ((bits == 16)    || (bits == 8))
+                        && ((channels == 2) || (channels == 1))
+                        && (samplerate == master_samplerate))
+                        {
+                          /* audio file is OK */
+                           aud_elem->samplerate        = samplerate;
+                           aud_elem->channels          = channels;
+                           aud_elem->bytes_per_sample  = bytes_per_sample;
+                           aud_elem->samples           = samples;
+                           aud_elem->byteoffset_data   = 44;
+                           /* TODO: gap_audio_wav_file_check should return the real offset
+                            * of the 1.st audio_sample databyte in the wav file.
+                            */
+                        }
+                        else
+                        {
+                          char *l_errtxt;
+                          /* conversion failed, cant use that file, delete tmp_audiofile now */
 
-			  if(aud_elem->tmp_audiofile)
-			  {
-			     g_remove(aud_elem->tmp_audiofile);
-			     g_free(aud_elem->tmp_audiofile);
-			     aud_elem->tmp_audiofile = NULL;
-			  }
+                          if(aud_elem->tmp_audiofile)
+                          {
+                             g_remove(aud_elem->tmp_audiofile);
+                             g_free(aud_elem->tmp_audiofile);
+                             aud_elem->tmp_audiofile = NULL;
+                          }
                           if(gap_debug)
-			  {
-			    printf("AUD 1  channels:%d samplerate:%d master_samplerate:%d\n"
-				   ,(int)channels
-				   ,(int)samplerate
-				   ,(int)master_samplerate
-				   );
-			  }
-			  l_errtxt = g_strdup_printf(_("cant use file:  %s as audioinput"), aud_elem->audiofile);
-			  gap_story_render_set_stb_error(sterr, l_errtxt);
-			  g_free(l_errtxt);
-			  return(NULL);
-			}
+                          {
+                            printf("AUD 1  channels:%d samplerate:%d master_samplerate:%d\n"
+                                   ,(int)channels
+                                   ,(int)samplerate
+                                   ,(int)master_samplerate
+                                   );
+                          }
+                          l_errtxt = g_strdup_printf(_("cant use file:  %s as audioinput"), aud_elem->audiofile);
+                          gap_story_render_set_stb_error(sterr, l_errtxt);
+                          g_free(l_errtxt);
+                          return(NULL);
+                        }
 
-		     }
+                     }
              }
              else
              {
@@ -1401,16 +1401,16 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
              {
                if(create_audio_tmp_files)
                {
-		       
-		  if(vidhand->status_msg)
-		  {
-		    g_snprintf(vidhand->status_msg, vidhand->status_msg_len
-			      , _("converting audio (via external programm)")
-			      );
-		  }
-		  /* fake some dummy progress */
-		  *vidhand->progress = 0.05;
-		       
+                       
+                  if(vidhand->status_msg)
+                  {
+                    g_snprintf(vidhand->status_msg, vidhand->status_msg_len
+                              , _("converting audio (via external programm)")
+                              );
+                  }
+                  /* fake some dummy progress */
+                  *vidhand->progress = 0.05;
+                       
                   /* aud_elem->tmp_audiofile = g_strdup_printf("%s.tmp.wav", aud_elem->audiofile); */
                   aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
                   gap_story_sox_exec_resample(aud_elem->audiofile

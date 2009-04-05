@@ -454,7 +454,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                          NULL, 0,
                          gimp_standard_help_func, GAP_HELP_ID_AVI_PARAMS,
 
-			 GIMP_STOCK_RESET, GAP_ENC_AVI_RESPONSE_RESET,
+                         GIMP_STOCK_RESET, GAP_ENC_AVI_RESPONSE_RESET,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
@@ -847,7 +847,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the raw codec info label */
   label = gtk_label_new (_("The RAW codec has no encoding options.\n"
                            "The resulting videoframes will be\n"
-			   "uncompressed."));
+                           "uncompressed."));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table_raw), label, 0, 3, raw_row, raw_row+1,
                     (GtkAttachOptions) (0),
@@ -880,8 +880,8 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                    , &epp->raw_vflip);
   gimp_help_set_help_data (checkbutton
                    , _("Check if you want to encode frames vertically flipped "
-		       "(suitable for playback on WinDVD player) "
-		       "or as is (suitable for gmplayer on linux)")
+                       "(suitable for playback on WinDVD player) "
+                       "or as is (suitable for gmplayer on linux)")
                    , NULL);
 
 

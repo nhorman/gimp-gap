@@ -236,7 +236,7 @@ gimp_lastval_desc_register(const gchar *keyname, void  *baseadress, gint32 total
 
    g_free(lastval_desc_arr);
    return (retcode);
-}	/* gimp_lastval_desc_register */
+}       /* gimp_lastval_desc_register */
 
 
 
@@ -410,7 +410,7 @@ gimp_lastval_desc_update(void)
   g_free(key_description);
   g_free(lastval_desc_arr);
   g_free(fname);
-}	/* end gimp_lastval_desc_update */
+}       /* end gimp_lastval_desc_update */
 
 
 
@@ -423,7 +423,7 @@ gimp_lastval_desc_filename(void)
 
   l_fname = g_build_filename(gimp_directory (), "lastval_descriptions.txt", NULL);
   return(l_fname);
-}	/* end gimp_lastval_desc_filename */
+}       /* end gimp_lastval_desc_filename */
 
 
 
@@ -503,7 +503,7 @@ p_init_token_table(void)
 
     token_table_initialized = TRUE;
   }
-}	/* end p_init_token_table */
+}       /* end p_init_token_table */
 
 
 static gchar *
@@ -523,7 +523,7 @@ p_load_lastval_desc_file(const gchar *fname)
     /* load File into Buffer */
     file_buff = g_malloc0(file_size+1);
 
-    fp = g_fopen(fname, "rb");		    /* open read */
+    fp = g_fopen(fname, "rb");              /* open read */
     if(fp == NULL)
     {
       printf ("open(read) error on '%s'\n", fname);
@@ -533,7 +533,7 @@ p_load_lastval_desc_file(const gchar *fname)
     fclose(fp);
   }
   return (file_buff);
-}	/* end p_load_lsatval_desc_file */
+}       /* end p_load_lsatval_desc_file */
 
 
 static void
@@ -555,12 +555,12 @@ p_fwrite_lastvals_desc(FILE *fp, const gchar *keyname, GimpLastvalDescType *last
     
     fprintf(fp, "\"%s\" ", keyname);
     fprintf(fp, "#- added or changed by GIMP on %04d-%02d-%02d %02d:%02d:%02d\n"
-	   , l_t->tm_year + 1900
-	   , l_t->tm_mon + 1
-	   , l_t->tm_mday
-	   , l_t->tm_hour
-	   , l_t->tm_min
-	   , l_t->tm_sec
+           , l_t->tm_year + 1900
+           , l_t->tm_mon + 1
+           , l_t->tm_mday
+           , l_t->tm_hour
+           , l_t->tm_min
+           , l_t->tm_sec
            );
     
     for(l_idx=0; l_idx < argc; l_idx++)
@@ -587,7 +587,7 @@ p_fwrite_lastvals_desc(FILE *fp, const gchar *keyname, GimpLastvalDescType *last
     }
     fprintf(fp, "END;\n");
   }
-}	/* end p_fwrite_lastvals_desc */
+}       /* end p_fwrite_lastvals_desc */
 
 
 static gint32
@@ -630,7 +630,7 @@ p_fwrite_lines_until_keyname(FILE *fp, const char *keyname, gchar *ptr)
       fwrite(ptr, l_idx, 1, fp);
    }
    return l_idx;
-}	/* end p_fwrite_lines_until_keyname */
+}       /* end p_fwrite_lines_until_keyname */
 
 
 
@@ -686,7 +686,7 @@ p_fwrite_lines_remaining_without_keyname(FILE *fp, const char *keyname, gchar *p
         }
       }
    }
-}	/* end p_fwrite_lines_remaining_without_keyname */
+}       /* end p_fwrite_lines_remaining_without_keyname */
 
 
 static void
@@ -738,4 +738,4 @@ p_lastvals_register_persistent(const gchar *keyname, GimpLastvalDescType *lastva
     printf("p_lastvals_register_persistent: error at open write file: %s\n", fname);
   }
   g_free(fname);
-}	/* end p_lastvals_register_persistent */
+}       /* end p_lastvals_register_persistent */

@@ -442,12 +442,12 @@ gap_audio_extract_from_videofile(const char *videoname
           if(extracted_frames > 1)
           {
             l_samples_to_read = (gdouble)(extracted_frames +1.0)
-	                      / (gdouble)gvahand->framerate 
+                              / (gdouble)gvahand->framerate 
                         * (gdouble)gvahand->samplerate;
             if(gap_debug)
             {
               printf("A: l_samples_to_read %.0f extracted_frames:%d\n"
-	                  , (float)l_samples_to_read
+                          , (float)l_samples_to_read
                     ,(int)extracted_frames
                    );
             }
@@ -455,12 +455,12 @@ gap_audio_extract_from_videofile(const char *videoname
           else
           {
             l_samples_to_read = (gdouble)(expected_frames +1.0) 
-	                      / (gdouble)gvahand->framerate 
+                              / (gdouble)gvahand->framerate 
                         * (gdouble)gvahand->samplerate;
             if(gap_debug)
             {
               printf("B: l_samples_to_read %.0f extracted_frames:%d expected_frames:%d\n"
-	                        ,(float)l_samples_to_read
+                                ,(float)l_samples_to_read
                           ,(int)extracted_frames
                           ,(int)expected_frames
                           );

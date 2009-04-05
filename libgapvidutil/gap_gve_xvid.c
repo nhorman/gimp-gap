@@ -87,11 +87,11 @@ p_xvid_debug_write_mp4u_file(guchar *buff, gint32 len)
   totalsize = LONG_PACK('M','P','4','U');
   if(*((char *)(&totalsize)) == 'M')
   {
-		bigendian = 1;
+                bigendian = 1;
   }
   else
   {
-		bigendian = 0;
+                bigendian = 0;
   }
 
   /* get legth of file */
@@ -137,59 +137,59 @@ void
 gap_gve_xvid_algorithm_preset(GapGveXvidValues *xvid_val)
 {
   static int const motion_presets[7] = {
-	/* quality 0 */
-	0,
+        /* quality 0 */
+        0,
 
-	/* quality 1 */
-	XVID_ME_ADVANCEDDIAMOND16,
+        /* quality 1 */
+        XVID_ME_ADVANCEDDIAMOND16,
 
-	/* quality 2 */
-	XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16,
+        /* quality 2 */
+        XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16,
 
-	/* quality 3 */
-	XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
-	XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8,
+        /* quality 3 */
+        XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
+        XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8,
 
-	/* quality 4 */
-	XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
-	XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 |
-	XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
+        /* quality 4 */
+        XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
+        XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 |
+        XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
 
-	/* quality 5 */
-	XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
-	XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 |
-	XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
+        /* quality 5 */
+        XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 |
+        XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 |
+        XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
 
-	/* quality 6 */
-	XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 | XVID_ME_EXTSEARCH16 |
-	XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 | XVID_ME_EXTSEARCH8 |
-	XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
+        /* quality 6 */
+        XVID_ME_ADVANCEDDIAMOND16 | XVID_ME_HALFPELREFINE16 | XVID_ME_EXTSEARCH16 |
+        XVID_ME_ADVANCEDDIAMOND8 | XVID_ME_HALFPELREFINE8 | XVID_ME_EXTSEARCH8 |
+        XVID_ME_CHROMA_PVOP | XVID_ME_CHROMA_BVOP,
 
   };
 
   static const int vop_presets[] = {
-	/* quality 0 */
-	0,
+        /* quality 0 */
+        0,
 
-	/* quality 1 */
-	0,
+        /* quality 1 */
+        0,
 
-	/* quality 2 */
-	XVID_VOP_HALFPEL,
+        /* quality 2 */
+        XVID_VOP_HALFPEL,
 
-	/* quality 3 */
-	XVID_VOP_HALFPEL | XVID_VOP_INTER4V,
+        /* quality 3 */
+        XVID_VOP_HALFPEL | XVID_VOP_INTER4V,
 
-	/* quality 4 */
-	XVID_VOP_HALFPEL | XVID_VOP_INTER4V,
+        /* quality 4 */
+        XVID_VOP_HALFPEL | XVID_VOP_INTER4V,
 
-	/* quality 5 */
-	XVID_VOP_HALFPEL | XVID_VOP_INTER4V |
-	XVID_VOP_TRELLISQUANT,
+        /* quality 5 */
+        XVID_VOP_HALFPEL | XVID_VOP_INTER4V |
+        XVID_VOP_TRELLISQUANT,
 
-	/* quality 6 */
-	XVID_VOP_HALFPEL | XVID_VOP_INTER4V |
-	XVID_VOP_TRELLISQUANT | XVID_VOP_HQACPRED,
+        /* quality 6 */
+        XVID_VOP_HALFPEL | XVID_VOP_INTER4V |
+        XVID_VOP_TRELLISQUANT | XVID_VOP_HQACPRED,
 
   };
   if((xvid_val->quality_preset >= 0) && (xvid_val->quality_preset < 7))
@@ -239,7 +239,7 @@ gap_gve_xvid_init(gint32 width, gint32 height, gdouble framerate, GapGveXvidValu
           ,(int)XVID_VERSION_MAJOR(xvid_gbl_init->version)
           ,(int)XVID_VERSION_MINOR(xvid_gbl_init->version)
           ,(int)XVID_VERSION_PATCH(xvid_gbl_init->version)
-	  );
+          );
   }
     
 

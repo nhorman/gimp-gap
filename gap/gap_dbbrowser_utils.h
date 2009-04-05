@@ -55,9 +55,9 @@ gap_db_browser_dialog (char *title_txt,
                        t_constraint_func        constraint_func_sel1,
                        t_constraint_func        constraint_func_sel2,
                        GapDbBrowserResult      *result,
-		       gint32                   image_id,
-		       const char              *help_id
-		       );
+                       gint32                   image_id,
+                       const char              *help_id
+                       );
 
 gchar*
 gap_db_get_plugin_menupath        (const gchar *name);

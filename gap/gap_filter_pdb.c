@@ -105,20 +105,20 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
 
   /* query for plugin_name to get its argument types */
   if (!gimp_procedural_db_proc_info (plugin_name,
-				     &l_proc_blurb,
-				     &l_proc_help,
-				     &l_proc_author,
-				     &l_proc_copyright,
-				     &l_proc_date,
-				     &l_proc_type,
-				     &l_nparams,
-				     &l_nreturn_vals,
-				     &l_params,
-				     &l_return_vals))
+                                     &l_proc_blurb,
+                                     &l_proc_help,
+                                     &l_proc_author,
+                                     &l_proc_copyright,
+                                     &l_proc_date,
+                                     &l_proc_type,
+                                     &l_nparams,
+                                     &l_nreturn_vals,
+                                     &l_params,
+                                     &l_return_vals))
   {
     printf("ERROR: Plugin not available, Name was %s\n", plugin_name);
     return -1;
-  }			    
+  }                         
 
   /* construct the procedures arguments */
   l_argv = g_new (GimpParam, l_nparams);
@@ -212,13 +212,13 @@ gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name)
      * the drawable is ignored. (we can supply a dummy value)
      */
     l_params = gimp_run_procedure ("gimp_xcf_save",
-			         &l_retvals,
-			         GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-			         GIMP_PDB_IMAGE,    image_id,
-			         GIMP_PDB_DRAWABLE, 0,
-			         GIMP_PDB_STRING, sav_name,
-			         GIMP_PDB_STRING, sav_name, /* raw name ? */
-			         GIMP_PDB_END);
+                                 &l_retvals,
+                                 GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_IMAGE,    image_id,
+                                 GIMP_PDB_DRAWABLE, 0,
+                                 GIMP_PDB_STRING, sav_name,
+                                 GIMP_PDB_STRING, sav_name, /* raw name ? */
+                                 GIMP_PDB_END);
     l_rc = -1;
     if (l_params[0].data.d_status == GIMP_PDB_SUCCESS) 
     {
@@ -325,16 +325,16 @@ gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype)
    *  regarding a particular procedure.
    */
   if (gimp_procedural_db_proc_info (proc_name,
-				    &l_proc_blurb,
-				    &l_proc_help,
-				    &l_proc_author,
-				    &l_proc_copyright,
-				    &l_proc_date,
-				    &l_proc_type,
-				    &l_nparams,
-				    &l_nreturn_vals,
-				    &l_params,
-				    &l_return_vals))
+                                    &l_proc_blurb,
+                                    &l_proc_help,
+                                    &l_proc_author,
+                                    &l_proc_copyright,
+                                    &l_proc_date,
+                                    &l_proc_type,
+                                    &l_nparams,
+                                    &l_nreturn_vals,
+                                    &l_params,
+                                    &l_return_vals))
     {
      /* procedure found in PDB */
      if(gap_debug)
@@ -357,9 +357,9 @@ gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype)
            /* check if plugin can be a typical one, that works on one drawable */
            if (l_proc_type != GIMP_PLUGIN)         { l_rc = -1; break; }
            if (l_nparams  < 3)                      { l_rc = -1; break; }
-	   if (l_params[0].type !=  GIMP_PDB_INT32)    { l_rc = -1; break; }
-	   if (l_params[1].type !=  GIMP_PDB_IMAGE)    { l_rc = -1; break; }
-	   if (l_params[2].type !=  GIMP_PDB_DRAWABLE) { l_rc = -1; break; }
+           if (l_params[0].type !=  GIMP_PDB_INT32)    { l_rc = -1; break; }
+           if (l_params[1].type !=  GIMP_PDB_IMAGE)    { l_rc = -1; break; }
+           if (l_params[2].type !=  GIMP_PDB_DRAWABLE) { l_rc = -1; break; }
            break;
         default:
            break;
@@ -381,7 +381,7 @@ gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype)
   
 
   return l_rc;
-}	/* end gap_filt_pdb_procedure_available */
+}       /* end gap_filt_pdb_procedure_available */
 
 
 /* ------------------------
@@ -531,7 +531,7 @@ gap_filt_pdb_get_iterator_proc(const char *plugin_name, gint *count)
   g_free(canonical_name);
 
   return (l_plugin_iterator);
-}	/* end gap_filt_pdb_get_iterator_proc */
+}       /* end gap_filt_pdb_get_iterator_proc */
 
 
 /* ---------------------------------
@@ -566,8 +566,8 @@ gap_filt_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
       case GIMP_RGB:
       case GIMP_GRAY:
       case GIMP_INDEXED:
-	l_rc = 1;
-	break;
+        l_rc = 1;
+        break;
     }
     return l_rc;
   }  

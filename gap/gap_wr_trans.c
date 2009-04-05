@@ -416,27 +416,27 @@ run (const gchar *name,          /* name of plugin */
       /* here the action starts, we transform the drawable */
       trans_drawable_id = p_transform_layer(image_id
                                            , drawable_id
-					   , trans_mode
+                                           , trans_mode
                                            , &glob_vals
-					   );
+                                           );
       if (trans_drawable_id < 0)
       {
-	 status = GIMP_PDB_CALLING_ERROR;
+         status = GIMP_PDB_CALLING_ERROR;
       }
       else
       {
          values[1].data.d_drawable = drawable_id;
 
-	 /* Store variable states for next run
-	  * (the parameters for the transform wrapper plugins are stored
-	  *  even if they contain just a dummy
-	  *  this is done to fullfill the GIMP-GAP LAST_VALUES conventions
-	  *  for filtermacro and animated calls)
-	  */
-	 if (run_mode == GIMP_RUN_INTERACTIVE)
-	 {
-	   gimp_set_data (name, &glob_vals, sizeof (TransValues));
-	 }
+         /* Store variable states for next run
+          * (the parameters for the transform wrapper plugins are stored
+          *  even if they contain just a dummy
+          *  this is done to fullfill the GIMP-GAP LAST_VALUES conventions
+          *  for filtermacro and animated calls)
+          */
+         if (run_mode == GIMP_RUN_INTERACTIVE)
+         {
+           gimp_set_data (name, &glob_vals, sizeof (TransValues));
+         }
       }
     }
     else
@@ -445,9 +445,9 @@ run (const gchar *name,          /* name of plugin */
        if (run_mode == GIMP_RUN_INTERACTIVE)
        {
          g_message(_("The plug-in %s\noperates only on layers\n"
-	             "(but was called on mask or channel)")
-	          , name
-		  );
+                     "(but was called on mask or channel)")
+                  , name
+                  );
        }
     }
  
@@ -465,7 +465,7 @@ run (const gchar *name,          /* name of plugin */
 
   }
   values[0].data.d_status = status;
-}	/* end run */
+}       /* end run */
 
 
 
@@ -512,50 +512,50 @@ p_transform_layer(gint32 image_id, gint32 drawable_id, GapTransLayerMode trans_m
       axis = (gdouble)(gimp_drawable_width(drawable_id)) / 2.0;
       trans_drawable_id = gimp_drawable_transform_flip_simple(drawable_id
                                    ,GIMP_ORIENTATION_HORIZONTAL
-				   ,auto_center
-				   ,axis
-				   ,clip_result
-				   );
+                                   ,auto_center
+                                   ,axis
+                                   ,clip_result
+                                   );
       break;
     case GAP_TRANS_FLIP_VER:
       clip_result = TRUE;
       axis = (gdouble)(gimp_drawable_height(drawable_id)) / 2.0;
       trans_drawable_id = gimp_drawable_transform_flip_simple(drawable_id
                                    ,GIMP_ORIENTATION_VERTICAL
-				   ,auto_center
-				   ,axis
-				   ,clip_result
-				   );
+                                   ,auto_center
+                                   ,axis
+                                   ,clip_result
+                                   );
       break;
     case GAP_TRANS_ROT_90:
       clip_result = FALSE;
       trans_drawable_id = gimp_drawable_transform_rotate_simple(drawable_id
                                   ,GIMP_ROTATE_90
-				  ,auto_center
-				  ,center_x
-				  ,center_y
-				  ,clip_result
-				  );
+                                  ,auto_center
+                                  ,center_x
+                                  ,center_y
+                                  ,clip_result
+                                  );
       break;
     case GAP_TRANS_ROT_180:
       clip_result = FALSE;
       trans_drawable_id = gimp_drawable_transform_rotate_simple(drawable_id
                                   ,GIMP_ROTATE_180
-				  ,auto_center
-				  ,center_x
-				  ,center_y
-				  ,clip_result
-				  );
+                                  ,auto_center
+                                  ,center_x
+                                  ,center_y
+                                  ,clip_result
+                                  );
       break;
     case GAP_TRANS_ROT_270:
       clip_result = FALSE;
       trans_drawable_id = gimp_drawable_transform_rotate_simple(drawable_id
                                   ,GIMP_ROTATE_270
-				  ,auto_center
-				  ,center_x
-				  ,center_y
-				  ,clip_result
-				  );
+                                  ,auto_center
+                                  ,center_x
+                                  ,center_y
+                                  ,clip_result
+                                  );
       break;
     case GAP_TRANS_ROT_ANY:
       {
@@ -566,12 +566,12 @@ p_transform_layer(gint32 image_id, gint32 drawable_id, GapTransLayerMode trans_m
 
          trans_drawable_id = gimp_drawable_transform_rotate_default(drawable_id
                                                       , l_angle_rad
-						      , FALSE            /* auto_center */
-						      , center_x
-						      , center_y
-						      , TRUE             /* interpolation (TRUE use default interpolation) */
-						      , clip_result
-						      );
+                                                      , FALSE            /* auto_center */
+                                                      , center_x
+                                                      , center_y
+                                                      , TRUE             /* interpolation (TRUE use default interpolation) */
+                                                      , clip_result
+                                                      );
 
 
       }  /* end gap_pdb_gimp_rotate_degree */

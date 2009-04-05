@@ -243,8 +243,8 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
      l_overwrite_mode_audio = 0;
      l_overwrite_mode_audio = gap_vex_dlg_overwrite_dialog(gpp
                                  , gpp->val.audiofile
-				 , l_overwrite_mode_audio
-				 );
+                                 , l_overwrite_mode_audio
+                                 );
   }
 
 
@@ -386,7 +386,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
       else
       {
         /* dead code (older and slower seek emulation
-	 * implementation outside the API) 
+         * implementation outside the API) 
          */
         l_seek_framenumber = l_pos;
         if(l_pos_unit == GVA_UPOS_PRECENTAGE)
@@ -434,7 +434,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
        if(gpp->val.multilayer == 0)
        {
          if((gpp->val.deinterlace == GAP_VEX_DELACE_ODD_X2) 
-	 || (gpp->val.deinterlace == GAP_VEX_DELACE_EVEN_X2))
+         || (gpp->val.deinterlace == GAP_VEX_DELACE_EVEN_X2))
          {
            framenumber_fil = (framenumber * 2) -1;
          }
@@ -467,9 +467,9 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
            gpp->val.image_ID = gvahand->image_id;
 
            l_overwrite_mode = gap_vex_dlg_overwrite_dialog(gpp
-	                             , framename
-				     , l_overwrite_mode
-				     );
+                                     , framename
+                                     , l_overwrite_mode
+                                     );
            if (l_overwrite_mode < 0)
            {
                g_free(framename);       
@@ -525,7 +525,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
          gpp->val.image_ID = gvahand->image_id;
          
          if((gpp->val.deinterlace == GAP_VEX_DELACE_ODD_X2)
-	 || (gpp->val.deinterlace == GAP_VEX_DELACE_EVEN_X2))
+         || (gpp->val.deinterlace == GAP_VEX_DELACE_EVEN_X2))
          {
            /* deinterlace the other set of rows as extra layer (even/odd) */
            l_rc = GVA_frame_to_gimp_layer(gvahand

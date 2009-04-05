@@ -330,7 +330,7 @@ on_cme__combo_enocder  (GtkWidget     *widget,
   {
      if(gap_debug)
      {
-	printf("CB: on_cme__combo_encoder index: %d, %s, plugin: %s\n"
+        printf("CB: on_cme__combo_encoder index: %d, %s, plugin: %s\n"
                , (int)l_ecp->menu_nr
                , l_ecp->menu_name
                , l_ecp->vid_enc_plugin);
@@ -1193,7 +1193,7 @@ on_cme__button_stb_audio_clicked     (GtkButton       *button,
       if(g_file_test(gpp->val.storyboard_file, G_FILE_TEST_EXISTS))
       {
         gpp->storyboard_create_composite_audio = TRUE;
-	gap_cme_gui_check_storyboard_file(gpp);
+        gap_cme_gui_check_storyboard_file(gpp);
       }
     }
   }

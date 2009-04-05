@@ -393,8 +393,8 @@ run (const gchar *name,          /* name of plugin */
 #endif
   g_message(_("Videoextract is not available because "
               "GIMP-GAP was configured and compiled with\n "
-	      "--disable-videoapi-support")
-	   );
+              "--disable-videoapi-support")
+           );
   return;
 
 }  /* end run */

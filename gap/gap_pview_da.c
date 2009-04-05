@@ -192,8 +192,8 @@ p_render_thdata_as_flipped_pixbuf(GapPView *pv_ptr
               , pv_ptr->pv_width * pv_ptr->pv_bpp  /* rowstride */
               , NULL                  /* GdkPixbufDestroyNotify NULL: dont call destroy_fn */
               , pv_ptr->pv_area_data  /* gpointer destroy_fn_data */
-	);
-	
+        );
+        
   /* clear flag to let gap_pview_repaint procedure know
    * to use the pixbuf rather than pv_area_data or pixmap for refresh
    */
@@ -223,15 +223,15 @@ p_pview_repaint_desaturated(GapPView *pv_ptr)
   if(pv_ptr->pv_desaturated_area_data)
   {
     gdk_draw_rgb_image ( pv_ptr->da_widget->window
-		       , pv_ptr->da_widget->style->white_gc
-		       , 0
-		       , 0
-		       , pv_ptr->pv_width
-		       , pv_ptr->pv_height
-		       , GDK_RGB_DITHER_NORMAL
-		       , pv_ptr->pv_desaturated_area_data
-		       , pv_ptr->pv_width * 3
-		       );
+                       , pv_ptr->da_widget->style->white_gc
+                       , 0
+                       , 0
+                       , pv_ptr->pv_width
+                       , pv_ptr->pv_height
+                       , GDK_RGB_DITHER_NORMAL
+                       , pv_ptr->pv_desaturated_area_data
+                       , pv_ptr->pv_width * 3
+                       );
   }
 
 }  /* end p_pview_repaint_desaturated */  
@@ -562,7 +562,7 @@ gap_pview_repaint(GapPView *pv_ptr)
     }
     gdk_draw_pixbuf(
                      pv_ptr->da_widget->window
-		   , pv_ptr->da_widget->style->white_gc
+                   , pv_ptr->da_widget->style->white_gc
                    , pv_ptr->pixbuf
                    , 0                         /*  gint src_x  */
                    , 0                         /*  gint src_y  */
@@ -573,7 +573,7 @@ gap_pview_repaint(GapPView *pv_ptr)
                    , GDK_RGB_DITHER_NORMAL
                    , 0                         /* gint x_dither_offset */
                    , 0                         /* gint y_dither_offset */
-		   );
+                   );
     return;
   }
   
@@ -594,15 +594,15 @@ gap_pview_repaint(GapPView *pv_ptr)
       }
     }
     gdk_draw_rgb_image ( pv_ptr->da_widget->window
-		       , pv_ptr->da_widget->style->white_gc
-		       , 0
-		       , 0
-		       , pv_ptr->pv_width
-		       , pv_ptr->pv_height
-		       , GDK_RGB_DITHER_NORMAL
-		       , pv_ptr->pv_area_data
-		       , pv_ptr->pv_width * 3
-		       );
+                       , pv_ptr->da_widget->style->white_gc
+                       , 0
+                       , 0
+                       , pv_ptr->pv_width
+                       , pv_ptr->pv_height
+                       , GDK_RGB_DITHER_NORMAL
+                       , pv_ptr->pv_area_data
+                       , pv_ptr->pv_width * 3
+                       );
     return;
   }
 
@@ -654,7 +654,7 @@ gap_pview_render_f_from_buf (GapPView *pv_ptr
                  , gint    src_bpp
                  , gboolean allow_grab_src_data
                  , gint32 flip_request
-		 , gint32 flip_status
+                 , gint32 flip_status
                  )
 {
   register guchar  *src, *dest;
@@ -811,49 +811,49 @@ gap_pview_render_f_from_buf (GapPView *pv_ptr
         {
           src = &src_row[ pv_ptr->src_col[col] ];
           alpha = src[ofs_alpha];
-	  if(alpha > 244)
-	  {
-	    /* copy full (or nearly full opaque) pixels 1:1
-	     * without MIXING with checkerboard background.
-	     * (speeds up rendering of opaque pixels)
-	     */
+          if(alpha > 244)
+          {
+            /* copy full (or nearly full opaque) pixels 1:1
+             * without MIXING with checkerboard background.
+             * (speeds up rendering of opaque pixels)
+             */
             *(dest++) = src[0];
             *(dest++) = src[ofs_green];
             *(dest++) = src[ofs_blue];
-	  }
-	  else
-	  {
+          }
+          else
+          {
             if(((col+ii) / pv_ptr->pv_check_size) & 1)
             {
-	      if(alpha < 10)
-	      {
-        	*(dest++) = PREVIEW_BG_GRAY1;
-        	*(dest++) = PREVIEW_BG_GRAY1;
-        	*(dest++) = PREVIEW_BG_GRAY1;
-	      }
-	      else
-	      {
-        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[0], alpha);
-        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_green], alpha);
-        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_blue], alpha);
-	      }
+              if(alpha < 10)
+              {
+                *(dest++) = PREVIEW_BG_GRAY1;
+                *(dest++) = PREVIEW_BG_GRAY1;
+                *(dest++) = PREVIEW_BG_GRAY1;
+              }
+              else
+              {
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[0], alpha);
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_green], alpha);
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_blue], alpha);
+              }
             }
             else
             {
-	      if(alpha < 10)
-	      {
-        	*(dest++) = PREVIEW_BG_GRAY2;
-        	*(dest++) = PREVIEW_BG_GRAY2;
-        	*(dest++) = PREVIEW_BG_GRAY2;
-	      }
-	      else
-	      {
+              if(alpha < 10)
+              {
+                *(dest++) = PREVIEW_BG_GRAY2;
+                *(dest++) = PREVIEW_BG_GRAY2;
+                *(dest++) = PREVIEW_BG_GRAY2;
+              }
+              else
+              {
                 *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[0], alpha);
                 *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_green], alpha);
                 *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_blue], alpha);
-	      }
+              }
             }
-	  }
+          }
         }
     }
   }
@@ -908,7 +908,7 @@ gap_pview_render_f_from_image (GapPView *pv_ptr
     {
       printf("gap_pview_render_f_from_image: have no image, cant render image_id:%d\n"
             ,(int)image_id
-	    );
+            );
     }
     return;
   }
@@ -957,12 +957,12 @@ gap_pview_render_f_from_image (GapPView *pv_ptr
   
   gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
                       , drawable->width, drawable->height
-		      , FALSE     /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , FALSE     /* dirty */
+                      , FALSE     /* shadow */
+                       );
   gimp_pixel_rgn_get_rect (&pixel_rgn, frame_data
                           , 0
-			  , 0
+                          , 0
                           , drawable->width
                           , drawable->height);
                           
@@ -977,7 +977,7 @@ gap_pview_render_f_from_image (GapPView *pv_ptr
                    , drawable->bpp
                    , TRUE            /* allow_grab_src_data */
                    , flip_request
-		   , flip_status
+                   , flip_status
 
                  );
   
@@ -1015,8 +1015,8 @@ gap_pview_render_f_from_image_duplicate (GapPView *pv_ptr
   gap_pview_render_f_from_image(pv_ptr
                  , dup_image_id
                  , flip_request
-		 , flip_status
-		 );
+                 , flip_status
+                 );
   gimp_image_delete(dup_image_id);
   
 }  /* end gap_pview_render_f_from_image_duplicate */
@@ -1196,7 +1196,7 @@ gap_pview_render_f_from_pixbuf (GapPView *pv_ptr
   
   /* scale and flatten the pixbuf */
   pv_ptr->pixbuf = gdk_pixbuf_composite_color_simple(
-                	 src_pixbuf
+                         src_pixbuf
                       , (int) pv_ptr->pv_width
                       , (int) pv_ptr->pv_height
                       , GDK_INTERP_NEAREST
@@ -1204,7 +1204,7 @@ gap_pview_render_f_from_pixbuf (GapPView *pv_ptr
                       , (int)l_check_size            /* power of 2 required */
                       , PREVIEW_BG_GRAY1_GDK
                       , PREVIEW_BG_GRAY2_GDK
-		      );
+                      );
   if(gap_debug)
   {
     int nchannels;
@@ -1296,13 +1296,13 @@ gap_pview_render_f_from_pixbuf (GapPView *pv_ptr
      
     gap_pview_render_f_from_buf(pv_ptr
                              , pix_data
-			     , width
-			     , height
-			     , nchannels
-			     , FALSE                             /* DONT allow_grab_src_data */
+                             , width
+                             , height
+                             , nchannels
+                             , FALSE                             /* DONT allow_grab_src_data */
                              , flip_request
                              , flip_status
-			     );
+                             );
   }
   
 
@@ -1394,7 +1394,7 @@ gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
   {
     size_t pixel_data_size = pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp;
     pixel_data_copy = g_new ( guchar, pixel_data_size );
-    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);			    
+    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);                       
 
     return(gdk_pixbuf_new_from_data(
             pixel_data_copy
@@ -1406,7 +1406,7 @@ gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
             , rowstride
             , (GdkPixbufDestroyNotify)p_pixmap_data_destructor  /* destroy_fn */
             , pixel_data_copy    /* gpointer destroy_fn_data */
-	));
+        ));
   }
   return (NULL);
 }  /* end gap_pview_get_repaint_pixbuf */
@@ -1481,7 +1481,7 @@ gap_pview_get_repaint_thdata(GapPView   *pv_ptr        /* IN */
   {
     size_t pixel_data_size = pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp;
     pixel_data_copy = g_new ( guchar, pixel_data_size );
-    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);			    
+    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);                       
 
     *th_size       = width * height * pv_ptr->pv_bpp;
     *th_width      = width;

@@ -171,9 +171,9 @@ int gap_debug = 0;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -275,13 +275,13 @@ GimpPlugInInfo PLUG_IN_INFO =
     { GIMP_PDB_INT32,      "src_stepmode",      "0-5     derive inserted object as copy of one layer from a multilayer src_image \n"
                                                 "100-105 derive inserted object as copy of merged visible layers of a source video frame \n"
                                                 "0:  Layer Loop  1: Layer Loop reverse  2: Layer Once  3: Layer Once reverse  4: Layer PingPong \n"
-						"5: None (use onle the selected src_layer)\n"
+                                                "5: None (use onle the selected src_layer)\n"
                                                 "100: Frame Loop  101: Frame Loop reverse  102: Frame Once  103: Frame Once reverse  104: Frame PingPong \n"
-						"105: Frame None (use onle the flat copy of the selected frame)\n"
-						},
+                                                "105: Frame None (use onle the flat copy of the selected frame)\n"
+                                                },
     { GIMP_PDB_INT32,      "src_handle",        "0: handle left top   1: handle left bottom \n"
                                                 "2: handle right top  3: handle right bottom \n"
-						"4: handle center"},
+                                                "4: handle center"},
     { GIMP_PDB_INT32,      "src_paintmode",     "4444: keep original paintmode of src_layer 0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
     { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
@@ -301,7 +301,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32,        "apply_bluebox",           "TRUE: apply blubox filter (using bluebox param VALUES of last successful bluebox run)"},
     {GIMP_PDB_INT32,        "src_selmode",      "0: ignore selections in all source images\n"
                                                 "1: use one selection (from the inital source image) for all handled src layers \n"
-						"2: use selections in all source images (for stepmodes 0-5 there is only one source image)"},
+                                                "2: use selections in all source images (for stepmodes 0-5 there is only one source image)"},
 
 
     /* CONTROLPOINT Arrays (the _ext API uses FLOAT arrays for more precision) */
@@ -355,13 +355,13 @@ GimpPlugInInfo PLUG_IN_INFO =
     { GIMP_PDB_INT32,      "src_stepmode",      "0-5     derive inserted object as copy of one layer from a multilayer src_image \n"
                                                 "100-105 derive inserted object as copy of merged visible layers of a source video frame \n"
                                                 "0:  Layer Loop  1: Layer Loop reverse  2: Layer Once  3: Layer Once reverse  4: Layer PingPong \n"
-						"5: None (use onle the selected src_layer)\n"
+                                                "5: None (use onle the selected src_layer)\n"
                                                 "100: Frame Loop  101: Frame Loop reverse  102: Frame Once  103: Frame Once reverse  104: Frame PingPong \n"
-						"105: Frame None (use onle the flat copy of the selected frame)\n"
-						},
+                                                "105: Frame None (use onle the flat copy of the selected frame)\n"
+                                                },
     { GIMP_PDB_INT32,      "src_handle",        "0: handle left top   1: handle left bottom \n"
                                                 "2: handle right top  3: handle right bottom \n"
-						"4: handle center"},
+                                                "4: handle center"},
     { GIMP_PDB_INT32,      "src_paintmode",     "4444: keep original paintmode of src_layer 0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
     { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
@@ -567,64 +567,64 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
     {GIMP_PDB_INT32, "action_mode", "0:set_visible"
                                     ", 1:set_invisible"
-				    ", 2:set_linked"
-				    ", 3:set_unlinked"
-				    ", 4:raise"
-				    ", 5:lower"
-				    ", 6:merge_expand"
-				    ", 7:merge_img"
-				    ", 8:merge_bg"
-				    ", 9:apply_filter"
-				    ", 10:duplicate"
-				    ", 11:delete"
-				    ", 12:rename"
-				    ", 13:replace selection"
-				    ", 14:add selection"
-				    ", 15:sbtract selection"
-				    ", 16:intersect selection"
-				    ", 17:selection none"
-				    ", 18:selection all"
-				    ", 19:selection invert"
-				    ", 20:save selection to channel"
-				    ", 21:load selection from channel"
-				    ", 22:delete channel (by name)"
-				    ", 23:add alpha channel"
-				    ", 24:add white layermask (opaque)"
-				    ", 25:add black layermask (transparent)"
-				    ", 26:add alpha layermask"
-				    ", 27:add alpha transfer layermask"
-				    ", 28:add selection as layermask"
-				    ", 29:add bw copy as layermask"
-				    ", 30:delete layermask"
-				    ", 31:apply layermask"
-				    ", 32:copy layermask from layer above"
-				    ", 33:copy layermask from layer below"
-				    ", 34:invert layermask"
-				    ", 35:set layer mode to normal"
-				    ", 36:set layer mode to dissolve"
-				    ", 37:set layer mode to multiply"
-				    ", 38:set layer mode to divide"
-				    ", 39:set layer mode to screen"
-				    ", 40:set layer mode to overlay"
-				    ", 41:set layer mode to difference"
-				    ", 42:set layer mode to addition"
-				    ", 43:set layer mode to subtract"
-				    ", 44:set layer mode to darken_only"
-				    ", 45:set layer mode to lighten_only"
-				    ", 46:set layer mode to dodge"
-				    ", 47:set layer mode to burn"
-				    ", 48:set layer mode to hardlight"
-				    ", 49:set layer mode to softlight"
-				    ", 50:set layer mode to color_erase"
-				    ", 51:set layer mode to grain_extract_mode"
-				    ", 52:set layer mode to grain_merge_mode"
-				    ", 53:set layer mode to hue_mode"
-				    ", 54:set layer mode to saturation_mode"
-				    ", 55:set layer mode to color_mode"
-				    ", 56:set layer mode to value_mode"
-				    ", 57:apply filter on layermask"
-				    ", 58:set selection from alphachannel"
-				    },
+                                    ", 2:set_linked"
+                                    ", 3:set_unlinked"
+                                    ", 4:raise"
+                                    ", 5:lower"
+                                    ", 6:merge_expand"
+                                    ", 7:merge_img"
+                                    ", 8:merge_bg"
+                                    ", 9:apply_filter"
+                                    ", 10:duplicate"
+                                    ", 11:delete"
+                                    ", 12:rename"
+                                    ", 13:replace selection"
+                                    ", 14:add selection"
+                                    ", 15:sbtract selection"
+                                    ", 16:intersect selection"
+                                    ", 17:selection none"
+                                    ", 18:selection all"
+                                    ", 19:selection invert"
+                                    ", 20:save selection to channel"
+                                    ", 21:load selection from channel"
+                                    ", 22:delete channel (by name)"
+                                    ", 23:add alpha channel"
+                                    ", 24:add white layermask (opaque)"
+                                    ", 25:add black layermask (transparent)"
+                                    ", 26:add alpha layermask"
+                                    ", 27:add alpha transfer layermask"
+                                    ", 28:add selection as layermask"
+                                    ", 29:add bw copy as layermask"
+                                    ", 30:delete layermask"
+                                    ", 31:apply layermask"
+                                    ", 32:copy layermask from layer above"
+                                    ", 33:copy layermask from layer below"
+                                    ", 34:invert layermask"
+                                    ", 35:set layer mode to normal"
+                                    ", 36:set layer mode to dissolve"
+                                    ", 37:set layer mode to multiply"
+                                    ", 38:set layer mode to divide"
+                                    ", 39:set layer mode to screen"
+                                    ", 40:set layer mode to overlay"
+                                    ", 41:set layer mode to difference"
+                                    ", 42:set layer mode to addition"
+                                    ", 43:set layer mode to subtract"
+                                    ", 44:set layer mode to darken_only"
+                                    ", 45:set layer mode to lighten_only"
+                                    ", 46:set layer mode to dodge"
+                                    ", 47:set layer mode to burn"
+                                    ", 48:set layer mode to hardlight"
+                                    ", 49:set layer mode to softlight"
+                                    ", 50:set layer mode to color_erase"
+                                    ", 51:set layer mode to grain_extract_mode"
+                                    ", 52:set layer mode to grain_merge_mode"
+                                    ", 53:set layer mode to hue_mode"
+                                    ", 54:set layer mode to saturation_mode"
+                                    ", 55:set layer mode to color_mode"
+                                    ", 56:set layer mode to value_mode"
+                                    ", 57:apply filter on layermask"
+                                    ", 58:set selection from alphachannel"
+                                    },
     {GIMP_PDB_INT32, "select_mode", "Mode how to identify a layer: 0-3 by layername 0=equal, 1=prefix, 2=suffix, 3=contains, 4=layerstack_numberslist, 5=inv_layerstack, 6=all_visible"},
     {GIMP_PDB_INT32, "select_case", "0: ignore case 1: select_string is case sensitive"},
     {GIMP_PDB_INT32, "select_invert", "0: select normal 1: invert (select all unselected layers)"},
@@ -650,7 +650,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "paste_mode", "0 .. paste at current frame (replacing current and following frames)"
                                 "1 .. paste insert before current frame "
-				"2 .. paste insert after current frame"},
+                                "2 .. paste insert after current frame"},
   };
   static int nargs_video_paste = G_N_ELEMENTS (args_video_paste);
 
@@ -695,305 +695,305 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_NEXT,
-			 "This plugin exchanges current image with (next numbered) image from disk.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Next Frame"),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_std, nreturn_std,
-			 args_std, return_std);
+                         "This plugin exchanges current image with (next numbered) image from disk.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Next Frame"),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_std, nreturn_std,
+                         args_std, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_PREV,
-			 "This plugin exchanges current image with (previous numbered) image from disk.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Previous Frame"),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_std, nreturn_std,
-			 args_std, return_std);
+                         "This plugin exchanges current image with (previous numbered) image from disk.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Previous Frame"),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_std, nreturn_std,
+                         args_std, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_FIRST,
-			 "This plugin exchanges current image with (lowest numbered) image from disk.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("First Frame"),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_std, nreturn_std,
-			 args_std, return_std);
+                         "This plugin exchanges current image with (lowest numbered) image from disk.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("First Frame"),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_std, nreturn_std,
+                         args_std, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_LAST,
-			 "This plugin exchanges current image with (highest numbered) image from disk.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Last Frame"),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_std, nreturn_std,
-			 args_std, return_std);
+                         "This plugin exchanges current image with (highest numbered) image from disk.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Last Frame"),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_std, nreturn_std,
+                         args_std, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_GOTO,
-			 "This plugin exchanges current image with requested image (nr) from disk.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Any Frame..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_goto, nreturn_std,
-			 args_goto, return_std);
+                         "This plugin exchanges current image with requested image (nr) from disk.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Any Frame..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_goto, nreturn_std,
+                         args_goto, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_DEL,
-			 "This plugin deletes the given number of frames from disk including the current frame.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Delete Frames..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_del, nreturn_std,
-			 args_del, return_std);
+                         "This plugin deletes the given number of frames from disk including the current frame.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Delete Frames..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_del, nreturn_std,
+                         args_del, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_DUP,
-			 "This plugin duplicates the current frames on disk n-times.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Duplicate Frames..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_dup, nreturn_std,
-			 args_dup, return_std);
+                         "This plugin duplicates the current frames on disk n-times.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Duplicate Frames..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_dup, nreturn_std,
+                         args_dup, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_DENSITY,
-			 "This plugin changes the number of frames (density) on disk to match a"
-			 " new target framerate that is densty_factor times higher"
-			 " than the origianl framerate."
-			 " (or 1/density_factor lower if density_grow is FALSE)"
-			 " changing of density results in duplicating (or deleting)"
-			 " of frames on disk",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Density..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_dup, nreturn_std,
-			 args_dup, return_std);
+                         "This plugin changes the number of frames (density) on disk to match a"
+                         " new target framerate that is densty_factor times higher"
+                         " than the origianl framerate."
+                         " (or 1/density_factor lower if density_grow is FALSE)"
+                         " changing of density results in duplicating (or deleting)"
+                         " of frames on disk",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Density..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_dup, nreturn_std,
+                         args_dup, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_EXCHG,
-			 "This plugin exchanges content of the current with destination frame.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Exchange Frame..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_exchg, nreturn_std,
-			 args_exchg, return_std);
+                         "This plugin exchanges content of the current with destination frame.",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Exchange Frame..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_exchg, nreturn_std,
+                         args_exchg, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_MOVE,
-			 "This plugin copies layer(s) from one sourceimage to multiple frames on disk, varying position, size and opacity.",
-			 "For NONINTERACTIVE PDB interfaces see also (plug_in_gap_move_path_ext, plug_in_gap_move_path_ext2)",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Move Path..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mov), nreturn_std,
-			 args_mov, return_std);
+                         "This plugin copies layer(s) from one sourceimage to multiple frames on disk, varying position, size and opacity.",
+                         "For NONINTERACTIVE PDB interfaces see also (plug_in_gap_move_path_ext, plug_in_gap_move_path_ext2)",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Move Path..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_mov), nreturn_std,
+                         args_mov, return_std);
 
   l_help_str = g_strdup_printf(
-			 "This plugin inserts one layer in each frame of the selected frame range of an Animation\n"
-			 " (specified by the dst_image parameter).\n"
-			 " An Animation is a series of numbered video frame images on disk where only the current\n"
-			 " Frame is opened in the gimp\n"
-			 " The inserted layer is derived from another (multilayer)image\n"
-			 " or from another Animation (as merged copy of the visible layers in a source frame)\n"
-			 " the affected destination frame range is selected by the range_from and range_to parameters\n"
-			 " the src_stepmode parameter controls how to derive the layer that is to be inserted.\n"
-			 " With the Controlpoint Parameters you can control position (coordinates),\n"
-			 " size, rotation, perspective and opacity values of the inserted layer\n"
-			 " If you want to move an Object from position AX/AY to BX/BY in a straight line within the range of 24 frames\n"
-			 " you need 2 Contolpoints, if you want the object to move folowing a path\n"
-			 " you need some more Controlpoints to do that.\n"
-			 " With the rotation_follow Parameter you can force automatic calculation of the rotation for the inserted\n"
-			 " layer according to the path vectors it is moving along.\n"
-			 " A controlpoint can be fixed to a special framenumber using the keyframe_abs controlpoint-parameter.\n"
-			 " Restictions:\n"
-			 " - keyframe_abs numbers must be 0 (== not fixed) or a frame_number within the affected frame range\n"
-			 " - keyframes_abs must be in sequence (ascending or descending)\n"
-			 " - the first and last controlpoint are always implicite keyframes, and should be passed with keyframe_abs = 0\n"
-			 " - the number of controlpoints is limitied to a maximum of %d.\n"
+                         "This plugin inserts one layer in each frame of the selected frame range of an Animation\n"
+                         " (specified by the dst_image parameter).\n"
+                         " An Animation is a series of numbered video frame images on disk where only the current\n"
+                         " Frame is opened in the gimp\n"
+                         " The inserted layer is derived from another (multilayer)image\n"
+                         " or from another Animation (as merged copy of the visible layers in a source frame)\n"
+                         " the affected destination frame range is selected by the range_from and range_to parameters\n"
+                         " the src_stepmode parameter controls how to derive the layer that is to be inserted.\n"
+                         " With the Controlpoint Parameters you can control position (coordinates),\n"
+                         " size, rotation, perspective and opacity values of the inserted layer\n"
+                         " If you want to move an Object from position AX/AY to BX/BY in a straight line within the range of 24 frames\n"
+                         " you need 2 Contolpoints, if you want the object to move folowing a path\n"
+                         " you need some more Controlpoints to do that.\n"
+                         " With the rotation_follow Parameter you can force automatic calculation of the rotation for the inserted\n"
+                         " layer according to the path vectors it is moving along.\n"
+                         " A controlpoint can be fixed to a special framenumber using the keyframe_abs controlpoint-parameter.\n"
+                         " Restictions:\n"
+                         " - keyframe_abs numbers must be 0 (== not fixed) or a frame_number within the affected frame range\n"
+                         " - keyframes_abs must be in sequence (ascending or descending)\n"
+                         " - the first and last controlpoint are always implicite keyframes, and should be passed with keyframe_abs = 0\n"
+                         " - the number of controlpoints is limitied to a maximum of %d.\n"
                          "   the number of controlpoints must be passed in all argc_* parameters\n"
-			 "If the TraceLayer feature is turned on, an additional layer\n"
-			 "  is inserted below the moving object. This Tracelayer shows all steps\n"
-			 "  of the moving object since the 1st Frame.\n"
-			 "With TweenSteps you can calculate virtual Frames between 2 destination frames\n"
-			 "  all these Steps are collected in another additional Layer.\n"
-			 "  this Tweenlayer is added below the moving Obect in all handled destination Frames\n"
-			 "See also (plug_in_gap_move_path, plug_in_gap_move)",
-			 (int)GAP_MOV_MAX_POINT);
+                         "If the TraceLayer feature is turned on, an additional layer\n"
+                         "  is inserted below the moving object. This Tracelayer shows all steps\n"
+                         "  of the moving object since the 1st Frame.\n"
+                         "With TweenSteps you can calculate virtual Frames between 2 destination frames\n"
+                         "  all these Steps are collected in another additional Layer.\n"
+                         "  this Tweenlayer is added below the moving Obect in all handled destination Frames\n"
+                         "See also (plug_in_gap_move_path, plug_in_gap_move)",
+                         (int)GAP_MOV_MAX_POINT);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_MOVE_PATH_EXT,
-			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
-			 "with varying position, size, perspective and opacity.\n"
-			 ,
-			 l_help_str,
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                      /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_mov_path_ext, nreturn_std,
-			 args_mov_path_ext, return_std);
+                         "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
+                         "with varying position, size, perspective and opacity.\n"
+                         ,
+                         l_help_str,
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                      /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_mov_path_ext, nreturn_std,
+                         args_mov_path_ext, return_std);
   g_free(l_help_str);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_MOVE_PATH_EXT2,
-			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
-			 "with varying position, size, perspective and opacity.\n"
-			 ,
-			 "This plugin is just another Interface for the MovePath (plug_in_gap_move_path_ext)\n"
-			 " using a File to specify Controlpoints (rather than Array parameters).\n"
-			 " Notes:\n"
-			 " - you can create a controlpoint file with in the MovePath Dialog (interactive call of plug_in_gap_move)\n"
-			 " - for more infos about controlpoints see help of (plug_in_gap_move_path)\n"
-			 ,
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                      /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_mov_path_ext2, nreturn_std,
-			 args_mov_path_ext2, return_std);
+                         "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
+                         "with varying position, size, perspective and opacity.\n"
+                         ,
+                         "This plugin is just another Interface for the MovePath (plug_in_gap_move_path_ext)\n"
+                         " using a File to specify Controlpoints (rather than Array parameters).\n"
+                         " Notes:\n"
+                         " - you can create a controlpoint file with in the MovePath Dialog (interactive call of plug_in_gap_move)\n"
+                         " - for more infos about controlpoints see help of (plug_in_gap_move_path)\n"
+                         ,
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                      /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_mov_path_ext2, nreturn_std,
+                         args_mov_path_ext2, return_std);
 
 
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER,
-			 "This plugin creates a new image from the given range of frame-images. Each frame is converted to one layer in the new image, according to flatten_mode. (the frames on disk are not changed).",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames to Image..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_f2multi, nreturn_f2multi,
-			 args_f2multi, return_f2multi);
+                         "This plugin creates a new image from the given range of frame-images. Each frame is converted to one layer in the new image, according to flatten_mode. (the frames on disk are not changed).",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames to Image..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_f2multi, nreturn_f2multi,
+                         args_f2multi, return_f2multi);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_FLATTEN,
-			 "This plugin flattens the given range of frame-images (on disk)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Flatten..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_rflatt, nreturn_std,
-			 args_rflatt, return_std);
+                         "This plugin flattens the given range of frame-images (on disk)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Flatten..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_rflatt, nreturn_std,
+                         args_rflatt, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_LAYER_DEL,
-			 "This plugin deletes one layer in the given range of frame-images (on disk). exception: the last remaining layer of a frame is not deleted",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Layer Delete..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_rlayerdel, nreturn_std,
-			 args_rlayerdel, return_std);
+                         "This plugin deletes one layer in the given range of frame-images (on disk). exception: the last remaining layer of a frame is not deleted",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Layer Delete..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_rlayerdel, nreturn_std,
+                         args_rlayerdel, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_CONVERT,
-			 "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
-			 "WARNING this procedure is obsolete, please use plug_in_gap_range_convert2",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                      /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_rconv, nreturn_rconv,
-			 args_rconv, return_rconv);
+                         "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
+                         "WARNING this procedure is obsolete, please use plug_in_gap_range_convert2",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                      /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_rconv, nreturn_rconv,
+                         args_rconv, return_rconv);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_CONVERT2,
-			 "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
-			 "only one of the converted frames is returned (the one with lowest handled frame number)",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Convert..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_rconv2, nreturn_rconv,
-			 args_rconv2, return_rconv);
+                         "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
+                         "only one of the converted frames is returned (the one with lowest handled frame number)",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Convert..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_rconv2, nreturn_rconv,
+                         args_rconv2, return_rconv);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_RESIZE,
-			 "This plugin resizes all video frames (images on disk) to the given new_width/new_height",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Resize..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_resize, nreturn_std,
-			 args_resize, return_std);
+                         "This plugin resizes all video frames (images on disk) to the given new_width/new_height",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Resize..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_resize, nreturn_std,
+                         args_resize, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_CROP,
-			 "This plugin crops all video frames (images on disk) to the given new_width/new_height",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Crop..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_resize, nreturn_std,
-			 args_resize, return_std);
+                         "This plugin crops all video frames (images on disk) to the given new_width/new_height",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Crop..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_resize, nreturn_std,
+                         args_resize, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_SCALE,
-			 "This plugin scales all video frames (images on disk) to the given new_width/new_height",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Scale..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_scale, nreturn_std,
-			 args_scale, return_std);
+                         "This plugin scales all video frames (images on disk) to the given new_width/new_height",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Scale..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_scale, nreturn_std,
+                         args_scale, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_SPLIT,
-			 "This plugin splits the current image to video frames (images on disk). Each layer is saved as one frame",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Split Image to Frames..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_split, nreturn_split,
-			 args_split, return_split);
+                         "This plugin splits the current image to video frames (images on disk). Each layer is saved as one frame",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Split Image to Frames..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_split, nreturn_split,
+                         args_split, return_split);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_SHIFT,
        "This plugin exchanges frame numbers in the given range. (discfile frame_0001.xcf is renamed to frame_0002.xcf, 2->3, 3->4 ... n->1)",
@@ -1020,109 +1020,109 @@ query ()
        args_reverse, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_RENUMBER,
-			 "This plugin renumbers all frames (discfiles) starting at start_frame_nr using n digits for the framenumber part)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Renumber..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_renumber, nreturn_std,
-			 args_renumber, return_std);
+                         "This plugin renumbers all frames (discfiles) starting at start_frame_nr using n digits for the framenumber part)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Renumber..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_renumber, nreturn_std,
+                         args_renumber, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_MODIFY,
-			 "This plugin performs a modifying action on each selected layer in each selected framerange",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Frames Modify..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_modify, nreturn_std,
-			 args_modify, return_std);
+                         "This plugin performs a modifying action on each selected layer in each selected framerange",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Frames Modify..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_modify, nreturn_std,
+                         args_modify, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_COPY,
-			 "This plugin appends the selected framerange to the video paste buffer"
-			 "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-			 "and a framefile basename configured by gimprc (video-paste-basename)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                     /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_video_copy, nreturn_nothing,
-			 args_video_copy, return_nothing);
+                         "This plugin appends the selected framerange to the video paste buffer"
+                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
+                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                     /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_video_copy, nreturn_nothing,
+                         args_video_copy, return_nothing);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE,
-			 "This plugin copies all frames from the video paste buffer"
-			 "to the current video. Depending on the paste_mode parameter"
-			 "the copied frames are replacing frames beginning at current frame"
-			 "or are inserted before or after the current frame"
-			 "the pasted frames are scaled to fit the current video size"
-			 "and converted in Imagetype (RGB,GRAY,INDEXED) if necessary"
-			 "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-			 "and a framefile basename configured by gimprc (video-paste-basename)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                     /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_video_paste, nreturn_std,
-			 args_video_paste, return_std);
+                         "This plugin copies all frames from the video paste buffer"
+                         "to the current video. Depending on the paste_mode parameter"
+                         "the copied frames are replacing frames beginning at current frame"
+                         "or are inserted before or after the current frame"
+                         "the pasted frames are scaled to fit the current video size"
+                         "and converted in Imagetype (RGB,GRAY,INDEXED) if necessary"
+                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
+                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                     /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_video_paste, nreturn_std,
+                         args_video_paste, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR,
-			 "clear the video paste buffer by deleting all framefiles"
-			 "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-			 "and a framefile basename configured by gimprc (video-paste-basename)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                     /* do not appear in menus */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_video_clear),
+                         "clear the video paste buffer by deleting all framefiles"
+                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
+                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                     /* do not appear in menus */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_video_clear),
                          nreturn_nothing,
-			 args_video_clear, return_nothing);
+                         args_video_clear, return_nothing);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_GET_ANIMINFO,
-			 "This plugin gets animation infos about video frames."
+                         "This plugin gets animation infos about video frames."
                          ,
-			 "Informations about the video frames belonging to the\n"
+                         "Informations about the video frames belonging to the\n"
                          " passed image_id are returned. (therefore the directory\n"
                          " is scanned and checked for video frame discfiles.\n"
                          " If you call this plugin on images without a Name\n"
                          " You will get just default values."
                          ,
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                /* no menu */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_std, nreturn_ainfo,
-			 args_std, return_ainfo);
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                /* no menu */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_std, nreturn_ainfo,
+                         args_std, return_ainfo);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_SET_FRAMERATE,
-			 "This plugin sets the framerate for video frames",
-			 "The framerate is stored in a video info file"
+                         "This plugin sets the framerate for video frames",
+                         "The framerate is stored in a video info file"
                          " named like the basename of the video frames"
                          " without a framenumber. The extension"
                          " of this video info file is .vin",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,                      /* no menu */
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_setrate, nreturn_nothing,
-			 args_setrate, return_nothing);
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,                      /* no menu */
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         nargs_setrate, nreturn_nothing,
+                         args_setrate, return_nothing);
 
   {
      /* Menu names */
@@ -1156,7 +1156,7 @@ query ()
      gimp_plugin_menu_register (PLUGIN_NAME_GAP_RENUMBER, menupath_image_video);
      gimp_plugin_menu_register (PLUGIN_NAME_GAP_MODIFY, menupath_image_video);
   }
-}	/* end query */
+}       /* end query */
 
 
 
@@ -1597,93 +1597,93 @@ run (const gchar *name
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if ( ((n_params != nargs_mov_path_ext)  && (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT)  == 0))
-	||   ((n_params != nargs_mov_path_ext2) && (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT2) == 0)))
+        ||   ((n_params != nargs_mov_path_ext2) && (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT2) == 0)))
         {
           status = GIMP_PDB_CALLING_ERROR;
         }
-	else
-	{
-	   pvals->dst_range_start   = param[3].data.d_int32;
-	   pvals->dst_range_end     = param[4].data.d_int32;
-	   pvals->dst_layerstack    = param[5].data.d_int32;
+        else
+        {
+           pvals->dst_range_start   = param[3].data.d_int32;
+           pvals->dst_range_end     = param[4].data.d_int32;
+           pvals->dst_layerstack    = param[5].data.d_int32;
 
-	   pvals->src_layer_id      = param[6].data.d_layer;
-	   pvals->src_stepmode      = param[7].data.d_int32;
-	   pvals->src_handle        = param[8].data.d_int32;
-	   pvals->src_paintmode     = param[9].data.d_int32;
-	   pvals->src_force_visible = param[10].data.d_int32;
-	   pvals->clip_to_img       = param[11].data.d_int32;
+           pvals->src_layer_id      = param[6].data.d_layer;
+           pvals->src_stepmode      = param[7].data.d_int32;
+           pvals->src_handle        = param[8].data.d_int32;
+           pvals->src_paintmode     = param[9].data.d_int32;
+           pvals->src_force_visible = param[10].data.d_int32;
+           pvals->clip_to_img       = param[11].data.d_int32;
 
            l_rotation_follow        = param[12].data.d_int32;
            l_startangle             = param[13].data.d_float;
 
            pvals->step_speed_factor      = param[14].data.d_float;
-	   pvals->tween_steps            = param[15].data.d_int32;
-	   pvals->tween_opacity_initial  = param[16].data.d_float;
-	   pvals->tween_opacity_desc     = param[17].data.d_float;
-	   pvals->tracelayer_enable      = param[18].data.d_int32;
-	   pvals->trace_opacity_initial  = param[19].data.d_float;
-	   pvals->trace_opacity_desc     = param[20].data.d_float;
-	   pvals->src_apply_bluebox      = param[21].data.d_int32;
-	   pvals->src_selmode            = param[22].data.d_int32;
+           pvals->tween_steps            = param[15].data.d_int32;
+           pvals->tween_opacity_initial  = param[16].data.d_float;
+           pvals->tween_opacity_desc     = param[17].data.d_float;
+           pvals->tracelayer_enable      = param[18].data.d_int32;
+           pvals->trace_opacity_initial  = param[19].data.d_float;
+           pvals->trace_opacity_desc     = param[20].data.d_float;
+           pvals->src_apply_bluebox      = param[21].data.d_int32;
+           pvals->src_selmode            = param[22].data.d_int32;
 
-	   if (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT)  == 0)
-	   {
-	      /* PLUGIN_NAME_GAP_MOVE_PATH_EXT passes controlpoints as array parameters */
-	      l_numpoints = param[23].data.d_int32;
-	      if ((l_numpoints != param[25].data.d_int32)
-	      ||  (l_numpoints != param[27].data.d_int32)
-	      ||  (l_numpoints != param[29].data.d_int32)
-	      ||  (l_numpoints != param[31].data.d_int32)
-	      ||  (l_numpoints != param[33].data.d_int32)
-	      ||  (l_numpoints != param[35].data.d_int32)
-	      ||  (l_numpoints != param[37].data.d_int32)
-	      ||  (l_numpoints != param[39].data.d_int32)
-	      ||  (l_numpoints != param[41].data.d_int32)
-	      ||  (l_numpoints != param[43].data.d_int32)
-	      ||  (l_numpoints != param[45].data.d_int32)
-	      ||  (l_numpoints != param[47].data.d_int32)
-	      ||  (l_numpoints != param[49].data.d_int32)
-	      ||  (l_numpoints != param[51].data.d_int32)
-	      ||  (l_numpoints != param[53].data.d_int32))
-	      {
-	        printf("plug_in_gap_move_path_ext: CallingError: different numbers in the controlpoint array argc parameters\n");
+           if (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT)  == 0)
+           {
+              /* PLUGIN_NAME_GAP_MOVE_PATH_EXT passes controlpoints as array parameters */
+              l_numpoints = param[23].data.d_int32;
+              if ((l_numpoints != param[25].data.d_int32)
+              ||  (l_numpoints != param[27].data.d_int32)
+              ||  (l_numpoints != param[29].data.d_int32)
+              ||  (l_numpoints != param[31].data.d_int32)
+              ||  (l_numpoints != param[33].data.d_int32)
+              ||  (l_numpoints != param[35].data.d_int32)
+              ||  (l_numpoints != param[37].data.d_int32)
+              ||  (l_numpoints != param[39].data.d_int32)
+              ||  (l_numpoints != param[41].data.d_int32)
+              ||  (l_numpoints != param[43].data.d_int32)
+              ||  (l_numpoints != param[45].data.d_int32)
+              ||  (l_numpoints != param[47].data.d_int32)
+              ||  (l_numpoints != param[49].data.d_int32)
+              ||  (l_numpoints != param[51].data.d_int32)
+              ||  (l_numpoints != param[53].data.d_int32))
+              {
+                printf("plug_in_gap_move_path_ext: CallingError: different numbers in the controlpoint array argc parameters\n");
                 status = GIMP_PDB_CALLING_ERROR;
-	      }
-	      else
-	      {
-		pvals->point_idx_max = l_numpoints -1;
-		for(l_idx = 0; l_idx < l_numpoints; l_idx++)
-		{
-        	   pvals->point[l_idx].p_x = param[24].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].p_y = param[26].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].opacity  = param[28].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].w_resize = param[30].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].h_resize = param[32].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].rotation = param[34].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].keyframe_abs = param[36].data.d_int32array[l_idx];
-        	   /* pvals->point[l_idx].keyframe = ; */ /* relative keyframes are calculated later */
-        	   pvals->point[l_idx].ttlx = param[38].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].ttly = param[40].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].ttrx = param[42].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].ttry = param[44].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].tblx = param[46].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].tbly = param[48].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].tbrx = param[50].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].tbry = param[52].data.d_floatarray[l_idx];
-        	   pvals->point[l_idx].sel_feather_radius = param[54].data.d_floatarray[l_idx];
-		}
-	      }
-	   }
-	   else
-	   {
-	      /* PLUGIN_NAME_GAP_MOVE_PATH_EXT2 operates with controlpoint file */
-	      if(param[23].data.d_string != NULL)
-	      {
-	         pointfile = g_strdup(param[23].data.d_string);
-	      }
-	   }
-	}
+              }
+              else
+              {
+                pvals->point_idx_max = l_numpoints -1;
+                for(l_idx = 0; l_idx < l_numpoints; l_idx++)
+                {
+                   pvals->point[l_idx].p_x = param[24].data.d_int32array[l_idx];
+                   pvals->point[l_idx].p_y = param[26].data.d_int32array[l_idx];
+                   pvals->point[l_idx].opacity  = param[28].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].w_resize = param[30].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].h_resize = param[32].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].rotation = param[34].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].keyframe_abs = param[36].data.d_int32array[l_idx];
+                   /* pvals->point[l_idx].keyframe = ; */ /* relative keyframes are calculated later */
+                   pvals->point[l_idx].ttlx = param[38].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].ttly = param[40].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].ttrx = param[42].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].ttry = param[44].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].tblx = param[46].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].tbly = param[48].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].tbrx = param[50].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].tbry = param[52].data.d_floatarray[l_idx];
+                   pvals->point[l_idx].sel_feather_radius = param[54].data.d_floatarray[l_idx];
+                }
+              }
+           }
+           else
+           {
+              /* PLUGIN_NAME_GAP_MOVE_PATH_EXT2 operates with controlpoint file */
+              if(param[23].data.d_string != NULL)
+              {
+                 pointfile = g_strdup(param[23].data.d_string);
+              }
+           }
+        }
 
       }
 
@@ -1718,9 +1718,9 @@ run (const gchar *name
         framerate = 50;
         strcpy(frame_basename, "frame");
 
-	sel_mode = GAP_MTCH_ALL_VISIBLE;
-	sel_invert = FALSE;
-	sel_case   = TRUE;
+        sel_mode = GAP_MTCH_ALL_VISIBLE;
+        sel_invert = FALSE;
+        sel_case   = TRUE;
 
         if ( n_params >= 9 )
         {
@@ -1736,17 +1736,17 @@ run (const gchar *name
           sel_mode   = param[9].data.d_int32;
           sel_case   = param[10].data.d_int32;
           sel_invert = param[11].data.d_int32;
-	  if(param[12].data.d_string != NULL)
-	  {
+          if(param[12].data.d_string != NULL)
+          {
             strncpy(l_sel_str, param[12].data.d_string, sizeof(l_sel_str) -1);
-	    l_sel_str[sizeof(l_sel_str) -1] = '\0';
-	  }
+            l_sel_str[sizeof(l_sel_str) -1] = '\0';
+          }
           selection_mode = param[13].data.d_int32;
-	}
+        }
 
         l_rc_image = gap_range_to_multilayer(run_mode, image_id, range_from, range_to, mode, nr,
                                        framerate, frame_basename, FRAME_BASENAME_LEN,
-				       sel_mode, sel_case, sel_invert, l_sel_str, selection_mode);
+                                       sel_mode, sel_case, sel_invert, l_sel_str, selection_mode);
 
       }
       values[1].type = GIMP_PDB_IMAGE;
@@ -1817,9 +1817,9 @@ run (const gchar *name
           if (n_params >= 15)
           {
              l_palette_ptr = param[14].data.d_string;
-	     palette_type = param[11].data.d_int32;
-	     alpha_dither = param[12].data.d_int32;
-	     remove_unused = param[13].data.d_int32;
+             palette_type = param[11].data.d_int32;
+             alpha_dither = param[12].data.d_int32;
+             remove_unused = param[13].data.d_int32;
           }
         }
       }
@@ -1837,10 +1837,10 @@ run (const gchar *name
         l_rc_image = gap_range_conv(run_mode, image_id, range_from, range_to, nr,
                               dest_type, dest_colors, dest_dither,
                               l_basename_ptr, l_extension,
-			      palette_type,
-			      alpha_dither,
-			      remove_unused,
-			      l_palette_ptr);
+                              palette_type,
+                              alpha_dither,
+                              remove_unused,
+                              l_palette_ptr);
 
       }
   }
@@ -2041,13 +2041,13 @@ run (const gchar *name
       if (status == GIMP_PDB_SUCCESS)
       {
         if(gap_vid_edit_clear() < 0)
-	{
+        {
           l_rc_image = -1;
-	}
-	else
-	{
+        }
+        else
+        {
           l_rc_image = 0;
-	}
+        }
       }
   }
   else if (strcmp (name, PLUGIN_NAME_GAP_MODIFY) == 0)
@@ -2058,19 +2058,19 @@ run (const gchar *name
         {
           status = GIMP_PDB_CALLING_ERROR;
         }
-	else
-	{
-	  if(param[9].data.d_string != NULL)
-	  {
+        else
+        {
+          if(param[9].data.d_string != NULL)
+          {
             strncpy(l_sel_str, param[9].data.d_string, sizeof(l_sel_str) -1);
-	    l_sel_str[sizeof(l_sel_str) -1] = '\0';
-	  }
-	  if(param[10].data.d_string != NULL)
-	  {
+            l_sel_str[sizeof(l_sel_str) -1] = '\0';
+          }
+          if(param[10].data.d_string != NULL)
+          {
             strncpy(l_layername, param[10].data.d_string, sizeof(l_layername) -1);
-	    l_layername[sizeof(l_layername) -1] = '\0';
-	  }
-	}
+            l_layername[sizeof(l_layername) -1] = '\0';
+          }
+        }
       }
 
       if (status == GIMP_PDB_SUCCESS)

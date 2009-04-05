@@ -370,7 +370,7 @@ gap_onion_base_onionskin_apply(gpointer gpp
         break;
       case GAP_ONION_REFMODE_BIDRIECTIONAL_DOUBLE:
         l_sign *= -1; /* toggle sign between -1 and +1 */
-	l_nr = 1 + ((l_nr -1) / 2);
+        l_nr = 1 + ((l_nr -1) / 2);
         break;
       case GAP_ONION_REFMODE_NORMAL:
         l_sign = 1;  /* normal mode: always force sign of +1 */
@@ -616,8 +616,8 @@ gap_onion_image_has_oinonlayers(gint32 image_id, gboolean only_visible)
   {
      printf("gap_onion_image_has_oinonlayers: START only_visible: %d image_id: %d\n"
             , (int)only_visible
-	    , (int)image_id
-	    );
+            , (int)image_id
+            );
   }
 
   l_has_onion = FALSE;
@@ -633,17 +633,17 @@ gap_onion_image_has_oinonlayers(gint32 image_id, gboolean only_visible)
       if(l_is_onion)
       {
         if (only_visible)
-	{
-	  if(gimp_drawable_get_visible(l_layer_id))
-	  {
+        {
+          if(gimp_drawable_get_visible(l_layer_id))
+          {
             l_has_onion = TRUE;
-	    break;
-	  }
-	}
-	else
+            break;
+          }
+        }
+        else
         {
           l_has_onion = TRUE;
-	  break;
+          break;
         }
       }
     }
@@ -686,13 +686,13 @@ gap_onion_base_image_duplicate(gint32 image_id)
     {
       for(l_idx=0;l_idx < MIN(l_nlayers, l_dup_nlayers);l_idx++)
       {
-	l_layer_id = l_layers_list[l_idx];
-	l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
+        l_layer_id = l_layers_list[l_idx];
+        l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
 
-	if(l_is_onion)
-	{
-	  gap_onion_base_mark_as_onionlayer(l_dup_layers_list[l_idx]);
-	}
+        if(l_is_onion)
+        {
+          gap_onion_base_mark_as_onionlayer(l_dup_layers_list[l_idx]);
+        }
       }
 
       g_free(l_layers_list);

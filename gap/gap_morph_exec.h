@@ -40,19 +40,19 @@ gboolean gap_moprh_exec_save_workpointfile(const char *filename
 GapMorphWorkPoint * gap_moprh_exec_load_workpointfile(const char *filename
                                  , GapMorphGUIParams *mgup
                                  );
-				 
+                                 
 gint32  gap_morph_exec_find_dst_drawable(gint32 image_id, gint32 layer_id);
 void    gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                                       , gint32        in_x
                                       , gint32        in_y
-				      , gdouble       scale_x
-				      , gdouble       scale_y
-				      , gboolean      use_quality_wp_selection
-				      , gboolean      use_gravity
-				      , gdouble       gravity_intensity
-				      , gdouble       affect_radius
-				      , gdouble *pick_x
-				      , gdouble *pick_y
+                                      , gdouble       scale_x
+                                      , gdouble       scale_y
+                                      , gboolean      use_quality_wp_selection
+                                      , gboolean      use_gravity
+                                      , gdouble       gravity_intensity
+                                      , gdouble       affect_radius
+                                      , gdouble *pick_x
+                                      , gdouble *pick_y
                                       );
 gint32  gap_morph_execute(GapMorphGlobalParams *mgpp);
 gint32  gap_morph_render_one_tween(GapMorphGlobalParams *mgpp);

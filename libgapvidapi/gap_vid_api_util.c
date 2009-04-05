@@ -233,11 +233,11 @@ GVA_md5_string(char *name, const char *uri)
 
     for (i = 0; i < 16; i++)
     {
-	n = (digest[i] >> 4) & 0xF;
-	name[i * 2]     = (n > 9) ? 'a' + n - 10 : '0' + n;
+        n = (digest[i] >> 4) & 0xF;
+        name[i * 2]     = (n > 9) ? 'a' + n - 10 : '0' + n;
 
-	n = digest[i] & 0xF;
-	name[i * 2 + 1] = (n > 9) ? 'a' + n - 10 : '0' + n;
+        n = digest[i] & 0xF;
+        name[i * 2 + 1] = (n > 9) ? 'a' + n - 10 : '0' + n;
     }
 
     name[32] = '\0';
@@ -328,8 +328,8 @@ GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size)
     printf("GVA_util_check_mpg_frame_type: Frame type:%d  local_picnum:%d l_idx:%d\n"
           ,(int)l_frame_type
           ,(int)l_picture_number
-	  ,(int)l_idx
-	  );
+          ,(int)l_idx
+          );
   }
   
   return(l_frame_type);
@@ -399,21 +399,21 @@ GVA_util_fix_mpg_timecode(unsigned char *buffer
       }
       else
       {
-	/* Write a new time code */
-	hour = (long)((float)(master_frame_nr - 1) / master_framerate / 3600);
-	carry = hour * 3600 * master_framerate;
-	minute = (long)((float)(master_frame_nr - 1 - carry) / master_framerate / 60);
-	carry += minute * 60 * master_framerate;
-	second = (long)((float)(master_frame_nr - 1 - carry) / master_framerate);
-	carry += second * master_framerate;
-	frame = (master_frame_nr - 1 - carry);
+        /* Write a new time code */
+        hour = (long)((float)(master_frame_nr - 1) / master_framerate / 3600);
+        carry = hour * 3600 * master_framerate;
+        minute = (long)((float)(master_frame_nr - 1 - carry) / master_framerate / 60);
+        carry += minute * 60 * master_framerate;
+        second = (long)((float)(master_frame_nr - 1 - carry) / master_framerate);
+        carry += second * master_framerate;
+        frame = (master_frame_nr - 1 - carry);
 
-	buffer[l_idx] = ((code >> 24) & 0x80) | (hour << 2) | (minute >> 4);
-	buffer[l_idx + 1] = ((code >> 16) & 0x08) | ((minute & 0xf) << 4) | (second >> 3);
-	buffer[l_idx + 2] = ((second & 0x7) << 5) | (frame >> 1);
-	buffer[l_idx + 3] = (code & 0x7f) | ((frame & 0x1) << 7);
+        buffer[l_idx] = ((code >> 24) & 0x80) | (hour << 2) | (minute >> 4);
+        buffer[l_idx + 1] = ((code >> 16) & 0x08) | ((minute & 0xf) << 4) | (second >> 3);
+        buffer[l_idx + 2] = ((second & 0x7) << 5) | (frame >> 1);
+        buffer[l_idx + 3] = (code & 0x7f) | ((frame & 0x1) << 7);
 
-	if(gap_debug)
+        if(gap_debug)
         {
           printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
         }
@@ -482,7 +482,7 @@ GVA_util_calculate_mpeg_frameheader_size(unsigned char *buffer
           ,(int)l_hdr_size
           ,(int)l_picture_number
           ,(int)l_frame_type
-	  );
+          );
   }
   
   return(l_hdr_size);
@@ -536,7 +536,7 @@ GVA_util_check_jpg_picture(unsigned char *buffer
           ,(int)l_jpeg_magic_number_found
           ,(int)l_idx
           ,(int)*hdr_size
-	  );
+          );
   }
   
   return(l_jpeg_magic_number_found);
@@ -588,7 +588,7 @@ GVA_util_check_png_picture(unsigned char *buffer
           ,(int)l_png_magic_number_found
           ,(int)l_idx
           ,(int)*hdr_size
-	  );
+          );
   }
   
   return(l_png_magic_number_found);

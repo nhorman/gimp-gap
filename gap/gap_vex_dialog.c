@@ -66,22 +66,22 @@ static void        p_update_range_widgets(GapVexMainGlobalParams *gpp);
 static void        p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp);
 static void        p_init_mw__main_window_widgets (GapVexMainGlobalParams *gpp);
 static void        p_call_player_widget(GapVexMainGlobalParams *gpp
-				       , char *imagename
-				       , gint32 imagewidth
-				       , gint32 imageheight
-				       , gint32 begin_frame
-				       , gint32 end_frame
-				       , gint32 seltrack
-				       , gdouble delace
-				       , gboolean docked_mode
-				       );
+                                       , char *imagename
+                                       , gint32 imagewidth
+                                       , gint32 imageheight
+                                       , gint32 begin_frame
+                                       , gint32 end_frame
+                                       , gint32 seltrack
+                                       , gdouble delace
+                                       , gboolean docked_mode
+                                       );
 static void        p_vex_set_range_cb(GapPlayerAddClip *plac_ptr);
 static void        p_check_videofile(GapVexMainGlobalParams *gpp);
 
 /* -------- GUI CALLBACK PROCEDURES -----------*/
 static void        on_mw_response (GtkWidget *widget,
-                		   gint       response_id,
-                		   GapVexMainGlobalParams *gpp);
+                                   gint       response_id,
+                                   GapVexMainGlobalParams *gpp);
 
 static void        on_mw__combo_preferred_decoder  (GtkWidget     *widget,
                                                    GapVexMainGlobalParams *gpp);
@@ -120,7 +120,7 @@ static void        on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togg
                                         GapVexMainGlobalParams *gpp);
 static void        on_mw__button_vrange_dialog_clicked    (GtkButton       *button,
                                         GdkEventButton  *bevent,
-					GapVexMainGlobalParams *gpp);
+                                        GapVexMainGlobalParams *gpp);
 static void        on_mw__button_vrange_docked_clicked    (GtkButton       *button,
                                         GapVexMainGlobalParams *gpp);
 static void        on_mw__entry_preferred_decoder_changed (GtkEditable     *editable,
@@ -246,10 +246,10 @@ gap_vex_dlg_overwrite_dialog(GapVexMainGlobalParams *gpp, gchar *filename, gint 
        msg = g_strdup_printf(_("File: %s already exists"), filename);
        l_rc = gap_arr_std_dialog ( _("Overwrite")
                                  , msg
-				 ,  1, argv
-				 , 3, l_argv
-				 , -1
-				 );
+                                 ,  1, argv
+                                 , 3, l_argv
+                                 , -1
+                                 );
        g_free(msg);
        return(l_rc);
     }
@@ -558,15 +558,15 @@ p_vex_set_range_cb(GapPlayerAddClip *plac_ptr)
  */
 static void
 p_call_player_widget(GapVexMainGlobalParams *gpp
-		   , char *imagename
-		   , gint32 imagewidth
-		   , gint32 imageheight
-		   , gint32 begin_frame
-		   , gint32 end_frame
-		   , gint32 seltrack
-		   , gdouble delace
-		   , gboolean docked_mode
-		   )
+                   , char *imagename
+                   , gint32 imagewidth
+                   , gint32 imageheight
+                   , gint32 begin_frame
+                   , gint32 end_frame
+                   , gint32 seltrack
+                   , gdouble delace
+                   , gboolean docked_mode
+                   )
 {
   if(gpp->in_player_call)
   {
@@ -660,22 +660,22 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
     /* RESTART mode */
     gap_player_dlg_restart(gpp->plp
                       , FALSE              /* gboolean autostart */
-		      , -1                 /* have no image_id, operate on videofile */
-		      , imagename
-		      , imagewidth
-		      , imageheight
-		      , NULL               /* have no storyboard */
-		      , begin_frame
-		      , end_frame
-		      , FALSE              /* gboolean play_selection_only */
-		      , seltrack
-		      , delace
-		      , gpp->val.preferred_decoder
-		      , TRUE               /* force_open_as_video */
+                      , -1                 /* have no image_id, operate on videofile */
+                      , imagename
+                      , imagewidth
+                      , imageheight
+                      , NULL               /* have no storyboard */
+                      , begin_frame
+                      , end_frame
+                      , FALSE              /* gboolean play_selection_only */
+                      , seltrack
+                      , delace
+                      , gpp->val.preferred_decoder
+                      , TRUE               /* force_open_as_video */
                       , GAP_STB_FLIP_NONE  /* flip_request */
                       , GAP_STB_FLIP_NONE  /* flip_status */
                       , 1                  /* stb_in_track */
-		      );
+                      );
   }
 
   if(gpp->plp)
@@ -685,10 +685,10 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
     {
       gimp_help_set_help_data (gpp->plp->from_button
                               , _("Set range to extract")
-			      , NULL);
+                              , NULL);
       gimp_help_set_help_data (gpp->plp->to_button
                               , _("Set range to extract")
-			      , NULL);
+                              , NULL);
     }
   }
   gpp->in_player_call = FALSE;
@@ -804,9 +804,9 @@ p_check_videofile(GapVexMainGlobalParams *gpp)
      }
      g_snprintf(ratio_txt, sizeof(ratio_txt)
                            , "%0.5f%s"
-			   , (float)aspect_ratio
-			   , ratio2_txt
-			   );
+                           , (float)aspect_ratio
+                           , ratio2_txt
+                           );
 
      gtk_label_set_text(lbl, ratio_txt);
   }
@@ -863,11 +863,11 @@ on_mw_response (GtkWidget *widget,
       if(gpp)
       {
         dialog = gpp->mw__main_window;
-	if(dialog)
-	{
+        if(dialog)
+        {
           gpp->mw__main_window = NULL;
           gtk_widget_destroy (dialog);
-	}
+        }
       }
       gtk_main_quit ();
       break;
@@ -1222,7 +1222,7 @@ on_mw__button_video_clicked            (GtkButton       *button,
  {
    gpp->fsv__fileselection = create_fsv__fileselection(gpp);
    gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsv__fileselection),
-				    gpp->val.videoname);
+                                    gpp->val.videoname);
 
    gtk_widget_show (gpp->fsv__fileselection);
  }
@@ -1267,7 +1267,7 @@ on_mw__button_basename_clicked         (GtkButton       *button,
  {
    gpp->fsb__fileselection = create_fsb__fileselection(gpp);
    gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsb__fileselection),
-				    gpp->val.basename);
+                                    gpp->val.basename);
 
    gtk_widget_show (gpp->fsb__fileselection);
  }
@@ -1358,7 +1358,7 @@ on_mw__button_audiofile_clicked        (GtkButton       *button,
  {
    gpp->fsa__fileselection = create_fsa__fileselection(gpp);
    gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsa__fileselection),
-				    gpp->val.audiofile);
+                                    gpp->val.audiofile);
 
    gtk_widget_show (gpp->fsa__fileselection);
  }
@@ -1402,7 +1402,7 @@ on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
 static void
 on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
                                                  GdkEventButton  *bevent,
-						 GapVexMainGlobalParams *gpp)
+                                                 GapVexMainGlobalParams *gpp)
 {
  gdouble  delace;
  gboolean docked_mode;
@@ -1432,15 +1432,15 @@ on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
  }
 
  p_call_player_widget(gpp
-		   ,gpp->val.videoname
-		   ,gpp->video_width
-		   ,gpp->video_height
-		   , gpp->val.begin_frame
-		   , gpp->val.end_frame
-		   , gpp->val.videotrack
-		   , delace
+                   ,gpp->val.videoname
+                   ,gpp->video_width
+                   ,gpp->video_height
+                   , gpp->val.begin_frame
+                   , gpp->val.end_frame
+                   , gpp->val.videotrack
+                   , delace
                    , docked_mode
- 		   );
+                   );
 }
 
 
@@ -1470,15 +1470,15 @@ on_mw__button_vrange_docked_clicked             (GtkButton       *button,
  if(gpp == NULL) return;
 
  p_call_player_widget(gpp
-		   ,gpp->val.videoname
-		   ,gpp->video_width
-		   ,gpp->video_height
-		   , gpp->val.begin_frame
-		   , gpp->val.end_frame
-		   , gpp->val.videotrack
-		   , delace
+                   ,gpp->val.videoname
+                   ,gpp->video_width
+                   ,gpp->video_height
+                   , gpp->val.begin_frame
+                   , gpp->val.end_frame
+                   , gpp->val.videotrack
+                   , delace
                    , TRUE                      /* docked_mode */
- 		   );
+                   );
 }
 
 /* --------------------------------
@@ -1930,7 +1930,7 @@ p_align_widget_columns(GtkWidget **wgt_array, gint max_elements)
       printf("WIDGET[%02d].width: %d\n"
           ,(int)ii
           ,(int)requisition.width
-	  );
+          );
     }
     if(requisition.width > max_label_width)
     {
@@ -2023,11 +2023,11 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__main_window = gimp_dialog_new (_("Extract Videorange"),
                          GAP_VEX_PLUG_IN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, GAP_VEX_PLUG_IN_HELP_ID,
+                         gimp_standard_help_func, GAP_VEX_PLUG_IN_HELP_ID,
 
-			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
-			 NULL);
+                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                         GTK_STOCK_OK,     GTK_RESPONSE_OK,
+                         NULL);
   gtk_window_set_type_hint (mw__main_window, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   g_signal_connect (G_OBJECT (mw__main_window), "response",
@@ -2176,7 +2176,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gimp_help_set_help_data (mw__button_vrange_dialog
                          , _("Visual video range selection via videoplayer\n"
                              "SHIFT: Open a separate player window")
-			 , NULL);
+                         , NULL);
 
 
   in_row++;
@@ -2206,9 +2206,9 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_widget_set_size_request (mw__spinbutton_end_frame, SPIN_WIDTH_LARGE, -1);
   gimp_help_set_help_data (mw__spinbutton_end_frame
                           , _("Frame number of last frame to extract. "
-			      "To extract all frames use a range from 1 to 999999. "
-			      "(Extract stops at the last available frame)")
-			  , NULL);
+                              "To extract all frames use a range from 1 to 999999. "
+                              "(Extract stops at the last available frame)")
+                          , NULL);
 
 
   /* to timecode label */
@@ -2383,8 +2383,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_widget_show (mw__checkbutton_exact_seek);
   gimp_help_set_help_data (mw__checkbutton_exact_seek
                           , _("ON: emulate seek operations by sequential reads, "
-			      "even when videoindex is available")
-			  , NULL);
+                              "even when videoindex is available")
+                          , NULL);
   gtk_table_attach (GTK_TABLE (mw__table_in), mw__checkbutton_exact_seek, 2, 3, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -2451,8 +2451,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__checkbutton_multilayer
                           , _("On: extracted frames are stored in one multilayer image\n"
-			      "Off: extracted frames are written to frame files on disc")
-			  , NULL);
+                              "Off: extracted frames are written to frame files on disc")
+                          , NULL);
 
 
   out_row++;
@@ -2533,8 +2533,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), checkbutton, TRUE, TRUE, 0);
   gimp_help_set_help_data (checkbutton
                           , _("On: extract grayscale mask (generated by bluebox)\n"
-			      "Off: extract color frames 1.1")
-			  , NULL);
+                              "Off: extract color frames 1.1")
+                          , NULL);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_mw__checkbutton_graymask_toggled),
                       gpp);
@@ -2546,8 +2546,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), checkbutton, TRUE, TRUE, 0);
   gimp_help_set_help_data (checkbutton
                           , _("On: bluebox shall generate transparency as layermask\n"
-			      "Off: bluebox shall generate transparency as alpha channel")
-			  , NULL);
+                              "Off: bluebox shall generate transparency as alpha channel")
+                          , NULL);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_mw__checkbutton_layermask_toggled),
                       gpp);
@@ -2562,8 +2562,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gimp_help_set_help_data (checkbutton
                           , _("On: add trasparency for extracted frames via blubox filter"
                               " (using values of last run in this session)\n"
-			      "Off: extract frames 1.1")
-			  , NULL);
+                              "Off: extract frames 1.1")
+                          , NULL);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_mw__checkbutton_bluebox_toggled),
                       gpp);

@@ -250,12 +250,12 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
   dlg = gimp_dialog_new (_("Bluebox"), GAP_BLUEBOX_PLUGIN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, GAP_BLUEBOX_HELP_ID,
+                         gimp_standard_help_func, GAP_BLUEBOX_HELP_ID,
 
-			 GIMP_STOCK_RESET, GAP_BLUEBOX_RESPONSE_RESET,
-			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
-			 NULL);
+                         GIMP_STOCK_RESET, GAP_BLUEBOX_RESPONSE_RESET,
+                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                         GTK_STOCK_OK,     GTK_RESPONSE_OK,
+                         NULL);
 
   bbp->shell = dlg;
 
@@ -292,11 +292,11 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
   /* the keycolor button */
   button = gimp_color_button_new (_("Bluebox Color Picker"),
-				  40, 20,                     /* WIDTH, HEIGHT, */
-				  &bbp->vals.keycolor,
-				  GIMP_COLOR_AREA_FLAT);
+                                  40, 20,                     /* WIDTH, HEIGHT, */
+                                  &bbp->vals.keycolor,
+                                  GIMP_COLOR_AREA_FLAT);
   gtk_table_attach (GTK_TABLE (table), button, 1, 3, row, row+1,
-		    GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0) ;
+                    GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0) ;
   gtk_widget_show (button);
   g_object_set_data(G_OBJECT(button), "bbp", bbp);
   bbp->keycolor_button = button;
@@ -315,16 +315,16 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Alpha Tolerance:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.tolerance,
-			      0.0, 1.0,     /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lower/upper unconstrained */
-			      _("Sharp pixel selection by color with 0.0. "
-			        "Values greater than 0 give the selection more or less variable alpha value, "
-			        "depending on disparity with the key color."), NULL);
+                              _("Alpha Tolerance:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.tolerance,
+                              0.0, 1.0,     /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lower/upper unconstrained */
+                              _("Sharp pixel selection by color with 0.0. "
+                                "Values greater than 0 give the selection more or less variable alpha value, "
+                                "depending on disparity with the key color."), NULL);
   bbp->tolerance_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -334,15 +334,15 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Source Alpha:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.source_alpha,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Affect only pixels with alpha >= source alpha "
-			        "where 1.0 is full opaque"), NULL);
+                              _("Source Alpha:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.source_alpha,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Affect only pixels with alpha >= source alpha "
+                                "where 1.0 is full opaque"), NULL);
   bbp->source_alpha_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -352,15 +352,15 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Target Alpha:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.target_alpha,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Set alpha of affected pixel to target alpha "
-			        "where 0.0 is full transparent"), NULL);
+                              _("Target Alpha:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.target_alpha,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Set alpha of affected pixel to target alpha "
+                                "where 0.0 is full transparent"), NULL);
   bbp->target_alpha_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -380,7 +380,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   check_button = gtk_check_button_new_with_label (" ");
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 3, row, row+1, GTK_FILL, 0, 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
-				bbp->vals.feather_edges);
+                                bbp->vals.feather_edges);
   gimp_help_set_help_data(check_button, _("ON: Feather edges using feather radius"), NULL);
   gtk_widget_show(check_button);
   bbp->feather_edges_toggle = check_button;
@@ -391,14 +391,14 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Feather Radius:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.feather_radius,
-			      0.0, 100.0,     /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      1,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 100.0,       /* lowr/upper unconstrained */
-			      _("Feather radius for smoothing the alpha channel"), NULL);
+                              _("Feather Radius:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.feather_radius,
+                              0.0, 100.0,     /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              1,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 100.0,       /* lowr/upper unconstrained */
+                              _("Feather radius for smoothing the alpha channel"), NULL);
   bbp->feather_radius_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -408,14 +408,14 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Shrink/Grow:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.grow,
-			      -20.0, 20.0,     /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      -20.0, 20.0,       /* lowr/upper unconstrained */
-			      _("Grow selection in pixels (use negative values for shrink)"), NULL);
+                              _("Shrink/Grow:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.grow,
+                              -20.0, 20.0,     /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              -20.0, 20.0,       /* lowr/upper unconstrained */
+                              _("Grow selection in pixels (use negative values for shrink)"), NULL);
   bbp->grow_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -434,7 +434,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   check_button = gtk_check_button_new_with_label (" ");
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 2, row, row+1, GTK_FILL, 0, 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
-				bbp->instant_preview);
+                                bbp->instant_preview);
   gimp_help_set_help_data(check_button, _("ON: Keep preview image up to date"), NULL);
   gtk_widget_show(check_button);
   bbp->instant_preview_toggle = check_button;
@@ -455,14 +455,14 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->master_table), 0, row++,
-			      _("Previewsize:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->pv_size_percent,
-			      5.0, 100.0,     /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      1,              /* digits */
-			      TRUE,           /* constrain */
-			      5.0, 100.0,       /* lowr/upper unconstrained */
-			      _("Size of the preview image in percent of the original"), NULL);
+                              _("Previewsize:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->pv_size_percent,
+                              5.0, 100.0,     /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              1,              /* digits */
+                              TRUE,           /* constrain */
+                              5.0, 100.0,       /* lowr/upper unconstrained */
+                              _("Size of the preview image in percent of the original"), NULL);
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (p_gdouble_adjustment_callback),
@@ -533,24 +533,24 @@ p_reset_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
     gimp_color_button_set_color ((GimpColorButton *)bbp->keycolor_button, &bbp->vals.keycolor);
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->feather_edges_toggle)
-				  ,bbp->vals.feather_edges);
+                                  ,bbp->vals.feather_edges);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->instant_preview_toggle)
-				  ,bbp->instant_preview);
+                                  ,bbp->instant_preview);
     radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_RGB);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_rgb_toggle)
-				  ,radio_active);
+                                  ,radio_active);
 
     radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_hsv_toggle)
-				  ,radio_active);
+                                  ,radio_active);
 
     radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_val_toggle)
-				  ,radio_active);
+                                  ,radio_active);
 
     radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_ALL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_all_toggle)
-				  ,radio_active);
+                                  ,radio_active);
   }
 
 }  /* end p_reset_callback */
@@ -606,10 +606,10 @@ p_quit_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
        bbp->thres_all_toggle = NULL;
 
        /* p_quit_callback is the signal handler for the "destroy"
-	* signal of the shell window.
-	* the gtk_widget_destroy call will immediate reenter this procedure.
-	* (for this reason the bbp->shell is set to NULL
-	*  before the gtk_widget_destroy call)
+        * signal of the shell window.
+        * the gtk_widget_destroy call will immediate reenter this procedure.
+        * (for this reason the bbp->shell is set to NULL
+        *  before the gtk_widget_destroy call)
         */
        gtk_widget_destroy(l_shell);
      }
@@ -875,13 +875,13 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 
   l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_RGB);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Apply thresholds in the RGB colormodel"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_radio_thres_RGB_callback),
-		     bbp);
+                     G_CALLBACK (p_radio_thres_RGB_callback),
+                     bbp);
 
 
   l_idx = 1;
@@ -895,13 +895,13 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 
   l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Apply thresholds in the HSV colormodel"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_radio_thres_HSV_callback),
-		     bbp);
+                     G_CALLBACK (p_radio_thres_HSV_callback),
+                     bbp);
 
 
 
@@ -916,13 +916,13 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 
   l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Use single threshold value"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_radio_thres_VAL_callback),
-		     bbp);
+                     G_CALLBACK (p_radio_thres_VAL_callback),
+                     bbp);
 
 
   l_idx = 3;
@@ -936,13 +936,13 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 
   l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Use both HSV and RGB threshold values"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_radio_thres_ALL_callback),
-		     bbp);
+                     G_CALLBACK (p_radio_thres_ALL_callback),
+                     bbp);
 
 
   /* attach radio_table */
@@ -963,14 +963,14 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp, gint row)
   GtkObject *adj;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold R:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_r,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for red channel"), NULL);
+                              _("Threshold R:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_r,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for red channel"), NULL);
   bbp->thres_r_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -980,14 +980,14 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp, gint row)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold G:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_g,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for green channel"), NULL);
+                              _("Threshold G:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_g,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for green channel"), NULL);
   bbp->thres_g_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -998,14 +998,14 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp, gint row)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold B:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_b,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for blue channel"), NULL);
+                              _("Threshold B:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_b,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for blue channel"), NULL);
   bbp->thres_b_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -1025,14 +1025,14 @@ p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp, gint row)
   GtkObject *adj;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold H:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_h,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for hue"), NULL);
+                              _("Threshold H:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_h,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for hue"), NULL);
   bbp->thres_h_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -1042,14 +1042,14 @@ p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp, gint row)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold S:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_s,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for saturation"), NULL);
+                              _("Threshold S:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_s,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for saturation"), NULL);
   bbp->thres_s_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -1060,14 +1060,14 @@ p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp, gint row)
   row++;
 
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
-			      _("Threshold V:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres_v,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Threshold for value"), NULL);
+                              _("Threshold V:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres_v,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Threshold for value"), NULL);
   bbp->thres_v_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -1089,14 +1089,14 @@ p_thres_table_VAL_create(GapBlueboxGlobalParams *bbp)
 
   row = 0;
   adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
-			      _("Threshold:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      bbp->vals.thres,
-			      0.0, 1.0,       /* lower/upper */
-			      0.01, 0.1,      /* step, page */
-			      3,              /* digits */
-			      TRUE,           /* constrain */
-			      0.0, 1.0,       /* lowr/upper unconstrained */
-			      _("Common color threshold"), NULL);
+                              _("Threshold:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              bbp->vals.thres,
+                              0.0, 1.0,       /* lower/upper */
+                              0.01, 0.1,      /* step, page */
+                              3,              /* digits */
+                              TRUE,           /* constrain */
+                              0.0, 1.0,       /* lowr/upper unconstrained */
+                              _("Common color threshold"), NULL);
   bbp->thres_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -1149,7 +1149,7 @@ p_thres_table_create_or_replace(GapBlueboxGlobalParams *bbp)
 
  gtk_table_attach (GTK_TABLE (bbp->master_table), bbp->thres_table, 0, 3
                     , bbp->thres_table_attach_row, bbp->thres_table_attach_row +1,
-		    GTK_FILL, GTK_SHRINK, 0, 0) ;
+                    GTK_FILL, GTK_SHRINK, 0, 0) ;
 
  gtk_widget_show(bbp->thres_table);
  return bbp->thres_table;
@@ -1181,7 +1181,7 @@ p_install_timer(GapBlueboxGlobalParams *bbp)
   {
     bbp->instant_timertag = (gint32) g_timeout_add(INSTANT_TIMERINTERVAL_MILLISEC,
                                       (GtkFunction)p_instant_timer_callback
-				      , bbp);
+                                      , bbp);
   }
 }  /* end p_install_timer */
 
@@ -1234,7 +1234,7 @@ p_instant_timer_callback(gpointer   user_data)
  */
 static inline gdouble
 p_check_RGB_thres (GimpRGB       *src,
-	      GapBlueboxGlobalParams *bbp)
+              GapBlueboxGlobalParams *bbp)
 {
   gdouble l_diff_r;
   gdouble l_diff_g;
@@ -1281,7 +1281,7 @@ p_check_RGB_thres (GimpRGB       *src,
  */
 static inline gdouble
 p_check_HSV_thres (GimpRGB       *src,
-	      GapBlueboxGlobalParams *bbp)
+              GapBlueboxGlobalParams *bbp)
 {
   gdouble l_diff_h;
   gdouble l_diff_s;
@@ -1332,7 +1332,7 @@ p_check_HSV_thres (GimpRGB       *src,
  */
 static inline gdouble
 p_check_VAL_thres (GimpRGB       *src,
-	      GapBlueboxGlobalParams *bbp)
+              GapBlueboxGlobalParams *bbp)
 {
   gdouble l_maxdiff;
 
@@ -1362,7 +1362,7 @@ p_check_VAL_thres (GimpRGB       *src,
  */
 static inline void
 p_pixel_render_alpha (GimpRGB       *src,
-	      GapBlueboxGlobalParams *bbp)
+              GapBlueboxGlobalParams *bbp)
 {
  if(src->a >= bbp->vals.source_alpha)
  {
@@ -1543,27 +1543,27 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
       || (l_height    != gimp_image_height(bbp->pv_image_id)))
       {
         /* check if we can reuse the previw image
-	 * (that was built in a previus call)
-	 */
-	if((bbp->run_flag)
-	|| (bbp->pv_master_layer_id < 0))
-	{
+         * (that was built in a previus call)
+         */
+        if((bbp->run_flag)
+        || (bbp->pv_master_layer_id < 0))
+        {
           replace_pv_image = TRUE;
-	}
-	else
-	{
-	  if(l_width > gimp_image_width(bbp->pv_image_id))
-	  {
-	    /* must force recreate the master copy for quality reasons */
-	    if(bbp->pv_master_layer_id >= 0)
-	    {
-	      gimp_image_remove_layer(bbp->pv_image_id, bbp->pv_master_layer_id);
+        }
+        else
+        {
+          if(l_width > gimp_image_width(bbp->pv_image_id))
+          {
+            /* must force recreate the master copy for quality reasons */
+            if(bbp->pv_master_layer_id >= 0)
+            {
+              gimp_image_remove_layer(bbp->pv_image_id, bbp->pv_master_layer_id);
               bbp->pv_master_layer_id = -1;
-	    }
-	  }
+            }
+          }
           gimp_image_scale(bbp->pv_image_id, l_width, l_height);
 
-	}
+        }
       }
     }
     if(replace_pv_image)
@@ -1587,16 +1587,16 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
     bbp->pv_master_layer_id = -1;
     bbp->pv_image_id = gimp_image_new(l_width
                                      ,l_height
-				     ,GIMP_RGB
-				     );
+                                     ,GIMP_RGB
+                                     );
     gimp_image_set_filename(bbp->pv_image_id, _("BlueboxPreview.xcf"));
     bbp->pv_layer_id = gimp_layer_new(bbp->pv_image_id, _("Previewlayer")
                                  ,l_width
-				 ,l_height
-				 ,GIMP_RGBA_IMAGE
+                                 ,l_height
+                                 ,GIMP_RGBA_IMAGE
                                  ,100.0            /* Opacity full opaque */
                                  ,GIMP_NORMAL_MODE
-				 );
+                                 );
     gimp_image_add_layer(bbp->pv_image_id, bbp->pv_layer_id, 0);
     gimp_layer_set_offsets(bbp->pv_layer_id, 0, 0);
 
@@ -1610,7 +1610,7 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
   {
     gap_layer_copy_content(bbp->pv_layer_id  /* dest */
                          , bbp->layer_id    /* src */
-			 );
+                         );
   }
   else
   {
@@ -1621,20 +1621,20 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
        */
       bbp->pv_master_layer_id = gimp_layer_new(bbp->pv_image_id, _("Masterlayer")
                                    ,src_drawable->width
-				   ,src_drawable->height
-				   ,GIMP_RGBA_IMAGE
+                                   ,src_drawable->height
+                                   ,GIMP_RGBA_IMAGE
                                    ,100.0            /* Opacity full opaque */
                                    ,GIMP_NORMAL_MODE
-				   );
+                                   );
       gimp_image_add_layer(bbp->pv_image_id, bbp->pv_master_layer_id, 1);
 
       if(!gimp_drawable_has_alpha(bbp->pv_master_layer_id))
       {
-	gimp_layer_add_alpha(bbp->pv_master_layer_id);
+        gimp_layer_add_alpha(bbp->pv_master_layer_id);
       }
       gap_layer_copy_content(bbp->pv_master_layer_id  /* dest */
                             , bbp->layer_id           /* src */
-			    );
+                            );
       gimp_layer_scale(bbp->pv_master_layer_id, l_width, l_height, 0);
       gimp_layer_set_offsets(bbp->pv_master_layer_id, 0, 0);
       gimp_drawable_set_visible(bbp->pv_master_layer_id, FALSE);
@@ -1643,7 +1643,7 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
     /* use a the scaled mastercopy when operating with reduced preview size */
     gap_layer_copy_content(bbp->pv_layer_id           /* dest */
                          , bbp->pv_master_layer_id    /* src */
-			 );
+                         );
   }
 
 
@@ -1679,8 +1679,8 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
     current_selection_channel_id = gimp_image_get_selection(bbp->pv_image_id);
     gap_layer_copy_picked_channel(bbp->pv_layer_id, 3 /* dst_pick is the alpha channel */
                                  ,current_selection_channel_id, 0
-				 ,FALSE  /* shadow */
-				 );
+                                 ,FALSE  /* shadow */
+                                 );
     gimp_selection_none(bbp->pv_image_id);
   }
 
@@ -1689,8 +1689,8 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
     /* Apply to the calling drawable */
     gap_layer_copy_picked_channel(bbp->layer_id, 3 /* dst_pick is the alpha channel */
                                  ,bbp->pv_layer_id, 3
-				 ,TRUE  /* shadow */
-				 );
+                                 ,TRUE  /* shadow */
+                                 );
 
     gimp_drawable_detach (src_drawable);
 

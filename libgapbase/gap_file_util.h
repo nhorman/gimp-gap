@@ -51,7 +51,7 @@
 #endif /* !G_OS_WIN32 */
 
 #ifdef G_OS_WIN32
-#include <direct.h>		/* For _mkdir() */
+#include <direct.h>             /* For _mkdir() */
 #define mkdir(path,mode) _mkdir(path)
 #endif
 

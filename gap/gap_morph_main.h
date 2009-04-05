@@ -87,11 +87,11 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
   gboolean            create_tween_layers;       /* FALSE: operate on existing layers only */
   gboolean            have_workpointsets;        /* FALSE: use the default workpointset master_wp_list
                                                   * TRUE: use lower_wp_list and upper_wp_list
-						  *       foreach handled frame the
-						  *       lower and upper list are fetched from 
-						  *       best matching workpointfile.
-						  *       (using the numberpart of the filename)
-						  */
+                                                  *       foreach handled frame the
+                                                  *       lower and upper list are fetched from 
+                                                  *       best matching workpointfile.
+                                                  *       (using the numberpart of the filename)
+                                                  */
   gboolean            use_quality_wp_selection;
   gboolean            use_gravity;
   gdouble             gravity_intensity;     /* 1.0 upto 5 (gravity power) */

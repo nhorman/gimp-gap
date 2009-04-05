@@ -117,10 +117,10 @@ static GimpParamDef in_args[] = {
                   { GIMP_PDB_INT32,    "render_mode", "0: Do Morph transformation, 1: do only Warp transformation"},
                   { GIMP_PDB_INT32,    "create_tween_layers", "TRUE: Do create tween layers,  FALSE: operate on existing layers"},
                   { GIMP_PDB_STRING,   "workpoint_file_1", "Name of a Morph/Warp workpointfile"
-		                                           "(create such file(s) with the save button in the GUI at INTERACTIVE runmode)"},
+                                                           "(create such file(s) with the save button in the GUI at INTERACTIVE runmode)"},
                   { GIMP_PDB_STRING,   "workpoint_file_2", "Name of an optional 2nd Morph/Warp workpointfile."
-		                                           " (pass an empty string or the same name as the 1st file"
-							   " if you want to operate with one workpoint file)"},
+                                                           " (pass an empty string or the same name as the 1st file"
+                                                           " if you want to operate with one workpoint file)"},
   };
 
 
@@ -132,7 +132,7 @@ static GimpParamDef in_tween_args[] = {
                   { GIMP_PDB_INT32,    "overwrite", "0 == do not overwrite, 1 == overrite existing frames"},
                   { GIMP_PDB_INT32,    "do_simple_fade", "0 == use morph algorithm, 1 == use simple fade operation (ignore the workpoint_file) "},
                   { GIMP_PDB_STRING,   "workpoint_file", "Name of a Morph/Warp workpointfile"
-		                                           "(create such file(s) with the save button in the GUI "
+                                                           "(create such file(s) with the save button in the GUI "
                                                            "of the plug_in_gap_morph_layers, or specify an emty string"
                                                            "that starts with 0x00 to operate as simple video fade)"},
   };
@@ -150,7 +150,7 @@ static GimpParamDef in_one_tween_args[] = {
                                         "other value deliver a mix according to morph algortihm" },
                   { GIMP_PDB_INT32,    "do_simple_fade", "0 == use morph algorithm, 1 == use simple fade operation (ignore the workpoint_file) "},
                   { GIMP_PDB_STRING,   "workpoint_file", "Name of a Morph/Warp workpointfile"
-		                                           "(create such file(s) with the save button in the GUI "
+                                                           "(create such file(s) with the save button in the GUI "
                                                            "of the plug_in_gap_morph_layers, or specify an emty string"
                                                            "that starts with 0x00 to operate as simple video fade)"},
   };
@@ -169,19 +169,19 @@ static void query (void)
                           "Image Layer Morphing",
                           "This plug-in creates new layers by transforming the src_drawable to dst_drawable, "
                           "the transformation type depends on the render_mode parameter. "
-			  "for MORPH render_mode (0) it is a combination of 2 warp deformation actions "
-			  "and cross-blending, commonly known as morphing."
+                          "for MORPH render_mode (0) it is a combination of 2 warp deformation actions "
+                          "and cross-blending, commonly known as morphing."
                           "The tween_steps parameter controls how much new layers to create. "
-			  "(or how much layers to modify depending on the create_tween_layers parameter) "
+                          "(or how much layers to modify depending on the create_tween_layers parameter) "
                           "source and destination may differ in size and can be in different images. "
-			  "for WARP render_mode (1) there will be just Move Deformation. "
-			  "Deformation is controled by workpoints. Workpoints are created and edited with the help "
-			  "of the INTERACTIVE GUI and saved to file(s). "
-			  "For the NON-INTERACTIVE runmode you must provide the filename of such a file. "
-			  "Provide 2 filenames if you want to operate with multiple workpoint sets. "
-			  "In that case your workpoint files can have a 2 digit numberpart. "
-			  "This will implicite select all filenames with numbers inbetween as well."
-			  ,
+                          "for WARP render_mode (1) there will be just Move Deformation. "
+                          "Deformation is controled by workpoints. Workpoints are created and edited with the help "
+                          "of the INTERACTIVE GUI and saved to file(s). "
+                          "For the NON-INTERACTIVE runmode you must provide the filename of such a file. "
+                          "Provide 2 filenames if you want to operate with multiple workpoint sets. "
+                          "In that case your workpoint files can have a 2 digit numberpart. "
+                          "This will implicite select all filenames with numbers inbetween as well."
+                          ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
@@ -199,12 +199,12 @@ static void query (void)
                           "Render tween frames via morhing",
                           "This plug-in creates and saves image frames that are a mix of the specified image frame and the frame with to_frame_nr, "
                           "The typical usage is to create the frame images of missing frame numbers in a series of anim frame images. "
-			  "the overwrite flag allows overwriting of already existing frames between the start frame image "
+                          "the overwrite flag allows overwriting of already existing frames between the start frame image "
                           "and the frame with to_frame_nr"
-			  "Morphing is controled by workpoints. A Workpoint file can be created and edited with the help "
-			  "of the Morph feature in the Video menu. "
-			  "Note: without workpoints the resulting tween is calculated as simple fade operation. "
-			  ,
+                          "Morphing is controled by workpoints. A Workpoint file can be created and edited with the help "
+                          "of the Morph feature in the Video menu. "
+                          "Note: without workpoints the resulting tween is calculated as simple fade operation. "
+                          ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
@@ -223,12 +223,12 @@ static void query (void)
                           "Render one tween via morhing",
                           "This plug-in creates a new image that is a mix of the specified src_drawable and dst_drawable, "
                           "the mixing is done based on a morphing transformation where the tween_mix_factor "
-			  "determines how much the result looks like source or destination. "
+                          "determines how much the result looks like source or destination. "
                           "source and destination may differ in size and can be in different images. "
-			  "Morphing is controled by workpoints. A Workpoint file can be created and edited with the help "
-			  "of the Morph feature in the Video menu. "
-			  "Note: without workpoints the resulting tween is calculated as simple fade operation. "
-			  ,
+                          "Morphing is controled by workpoints. A Workpoint file can be created and edited with the help "
+                          "of the Morph feature in the Video menu. "
+                          "Note: without workpoints the resulting tween is calculated as simple fade operation. "
+                          ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
@@ -415,151 +415,151 @@ run (const gchar *name,          /* name of plugin */
       && (strcmp(name, PLUG_IN_NAME) == 0))
       {
           mgpp->have_workpointsets     = TRUE;  /* use pointset(s) from file */
-	  
-	  /* set defaults for params that may be specified in the workpointfiles
-	   * (the defaults will take effect only if the file does not contain such settings)
-	   */
-	  mgpp->use_quality_wp_selection = FALSE;
-	  mgpp->use_gravity = FALSE;
-	  mgpp->gravity_intensity = 2.0;
-	  mgpp->affect_radius = 100.0;
-	  
+          
+          /* set defaults for params that may be specified in the workpointfiles
+           * (the defaults will take effect only if the file does not contain such settings)
+           */
+          mgpp->use_quality_wp_selection = FALSE;
+          mgpp->use_gravity = FALSE;
+          mgpp->gravity_intensity = 2.0;
+          mgpp->affect_radius = 100.0;
+          
           mgpp->osrc_layer_id          = param[2].data.d_drawable;
           mgpp->fdst_layer_id          = param[3].data.d_drawable;
           mgpp->tween_steps            = param[4].data.d_int32;
           mgpp->render_mode            = param[5].data.d_int32;
           mgpp->create_tween_layers    = param[6].data.d_int32;
-	  if(param[7].data.d_string != NULL)
-	  {
-	    if(param[7].data.d_string[0] != '\0')
-	    {
-	      g_snprintf(mgpp->workpoint_file_lower
-	              , sizeof(mgpp->workpoint_file_lower)
-		      , "%s", param[7].data.d_string);
-	      g_snprintf(mgpp->workpoint_file_upper
-	              , sizeof(mgpp->workpoint_file_upper)
-		      , "%s", param[7].data.d_string);
-	    }
-	    else
-	    {
+          if(param[7].data.d_string != NULL)
+          {
+            if(param[7].data.d_string[0] != '\0')
+            {
+              g_snprintf(mgpp->workpoint_file_lower
+                      , sizeof(mgpp->workpoint_file_lower)
+                      , "%s", param[7].data.d_string);
+              g_snprintf(mgpp->workpoint_file_upper
+                      , sizeof(mgpp->workpoint_file_upper)
+                      , "%s", param[7].data.d_string);
+            }
+            else
+            {
               printf("%s: noninteractive call requires a not-empty workpoint_file_1 parameter\n"
-        	    , PLUG_IN_NAME
-        	    );
+                    , PLUG_IN_NAME
+                    );
               status = GIMP_PDB_CALLING_ERROR;
-	    }
-	  }
-	  else
-	  {
+            }
+          }
+          else
+          {
             printf("%s: noninteractive call requires a not-NULL workpoint_file_1 parameter\n"
-        	    , PLUG_IN_NAME
-        	    );
+                    , PLUG_IN_NAME
+                    );
             status = GIMP_PDB_CALLING_ERROR;
-	  }
-	  
-	  if(param[8].data.d_string != NULL)
-	  {
-	    if(param[8].data.d_string[0] != '\0')
-	    {
-	      g_snprintf(mgpp->workpoint_file_upper
-	              , sizeof(mgpp->workpoint_file_upper)
-		      , "%s", param[8].data.d_string);
-	    }
-	  }
-	  
-	  run_flag = TRUE;
+          }
+          
+          if(param[8].data.d_string != NULL)
+          {
+            if(param[8].data.d_string[0] != '\0')
+            {
+              g_snprintf(mgpp->workpoint_file_upper
+                      , sizeof(mgpp->workpoint_file_upper)
+                      , "%s", param[8].data.d_string);
+            }
+          }
+          
+          run_flag = TRUE;
       }
       else if ((nparams == G_N_ELEMENTS (in_one_tween_args))
       && (strcmp(name, PLUG_IN_NAME_ONE_TWEEN) == 0))
       {
-	  /* set defaults for params that may be specified in the workpointfiles
-	   * (the defaults will take effect only if the file does not contain such settings)
-	   */
-	  mgpp->use_quality_wp_selection = FALSE;
+          /* set defaults for params that may be specified in the workpointfiles
+           * (the defaults will take effect only if the file does not contain such settings)
+           */
+          mgpp->use_quality_wp_selection = FALSE;
           mgpp->have_workpointsets     = FALSE;  /* operate with a single workpointfile */
-	  mgpp->use_gravity = FALSE;
-	  mgpp->gravity_intensity = 2.0;
-	  mgpp->affect_radius = 100.0;
+          mgpp->use_gravity = FALSE;
+          mgpp->gravity_intensity = 2.0;
+          mgpp->affect_radius = 100.0;
           mgpp->tween_steps = 1;  /* (in this mode always render only one tween) */
           mgpp->render_mode = GAP_MORPH_RENDER_MODE_MORPH;
           mgpp->create_tween_layers = TRUE;
-	  
+          
           mgpp->osrc_layer_id          = param[2].data.d_drawable;
           mgpp->fdst_layer_id          = param[3].data.d_drawable;
           mgpp->tween_mix_factor       = param[4].data.d_float;
           mgpp->do_simple_fade         = (param[5].data.d_int32 != 0);
-	  if(param[6].data.d_string != NULL)
-	  {
-	    if(param[6].data.d_string[0] != '\0')
-	    {
-	      g_snprintf(mgpp->workpoint_file_lower
-	              , sizeof(mgpp->workpoint_file_lower)
-		      , "%s", param[6].data.d_string);
-	      g_snprintf(mgpp->workpoint_file_upper
-	              , sizeof(mgpp->workpoint_file_upper)
-		      , "%s", param[6].data.d_string);
-	    }
-	    else
-	    {
+          if(param[6].data.d_string != NULL)
+          {
+            if(param[6].data.d_string[0] != '\0')
+            {
+              g_snprintf(mgpp->workpoint_file_lower
+                      , sizeof(mgpp->workpoint_file_lower)
+                      , "%s", param[6].data.d_string);
+              g_snprintf(mgpp->workpoint_file_upper
+                      , sizeof(mgpp->workpoint_file_upper)
+                      , "%s", param[6].data.d_string);
+            }
+            else
+            {
               mgpp->have_workpointsets     = FALSE;  /* no pointset file available */
             }
-	    run_flag = TRUE;
-	  }
-	  else
-	  {
+            run_flag = TRUE;
+          }
+          else
+          {
             printf("%s: noninteractive call requires a not-NULL workpoint_file parameter\n"
-        	    , PLUG_IN_NAME_ONE_TWEEN
-        	    );
+                    , PLUG_IN_NAME_ONE_TWEEN
+                    );
             status = GIMP_PDB_CALLING_ERROR;
-	  }
-	  
-	  
+          }
+          
+          
       }
       else if ((nparams == G_N_ELEMENTS (in_one_tween_args))
       && (strcmp(name, PLUG_IN_NAME_TWEEN) == 0))
       {
-	  /* set defaults for params that may be specified in the workpointfiles
-	   * (the defaults will take effect only if the file does not contain such settings)
-	   */
-	  mgpp->use_quality_wp_selection = FALSE;
+          /* set defaults for params that may be specified in the workpointfiles
+           * (the defaults will take effect only if the file does not contain such settings)
+           */
+          mgpp->use_quality_wp_selection = FALSE;
           mgpp->have_workpointsets     = FALSE;  /* operate with a single workpointfile */
-	  mgpp->use_gravity = FALSE;
-	  mgpp->gravity_intensity = 2.0;
-	  mgpp->affect_radius = 100.0;
+          mgpp->use_gravity = FALSE;
+          mgpp->gravity_intensity = 2.0;
+          mgpp->affect_radius = 100.0;
           mgpp->tween_steps = 1;  /* (will be calculated later as difference of handled frame numbers) */
           mgpp->render_mode = GAP_MORPH_RENDER_MODE_MORPH;
           mgpp->create_tween_layers = TRUE;
-	  
+          
           mgpp->osrc_layer_id = -1;  /* is created later as merged copy of the specified image */
           mgpp->fdst_layer_id = -1;   /* is created later as merged copy of the frame rfered by to_frame_nr parameter  */        
           mgpp->range_to = param[3].data.d_int32;
           mgpp->overwrite_flag = (param[4].data.d_int32 != 0);
           mgpp->do_simple_fade = (param[5].data.d_int32 != 0);
           mgpp->tween_mix_factor       = 1.0;  /* not relevant here */
-	  if(param[6].data.d_string != NULL)
-	  {
-	    if(param[6].data.d_string[0] != '\0')
-	    {
-	      g_snprintf(mgpp->workpoint_file_lower
-	              , sizeof(mgpp->workpoint_file_lower)
-		      , "%s", param[6].data.d_string);
-	      g_snprintf(mgpp->workpoint_file_upper
-	              , sizeof(mgpp->workpoint_file_upper)
-		      , "%s", param[6].data.d_string);
-	    }
-	    else
-	    {
+          if(param[6].data.d_string != NULL)
+          {
+            if(param[6].data.d_string[0] != '\0')
+            {
+              g_snprintf(mgpp->workpoint_file_lower
+                      , sizeof(mgpp->workpoint_file_lower)
+                      , "%s", param[6].data.d_string);
+              g_snprintf(mgpp->workpoint_file_upper
+                      , sizeof(mgpp->workpoint_file_upper)
+                      , "%s", param[6].data.d_string);
+            }
+            else
+            {
               mgpp->have_workpointsets     = FALSE;  /* no pointset file available */
-	    }
-	    run_flag = TRUE;
-	  }
-	  else
-	  {
+            }
+            run_flag = TRUE;
+          }
+          else
+          {
             printf("%s: noninteractive call requires a not-NULL workpoint_file parameter\n"
-        	    , PLUG_IN_NAME_TWEEN
-        	    );
+                    , PLUG_IN_NAME_TWEEN
+                    );
             status = GIMP_PDB_CALLING_ERROR;
-	  }
-	  
+          }
+          
       }
       else
       {

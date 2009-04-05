@@ -285,8 +285,8 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
       /* ------------------------------------------------------ */
       if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
       ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
-                                  	cur_ptr->dst_frame_nr,
-                                	ainfo_ptr->extension);
+                                        cur_ptr->dst_frame_nr,
+                                        ainfo_ptr->extension);
       if(ainfo_ptr->new_filename == NULL)
          return -1;
 
@@ -308,7 +308,7 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
 
         /* if OK: save the rendered frame back to disk */
         if(gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename) < 0)
-  	  l_rc = -1;
+          l_rc = -1;
       }
       else l_rc = -1;
     }
@@ -327,17 +327,17 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
          /* anim preview exact mode uses original frames */
          if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
          ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
-                                  	   cur_ptr->dst_frame_nr,
-                                	   ainfo_ptr->extension);
+                                           cur_ptr->dst_frame_nr,
+                                           ainfo_ptr->extension);
          l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
          if(l_tmp_image_id < 0)
-  	   return -1;
+           return -1;
 
          gimp_image_undo_disable (l_tmp_image_id);
 
          if((mov_ptr->val_ptr->apv_scalex != 100.0) || (mov_ptr->val_ptr->apv_scaley != 100.0))
          {
-	   gint32      l_size_x, l_size_y;
+           gint32      l_size_x, l_size_y;
 
            l_size_x = (gimp_image_width(l_tmp_image_id) * mov_ptr->val_ptr->apv_scalex) / 100;
            l_size_y = (gimp_image_height(l_tmp_image_id) * mov_ptr->val_ptr->apv_scaley) / 100;
@@ -369,18 +369,18 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
         {
           if(gap_debug) printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
           /* hof:
-	   * if invisible layers are flattened on an empty image
-	   * we do not get a resulting layer (returned l_layer_id == -1)
-	   *
-	   *  I'm not sure if is this a bug, but here is a workaround:
-	   *
-	   * In that case I add a dummy layer 1x1 pixel (at offest -1,-1)
-	   * and flatten again, and it works (tested with gimp-1.1.19)
-	   */
+           * if invisible layers are flattened on an empty image
+           * we do not get a resulting layer (returned l_layer_id == -1)
+           *
+           *  I'm not sure if is this a bug, but here is a workaround:
+           *
+           * In that case I add a dummy layer 1x1 pixel (at offest -1,-1)
+           * and flatten again, and it works (tested with gimp-1.1.19)
+           */
           l_layer_id = gimp_layer_new(l_tmp_image_id, "dummy",
                                  1,
-				 1,
-				 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
+                                 1,
+                                 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
                                  100.0,     /* Opacity full opaque */
                                  0);        /* NORMAL */
           gimp_image_add_layer(l_tmp_image_id, l_layer_id, 0);
@@ -393,7 +393,7 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
         {
           printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
           printf("p_mov_call_render: tmp_image_id:%d  apv_mlayer_image:%d\n",
-	          (int)l_tmp_image_id, (int)mov_ptr->val_ptr->apv_mlayer_image);
+                  (int)l_tmp_image_id, (int)mov_ptr->val_ptr->apv_mlayer_image);
         }
 
         /* set layername (including delay for the framerate) */
@@ -429,7 +429,7 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
   gimp_image_delete(l_tmp_image_id);
 
   return l_rc;
-}	/* end p_mov_call_render */
+}       /* end p_mov_call_render */
 
 
 
@@ -460,7 +460,7 @@ p_mov_advance_src_layer(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
                        (int)cur_ptr->src_last_layer,
                        (int)cur_ptr->src_layer_idx,
                        (float)cur_ptr->src_layer_idx_dbl,
-		       (float)l_step_speed_factor
+                       (float)l_step_speed_factor
                       );
 
   /* note: top layer has index 0
@@ -525,7 +525,7 @@ p_mov_advance_src_layer(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
     }
     cur_ptr->src_layer_idx = MAX((long)(cur_ptr->src_layer_idx_dbl + l_round), 0);
   }
-}	/* end  p_advance_src_layer */
+}       /* end  p_advance_src_layer */
 
 
 
@@ -569,8 +569,8 @@ p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
                        (int)pvals->cache_ainfo_ptr->first_frame_nr,
                        (int)pvals->cache_ainfo_ptr->last_frame_nr,
                        (int)cur_ptr->src_frame_idx,
-		       (float)cur_ptr->src_frame_idx_dbl,
-		       (float)l_step_speed_factor
+                       (float)cur_ptr->src_frame_idx_dbl,
+                       (float)l_step_speed_factor
                       );
 
   if((pvals->cache_ainfo_ptr->frame_cnt > 1 ) && (pvals->src_stepmode != GAP_STEP_FRAME_NONE))
@@ -631,11 +631,11 @@ p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
     }
     cur_ptr->src_frame_idx = CLAMP((long)(cur_ptr->src_frame_idx_dbl + l_round)
                                   ,pvals->cache_ainfo_ptr->first_frame_nr
-				  ,pvals->cache_ainfo_ptr->last_frame_nr
-				  );
+                                  ,pvals->cache_ainfo_ptr->last_frame_nr
+                                  );
     gap_mov_render_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
   }
-}	/* end  p_advance_src_frame */
+}       /* end  p_advance_src_frame */
 
 
 /* ============================================================================
@@ -686,7 +686,7 @@ p_mov_execute(GapMovData *mov_ptr)
    {
       gap_arr_msg_win(mov_ptr->dst_ainfo_ptr->run_mode,
         _("No source image was selected.\n"
-	  "Please open a 2nd image of the same type before opening 'Move Path'."));
+          "Please open a 2nd image of the same type before opening 'Move Path'."));
       return -1;
    }
 
@@ -849,14 +849,14 @@ p_mov_execute(GapMovData *mov_ptr)
 
      /* findout index of src_layer_id */
      for(cur_ptr->src_layer_idx = 0;
-	 cur_ptr->src_layer_idx  < l_nlayers;
-	 cur_ptr->src_layer_idx++)
+         cur_ptr->src_layer_idx  < l_nlayers;
+         cur_ptr->src_layer_idx++)
      {
-	if(cur_ptr->src_layers[cur_ptr->src_layer_idx] == val_ptr->src_layer_id)
-	{
-	   cur_ptr->src_layer_idx_dbl = (gdouble)cur_ptr->src_layer_idx;
+        if(cur_ptr->src_layers[cur_ptr->src_layer_idx] == val_ptr->src_layer_id)
+        {
+           cur_ptr->src_layer_idx_dbl = (gdouble)cur_ptr->src_layer_idx;
            break;
-	}
+        }
      }
      cur_ptr->src_last_layer = l_nlayers -1;   /* index of last layer */
      }
@@ -963,28 +963,28 @@ p_mov_execute(GapMovData *mov_ptr)
        for(l_idk = l_ptidx; l_idk < l_points; l_idk++)
        {
           if(l_idk == l_points -1)
-	  {
-	    /* last point is always an implicite  keyframe */
+          {
+            /* last point is always an implicite  keyframe */
             l_fpl = ((gdouble)((l_frames -1) - l_prev_keyframe)) / ((gdouble)((l_idk -  l_ptidx) +1));
             l_prev_keyframe = l_frames -1;
 
             l_prev_keyptidx = l_idk;
             if(gap_debug) printf("p_mov_execute: last point is implicite keyframe l_fpl=%f\n", l_fpl);
             break;
-	  }
-	  else
-	  {
-	    if (val_ptr->point[l_idk].keyframe > 0)
-	    {
-	      /* found a keyframe, have to recalculate frames_per_line */
+          }
+          else
+          {
+            if (val_ptr->point[l_idk].keyframe > 0)
+            {
+              /* found a keyframe, have to recalculate frames_per_line */
               l_fpl = ((gdouble)(val_ptr->point[l_idk].keyframe - l_prev_keyframe)) / ((gdouble)((l_idk -  l_ptidx) +1));
               l_prev_keyframe = val_ptr->point[l_idk].keyframe;
 
               l_prev_keyptidx = l_idk;
               if(gap_debug) printf("p_mov_execute: keyframe l_fpl=%f\n", l_fpl);
               break;
-	    }
-	  }
+            }
+          }
        }
      }
      l_flt_count += l_fpl;
@@ -992,8 +992,8 @@ p_mov_execute(GapMovData *mov_ptr)
 
      if(l_fpl < 1.0)
      {
-	printf("p_mov_execute: ** Error frames per line at point[%d] = %f  (is less than 1.0 !!)\n",
-	  (int)l_ptidx, (float)l_fpl);
+        printf("p_mov_execute: ** Error frames per line at point[%d] = %f  (is less than 1.0 !!)\n",
+          (int)l_ptidx, (float)l_fpl);
      }
    }
 
@@ -1027,19 +1027,19 @@ p_mov_execute(GapMovData *mov_ptr)
       if((gdouble)l_fridx > l_flt_timing[l_ptidx])
       {
          /* change deltas for next line of the move path */
-	 if(l_ptidx < l_points-1)
-	 {
+         if(l_ptidx < l_points-1)
+         {
            l_ptidx++;
-	   if(gap_debug)
-	   {
-	      printf("p_mov_execute: advance to controlpoint l_ptidx=%d, l_flt_timing[l_ptidx]=%f\n"
-	             , (int)l_ptidx, (float)l_flt_timing[l_ptidx]);
-	   }
-	 }
-	 else
-	 {
-	   if(gap_debug) printf("p_mov_execute: ** ERROR overflow l_ptidx=%d\n", (int)l_ptidx);
-	 }
+           if(gap_debug)
+           {
+              printf("p_mov_execute: advance to controlpoint l_ptidx=%d, l_flt_timing[l_ptidx]=%f\n"
+                     , (int)l_ptidx, (float)l_flt_timing[l_ptidx]);
+           }
+         }
+         else
+         {
+           if(gap_debug) printf("p_mov_execute: ** ERROR overflow l_ptidx=%d\n", (int)l_ptidx);
+         }
       }
 
       l_fpl = (l_flt_timing[l_ptidx] - l_flt_timing[l_ptidx -1]); /* float frames per line */
@@ -1091,7 +1091,7 @@ p_mov_execute(GapMovData *mov_ptr)
           printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
           , (int)l_ptidx-1,  (float)val_ptr->point[l_ptidx -1].rotation
           , (int)l_ptidx,    (float)val_ptr->point[l_ptidx].rotation
-	  , (float)cur_ptr->currRotation);
+          , (float)cur_ptr->currRotation);
         }
 
         if(val_ptr->src_stepmode < GAP_STEP_FRAME )
@@ -1108,11 +1108,11 @@ p_mov_execute(GapMovData *mov_ptr)
         if(l_frame_step < 0)
         {
           /* if we step down, we have to insert the layer
- 	   * as lowest layer in the existing layerstack
-	   * of the animated preview multilayer image.
-	   * (if we step up, we always use 0 as l_apv_layerstack,
-	   *  that means always insert on top of the layerstack)
-	   */
+           * as lowest layer in the existing layerstack
+           * of the animated preview multilayer image.
+           * (if we step up, we always use 0 as l_apv_layerstack,
+           *  that means always insert on top of the layerstack)
+           */
           l_apv_layerstack++;
         }
         /* RENDER add current src_layer to current frame */
@@ -1159,7 +1159,7 @@ p_mov_execute(GapMovData *mov_ptr)
 
    return l_rc;
 
-}	/* end p_mov_execute */
+}       /* end p_mov_execute */
 
 
 /* ============================================================================
@@ -1239,43 +1239,43 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
        l_src_layers = gimp_image_get_layers (pvals_orig->src_image_id, &l_nlayers);
        if(l_src_layers == NULL)
        {
-	 printf("ERROR: gap_mov_exec_anim_preview GOT no src_layers (original image_id %d)\n",
-        	 (int)pvals_orig->src_image_id);
+         printf("ERROR: gap_mov_exec_anim_preview GOT no src_layers (original image_id %d)\n",
+                 (int)pvals_orig->src_image_id);
        }
        else
        {
-	 for(l_stackpos = 0;
-	     l_stackpos  < l_nlayers;
-	     l_stackpos++)
-	 {
-	    if(l_src_layers[l_stackpos] == pvals_orig->src_layer_id)
+         for(l_stackpos = 0;
+             l_stackpos  < l_nlayers;
+             l_stackpos++)
+         {
+            if(l_src_layers[l_stackpos] == pvals_orig->src_layer_id)
                break;
-	 }
-	 g_free(l_src_layers);
+         }
+         g_free(l_src_layers);
 
-	 l_src_layers = gimp_image_get_layers (l_tmp_image_id, &l_nlayers);
-	 if(l_src_layers == NULL)
-	 {
+         l_src_layers = gimp_image_get_layers (l_tmp_image_id, &l_nlayers);
+         if(l_src_layers == NULL)
+         {
            printf("ERROR: gap_mov_exec_anim_preview GOT no src_layers (scaled copy image_id %d)\n",
-        	  (int)l_tmp_image_id);
-	 }
-	 else
-	 {
+                  (int)l_tmp_image_id);
+         }
+         else
+         {
             l_pvals->src_layer_id = l_src_layers[l_stackpos];
             g_free(l_src_layers);
-	 }
+         }
 
        }
 
       if(gap_debug)
       {
-	printf("gap_mov_exec_anim_preview: orig  src_image_id:%d src_layer:%d, stackpos:%d\n"
+        printf("gap_mov_exec_anim_preview: orig  src_image_id:%d src_layer:%d, stackpos:%d\n"
                ,(int)pvals_orig->src_image_id
-	       ,(int)pvals_orig->src_layer_id
-	       ,(int)l_stackpos);
-	printf("   Scaled src_image_id:%d scaled_src_layer:%d\n"
+               ,(int)pvals_orig->src_layer_id
+               ,(int)l_stackpos);
+        printf("   Scaled src_image_id:%d scaled_src_layer:%d\n"
                ,(int)l_tmp_image_id
-	       ,(int)l_pvals->src_layer_id );
+               ,(int)l_pvals->src_layer_id );
       }
     }
   }  /* end if Scaledown needed */
@@ -1285,7 +1285,7 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   {
     printf("gap_mov_exec_anim_preview: src_image_id %d (orig:%d)\n"
            , (int) l_pvals->src_image_id
-	   , (int) pvals_orig->src_image_id);
+           , (int) pvals_orig->src_image_id);
   }
 
   /* create the animated preview multilayer image in (scaled) framesize */
@@ -1328,9 +1328,9 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
       gimp_image_undo_disable (l_tmp_frame_id);
       if((l_pvals->apv_scalex != 100.0) || (l_pvals->apv_scaley != 100.0))
       {
-	l_size_x = (gimp_image_width(l_tmp_frame_id) * l_pvals->apv_scalex) / 100;
-	l_size_y = (gimp_image_height(l_tmp_frame_id) * l_pvals->apv_scaley) / 100;
-	gimp_image_scale(l_tmp_frame_id, l_size_x, l_size_y);
+        l_size_x = (gimp_image_width(l_tmp_frame_id) * l_pvals->apv_scalex) / 100;
+        l_size_y = (gimp_image_height(l_tmp_frame_id) * l_pvals->apv_scaley) / 100;
+        gimp_image_scale(l_tmp_frame_id, l_size_x, l_size_y);
       }
       g_free(l_filename);
       break;
@@ -1356,8 +1356,8 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   {
      if(gap_debug)
      {
-	printf("gap_mov_exec_anim_preview: DELETE cache_tmp_image_id:%d\n",
-	         (int)l_pvals->cache_tmp_image_id);
+        printf("gap_mov_exec_anim_preview: DELETE cache_tmp_image_id:%d\n",
+                 (int)l_pvals->cache_tmp_image_id);
      }
      /* destroy the cached frame image */
      gimp_image_delete(l_pvals->cache_tmp_image_id);
@@ -1386,7 +1386,7 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   }
 
   return(l_mlayer_image_id);
-}	/* end gap_mov_exec_anim_preview */
+}       /* end gap_mov_exec_anim_preview */
 
 /* ============================================================================
  * p_con_keyframe
@@ -1467,7 +1467,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       && (l_idx < pvals->point_idx_max)
       && ((int)pvals->point[l_idx].keyframe > 0))
       {
-	num_optional_params++;
+        num_optional_params++;
       }
 
       fprintf(l_fp, "   %02d ", (int)num_optional_params);
@@ -1493,7 +1493,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       && (l_idx < pvals->point_idx_max)
       && ((int)pvals->point[l_idx].keyframe > 0))
       {
-	fprintf(l_fp, " %d"
+        fprintf(l_fp, " %d"
                      , (int)gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
                      );
       }
@@ -1547,8 +1547,8 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
        if((*l_ptr != '#') && (*l_ptr != '\n') && (*l_ptr != '\0'))
        {
          l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
-	 l_i1 = (gint)l_farr[0];
-	 l_i2 = (gint)l_farr[1];
+         l_i1 = (gint)l_farr[0];
+         l_i2 = (gint)l_farr[1];
          if(l_idx == -1)
          {
            if((l_cnt < 2) || (l_i2 > GAP_MOV_MAX_POINT) || (l_i1 > l_i2))
@@ -1561,21 +1561,21 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
          }
          else
          {
-	   gdouble num_optional_params;
-	   gint    key_idx;
+           gdouble num_optional_params;
+           gint    key_idx;
            /* the older format used in GAP.1.2 has 6 or 7 integer numbers per line
             * and should be compatible and readable by this code.
             *
             * the new format has 2 integer values (p_x, p_y)
             * and 5 float values (w_resize, h_resize, opacity, rotation, feather_radius)
-	    * and 1 int value num_optional_params (telling how much will follow)
+            * and 1 int value num_optional_params (telling how much will follow)
             * the rest of the line is optional
             *  8  additional float values (transformation factors) 7th upto 14th parameter
             *  1  integer values (keyframe) as 7th parameter
             *         or as 15th parameter (if transformation factors are present too)
             */
            if((l_cnt != 6) && (l_cnt != 7)   /* for compatibility to old format */
-	   && (l_cnt != 8) && (l_cnt != 9) && (l_cnt != 16) && (l_cnt != 17))
+           && (l_cnt != 8) && (l_cnt != 9) && (l_cnt != 16) && (l_cnt != 17))
            {
              /* invalid pointline format detected */
              l_rc = -2;  /* have to call p_reset_points() when called from dialog window */
@@ -1599,12 +1599,12 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
            pvals->point[l_idx].rotation = l_farr[5];
            pvals->point[l_idx].sel_feather_radius = 0.0;
            if(l_cnt >= 8)
-	   {
+           {
              pvals->point[l_idx].sel_feather_radius = l_farr[6];
-	     num_optional_params = l_farr[7];
-	   }
+             num_optional_params = l_farr[7];
+           }
            if(l_cnt >= 16)
-	   {
+           {
              pvals->point[l_idx].ttlx = l_farr[8];
              pvals->point[l_idx].ttly = l_farr[9];
              pvals->point[l_idx].ttrx = l_farr[10];
@@ -1613,28 +1613,28 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
              pvals->point[l_idx].tbly = l_farr[13];
              pvals->point[l_idx].tbrx = l_farr[14];
              pvals->point[l_idx].tbry = l_farr[15];
-	   }
-	   key_idx = -1;
-	   if(l_idx > 0)
-	   {
-	     switch(l_cnt)
-	     {
-	       case 7:
-	           key_idx = 6; /* for compatibilty with old format */
-	           break;
-	       case 9:
-	           key_idx = 8;
-	           break;
-	       case 17:
-	           key_idx = 16;
-	           break;
-	     }
-	   }
-	   if(key_idx > 0)
-	   {
+           }
+           key_idx = -1;
+           if(l_idx > 0)
+           {
+             switch(l_cnt)
+             {
+               case 7:
+                   key_idx = 6; /* for compatibilty with old format */
+                   break;
+               case 9:
+                   key_idx = 8;
+                   break;
+               case 17:
+                   key_idx = 16;
+                   break;
+             }
+           }
+           if(key_idx > 0)
+           {
              pvals->point[l_idx].keyframe = l_farr[key_idx];
              pvals->point[l_idx].keyframe_abs = gap_mov_exec_conv_keyframe_to_abs(l_farr[key_idx], pvals);
-	   }
+           }
            l_idx ++;
          }
 
@@ -1773,53 +1773,53 @@ gap_mov_exec_calculate_rotate_follow(GapMovValues *pvals, gdouble startangle)
       if(l_idx == 0)
       {
         l_angle = p_calc_angle(pvals->point[l_idx].p_x,
-	                       pvals->point[l_idx].p_y,
-	                       pvals->point[l_idx +1].p_x,
-	                       pvals->point[l_idx +1].p_y);
+                               pvals->point[l_idx].p_y,
+                               pvals->point[l_idx +1].p_x,
+                               pvals->point[l_idx +1].p_y);
       }
       else
       {
         if(l_idx == pvals->point_idx_max)
-	{
+        {
           l_angle_new = p_calc_angle(pvals->point[l_idx -1].p_x,
-	                	 pvals->point[l_idx -1].p_y,
-	                	 pvals->point[l_idx].p_x,
-	                	 pvals->point[l_idx].p_y);
-	}
-	else
-	{
+                                 pvals->point[l_idx -1].p_y,
+                                 pvals->point[l_idx].p_x,
+                                 pvals->point[l_idx].p_y);
+        }
+        else
+        {
            l_angle_1 = p_calc_angle(pvals->point[l_idx -1].p_x,
-	                	  pvals->point[l_idx -1].p_y,
-	                	  pvals->point[l_idx].p_x,
-	                	  pvals->point[l_idx].p_y);
+                                  pvals->point[l_idx -1].p_y,
+                                  pvals->point[l_idx].p_x,
+                                  pvals->point[l_idx].p_y);
 
            l_angle_2 = p_calc_angle(pvals->point[l_idx].p_x,
-	                          pvals->point[l_idx].p_y,
-	                          pvals->point[l_idx +1].p_x,
-	                          pvals->point[l_idx +1].p_y);
+                                  pvals->point[l_idx].p_y,
+                                  pvals->point[l_idx +1].p_x,
+                                  pvals->point[l_idx +1].p_y);
 
            if((l_angle_1 == 0) && (l_angle_2 == 180))
-	   {
+           {
                l_angle_new = 270;
-	   }
-	   else
-	   {
+           }
+           else
+           {
              if((l_angle_1 == 90) && (l_angle_2 == 270))
-	     {
+             {
                l_angle_new = 0;
-	     }
-	     else
-	     {
+             }
+             else
+             {
                l_angle_new = (l_angle_1 + l_angle_2) / 2;
-	     }
-	   }
-	   if(((l_angle_1 < 0) && (l_angle_2 >= 180))
-	   || ((l_angle_2 < 0) && (l_angle_1 >= 180)))
-	   {
-	      l_angle_new += 180;
-	   }
-	}
-	l_angle = p_rotatate_less_than_180(l_angle, l_angle_new, &l_turns);
+             }
+           }
+           if(((l_angle_1 < 0) && (l_angle_2 >= 180))
+           || ((l_angle_2 < 0) && (l_angle_1 >= 180)))
+           {
+              l_angle_new += 180;
+           }
+        }
+        l_angle = p_rotatate_less_than_180(l_angle, l_angle_new, &l_turns);
       }
 
       if(gap_debug)
@@ -1830,7 +1830,7 @@ gap_mov_exec_calculate_rotate_follow(GapMovValues *pvals, gdouble startangle)
       pvals->point[l_idx].rotation = l_startangle + l_angle;
     }
   }
-}	/* end gap_mov_exec_calculate_rotate_follow */
+}       /* end gap_mov_exec_calculate_rotate_follow */
 
 
 /* ============================================================================
@@ -1865,48 +1865,48 @@ gchar *gap_mov_exec_chk_keyframes(GapMovValues *pvals)
          pvals->point[l_idx].keyframe = gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals);
 
          if(pvals->point[l_idx].keyframe > l_affected_frames - 2)
-	 {
-	    l_err = g_strdup_printf(_("\nError: Keyframe %d at point [%d] higher or equal than last handled frame")
-	                              , pvals->point[l_idx].keyframe_abs,  l_idx+1);
-	    l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
-	    g_free(l_err);
-	    l_errcount++;
-	 }
+         {
+            l_err = g_strdup_printf(_("\nError: Keyframe %d at point [%d] higher or equal than last handled frame")
+                                      , pvals->point[l_idx].keyframe_abs,  l_idx+1);
+            l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
+            g_free(l_err);
+            l_errcount++;
+         }
          if(pvals->point[l_idx].keyframe < l_prev_frame)
-	 {
-	    l_err = g_strdup_printf(_("\nError: Keyframe %d at point [%d] leaves not enough space (frames)"
-	                              "\nfor the previous controlpoints")
-				      , pvals->point[l_idx].keyframe_abs, l_idx+1);
-	    l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
-	    g_free(l_err);
-	    l_errcount++;
-	 }
+         {
+            l_err = g_strdup_printf(_("\nError: Keyframe %d at point [%d] leaves not enough space (frames)"
+                                      "\nfor the previous controlpoints")
+                                      , pvals->point[l_idx].keyframe_abs, l_idx+1);
+            l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
+            g_free(l_err);
+            l_errcount++;
+         }
 
          if(pvals->point[l_idx].keyframe <= l_prev_keyframe)
-	 {
-	    l_err = g_strdup_printf(_("\nError: Keyframe %d is not in sequence at point [%d]")
-	                             , pvals->point[l_idx].keyframe_abs, l_idx+1);
-	    l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
-	    g_free(l_err);
-	    l_errcount++;
-	 }
+         {
+            l_err = g_strdup_printf(_("\nError: Keyframe %d is not in sequence at point [%d]")
+                                     , pvals->point[l_idx].keyframe_abs, l_idx+1);
+            l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
+            g_free(l_err);
+            l_errcount++;
+         }
 
          l_prev_keyframe = pvals->point[l_idx].keyframe;
-	 if(l_prev_keyframe > l_prev_frame)
-	 {
-	   l_prev_frame = l_prev_keyframe +1;
-	 }
+         if(l_prev_keyframe > l_prev_frame)
+         {
+           l_prev_frame = l_prev_keyframe +1;
+         }
      }
      else
      {
-	l_prev_frame++;
-	if(l_prev_frame +1 > l_affected_frames)
-	{
-	    l_err = g_strdup_printf(_("\nError: controlpoint [%d] is out of handled framerange"), l_idx+1);
-	    l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
-	    g_free(l_err);
-	    l_errcount++;
-	}
+        l_prev_frame++;
+        if(l_prev_frame +1 > l_affected_frames)
+        {
+            l_err = g_strdup_printf(_("\nError: controlpoint [%d] is out of handled framerange"), l_idx+1);
+            l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
+            g_free(l_err);
+            l_errcount++;
+        }
      }
      if(l_errcount > 10)
      {
@@ -1916,15 +1916,15 @@ gchar *gap_mov_exec_chk_keyframes(GapMovValues *pvals)
 
   if(pvals->point_idx_max + 1 > l_affected_frames)
   {
-	l_err = g_strdup_printf(_("\nError: More controlpoints (%d) than handled frames (%d)."
-	                          "\nPlease reduce controlpoints or select more frames"),
-	                          (int)pvals->point_idx_max+1, (int)l_affected_frames);
-	l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
-	g_free(l_err);
+        l_err = g_strdup_printf(_("\nError: More controlpoints (%d) than handled frames (%d)."
+                                  "\nPlease reduce controlpoints or select more frames"),
+                                  (int)pvals->point_idx_max+1, (int)l_affected_frames);
+        l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
+        g_free(l_err);
   }
 
   return(l_err_lbltext);
-}	/* end gap_mov_exec_chk_keyframes */
+}       /* end gap_mov_exec_chk_keyframes */
 
 
 /* ============================================================================
@@ -1986,7 +1986,7 @@ p_check_move_path_params(GapMovData *mov_data)
   g_free(l_err_lbltext);
 
   return (l_rc);
-}	/* end p_check_move_path_params */
+}       /* end p_check_move_path_params */
 
 
 /* ============================================================================
@@ -2021,33 +2021,33 @@ gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pval
         {
            l_rc = 0;
 
-	   /* get controlpoints from pointfile */
-	   if (pointfile != NULL)
-	   {
-	     l_rc = gap_mov_exec_gap_load_pointfile(pointfile, pvals);
-	     if (l_rc < 0)
-	     {
-	       printf("Execution Error: could not load MovePath controlpoints from file: %s\n",
-	               pointfile);
-	     }
-	   }
+           /* get controlpoints from pointfile */
+           if (pointfile != NULL)
+           {
+             l_rc = gap_mov_exec_gap_load_pointfile(pointfile, pvals);
+             if (l_rc < 0)
+             {
+               printf("Execution Error: could not load MovePath controlpoints from file: %s\n",
+                       pointfile);
+             }
+           }
 
-	   if(l_rc >= 0)
-	   {
-	      l_rc = p_check_move_path_params(&l_mov_data);
-	   }
+           if(l_rc >= 0)
+           {
+              l_rc = p_check_move_path_params(&l_mov_data);
+           }
 
-	   /* Automatic calculation of rotation values */
-	   if((rotation_follow > 0) && (l_rc == 0))
-	   {
+           /* Automatic calculation of rotation values */
+           if((rotation_follow > 0) && (l_rc == 0))
+           {
               gap_mov_exec_calculate_rotate_follow(pvals, startangle);
-	   }
+           }
         }
         else
         {
-	   /* Dialog for GIMP_RUN_INTERACTIVE
-	    * (and for GIMP_RUN_WITH_LAST_VALS that is not really supported here)
-	    */
+           /* Dialog for GIMP_RUN_INTERACTIVE
+            * (and for GIMP_RUN_WITH_LAST_VALS that is not really supported here)
+            */
            l_rc = gap_mov_dlg_move_dialog (&l_mov_data);
            if(0 != gap_lib_chk_framechange(ainfo_ptr))
            {
@@ -2074,10 +2074,10 @@ gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pval
 
         if(l_mov_data.val_ptr->cache_tmp_image_id >= 0)
         {
-	   if(gap_debug)
-	   {
-	      printf("gap_move: DELETE cache_tmp_image_id:%d\n",
-	               (int)l_mov_data.val_ptr->cache_tmp_image_id);
+           if(gap_debug)
+           {
+              printf("gap_move: DELETE cache_tmp_image_id:%d\n",
+                       (int)l_mov_data.val_ptr->cache_tmp_image_id);
            }
            /* destroy the cached frame image */
            gimp_image_delete(l_mov_data.val_ptr->cache_tmp_image_id);
@@ -2095,7 +2095,7 @@ gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pval
   }
 
   return(l_rc);
-}	/* end gap_mov_exec_move_path */
+}       /* end gap_mov_exec_move_path */
 
 
 /* ============================================================================
@@ -2143,5 +2143,5 @@ void gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_p
       default:
          break;
    }
-}	/* end gap_mov_exec_set_handle_offsets */
+}       /* end gap_mov_exec_set_handle_offsets */
 

@@ -70,7 +70,7 @@ static GtkStockItem gap_stock_items[] =
 static void
 add_stock_icon (const gchar  *stock_id,
                 GtkIconSize   size,
-		const guint8 *inline_data)
+                const guint8 *inline_data)
 {
   GtkIconSource *source;
   GtkIconSet    *set;

@@ -27,8 +27,8 @@
  */
 
 guchar *gap_gve_png_drawable_encode_png(GimpDrawable *drawable, gint32 png_interlaced, gint32 *PNG_size,
-			       gint32 png_compression,
-			       void *app0_buffer, gint32 app0_length);
+                               gint32 png_compression,
+                               void *app0_buffer, gint32 app0_length);
 
 
 

@@ -99,11 +99,11 @@ static void p_get_gendate(char *gendate, gint32 sizeof_gendate)
   l_ti = time(0L);          /* Get UNIX time */
   l_t  = localtime(&l_ti);  /* konvert time to tm struct */
   g_snprintf(gendate, sizeof_gendate, "%02d.%02d.%02d %02d:%02d"
-	   , l_t->tm_mday
-	   , l_t->tm_mon + 1
-	   , l_t->tm_year
-	   , l_t->tm_hour
-	   , l_t->tm_min);
+           , l_t->tm_mday
+           , l_t->tm_mon + 1
+           , l_t->tm_year
+           , l_t->tm_hour
+           , l_t->tm_min);
 }
 
 
@@ -183,16 +183,16 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
    *  regarding a particular procedure.
    */
   if (gimp_procedural_db_proc_info (proc_name,
-				    &l_proc_blurb,
-				    &l_proc_help,
-				    &l_proc_author,
-				    &l_proc_copyright,
-				    &l_proc_date,
-				    &l_proc_type,
-				    &l_nparams,
-				    &l_nreturn_vals,
-				    &l_params,
-				    &l_return_vals))
+                                    &l_proc_blurb,
+                                    &l_proc_help,
+                                    &l_proc_author,
+                                    &l_proc_copyright,
+                                    &l_proc_date,
+                                    &l_proc_type,
+                                    &l_nparams,
+                                    &l_nreturn_vals,
+                                    &l_params,
+                                    &l_return_vals))
     {
      p_clean_name(proc_name, &l_clean_proc_name[0]);
      /* procedure found in PDB */
@@ -307,7 +307,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
   gap_codegen_gen_code_iterator(proc_name);
 
   return l_rc;
-}	/* gap_codegen_gen_code_iter_ALT */
+}       /* gap_codegen_gen_code_iter_ALT */
 
 gint gap_codegen_gen_forward_iter_ALT(char  *proc_name)
 {
@@ -375,16 +375,16 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
    *  regarding a particular procedure.
    */
   if (gimp_procedural_db_proc_info (proc_name,
-				    &l_proc_blurb,
-				    &l_proc_help,
-				    &l_proc_author,
-				    &l_proc_copyright,
-				    &l_proc_date,
-				    &l_proc_type,
-				    &l_nparams,
-				    &l_nreturn_vals,
-				    &l_params,
-				    &l_return_vals))
+                                    &l_proc_blurb,
+                                    &l_proc_help,
+                                    &l_proc_author,
+                                    &l_proc_copyright,
+                                    &l_proc_date,
+                                    &l_proc_type,
+                                    &l_nparams,
+                                    &l_nreturn_vals,
+                                    &l_params,
+                                    &l_return_vals))
     {
      p_clean_name(proc_name, &l_clean_proc_name[0]);
      /* procedure found in PDB */
@@ -753,4 +753,4 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
 
 
   return l_rc;
-}	/* gap_codegen_gen_code_iterator */
+}       /* gap_codegen_gen_code_iterator */

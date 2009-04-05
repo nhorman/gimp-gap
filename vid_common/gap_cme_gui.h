@@ -58,10 +58,10 @@ void      gap_cme_gui_requery_vid_extension(GapCmeGlobalParams *gpp);
 void      gap_cme_gui_remove_poll_timer(GapCmeGlobalParams *gpp);
 gboolean  gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp);
 
-GtkWidget*	gap_cme_gui_create_fss__fileselection (GapCmeGlobalParams *gpp);
-GtkWidget*	gap_cme_gui_create_fsv__fileselection (GapCmeGlobalParams *gpp);
-GtkWidget*	gap_cme_gui_create_fsb__fileselection (GapCmeGlobalParams *gpp);
-GtkWidget*	gap_cme_gui_create_fsa__fileselection (GapCmeGlobalParams *gpp);
+GtkWidget*      gap_cme_gui_create_fss__fileselection (GapCmeGlobalParams *gpp);
+GtkWidget*      gap_cme_gui_create_fsv__fileselection (GapCmeGlobalParams *gpp);
+GtkWidget*      gap_cme_gui_create_fsb__fileselection (GapCmeGlobalParams *gpp);
+GtkWidget*      gap_cme_gui_create_fsa__fileselection (GapCmeGlobalParams *gpp);
 
 void            gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp);
 gint32          gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp);

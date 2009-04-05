@@ -110,14 +110,14 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
   /* check for WAV file or valid audio playlist, and get audio informations */
   l_rc = gap_audio_playlist_wav_file_check(cval->audioname1
                      , &samplerate
-		     , &channels
+                     , &channels
                      , &bytes_per_sample
-		     , &bits
-		     , &samples
-		     , &all_playlist_references
-		     , &valid_playlist_references
-		     , cval->samplerate
-		     );
+                     , &bits
+                     , &samples
+                     , &all_playlist_references
+                     , &valid_playlist_references
+                     , cval->samplerate
+                     );
 
    if (valid_playlist_references > 0)
    {
@@ -154,7 +154,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
         if(cval->run_mode == GIMP_RUN_INTERACTIVE)
         {
           g_message(l_msg);
-	    }
+            }
         return -1;
      }
 
@@ -168,15 +168,15 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
      if(!g_file_test(cval->tmp_audfile, G_FILE_TEST_EXISTS))
      {
        l_msg = g_strdup_printf(_("ERROR: Could not create resampled WAV workfile\n\n"
-			       "1.) check write permission on \n  file:  %s\n"
- 			       "2.) check if SOX (version >= 12.16) is installed:\n  prog:  %s\n")
+                               "1.) check write permission on \n  file:  %s\n"
+                               "2.) check if SOX (version >= 12.16) is installed:\n  prog:  %s\n")
                        , cval->tmp_audfile
-		       , cval->util_sox
-		       );
+                       , cval->util_sox
+                       );
        if(cval->run_mode == GIMP_RUN_INTERACTIVE)
        {
          g_message(l_msg);
-	   }
+           }
        g_free(l_msg);
        return -1;
      }

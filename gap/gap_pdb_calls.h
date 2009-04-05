@@ -51,7 +51,7 @@ gboolean   gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename);
 
 gboolean   gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
-			      gint32 *th_data_count, unsigned char **th_data);
+                              gint32 *th_data_count, unsigned char **th_data);
 gboolean   gap_pdb_procedure_name_available (const gchar *search_name);
 
 #endif

@@ -75,9 +75,9 @@ int gap_debug = 0;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -117,7 +117,7 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(PLUG_IN_NAME_ANIMFILTER,
-			 "This plugin calls another plugin for each layer of an image, "
+                         "This plugin calls another plugin for each layer of an image, "
                          "optional varying its settings (to produce animated effects). "
                          "The called plugin must work on a single drawable and must be "
                          "able to run in runmode GIMP_RUN_WITH_LAST_VALS and using gimp_set_data "
@@ -129,37 +129,37 @@ query ()
                          "But the selceted plug-in (in this case via parameter plugin_name) is called in "
                          "interactive runmode one time or two times if varying parameter is not 0. "
                          "Those interactive calls are done regardless what runmode is specified here.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Filter all Layers..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_foreach), nreturn_vals,
-			 args_foreach, return_vals);
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Filter all Layers..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_foreach), nreturn_vals,
+                         args_foreach, return_vals);
 
   /* ------------------ Common Iterator ------------------------------ */
 
   gimp_install_procedure(GIMP_PLUGIN_GAP_COMMON_ITER,
-			 "This procedure calculates the modified values in the LAST_VALUES buffer named by plugin_name for one iterationstep",
-			 "",
-			 "Wolfgang Hofer",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 NULL,    /* do not appear in menus */
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_com_iter), nreturn_vals,
-			 args_com_iter, return_vals);
+                         "This procedure calculates the modified values in the LAST_VALUES buffer named by plugin_name for one iterationstep",
+                         "",
+                         "Wolfgang Hofer",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         NULL,    /* do not appear in menus */
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_com_iter), nreturn_vals,
+                         args_com_iter, return_vals);
 
   /* ------------------ ALTernative Iterators ------------------------------ */
 
   gimp_plugin_menu_register (PLUG_IN_NAME_ANIMFILTER, N_("<Image>/Filters/"));
 
   gap_query_iterators_ALT();
-			 
-}	/* end query */
+                         
+}       /* end query */
 
 
 static void

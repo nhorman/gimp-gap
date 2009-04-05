@@ -144,9 +144,9 @@ static int       p_fmac_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -191,27 +191,27 @@ query ()
                              lastvals);
 
   gimp_install_procedure(GAP_FMACNAME_PLUG_IN_NAME_FMAC,
-			 "This plug-in can create and execute filtermacro scriptfiles",
-			 "This plug-in allows the user to pick one or more filters "
-			 "that have already been called before in the current Gimp session. "
-			 "The internal PDB-name of the picked filter is stored in a "
+                         "This plug-in can create and execute filtermacro scriptfiles",
+                         "This plug-in allows the user to pick one or more filters "
+                         "that have already been called before in the current Gimp session. "
+                         "The internal PDB-name of the picked filter is stored in a "
                          "filtermacro scriptfile, along with the parameter buffer that was "
                          "used at the last call.\n"
-			 "You can execute a filtermacro scriptfile on the Input drawable "
-			 "(in the current or in any further Gimp session). "
-			 "The non-interactive API is limited to filtermacro script execution "
-			 "and does not allow creation or modification of filtermacro scripts "
-			 "WARNING: filtermacro scriptfiles are a temporary solution. "
-			 "They are machine dependent. Support may be dropped in future gimp "
+                         "You can execute a filtermacro scriptfile on the Input drawable "
+                         "(in the current or in any further Gimp session). "
+                         "The non-interactive API is limited to filtermacro script execution "
+                         "and does not allow creation or modification of filtermacro scripts "
+                         "WARNING: filtermacro scriptfiles are a temporary solution. "
+                         "They are machine dependent. Support may be dropped in future gimp "
                          "versions.",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("Filtermacro..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_fmac_dialog), nreturn_vals,
-			 args_fmac_dialog, return_vals);
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("Filtermacro..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_fmac_dialog), nreturn_vals,
+                         args_fmac_dialog, return_vals);
 
   gimp_plugin_menu_register (GAP_FMACNAME_PLUG_IN_NAME_FMAC, N_("<Image>/Filters/"));
 }  /* end query */
@@ -263,46 +263,46 @@ run(const gchar *name
       }
       else
       {
-	if (run_mode == GIMP_RUN_NONINTERACTIVE)
-	{
-	  if(n_params == 4)
-	  {
-	    filtermacro_file = param[3].data.d_string;
-	    if(filtermacro_file == NULL)
-	    {
+        if (run_mode == GIMP_RUN_NONINTERACTIVE)
+        {
+          if(n_params == 4)
+          {
+            filtermacro_file = param[3].data.d_string;
+            if(filtermacro_file == NULL)
+            {
               status = GIMP_PDB_CALLING_ERROR;
-	    }
-	  }
-	  else
-	  {
+            }
+          }
+          else
+          {
             status = GIMP_PDB_CALLING_ERROR;
-	  }
-	}
-	else
-	{
-	  gint l_len;
+          }
+        }
+        else
+        {
+          gint l_len;
 
-	  l_len = gimp_get_data_size(GAP_FMACNAME_PLUG_IN_NAME_FMAC);
-	  if(l_len > 0)
-	  {
-	    filtermacro_file = g_malloc0(l_len);
-	    gimp_get_data(GAP_FMACNAME_PLUG_IN_NAME_FMAC, filtermacro_file);
-	  }
-	  else
-	  {
-	    filtermacro_file = g_strdup("\0");
-	  }
-	}
+          l_len = gimp_get_data_size(GAP_FMACNAME_PLUG_IN_NAME_FMAC);
+          if(l_len > 0)
+          {
+            filtermacro_file = g_malloc0(l_len);
+            gimp_get_data(GAP_FMACNAME_PLUG_IN_NAME_FMAC, filtermacro_file);
+          }
+          else
+          {
+            filtermacro_file = g_strdup("\0");
+          }
+        }
 
-	if(status == GIMP_PDB_SUCCESS)
-	{
+        if(status == GIMP_PDB_SUCCESS)
+        {
           l_rc = gap_fmac_execute(run_mode, image_id, drawable_id
                    , filtermacro_file
                    , NULL  /* filtermacro_file2 */
                    , 1.0   /* current_step */
                    , 1     /* total_steps */
                    );
-	}
+        }
       }
   }
   else
@@ -635,8 +635,8 @@ p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
                           , p_fmac_pdb_constraint_proc_sel2
                           , &l_browser_result
                           , image_id
-			  , GAP_DB_BROWSER_FMAC_HELP_ID
-			  )
+                          , GAP_DB_BROWSER_FMAC_HELP_ID
+                          )
     < 0)
   {
     if(gap_debug) printf("DEBUG: gap_db_browser_dialog cancelled\n");
@@ -693,7 +693,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 
   vbox = gtk_vbox_new (FALSE, 4);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (gpp->dialog)->vbox),
-		      vbox, TRUE, TRUE, 0);
+                      vbox, TRUE, TRUE, 0);
   gtk_widget_show (vbox);
 
   /* table */
@@ -724,8 +724,8 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
                          ,NULL);
   gtk_widget_show(entry);
   g_signal_connect(G_OBJECT(entry), "changed",
-		   G_CALLBACK (p_file_entry_update_callback),
-		   gpp);
+                   G_CALLBACK (p_file_entry_update_callback),
+                   gpp);
 
   /* Button  to invoke filebrowser */
   button = gtk_button_new_with_label ("...");
@@ -733,20 +733,20 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
                          , _("Open filebrowser window to select a filename")
                          ,NULL);
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
-		    0, 0, 0, 0 );
+                    0, 0, 0, 0 );
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (p_filebrowser_button_callback),
-		    gpp);
+                    G_CALLBACK (p_filebrowser_button_callback),
+                    gpp);
 
   /* list : list in a scrolled_win */
 
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window),
-				       GTK_SHADOW_IN);
+                                       GTK_SHADOW_IN);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-				  GTK_POLICY_AUTOMATIC,
-				  GTK_POLICY_ALWAYS);
+                                  GTK_POLICY_AUTOMATIC,
+                                  GTK_POLICY_ALWAYS);
   gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 0);
   gtk_widget_show (scrolled_window);
 
@@ -757,22 +757,22 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
     (GTK_CELL_RENDERER_TEXT (renderer), 1);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (gpp->tv),
-					       -1, _("Nr"),
-					       renderer,
-					       "text", 1,
-					       NULL);
+                                               -1, _("Nr"),
+                                               renderer,
+                                               "text", 1,
+                                               NULL);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (gpp->tv),
-					       -1, _("PDB Name"),
-					       renderer,
-					       "text", 2,
-					       NULL);
+                                               -1, _("PDB Name"),
+                                               renderer,
+                                               "text", 2,
+                                               NULL);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (gpp->tv),
-					       -1, _("Menu Path"),
-					       renderer,
-					       "text", 3,
-					       NULL);
+                                               -1, _("Menu Path"),
+                                               renderer,
+                                               "text", 3,
+                                               NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (gpp->tv), TRUE);
 
   gtk_widget_set_size_request (gpp->tv, 320 /*WIDTH*/, 100 /*HEIGHT*/);
@@ -804,9 +804,9 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
     {
       if(gap_debug) printf("gap_fmac_dialog: RUN image_id:%d drawable_id:%d, filtermacro_file:%s\n"
                               ,(int)image_id
-			      ,(int)drawable_id
-			      ,gpp->filtermacro_file
-			      );
+                              ,(int)drawable_id
+                              ,gpp->filtermacro_file
+                              );
       return(gap_fmac_execute(run_mode, image_id, drawable_id
               , gpp->filtermacro_file
               , NULL  /* filtermacro_file2 */
@@ -871,8 +871,8 @@ p_procedure_select_callback (GtkTreeSelection *sel, fmac_globalparams_t *gpp)
   {
     /* get column 0 (the invisible intenal number) from the store */
     gtk_tree_model_get (GTK_TREE_MODEL (gpp->store), &iter
-		       ,0, &numtxt
-		       , -1);
+                       ,0, &numtxt
+                       , -1);
     if (gap_debug) printf("p_procedure_select_callback (3) numtxt:%s\n", numtxt);
     gpp->selected_number = atoi(numtxt);
     g_free (numtxt);
@@ -899,7 +899,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
   gpp->store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model (GTK_TREE_VIEW (gpp->tv)
                           ,GTK_TREE_MODEL (gpp->store)
-			  );
+                          );
   g_object_unref (gpp->store);
 
   /* read filternames from filtermacro_file
@@ -927,23 +927,23 @@ p_tree_fill (fmac_globalparams_t *gpp)
        {
          gchar *numtxt;
          gchar *label;
-	 gchar *menu_path;
+         gchar *menu_path;
 
          menu_path = gap_db_get_plugin_menupath(pdb_name);
-	 if(menu_path == NULL)
-	 {
-	   menu_path = g_strdup(_("** No menu path available **"));
-	 }
+         if(menu_path == NULL)
+         {
+           menu_path = g_strdup(_("** No menu path available **"));
+         }
          label = g_strdup_printf("%3d.", (int)count_elem +1);
          numtxt = g_strdup_printf("%d", (int)count_elem);
 
          gtk_list_store_append (gpp->store, &iter);
          gtk_list_store_set (gpp->store, &iter
-    		            ,0, numtxt            /* internal invisible number starting at 0 */
-    		            ,1, label             /* visible number starting at 1 */
-		            ,2, pdb_name
-			    ,3, menu_path
-		            ,-1);
+                            ,0, numtxt            /* internal invisible number starting at 0 */
+                            ,1, label             /* visible number starting at 1 */
+                            ,2, pdb_name
+                            ,3, menu_path
+                            ,-1);
          g_free (numtxt);
          g_free (label);
          g_free (menu_path);
@@ -966,20 +966,20 @@ p_tree_fill (fmac_globalparams_t *gpp)
     || (gap_lib_file_exists(gpp->filtermacro_file) == 0 ))
     {
          gtk_list_store_set (gpp->store, &iter
-    		            ,0, "-1"
-			    ,1, " "
-			    ,2, _("** Empty **")
-    		            ,3, " "
-		            ,-1);
+                            ,0, "-1"
+                            ,1, " "
+                            ,2, _("** Empty **")
+                            ,3, " "
+                            ,-1);
     }
     else
     {
          gtk_list_store_set (gpp->store, &iter
-    		            ,0, "-1"
-			    ,1, " "
-			    ,2, _("** File is not a filtermacro **")
-		            ,3, " "
-		            ,-1);
+                            ,0, "-1"
+                            ,1, " "
+                            ,2, _("** File is not a filtermacro **")
+                            ,3, " "
+                            ,-1);
     }
   }
 
@@ -1032,7 +1032,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
                           ,_("Delete the filtermacro scriptfile")
                           , NULL);
   g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_delete_all_callback)
+                   ,G_CALLBACK (p_delete_all_callback)
                    ,gpp
                    );
   gtk_widget_show (button);
@@ -1045,7 +1045,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
                           ,_("Delete the selected filtercall")
                           , NULL);
   g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_delete_callback)
+                   ,G_CALLBACK (p_delete_callback)
                    ,gpp
                    );
   gtk_widget_show (button);
@@ -1056,15 +1056,15 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button
                           ,_("Open PDB-browser window to add a new filter "
-			     "to the filtermacro scriptfile.\n"
-			     "Important:\n"
-			     "The PDB-browser shows only filters "
-			     "that have already been used in the current session "
-			     "and have setup the internal buffer with the "
-			     "parameter settings of the last call")
+                             "to the filtermacro scriptfile.\n"
+                             "Important:\n"
+                             "The PDB-browser shows only filters "
+                             "that have already been used in the current session "
+                             "and have setup the internal buffer with the "
+                             "parameter settings of the last call")
                           , NULL);
   g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_add_callback)
+                   ,G_CALLBACK (p_add_callback)
                    ,gpp
                    );
   gtk_widget_show (button);
@@ -1078,7 +1078,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
                           ,_("Close window")
                           , NULL);
   g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_close_callback)
+                   ,G_CALLBACK (p_close_callback)
                    ,gpp
                    );
   gtk_widget_show (button);
@@ -1092,7 +1092,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
                           ,_("Apply filtermacro script on current drawable and close window")
                           , NULL);
   g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_ok_callback)
+                   ,G_CALLBACK (p_ok_callback)
                    ,gpp
                    );
   gtk_widget_show (button);
@@ -1209,47 +1209,47 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
       {
         GapValTextFileLines *txf_ptr;
         GapValTextFileLines *txf_ptr_root;
-	gint count_elem;
+        gint count_elem;
         gchar *label;
         FILE  *fp;
-	gboolean copy_line;
+        gboolean copy_line;
 
-	/* rewrite the filtermacro file
-	 * without the line that corresponds to gpp->selected_number
-	 */
+        /* rewrite the filtermacro file
+         * without the line that corresponds to gpp->selected_number
+         */
         txf_ptr_root = gap_val_load_textfile(gpp->filtermacro_file);
-	fp = g_fopen(gpp->filtermacro_file, "w");
-	if(fp)
-	{
-	  count_elem = 0;
-	  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapValTextFileLines *) txf_ptr->next)
-	  {
-	    copy_line = TRUE;
+        fp = g_fopen(gpp->filtermacro_file, "w");
+        if(fp)
+        {
+          count_elem = 0;
+          for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapValTextFileLines *) txf_ptr->next)
+          {
+            copy_line = TRUE;
 
             label = p_get_filtername(txf_ptr->line);
             if(label)
-	    {
-	      if(count_elem == gpp->selected_number)
-	      {
-		copy_line = FALSE;
-	      }
-	      g_free(label);
-	      count_elem++;
-	    }
+            {
+              if(count_elem == gpp->selected_number)
+              {
+                copy_line = FALSE;
+              }
+              g_free(label);
+              count_elem++;
+            }
 
-	    if(gap_debug) printf("%4d  %s", (int)count_elem, txf_ptr->line);
+            if(gap_debug) printf("%4d  %s", (int)count_elem, txf_ptr->line);
 
-	    if(copy_line)
-	    {
-	      fprintf(fp, "%s", txf_ptr->line);
-	    }
-	  }
-	  fclose(fp);
-	}
-	if(txf_ptr_root)
-	{
-	  gap_val_free_textfile_lines(txf_ptr_root);
-	}
+            if(copy_line)
+            {
+              fprintf(fp, "%s", txf_ptr->line);
+            }
+          }
+          fclose(fp);
+        }
+        if(txf_ptr_root)
+        {
+          gap_val_free_textfile_lines(txf_ptr_root);
+        }
 
       }
     }
@@ -1293,8 +1293,8 @@ p_add_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
       if((l_rc < 0) && (errno != 0))
       {
         g_message(_("ERROR: Could not write filtermacro script\n"
-	        "filename: '%s'\n%s")
-	       ,gpp->filtermacro_file, g_strerror (errno));
+                "filename: '%s'\n%s")
+               ,gpp->filtermacro_file, g_strerror (errno));
       }
     }
     p_tree_fill (gpp);
@@ -1322,25 +1322,25 @@ p_filebrowser_button_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
 
   g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		   "clicked",
+                   "clicked",
                     G_CALLBACK (p_filesel_ok_callback),
-		    gpp);
+                    gpp);
 
   g_signal_connect(G_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		  "clicked",
+                  "clicked",
                    G_CALLBACK (p_filesel_close_callback),
-	           gpp);
+                   gpp);
 
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-				   gpp->filtermacro_file);
+                                   gpp->filtermacro_file);
 
   gtk_widget_show (filesel);
   /* "destroy" has to be the last signal,
    * (otherwise the other callbacks are never called)
    */
   g_signal_connect (G_OBJECT (filesel), "destroy",
-		    G_CALLBACK (p_filesel_close_callback),
-		    gpp);
+                    G_CALLBACK (p_filesel_close_callback),
+                    gpp);
 }
 
 /* ----------------------------
@@ -1349,7 +1349,7 @@ p_filebrowser_button_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
  */
 static void
 p_filesel_close_callback(GtkWidget *widget,
-		   fmac_globalparams_t *gpp)
+                   fmac_globalparams_t *gpp)
 {
   GtkWidget        *filesel;
 
@@ -1368,7 +1368,7 @@ p_filesel_close_callback(GtkWidget *widget,
  */
 static void
 p_filesel_ok_callback(GtkWidget *widget,
-		   fmac_globalparams_t *gpp)
+                   fmac_globalparams_t *gpp)
 {
   const gchar        *filename;
 
@@ -1390,7 +1390,7 @@ p_filesel_ok_callback(GtkWidget *widget,
  */
 static void
 p_file_entry_update_callback(GtkWidget *widget,
-		   fmac_globalparams_t *gpp)
+                   fmac_globalparams_t *gpp)
 {
  if(gpp)
  {

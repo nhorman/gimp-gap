@@ -995,8 +995,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                               NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (oni__combo_ref_mode),
                                  0,  /* initial gint value */
-                        	 G_CALLBACK (on_oni__combo_ref_mode),
-                        	 gpp);
+                                 G_CALLBACK (on_oni__combo_ref_mode),
+                                 gpp);
 
   gtk_widget_show (oni__combo_ref_mode);
   gtk_table_attach (GTK_TABLE (table1), oni__combo_ref_mode, 1, 3, tab1_row, tab1_row+1,
@@ -1004,10 +1004,10 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__combo_ref_mode
                          , _("Reference Modes determines stepsequence:\n"
-			     " normal: +1,+2,+3,+4,+5,+6\n"
-			     " bidirectional single: +1,-2,+3,-4,+5,-6\n"
-			     " bidirectional double: +1,-1,+2,-2,+3,-3\n"
-			     " (stepsize is set by frame reference parameter)")
+                             " normal: +1,+2,+3,+4,+5,+6\n"
+                             " bidirectional single: +1,-2,+3,-4,+5,-6\n"
+                             " bidirectional double: +1,-1,+2,-2,+3,-3\n"
+                             " (stepsize is set by frame reference parameter)")
                          , NULL);
 
 
@@ -1049,7 +1049,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_asc_opacity
                          , _("ON: Far neighbour frames have the higher opacity.\n"
-			     "OFF: Near neighbour frames have the higher opacity.")
+                             "OFF: Near neighbour frames have the higher opacity.")
                          , NULL);
 
   tab1_row++;
@@ -1077,7 +1077,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ref_delta
                          , _("reference stepsize where -1 is previous frame, +1 is next frame."
-			     " (stepsequence is built together with reference mode parameter)")
+                             " (stepsequence is built together with reference mode parameter)")
                          , NULL);
 
   oni__checkbutton_ref_cycle = gtk_check_button_new_with_label (_("Cyclic"));
@@ -1123,7 +1123,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_stack_top
                          , _("ON: 0 is top of stack (in front).\n"
-			     "OFF: 0 is bottom of stack (in background).")
+                             "OFF: 0 is bottom of stack (in background).")
                          , NULL);
   tab1_row++;
 
@@ -1230,8 +1230,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                               NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (oni__combo_select_mode),
                                  0,  /* initial gint value */
-                        	 G_CALLBACK (on_oni__combo_select_mode),
-                        	 gpp);
+                                 G_CALLBACK (on_oni__combo_select_mode),
+                                 gpp);
 
   gtk_widget_show (oni__combo_select_mode);
   gtk_table_attach (GTK_TABLE (table2), oni__combo_select_mode, 1, 2, 2, 3,
@@ -1263,7 +1263,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_case, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_case
                          , _("ON: Case sensitive pattern.\n"
-			     "OFF: Ignore case.")
+                             "OFF: Ignore case.")
                          , NULL);
 
   oni__checkbutton_select_invert = gtk_check_button_new_with_label (_("Invert Selection"));
@@ -1271,7 +1271,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_invert, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_invert
                          , _("ON: Select non-matching layers.\n"
-			     "OFF: Select matching layers")
+                             "OFF: Select matching layers")
                          , NULL);
 
   label6 = gtk_label_new (_("Select Pattern:"));

@@ -170,10 +170,10 @@ p_wrapper_mpeg3_check_sig(char *filename)
       }
       else
       {
-	if((minor == 5) && (release < 4))
-	{
+        if((minor == 5) && (release < 4))
+        {
           version_ok = FALSE;
-	}
+        }
       }
     }
   }
@@ -184,21 +184,21 @@ p_wrapper_mpeg3_check_sig(char *filename)
     {
       printf("GVA info: the GAP Video API was linked with "
            " libmpeg3 %d.%d.%d (reqired version is 1.5.4 or better)\n"
-	   ,major
-	   ,minor
-	   ,release
-	   );
+           ,major
+           ,minor
+           ,release
+           );
     }
   }
   else
   {
     printf("## GVA WARNING: the GAP Video API was linked with "
            " an old version of libmpeg3 %d.%d.%d (reqired version is 1.5.4 or better)\n"
-	   " (the libmpeg3 based decoder is not available)"
-	   ,major
-	   ,minor
-	   ,release
-	  );
+           " (the libmpeg3 based decoder is not available)"
+           ,major
+           ,minor
+           ,release
+          );
     return (FALSE);
   }
   
@@ -275,7 +275,7 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
        {
          if(gap_debug) printf("OPEN: additional tocfile: %s  AVAILABLE (fast seek via mpeg3_set_frame is supported)\n", tocfile);
          gvahand->emulate_seek = FALSE;
-	 filename = tocfile;
+         filename = tocfile;
        }
        else
        {
@@ -335,9 +335,9 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
         gvahand->aspect_ratio     = mpeg3_aspect_ratio(handle->main_handle, (int)gvahand->vid_track);
 
         /* libmpeg3-1.5.4 has a bug and did always deliver apect ratio value 0.0
-	 * the aspect was not recognized when it was there 
-	 * tested with some DVD and MPEG1 videofiles
-	 */
+         * the aspect was not recognized when it was there 
+         * tested with some DVD and MPEG1 videofiles
+         */
         /* printf("ASPECT RATIO: %f\n", (float)gvahand->aspect_ratio); */
 
         if(gvahand->total_frames <= 1)
@@ -352,7 +352,7 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
           if(gap_debug) printf("GUESS TOTAL FRAMES %d\n", (int)gvahand->total_frames );
 
         }
-	
+        
 
       }
       else
@@ -385,7 +385,7 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
 
         if(gap_debug) printf("GVA: mpeg3 after close attempt:%d\n", (int)repeat_count);
 
-	handle->main_handle = NULL;
+        handle->main_handle = NULL;
         mpeg3_check_sig(filename);
         mpeg3_check_sig("dummy");
         gvahand->decoder_handle = NULL;
@@ -402,8 +402,8 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
       if(gvahand->vindex->total_frames > 1)
       {
         /* we have a complete vindex and can
-	 * trust the total_frames in the vindex file
-	 */
+         * trust the total_frames in the vindex file
+         */
         gvahand->total_frames = gvahand->vindex->total_frames;
         gvahand->all_frames_counted = TRUE;
       }
@@ -557,8 +557,8 @@ p_wrapper_mpeg3_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos
       if (1==1)  /* (gvahand->dirty_seek) */
       {
         /* fast seek
-	 * (older libmpeg3 versions had aProblem: 
-	 *  a following read may deliver more or less thrashed images
+         * (older libmpeg3 versions had aProblem: 
+         *  a following read may deliver more or less thrashed images
          *  until the next I frame is read in sequence)
          */
         l_rc = mpeg3_set_frame(handle->main_handle, l_frame_pos, (int)gvahand->vid_track);
@@ -566,9 +566,9 @@ p_wrapper_mpeg3_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos
       else
       {
         /* this dead code once was needed with older libmpeg3 versions
-	 * libmpeg3-1.5.4 seems to handle seek operations clean
-	 * without returning trash frames when seek to B or P frames
-	 */
+         * libmpeg3-1.5.4 seems to handle seek operations clean
+         * without returning trash frames when seek to B or P frames
+         */
         l_rc = p_mpeg3_gopseek(handle->main_handle, l_frame_pos -1, gvahand);
       }
     }
@@ -759,23 +759,23 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
 
        /* for libmpeg3 implementation we need a 2.nd file,
         * the .toc file that does the job for fast seek access by libmeg3 internal methods
-	* (the videoindex_file is just used to store the total_frames information,
-	*  that is not available in the .toc file)
-	*/
+        * (the videoindex_file is just used to store the total_frames information,
+        *  that is not available in the .toc file)
+        */
        gvahand->vindex->tocfile = GVA_build_video_toc_filename(gvahand->filename, GVA_LIBMPEG3_DECODER_NAME);
        
        if(p_check_libmpeg3_toc_file(gvahand->vindex->tocfile))
        {
-	 /* close video and switch to the TOC file */
+         /* close video and switch to the TOC file */
          if(gap_debug) 
          {
            printf("gap_mpeg3_count_frames REOPEN using tocfile: %s\n"
-	         , gvahand->vindex->tocfile
-		 );
-	   fflush(stdout);
+                 , gvahand->vindex->tocfile
+                 );
+           fflush(stdout);
          }
-	 p_wrapper_mpeg3_close(gvahand);
-	 p_wrapper_mpeg3_open_read(gvahand->vindex->tocfile, gvahand);
+         p_wrapper_mpeg3_close(gvahand);
+         p_wrapper_mpeg3_open_read(gvahand->vindex->tocfile, gvahand);
          return(GVA_RET_OK);
        }
      }
@@ -802,7 +802,7 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
       vindex->track = gvahand->vid_track;
       if(vindex->ofs_tab)
       {
-	vindex->tabsize_allocated = GVA_VIDINDEXTAB_BLOCK_SIZE;
+        vindex->tabsize_allocated = GVA_VIDINDEXTAB_BLOCK_SIZE;
       }
     }
   }
@@ -821,31 +821,31 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
       fp = g_fopen(vindex->tocfile, "wb");
       if(fp)
       {
-	int argc;
-	char *argv[3];
+        int argc;
+        char *argv[3];
 
         fclose(fp);
-	
-	argc = 3;
-	argv[0] = g_strdup("GVA_mpeg3toc");
-	argv[1] = g_strdup(gvahand->filename);
-	argv[2] = g_strdup(vindex->tocfile);
-	
+        
+        argc = 3;
+        argv[0] = g_strdup("GVA_mpeg3toc");
+        argv[1] = g_strdup(gvahand->filename);
+        argv[2] = g_strdup(vindex->tocfile);
+        
         GVA_create_libmpeg3_toc(argc, argv, gvahand, &l_total_frames);
-	
-	g_free(argv[0]);
-	g_free(argv[1]);
-	g_free(argv[2]);
+        
+        g_free(argv[0]);
+        g_free(argv[1]);
+        g_free(argv[2]);
       }
       else
       {
         l_errno = errno;
         g_message(_("ERROR: Failed to write videoindex tocfile\n"
-	          "tocfile: '%s'\n"
-		  "%s")
-		  , vindex->tocfile
-		  , g_strerror (l_errno));
-	gvahand->cancel_operation = TRUE;
+                  "tocfile: '%s'\n"
+                  "%s")
+                  , vindex->tocfile
+                  , g_strerror (l_errno));
+        gvahand->cancel_operation = TRUE;
       }
     }
 
@@ -988,9 +988,9 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
     /* Store the size in size and return a 1 if error. */
     /* Stream defines the number of the multiplexed stream to read. */
     l_rc = mpeg3_read_video_chunk(handle->raw_handle
-	                         , buffer   /* out: unsigned char *output */
-	                         , &l_size  /* out: size of the chunk */
-	                         , (long) max_size
+                                 , buffer   /* out: unsigned char *output */
+                                 , &l_size  /* out: size of the chunk */
+                                 , (long) max_size
                                  ,(int)gvahand->vid_track      /* stream */
                                  );
   
@@ -1007,33 +1007,33 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
       if(handle->raw_pos == frame_nr)
       {
         unsigned char *chunk_ptr;
-	
-	/* got start code of next frame at the end of the buffer ? */
-	if(handle->prev_code == MPEG3_PICTURE_START_CODE)
-	{
-	  l_size -= 4; 
-	}
-	
+        
+        /* got start code of next frame at the end of the buffer ? */
+        if(handle->prev_code == MPEG3_PICTURE_START_CODE)
+        {
+          l_size -= 4; 
+        }
+        
         *size = (gint32)l_size;
-	chunk_ptr = chunk;
-	
-	if(handle->prev_code == MPEG3_PICTURE_START_CODE)
-	{
-	  /* begin the chunk data with Picture start code 
-	   * (from the end of prev. buffer) 
-	   */
-	  *size += 4;
-	  chunk_ptr[0] = (handle->prev_code >> 24) & 0xff;
-	  chunk_ptr[1] = (handle->prev_code >> 16) & 0xff;
-	  chunk_ptr[2] = (handle->prev_code >> 8)  & 0xff;
-	  chunk_ptr[3] =  handle->prev_code        & 0xff;
-	  chunk_ptr += 4;
-	}
-	memcpy(chunk_ptr, buffer, l_size);
+        chunk_ptr = chunk;
+        
+        if(handle->prev_code == MPEG3_PICTURE_START_CODE)
+        {
+          /* begin the chunk data with Picture start code 
+           * (from the end of prev. buffer) 
+           */
+          *size += 4;
+          chunk_ptr[0] = (handle->prev_code >> 24) & 0xff;
+          chunk_ptr[1] = (handle->prev_code >> 16) & 0xff;
+          chunk_ptr[2] = (handle->prev_code >> 8)  & 0xff;
+          chunk_ptr[3] =  handle->prev_code        & 0xff;
+          chunk_ptr += 4;
+        }
+        memcpy(chunk_ptr, buffer, l_size);
         handle->prev_code = code;
-	
-	g_free(buffer);
-	
+        
+        g_free(buffer);
+        
         return(GVA_RET_OK);
       }
       
@@ -1245,11 +1245,11 @@ p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahan
       if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
       if(gvahand->fptr_progress_callback)
       {
-	gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
-	if(gvahand->cancel_operation)
-	{
+        gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+        if(gvahand->cancel_operation)
+        {
           return(-1);
-	}
+        }
       }
     }
     g_free(dummy_buffer);
@@ -1262,11 +1262,11 @@ p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahan
       /* The Y, U, and V planes are not copied but the _output pointers */
       /* are redirected to the frame buffer. */
       l_rc = mpeg3_read_yuvframe_ptr(seek_handle
-    		  , &dummy_y
-    		  , &dummy_u
-    		  , &dummy_v
-    		  ,(int)gvahand->vid_track
-    		  );
+                  , &dummy_y
+                  , &dummy_u
+                  , &dummy_v
+                  ,(int)gvahand->vid_track
+                  );
       if(l_rc != 0)
       {
         break;
@@ -1277,11 +1277,11 @@ p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahan
       if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
       if(gvahand->fptr_progress_callback)
       {
-	gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
-	if(gvahand->cancel_operation)
-	{
+        gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+        if(gvahand->cancel_operation)
+        {
           return(-1);
-	}
+        }
       }
   }
 
@@ -1363,11 +1363,11 @@ p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand)
       if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
       if(gvahand->fptr_progress_callback)
       {
-	gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
-	if(gvahand->cancel_operation)
-	{
+        gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+        if(gvahand->cancel_operation)
+        {
           return(-1);
-	}
+        }
       }
     }
 
@@ -1390,11 +1390,11 @@ p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand)
       /* The Y, U, and V planes are not copied but the _output pointers */
       /* are redirected to the frame buffer. */
       l_rc = mpeg3_read_yuvframe_ptr(seek_handle
-    		  , &dummy_y
-    		  , &dummy_u
-    		  , &dummy_v
-    		  ,(int)gvahand->vid_track
-    		  );
+                  , &dummy_y
+                  , &dummy_u
+                  , &dummy_v
+                  ,(int)gvahand->vid_track
+                  );
       if(l_rc != 0)
       {
         break;
@@ -1404,11 +1404,11 @@ p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand)
       if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
       if(gvahand->fptr_progress_callback)
       {
-	gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
-	if(gvahand->cancel_operation)
-	{
+        gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+        if(gvahand->cancel_operation)
+        {
           return(-1);
-	}
+        }
       }
     }
   }

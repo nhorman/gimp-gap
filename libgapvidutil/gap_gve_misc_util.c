@@ -72,7 +72,7 @@ gap_gve_misc_get_ainfo(gint32 image_ID, GapGveEncAInfo *ainfo)
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
-				 GIMP_PDB_INT32, GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_INT32, GIMP_RUN_NONINTERACTIVE,
                                  GIMP_PDB_IMAGE, image_ID,
                                  GIMP_PDB_DRAWABLE, dummy_layer_id,
                                  GIMP_PDB_END);

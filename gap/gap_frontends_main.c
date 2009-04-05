@@ -89,9 +89,9 @@ int gap_debug = 0;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -132,55 +132,55 @@ query ()
 
 
   gimp_install_procedure(GAP_XANIM_PLUGIN_NAME,
-			 "This plugin calls xanim to split any video to video frames. "
-			 "(xanim exporting edition must be installed on your system)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("XANIM based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_xanim), nreturn_vals,
-			 args_xanim, return_vals);
+                         "This plugin calls xanim to split any video to video frames. "
+                         "(xanim exporting edition must be installed on your system)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("XANIM based extraction..."),
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_xanim), nreturn_vals,
+                         args_xanim, return_vals);
 
   gimp_install_procedure(GAP_XANIM_PLUGIN_NAME_TOOLBOX,
-			 "This plugin calls xanim to split any video to video frames. "
-			 "(xanim exporting edition must be installed on your system)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("XANIM based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_xanim_ext), nreturn_vals,
-			 args_xanim_ext, return_vals);
+                         "This plugin calls xanim to split any video to video frames. "
+                         "(xanim exporting edition must be installed on your system)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("XANIM based extraction..."),
+                         NULL,
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_xanim_ext), nreturn_vals,
+                         args_xanim_ext, return_vals);
 
   gimp_install_procedure(GAP_MPEG_ENCODE_PLUGIN_NAME,
-			 "This plugin calls mpeg_encode to convert video frames to MPEG1, or just generates a param file for mpeg_encode. (mpeg_encode must be installed on your system)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPEG1..."),
-			 "*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mpege), nreturn_vals,
-			 args_mpege, return_vals);
+                         "This plugin calls mpeg_encode to convert video frames to MPEG1, or just generates a param file for mpeg_encode. (mpeg_encode must be installed on your system)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("MPEG1..."),
+                         "*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_mpege), nreturn_vals,
+                         args_mpege, return_vals);
 
 
   gimp_install_procedure(GAP_MPEG2_ENCODE_PLUGIN_NAME,
-			 "This plugin calls mpeg2encode to convert video frames to MPEG1 or MPEG2, or just generates a param file for mpeg2encode. (mpeg2encode must be installed on your system)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPEG2..."),
-			 "*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mpege), nreturn_vals,
-			 args_mpege, return_vals);
+                         "This plugin calls mpeg2encode to convert video frames to MPEG1 or MPEG2, or just generates a param file for mpeg2encode. (mpeg2encode must be installed on your system)",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         GAP_VERSION_WITH_DATE,
+                         N_("MPEG2..."),
+                         "*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_mpege), nreturn_vals,
+                         args_mpege, return_vals);
 
   {
     /* Menu names */
@@ -203,15 +203,15 @@ query ()
     gimp_plugin_menu_register (GAP_XANIM_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
   }
 
-}	/* end query */
+}       /* end query */
 
 
 
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals)
+              , GimpParam **return_vals)
 {
   const char *l_env;
   

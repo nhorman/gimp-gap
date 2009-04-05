@@ -183,13 +183,13 @@ static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row
 static void   default_button_cb           (GtkWidget *widget, t_all_arr_args *arr_all);
 static void   default_button_create_value (char *title, GtkWidget *hbox, 
                                            GapArrArg *arr_ptr, t_arr_interface *arrint_ptr, 
-					   t_all_arr_args *arr_all);
+                                           t_all_arr_args *arr_all);
 
 
 
 static void
 arr_close_callback (GtkWidget *widget,
-		    gpointer   data)
+                    gpointer   data)
 {
   t_arr_interface *arrint_ptr;
   GtkWidget *dlg;
@@ -201,7 +201,7 @@ arr_close_callback (GtkWidget *widget,
   {
     arrint_ptr = (t_arr_interface *) g_object_get_data (G_OBJECT (widget)
                                                        , GAP_ARR_INTERFACE_PTR
-						       );
+                                                       );
   }
 
   if(arrint_ptr)
@@ -227,7 +227,7 @@ arr_help_callback (GtkWidget *widget, GapArrArg *arr_ptr)
   {
     arrint_ptr = (t_arr_interface *) g_object_get_data (G_OBJECT (widget)
                                                        , GAP_ARR_INTERFACE_PTR
-						       );
+                                                       );
   }
   
   if((arr_ptr)
@@ -238,7 +238,7 @@ arr_help_callback (GtkWidget *widget, GapArrArg *arr_ptr)
       if(arr_ptr->help_func)
       {
         /* call user help function */   
-	 arr_ptr->help_func (arr_ptr->help_id, arrint_ptr->dlg);
+         arr_ptr->help_func (arr_ptr->help_id, arrint_ptr->dlg);
       }
       else
       {
@@ -251,7 +251,7 @@ arr_help_callback (GtkWidget *widget, GapArrArg *arr_ptr)
 
 static void
 but_array_callback (GtkWidget *widget,
-		    gpointer   data)
+                    gpointer   data)
 {
   t_arr_interface *arrint_ptr;
 
@@ -272,7 +272,7 @@ but_array_callback (GtkWidget *widget,
 static void
 entry_create_value(char *title, GtkTable *table, int row,
                    GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
-		   t_entry_cb_func entry_update_cb, char *init_txt)
+                   t_entry_cb_func entry_update_cb, char *init_txt)
 {
     GtkWidget *entry;
     GtkWidget *label;
@@ -294,8 +294,8 @@ entry_create_value(char *title, GtkTable *table, int row,
     }
     gtk_widget_show(entry);
     g_signal_connect(G_OBJECT(entry), "changed",
-		     G_CALLBACK (entry_update_cb),
-		     arr_ptr);
+                     G_CALLBACK (entry_update_cb),
+                     arr_ptr);
     
     arr_ptr->text_entry = entry;
 }
@@ -308,7 +308,7 @@ entry_create_value(char *title, GtkTable *table, int row,
 static void
 label_create_value(char *title, GtkTable *table, int row,
                    GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
-		   gfloat align)
+                   gfloat align)
 {
     GtkWidget *label;
     GtkWidget *hbox;
@@ -362,7 +362,7 @@ label_create_value(char *title, GtkTable *table, int row,
 static void
 default_button_create_value(char *title, GtkWidget *hbox,
                             GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
-			    t_all_arr_args *arr_all)
+                            t_all_arr_args *arr_all)
 {
     GtkWidget *button;
 
@@ -371,8 +371,8 @@ default_button_create_value(char *title, GtkWidget *hbox,
     
     gtk_widget_show(button);
     g_signal_connect (G_OBJECT (button), "clicked",
-		      G_CALLBACK(default_button_cb),
-		      arr_all);
+                      G_CALLBACK(default_button_cb),
+                      arr_all);
  
     gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
@@ -416,23 +416,23 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
              strncpy(arr_ptr->text_buf_ret, arr_ptr->text_buf_default, arr_ptr->text_buf_len -1);
              buf = g_strdup(arr_ptr->text_buf_default);
           }
-	  if(arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
-	  {
+          if(arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
+          {
             arr_ptr->radio_ret = arr_ptr->radio_default;
             gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (arr_ptr->combo), arr_ptr->radio_ret);
-	  }
-	  break;
+          }
+          break;
         case GAP_ARR_WGT_FLT_PAIR:
         case GAP_ARR_WGT_FLT:  
           arr_ptr->flt_ret = arr_ptr->flt_default;
-	  fmt = g_strdup_printf("%%.%df", arr_ptr->flt_digits);
+          fmt = g_strdup_printf("%%.%df", arr_ptr->flt_digits);
           buf = g_strdup_printf(fmt, arr_ptr->flt_ret);
           g_free(fmt);  
           if(arr_ptr->adjustment)
           {
             gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->flt_default);
           }
-	  break;
+          break;
         case GAP_ARR_WGT_INT_PAIR:
         case GAP_ARR_WGT_INT:
           arr_ptr->int_ret = arr_ptr->int_default;
@@ -441,31 +441,31 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
           {
             gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->int_default);
           }
- 	  break;
+          break;
         case GAP_ARR_WGT_TOGGLE:
           arr_ptr->int_ret = arr_ptr->int_default;
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (arr_ptr->check_button),
-				arr_ptr->int_default);
- 	  break;
+          gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (arr_ptr->check_button),
+                                arr_ptr->int_default);
+          break;
         case GAP_ARR_WGT_RADIO:
           arr_ptr->radio_ret = arr_ptr->radio_default;
 
-	  {
-	    t_radio_arg *rgp_list;
-	    
-	    for(rgp_list = (t_radio_arg *)arr_ptr->radiogroup
-	       ;rgp_list != NULL
-	       ;rgp_list = (t_radio_arg *)rgp_list->next)
-	    {
-	      if(rgp_list->radio_index == arr_ptr->radio_ret)
-	      {
+          {
+            t_radio_arg *rgp_list;
+            
+            for(rgp_list = (t_radio_arg *)arr_ptr->radiogroup
+               ;rgp_list != NULL
+               ;rgp_list = (t_radio_arg *)rgp_list->next)
+            {
+              if(rgp_list->radio_index == arr_ptr->radio_ret)
+              {
                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (rgp_list->radio_button) 
-				             , TRUE);
-	        break;
-	      }
-	    }
-	  }
- 	  break;
+                                             , TRUE);
+                break;
+              }
+            }
+          }
+          break;
         case GAP_ARR_WGT_OPTIONMENU:
          arr_ptr->radio_ret = arr_ptr->radio_default;
          gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (arr_ptr->combo), arr_ptr->radio_ret);
@@ -493,8 +493,8 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
 
 static void
 p_font_callback   (gchar    *name
-		  ,gboolean  dialog_closing
-		  ,gpointer  user_data)
+                  ,gboolean  dialog_closing
+                  ,gpointer  user_data)
 {
   GapArrArg *arr_ptr;
   
@@ -543,15 +543,15 @@ fontsel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, 
   /* Button  to invoke fontbrowser */  
   button = gtk_button_new_with_label ( _("Font Browser"));
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
-		    0, 0, 0, 0 );
+                    0, 0, 0, 0 );
   if(arr_ptr->help_txt != NULL)
   { 
        gimp_help_set_help_data(button, arr_ptr->help_txt,NULL);
   }
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (fontsel_open_cb),
-		    arr_ptr);   
+                    G_CALLBACK (fontsel_open_cb),
+                    arr_ptr);   
 }
 
 
@@ -599,21 +599,21 @@ filesel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
 
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-				   arr_ptr->text_buf_ret);
+                                   arr_ptr->text_buf_ret);
   gtk_widget_show (filesel);
 
   g_signal_connect (G_OBJECT (filesel), "destroy",
-		    G_CALLBACK (filesel_close_cb),
-		    arr_ptr);
+                    G_CALLBACK (filesel_close_cb),
+                    arr_ptr);
 
   g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		   "clicked",
+                   "clicked",
                     G_CALLBACK (filesel_ok_cb),
-		    arr_ptr);
+                    arr_ptr);
   g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		   "clicked",
+                   "clicked",
                     G_CALLBACK (filesel_close_cb),
-		    arr_ptr);
+                    arr_ptr);
 }
 
 
@@ -630,11 +630,11 @@ filesel_create_value(char *title, GtkTable *table, int row,
   button = gtk_button_new_with_label ( "..." );
   g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
-		    0, 0, 0, 0 );
+                    0, 0, 0, 0 );
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (filesel_open_cb),
-		    arr_ptr);
+                    G_CALLBACK (filesel_open_cb),
+                    arr_ptr);
     
 }
 
@@ -723,14 +723,14 @@ spin_create_value(char *title, GtkTable *table, int row
   gtk_widget_show (hbox1);
 
   spinbutton = gimp_spin_button_new (&adj,  /* return value */
-		      initial_val,
-		      umin,
-		      umax,
-		      sstep,
-		      (gdouble)   arr_ptr->pagestep,
-		      0.0,                 /* page_size */
-		      1.0,                 /* climb_rate */
-		      l_digits              /* digits */
+                      initial_val,
+                      umin,
+                      umax,
+                      sstep,
+                      (gdouble)   arr_ptr->pagestep,
+                      0.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      l_digits              /* digits */
                       );
 
   g_object_set_data (G_OBJECT (spinbutton), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
@@ -754,16 +754,16 @@ spin_create_value(char *title, GtkTable *table, int row
   if(int_flag)
   {
     g_signal_connect
-	(G_OBJECT (adj), "value_changed",
-	 G_CALLBACK (gimp_int_adjustment_update),
-	 &arr_ptr->int_ret);
+        (G_OBJECT (adj), "value_changed",
+         G_CALLBACK (gimp_int_adjustment_update),
+         &arr_ptr->int_ret);
   }
   else
   {
     g_signal_connect
-	(G_OBJECT (adj), "value_changed",
-	 G_CALLBACK (gimp_double_adjustment_update),
-	 &arr_ptr->flt_ret);
+        (G_OBJECT (adj), "value_changed",
+         G_CALLBACK (gimp_double_adjustment_update),
+         &arr_ptr->flt_ret);
   }
   
     
@@ -846,7 +846,7 @@ toggle_create_value(char *title, GtkTable *table, int row,
   g_object_set_data (G_OBJECT (check_button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 3, row, row+1, GTK_FILL, 0, 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
-				arr_ptr->int_ret);
+                                arr_ptr->int_ret);
   if(arr_ptr->help_txt != NULL)
   { 
      gimp_help_set_help_data(check_button, arr_ptr->help_txt,NULL);
@@ -1006,7 +1006,7 @@ radio_create_value(char *title, GtkTable *table, int row,
      gtk_table_attach ( GTK_TABLE (radio_table), radio_button, 0, 2, l_idy, l_idy+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), 
-				   l_radio_pressed);
+                                   l_radio_pressed);
      if(l_radio_help_txt != NULL)
      { 
        gimp_help_set_help_data(radio_button, l_radio_help_txt, NULL);
@@ -1015,8 +1015,8 @@ radio_create_value(char *title, GtkTable *table, int row,
      radio_ptr->radio_button = radio_button;
 
      g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		        G_CALLBACK (radio_update_cb),
-		        radio_ptr);
+                        G_CALLBACK (radio_update_cb),
+                        radio_ptr);
   }
 
   
@@ -1077,7 +1077,7 @@ combo_create_value(char *title, GtkTable *table, int row,
     }
     gtk_widget_show(entry);
     g_signal_connect(G_OBJECT(entry), "changed",
-		     G_CALLBACK(text_entry_update_cb),
+                     G_CALLBACK(text_entry_update_cb),
                      arr_ptr);
     
     arr_ptr->text_entry = entry;
@@ -1093,7 +1093,7 @@ combo_create_value(char *title, GtkTable *table, int row,
                     arr_ptr);
   
   gtk_table_attach(GTK_TABLE(table), combo, l_col, l_col+1, row, row +1,
-		   GTK_FILL, GTK_FILL, 0, 0);
+                   GTK_FILL, GTK_FILL, 0, 0);
 
   if(arr_ptr->help_txt != NULL)
   { 
@@ -1156,23 +1156,23 @@ pair_flt_create_value(gchar *title, GtkTable *table, gint row,
 
   adj = 
   gimp_scale_entry_new( GTK_TABLE (table), 0, row,        /* table col, row */
-		        title,                            /* label text */
-		        arr_ptr->scale_width,             /* scalesize */
-			arr_ptr->entry_width,             /* entrysize */
-		       (gfloat)arr_ptr->flt_ret,          /* init value */
-		       (gfloat)arr_ptr->flt_min,          /* lower,  */
-		       (gfloat)arr_ptr->flt_max,          /* upper */
-		        arr_ptr->flt_step,                /* step */
-			arr_ptr->pagestep,                /* pagestep */
-		        arr_ptr->flt_digits,              /* digits */
-		        arr_ptr->constraint,              /* constrain */
-		        umin, umax,                       /* lower, upper (unconstrained) */
-		        arr_ptr->help_txt,                /* tooltip */
-		        NULL);                            /* privatetip */
+                        title,                            /* label text */
+                        arr_ptr->scale_width,             /* scalesize */
+                        arr_ptr->entry_width,             /* entrysize */
+                       (gfloat)arr_ptr->flt_ret,          /* init value */
+                       (gfloat)arr_ptr->flt_min,          /* lower,  */
+                       (gfloat)arr_ptr->flt_max,          /* upper */
+                        arr_ptr->flt_step,                /* step */
+                        arr_ptr->pagestep,                /* pagestep */
+                        arr_ptr->flt_digits,              /* digits */
+                        arr_ptr->constraint,              /* constrain */
+                        umin, umax,                       /* lower, upper (unconstrained) */
+                        arr_ptr->help_txt,                /* tooltip */
+                        NULL);                            /* privatetip */
 
   g_signal_connect (G_OBJECT (adj), "value_changed",
-		    G_CALLBACK (gimp_double_adjustment_update),
-		    &arr_ptr->flt_ret);
+                    G_CALLBACK (gimp_double_adjustment_update),
+                    &arr_ptr->flt_ret);
   arr_ptr->adjustment = adj;                
 }
 
@@ -1201,23 +1201,23 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row,
 
   adj = 
   gimp_scale_entry_new( GTK_TABLE (table), 0, row,        /* table col, row */
-		        title,                            /* label text */
-		        arr_ptr->scale_width,             /* scalesize */
-			arr_ptr->entry_width,             /* entrysize */
-		       (gfloat)arr_ptr->int_ret,          /* init value */
-		       (gfloat)arr_ptr->int_min,          /* lower,  */
-		       (gfloat)arr_ptr->int_max,          /* upper */
-		        arr_ptr->int_step,                /* step */
-			arr_ptr->pagestep,                /* pagestep */
-		        0,                                /* digits */
-		        arr_ptr->constraint,              /* constrain */
-		        umin, umax,                       /* lower, upper (unconstrained) */
-		        arr_ptr->help_txt,                /* tooltip */
-		        NULL);                            /* privatetip */
+                        title,                            /* label text */
+                        arr_ptr->scale_width,             /* scalesize */
+                        arr_ptr->entry_width,             /* entrysize */
+                       (gfloat)arr_ptr->int_ret,          /* init value */
+                       (gfloat)arr_ptr->int_min,          /* lower,  */
+                       (gfloat)arr_ptr->int_max,          /* upper */
+                        arr_ptr->int_step,                /* step */
+                        arr_ptr->pagestep,                /* pagestep */
+                        0,                                /* digits */
+                        arr_ptr->constraint,              /* constrain */
+                        umin, umax,                       /* lower, upper (unconstrained) */
+                        arr_ptr->help_txt,                /* tooltip */
+                        NULL);                            /* privatetip */
 
   g_signal_connect (G_OBJECT (adj), "value_changed",
-		    G_CALLBACK (gimp_int_adjustment_update),
-		    &arr_ptr->int_ret);
+                    G_CALLBACK (gimp_int_adjustment_update),
+                    &arr_ptr->int_ret);
 
   arr_ptr->adjustment = adj;                
 }
@@ -1289,8 +1289,8 @@ gint gap_arr_std_dialog(const char *title_txt,
   
   // gtk_window_set_position (GTK_WINDOW (arrint_ptr->dlg), GTK_WIN_POS_MOUSE);
   g_signal_connect (G_OBJECT (arrint_ptr->dlg), "destroy",
-		    G_CALLBACK (arr_close_callback),
-		    NULL);
+                    G_CALLBACK (arr_close_callback),
+                    NULL);
 
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (arrint_ptr->dlg)->action_area), 2);
   gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (arrint_ptr->dlg)->action_area), FALSE);
@@ -1368,10 +1368,10 @@ gint gap_arr_std_dialog(const char *title_txt,
             printf ("GAP_ARR_WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
             break;
          case GAP_ARR_WGT_DEFAULT_BUTTON:
-	    arr_def_ptr = arr_ptr;
+            arr_def_ptr = arr_ptr;
             break;
          case GAP_ARR_WGT_HELP_BUTTON:
-	    arr_help_ptr = arr_ptr;
+            arr_help_ptr = arr_ptr;
             break;
          default:     /* undefined widget type */
             printf ("Unknown widget type %d ignored\n", arr_ptr->widget_type);
@@ -1398,8 +1398,8 @@ gint gap_arr_std_dialog(const char *title_txt,
                                           button, TRUE);
       gtk_widget_show (button);
       g_signal_connect (G_OBJECT (button), "clicked",
-		        G_CALLBACK(arr_help_callback),
-		        arr_help_ptr);
+                        G_CALLBACK(arr_help_callback),
+                        arr_help_ptr);
     }
   }
   
@@ -1430,8 +1430,8 @@ gint gap_arr_std_dialog(const char *title_txt,
      if( b_argv[l_idx].but_val == b_def_val ) gtk_widget_grab_default (button);
      gtk_widget_show (button);
      g_signal_connect (G_OBJECT (button), "clicked",
-		       G_CALLBACK (but_array_callback),
-		       &b_argv[l_idx].but_val);
+                       G_CALLBACK (but_array_callback),
+                       &b_argv[l_idx].but_val);
      
   }
 
@@ -1503,7 +1503,7 @@ gint gap_arr_std_dialog(const char *title_txt,
   }
   
   return (arrint_ptr->run);
-}	/* end gap_arr_std_dialog */
+}       /* end gap_arr_std_dialog */
 
 
 
@@ -1582,7 +1582,7 @@ gap_arr_arg_init  (GapArrArg *arr_ptr,
         arr_ptr->radio_ret     = 0;
         arr_ptr->radio_argv    = NULL;
         arr_ptr->radio_help_argv = NULL;
-	/* for GAP_ARR_WGT_OPT_ENTRY */
+        /* for GAP_ARR_WGT_OPT_ENTRY */
         arr_ptr->text_buf_len     = 0;
         arr_ptr->text_buf_default = NULL;
         arr_ptr->text_buf_ret     = NULL;
@@ -1612,7 +1612,7 @@ gap_arr_arg_init  (GapArrArg *arr_ptr,
 
    }
   
-}	/* end gap_arr_arg_init */
+}       /* end gap_arr_arg_init */
 
 /* ============================================================================
  *   simplified calls of gap_arr_std_dialog
@@ -1671,7 +1671,7 @@ gint gap_arr_buttons_dialog(const char *title_txt,
                      b_def_val)
            );          /* ret value for window close */
                        
-}	/* end gap_arr_buttons_dialog */
+}       /* end gap_arr_buttons_dialog */
 
 
 
@@ -1687,7 +1687,7 @@ gint gap_arr_buttons_dialog(const char *title_txt,
 long gap_arr_slider_dialog(const char *title, const char *frame,
                      const char *label, const char *tooltip,
                      long min, long max, long curr, long constraint,
-		     const char *help_id)
+                     const char *help_id)
 {
   static GapArrArg  argv[2];
   gboolean l_rc;
@@ -1719,7 +1719,7 @@ long gap_arr_slider_dialog(const char *title, const char *frame,
   {    return (long)(argv[0].int_ret);
   }
   else return -1;
-}	/* end gap_arr_slider_dialog */
+}       /* end gap_arr_slider_dialog */
 
 
 /* ------------------------
@@ -1828,8 +1828,8 @@ gap_arr_overwrite_file_dialog(const char *filename)
     
     l_rc =gap_arr_std_dialog ( _("GAP Question"),
                                   _("File Overwrite Warning"),
-				   1, argv,
-				   2, l_argv, -1);
+                                   1, argv,
+                                   2, l_argv, -1);
     g_free(l_msg);
     if(l_rc < 0)
     {
@@ -1941,12 +1941,12 @@ p_mkdir_from_file_if_not_exists (const char *fname, int mode)
         gint l_errno;
         if(0 != gap_file_mkdir(l_dir, mode))
         {
-	  l_errno = errno;
-	  g_message(_("ERROR: could not create directory:"
-	             "'%s'"
-		     "%s")
-		     ,l_dir
-		     ,g_strerror (l_errno) );
+          l_errno = errno;
+          g_message(_("ERROR: could not create directory:"
+                     "'%s'"
+                     "%s")
+                     ,l_dir
+                     ,g_strerror (l_errno) );
           l_rc = FALSE;/* can not create vindex (invalid direcory path) */
         }
       }
@@ -1977,31 +1977,31 @@ p_check_vindex_file(const char *vindex_file)
     {
       if(!g_file_test(vindex_file, G_FILE_TEST_EXISTS))
       {
-	FILE *fp;
-	gint l_errno;
+        FILE *fp;
+        gint l_errno;
 
         /* try to pre-create an empty videoindex file
-	 * this is done to check file creation errors immediate.
-	 * without this pre-create check the error would be detected very late
-	 * (after minutes minutes on large videos)
-	 * when the whole video was scanned and the index
-	 * should be written to file.
-	 */
-	fp = g_fopen(vindex_file, "wb");
-	if(fp)
-	{
+         * this is done to check file creation errors immediate.
+         * without this pre-create check the error would be detected very late
+         * (after minutes minutes on large videos)
+         * when the whole video was scanned and the index
+         * should be written to file.
+         */
+        fp = g_fopen(vindex_file, "wb");
+        if(fp)
+        {
           fclose(fp);  /* OK, empty file written */
-	}
-	else
-	{
+        }
+        else
+        {
           l_errno = errno;
           g_message(_("ERROR: Failed to write videoindex\n"
-	            "file: '%s'\n"
-		    "%s")
-		    , vindex_file
-		    , g_strerror (l_errno));
-	  l_rc = FALSE;
-	}
+                    "file: '%s'\n"
+                    "%s")
+                    , vindex_file
+                    , g_strerror (l_errno));
+          l_rc = FALSE;
+        }
       }
     }
     
@@ -2048,7 +2048,7 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file
   l_videofile = NULL;
   l_vindex_file = NULL;
   value_string = gimp_gimprc_query("video-index-creation");
-	
+        
   if(value_string)
   {
     if((*value_string == 'n')
@@ -2064,7 +2064,7 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file
     return(l_rc);
   }
 
-	
+        
   l_rc = FALSE;
   if(value_string)
   {
@@ -2101,14 +2101,14 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file
   }
 
   l_info_msg = g_strdup_printf(_("Do you want to create a videoindex file ?\n"
- 			      "\n"
-			      "If you want GIMP-GAP to create videoindex files automatically\n"
-			      "when recommanded, whithout showing up this dialog again\n"
-			      "then you should add the following line to\n"
-			      "your gimprc file:\n"
-			      "%s")
-			      , "(video-index-creation \"yes\")"
-			      );
+                              "\n"
+                              "If you want GIMP-GAP to create videoindex files automatically\n"
+                              "when recommanded, whithout showing up this dialog again\n"
+                              "then you should add the following line to\n"
+                              "your gimprc file:\n"
+                              "%s")
+                              , "(video-index-creation \"yes\")"
+                              );
   l_ii = 0;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_ii].label_txt = " ";

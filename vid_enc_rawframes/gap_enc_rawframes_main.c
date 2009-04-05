@@ -144,7 +144,7 @@ query ()
     {GIMP_PDB_STRING, "storyboard_file", "textfile with list of one or more framesequences"},
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
-				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+                                    "2 ... image is ignored, input is specified by storyboard_file parameter."},
     {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_raw_enc = sizeof(args_raw_enc) / sizeof(args_raw_enc[0]);
@@ -775,8 +775,8 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
     gint32 l_total_framecount;
     l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
                                          ,gpp->val.image_ID
-				         ,gpp->val.storyboard_file
-				         ,gpp->ainfo.basename
+                                         ,gpp->val.storyboard_file
+                                         ,gpp->ainfo.basename
                                          ,gpp->ainfo.extension
                                          ,gpp->val.range_from
                                          ,gpp->val.range_to
@@ -840,8 +840,8 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
                                            , l_video_chunk_ptr
                                            , &l_video_frame_chunk_size  /* actual chunk size (incl. header) */
                                            , l_maxSizeOfRawFrame        /* IN max size */
-					   , gpp->val.framerate
-					   , l_max_master_frame_nr
+                                           , gpp->val.framerate
+                                           , l_max_master_frame_nr
                                            , &l_video_frame_chunk_hdr_size
                                            , l_check_flags
                                            );
@@ -863,7 +863,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
         l_cnt_reused_frames++;
         if (gap_debug)
         {
-	  printf("DEBUG: 1:1 copy of frame %d (fetch as chunk OK) chunk_ptr:%d  chunk_size:%d chunk_hdr_size:%d\n"
+          printf("DEBUG: 1:1 copy of frame %d (fetch as chunk OK) chunk_ptr:%d  chunk_size:%d chunk_hdr_size:%d\n"
               , (int)l_cur_frame_nr
               , (int)l_video_chunk_ptr
               , (int)l_video_frame_chunk_size
@@ -883,14 +883,14 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
         l_cnt_encoded_frames++;
         if (gap_debug)
         {
-	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
+          printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
         }
 
         if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
         {
           char *l_msg;
 
-	  l_msg = g_strdup_printf(_("SAVING: %s\n"), l_sav_name);
+          l_msg = g_strdup_printf(_("SAVING: %s\n"), l_sav_name);
           gimp_progress_init(l_msg);
           g_free(l_msg);
         }

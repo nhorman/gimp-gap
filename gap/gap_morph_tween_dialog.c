@@ -146,21 +146,21 @@ p_filesel_open_cb(GtkWidget *widget, MorphTweenGui *mtg)
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
 
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-				   &mgpp->workpoint_file_lower[0]);
+                                   &mgpp->workpoint_file_lower[0]);
   gtk_widget_show (filesel);
 
   g_signal_connect (G_OBJECT (filesel), "destroy",
-		    G_CALLBACK (p_filesel_close_cb),
-		    mtg);
+                    G_CALLBACK (p_filesel_close_cb),
+                    mtg);
 
   g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		   "clicked",
+                   "clicked",
                     G_CALLBACK (p_filesel_ok_cb),
-		    mtg);
+                    mtg);
   g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		   "clicked",
+                   "clicked",
                     G_CALLBACK (p_filesel_close_cb),
-		    mtg);
+                    mtg);
 }
 
 /* -----------------------------------------------------
@@ -188,13 +188,13 @@ static void
 p_morph_workpoint_entry_update_cb(GtkWidget *widget, GapMorphGlobalParams *mgpp)
 {
    g_snprintf(&mgpp->workpoint_file_lower[0]
-	   , sizeof(mgpp->workpoint_file_lower)
-	   , "%s"
+           , sizeof(mgpp->workpoint_file_lower)
+           , "%s"
            , gtk_entry_get_text(GTK_ENTRY(widget))
            );
    g_snprintf(&mgpp->workpoint_file_upper[0]
-	   , sizeof(mgpp->workpoint_file_upper)
-	   , "%s"
+           , sizeof(mgpp->workpoint_file_upper)
+           , "%s"
            , gtk_entry_get_text(GTK_ENTRY(widget))
            );
    if(gap_debug)
@@ -240,8 +240,8 @@ p_create_morph_workpoint_entry(GapMorphGlobalParams *mgpp, MorphTweenGui *mtg, g
   gtk_widget_show(entry);
 
   g_signal_connect(G_OBJECT(entry), "changed",
-		   G_CALLBACK (p_morph_workpoint_entry_update_cb),
-		   mgpp);
+                   G_CALLBACK (p_morph_workpoint_entry_update_cb),
+                   mgpp);
     
     
   /* Button  to invoke filebrowser */  
@@ -249,11 +249,11 @@ p_create_morph_workpoint_entry(GapMorphGlobalParams *mgpp, MorphTweenGui *mtg, g
   gtk_widget_set_size_request(button, SPIN_BUTTON_WIDTH, -1);
   g_object_set_data (G_OBJECT (button), "mgpp", (gpointer)mgpp);
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
-		    0, 0, 0, 0 );
+                    0, 0, 0, 0 );
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (p_filesel_open_cb),
-		    mtg);
+                    G_CALLBACK (p_filesel_open_cb),
+                    mtg);
 }  /* end p_create_morph_workpoint_entry */
 
 /* --------------------------------------

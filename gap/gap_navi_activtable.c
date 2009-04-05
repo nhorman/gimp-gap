@@ -58,7 +58,7 @@ gap_navat_update_active_image(gint32 old_image_id, gint32 new_image_id)
     }
     g_free(l_activtab);
   }
-}	/* end gap_navat_update_active_image */
+}       /* end gap_navat_update_active_image */
 
 /* ============================================================================
  * gap_navat_set_active_image
@@ -107,7 +107,7 @@ gap_navat_set_active_image(gint32 image_id, gint32 pid)
   gimp_set_data(GAP_NAVID_ACTIVE_IMAGE, l_activtab, l_nactivs * sizeof(t_gap_activdata));
 
   g_free(l_activtab);
-}	/* end gap_navat_set_active_image */
+}       /* end gap_navat_set_active_image */
 
 
 
@@ -164,5 +164,5 @@ gap_navat_get_active_image(gint32 image_id, gint32 pid)
 
   return (l_new_image_id);
   
-}	/* end gap_navat_get_active_image */
+}       /* end gap_navat_get_active_image */
 

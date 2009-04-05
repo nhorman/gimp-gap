@@ -66,10 +66,10 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode,
                              long range_from, long range_to,
                              long flatten_mode, long bg_visible,
                              long   framerate, char  *frame_basename, int frame_basename_len,
-			     gint32 sel_mode, gint32 sel_case,
-			     gint32 sel_invert, char *sel_pattern,
-			     gint32 selection_mode
-			     );
+                             gint32 sel_mode, gint32 sel_case,
+                             gint32 sel_invert, char *sel_pattern,
+                             gint32 selection_mode
+                             );
 
 gint32 gap_range_flatten(GimpRunMode run_mode,
                              gint32 image_id,
@@ -87,11 +87,11 @@ gint32 gap_range_conv(GimpRunMode run_mode,
                              gint32     dest_dither,
                              char   *basename,
                              char   *extension,
-			     gint32  palette_type,
-			     gint32  alpha_dither,
-			     gint32  remove_unused,
+                             gint32  palette_type,
+                             gint32  alpha_dither,
+                             gint32  remove_unused,
                              char   *palette
-			     );
+                             );
 
 int gap_range_anim_sizechange(GimpRunMode run_mode,
                              GapRangeOpsAsiz asiz_mode,

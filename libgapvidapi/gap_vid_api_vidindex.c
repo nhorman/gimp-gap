@@ -314,13 +314,13 @@ p_debug_print_videoindex(t_GVA_Videoindex *vindex)
     for(l_idx=0; l_idx < vindex->tabsize_used; l_idx++)
     {
       printf("VINDEX: ofs_tab[%d]: ofs64: %lld seek_nr:%d flen:%d chk:%d dts:%lld\n"
-	       , (int)l_idx
-	       , vindex->ofs_tab[l_idx].uni.offset_gint64
-	       , (int)vindex->ofs_tab[l_idx].seek_nr
-	       , (int)vindex->ofs_tab[l_idx].frame_length
-	       , (int)vindex->ofs_tab[l_idx].checksum
-	       , vindex->ofs_tab[l_idx].timecode_dts
-	       );
+               , (int)l_idx
+               , vindex->ofs_tab[l_idx].uni.offset_gint64
+               , (int)vindex->ofs_tab[l_idx].seek_nr
+               , (int)vindex->ofs_tab[l_idx].frame_length
+               , (int)vindex->ofs_tab[l_idx].checksum
+               , vindex->ofs_tab[l_idx].timecode_dts
+               );
     }
   }
   
@@ -373,14 +373,14 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
       fp = g_fopen(vindex->videoindex_filename, "rb");
       if(fp)
       {
-	gint32 rd_len;
-	gint32 rd_size;
-	gint   l_flen;
-	gint32 l_mtime;
+        gint32 rd_len;
+        gint32 rd_size;
+        gint   l_flen;
+        gint32 l_mtime;
 
-	rd_len = fread(&vindex->hdr, 1, sizeof(vindex->hdr), fp);
-	if(rd_len)
-	{
+        rd_len = fread(&vindex->hdr, 1, sizeof(vindex->hdr), fp);
+        if(rd_len)
+        {
           vindex->stepsize = atol(vindex->hdr.val_step);
           vindex->tabsize_used = atol(vindex->hdr.val_size);
           vindex->track = atol(vindex->hdr.val_trak);
@@ -394,23 +394,23 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
                , vindex->hdr.val_mtim);
           }
 
-	  l_mtime = gap_file_get_mtime(filename);
-	  if(p_equal_mtime(l_mtime, vindex->mtime) == TRUE)
-	  {
+          l_mtime = gap_file_get_mtime(filename);
+          if(p_equal_mtime(l_mtime, vindex->mtime) == TRUE)
+          {
             l_flen = atol(vindex->hdr.val_flen);
-	    if(l_flen > 0)
-	    {
-	      /* read the videofile_uri of the videofile */
-	      vindex->videofile_uri = g_malloc0(l_flen);
-	      if(vindex->videofile_uri)
-	      {
-        	rd_len = fread(vindex->videofile_uri, 1, l_flen, fp);
-	      }
-	      else
-	      {
-		fseek(fp, l_flen, SEEK_CUR);
-	      }
-	    }
+            if(l_flen > 0)
+            {
+              /* read the videofile_uri of the videofile */
+              vindex->videofile_uri = g_malloc0(l_flen);
+              if(vindex->videofile_uri)
+              {
+                rd_len = fread(vindex->videofile_uri, 1, l_flen, fp);
+              }
+              else
+              {
+                fseek(fp, l_flen, SEEK_CUR);
+              }
+            }
 
             vindex->tabtype = GVA_IDX_TT_UNDEFINED;
             if(strcmp(vindex->hdr.val_type, "GINT64") == 0)
@@ -432,7 +432,7 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
 
 
             rd_len = 0;
-	    rd_size = -1;
+            rd_size = -1;
             switch(vindex->tabtype)
             {
               case GVA_IDX_TT_WITHOUT_TIMECODE_GINT64:    /* old format */
@@ -488,28 +488,28 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
                 printf("GVA_load_videoindex  SUCCESS\n");
               }
             }
-	  }
-	  else
-	  {
+          }
+          else
+          {
             delete_flag = TRUE;
             if(gap_debug)
-	    {
-	      printf("\nGVA_load_videoindex  TOO OLD  videoindex_filename:%s\n"
+            {
+              printf("\nGVA_load_videoindex  TOO OLD  videoindex_filename:%s\n"
                      , vindex->videoindex_filename);
               printf("GVA_load_videoindex  MTIME_INDEX:%ld FILE:%ld\n"
                      , (long)vindex->mtime
                      , (long)l_mtime);
-	    }
-	  }
+            }
+          }
 
-	}
-	fclose(fp);
-	if(delete_flag)
-	{
-	  /* delete OLD videoindex
-	   * (that has become unusable because mtime does not match with videofile) */
-	  g_remove(vindex->videoindex_filename);
-	}
+        }
+        fclose(fp);
+        if(delete_flag)
+        {
+          /* delete OLD videoindex
+           * (that has become unusable because mtime does not match with videofile) */
+          g_remove(vindex->videoindex_filename);
+        }
       }
       else
       {
@@ -610,12 +610,12 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
 
       /* write VIDEOFILE_URI + terminating \0 character(s)  */
       {
-	gchar *uri_buffer;
+        gchar *uri_buffer;
 
-	uri_buffer = g_malloc0(l_flen);
-	g_snprintf(uri_buffer, l_flen, "%s", vindex->videofile_uri);
-	fwrite(uri_buffer, 1, l_flen, fp);
-	g_free(uri_buffer);
+        uri_buffer = g_malloc0(l_flen);
+        g_snprintf(uri_buffer, l_flen, "%s", vindex->videofile_uri);
+        fwrite(uri_buffer, 1, l_flen, fp);
+        g_free(uri_buffer);
       }
 
       /* write offset table */
@@ -629,10 +629,10 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
       
       l_errno = errno;
       g_message(_("ERROR: Failed to write videoindex file\n"
-		"file: '%s'\n"
-		"%s")
-		, vindex->videoindex_filename
-		, g_strerror (l_errno));
+                "file: '%s'\n"
+                "%s")
+                , vindex->videoindex_filename
+                , g_strerror (l_errno));
       
     }
   }

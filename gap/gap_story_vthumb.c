@@ -926,13 +926,13 @@ p_story_vthumb_elem_fetch(GapStbMainGlobalParams *sgpp
       if(framenr <= velem->total_frames)
       {
         th_data = gap_story_vthumb_create_generic_vthumb(sgpp
-  	              ,stb
-  	              ,stb->active_section
-  	              ,stb_elem
-  	              ,framenr
-  	              ,&th_bpp
-  	              ,&th_width
-  	              ,&th_height
+                      ,stb
+                      ,stb->active_section
+                      ,stb_elem
+                      ,framenr
+                      ,&th_bpp
+                      ,&th_width
+                      ,&th_height
                       , TRUE  /* do scale */
                );
       }

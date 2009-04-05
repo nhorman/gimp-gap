@@ -285,7 +285,7 @@ run (const gchar *name,          /* name of plugin */
       gimp_set_data (PLUG_IN_NAME, &glob_namlvals, sizeof (NamlValues));
   }
   values[0].data.d_status = status;
-}	/* end run */
+}       /* end run */
 
 
 
@@ -416,7 +416,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   if(gap_debug) printf("p_Naml END layer_id: %d\n", (int)l_new_layer_id);
 
   return l_new_layer_id;
-}	/* end p_Naml */
+}       /* end p_Naml */
 
 
 /* ------------------
@@ -531,4 +531,4 @@ Naml_dialog(void)
   {
       return -1;
   }
-}		/* end Naml_dialog */
+}               /* end Naml_dialog */

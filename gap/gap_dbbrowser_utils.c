@@ -119,20 +119,20 @@ static const gchar * GimpPDBProcType_to_string    (GimpPDBProcType  type);
 
 
 static void         procedure_select_callback    (GtkTreeSelection  *sel,
-						  dbbrowser_t       *dbbrowser);
+                                                  dbbrowser_t       *dbbrowser);
 static void         dialog_search_callback       (GtkWidget         *widget, 
-						  dbbrowser_t       *dbbrowser);
+                                                  dbbrowser_t       *dbbrowser);
 static void         dialog_select                (dbbrowser_t       *dbbrowser, 
-						  gchar             *proc_name);
+                                                  gchar             *proc_name);
 static void         dialog_close_callback        (GtkWidget         *widget, 
-						  dbbrowser_t       *dbbrowser);
+                                                  dbbrowser_t       *dbbrowser);
 static void         dialog_help_callback         (GtkWidget         *widget, 
-						  dbbrowser_t       *dbbrowser);
+                                                  dbbrowser_t       *dbbrowser);
 static void         convert_string               (gchar             *str);
 
 /* GAP specific extra callbacks */
 static void         dialog_num_button_callback   (dbbrowser_t* dbbrowser, 
-		                                  gint button_nr);
+                                                  gint button_nr);
 static void         dialog_button_1_callback     (GtkWidget *widget,
                                                   dbbrowser_t* dbbrowser);
 static void         dialog_button_2_callback     (GtkWidget *widget,
@@ -140,9 +140,9 @@ static void         dialog_button_2_callback     (GtkWidget *widget,
 static void         dialog_button_3_callback     (GtkWidget *widget,
                                                   dbbrowser_t* dbbrowser);
 static void         p_create_action_area_buttons (dbbrowser_t *dbbrowser,
-                				  char *button_1_txt,
-                				  char *button_2_txt,
-						  const char *help_id
+                                                  char *button_1_txt,
+                                                  char *button_2_txt,
+                                                  const char *help_id
                                                 );
 
 /* create and perform the dialog */
@@ -154,8 +154,8 @@ gap_db_browser_dialog(char *title_txt,
                       t_constraint_func        constraint_func_sel1,
                       t_constraint_func        constraint_func_sel2,
                       GapDbBrowserResult      *result,
-		      gint32                   image_id,
-		      const char              *help_id)
+                      gint32                   image_id,
+                      const char              *help_id)
 {
   dbbrowser_t     *dbbrowser;
   GtkWidget       *hpaned;
@@ -191,7 +191,7 @@ gap_db_browser_dialog(char *title_txt,
 
   hpaned = gtk_hpaned_new ();
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dbbrowser->dialog)->vbox), 
-		      hpaned, TRUE, TRUE, 0);
+                      hpaned, TRUE, TRUE, 0);
   gtk_widget_show (hpaned);
 
   /* left = vbox : the list and the search entry */
@@ -204,10 +204,10 @@ gap_db_browser_dialog(char *title_txt,
   
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window),
-				       GTK_SHADOW_IN);
+                                       GTK_SHADOW_IN);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-				  GTK_POLICY_AUTOMATIC,
-				  GTK_POLICY_ALWAYS);
+                                  GTK_POLICY_AUTOMATIC,
+                                  GTK_POLICY_ALWAYS);
   gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 0);
   gtk_widget_show (scrolled_window);
 
@@ -218,10 +218,10 @@ gap_db_browser_dialog(char *title_txt,
     (GTK_CELL_RENDERER_TEXT (renderer), 1);
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (dbbrowser->tv),
-					       -1, NULL,
-					       renderer,
-					       "text", 0,
-					       NULL);
+                                               -1, NULL,
+                                               renderer,
+                                               "text", 0,
+                                               NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (dbbrowser->tv), FALSE);
 
   gtk_widget_set_size_request (dbbrowser->tv, DBL_LIST_WIDTH, DBL_HEIGHT);
@@ -230,7 +230,7 @@ gap_db_browser_dialog(char *title_txt,
 
   dbbrowser->sel = gtk_tree_view_get_selection (GTK_TREE_VIEW (dbbrowser->tv));
   g_signal_connect (dbbrowser->sel, "changed",
-		    G_CALLBACK (procedure_select_callback), dbbrowser);
+                    G_CALLBACK (procedure_select_callback), dbbrowser);
 
   /* search entry */
 
@@ -245,7 +245,7 @@ gap_db_browser_dialog(char *title_txt,
   dbbrowser->search_entry = gtk_entry_new ();
   gtk_entry_set_activates_default (GTK_ENTRY (dbbrowser->search_entry), TRUE);
   gtk_box_pack_start (GTK_BOX (searchhbox), dbbrowser->search_entry,
-		      TRUE, TRUE, 0);
+                      TRUE, TRUE, 0);
   gtk_widget_show (dbbrowser->search_entry);
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label), dbbrowser->search_entry);
@@ -255,15 +255,15 @@ gap_db_browser_dialog(char *title_txt,
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_set_size_request (scrolled_window, DBL_WIDTH - DBL_LIST_WIDTH, -1);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-				  GTK_POLICY_AUTOMATIC, 
-				  GTK_POLICY_ALWAYS);
+                                  GTK_POLICY_AUTOMATIC, 
+                                  GTK_POLICY_ALWAYS);
   gtk_paned_pack2 (GTK_PANED (hpaned), scrolled_window, TRUE, TRUE);
   gtk_widget_show (scrolled_window);
 
   dbbrowser->descr_vbox = gtk_vbox_new (FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (dbbrowser->descr_vbox), 4);
   gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled_window),
-					 dbbrowser->descr_vbox);
+                                         dbbrowser->descr_vbox);
   gtk_widget_show (dbbrowser->descr_vbox);
 
 
@@ -311,9 +311,9 @@ gap_db_browser_dialog(char *title_txt,
 
 static void
 p_create_action_area_buttons(dbbrowser_t *dbbrowser,
-                	     char *button_1_txt,
-                	     char *button_2_txt,
-			     const char *help_id
+                             char *button_1_txt,
+                             char *button_2_txt,
+                             const char *help_id
                             )
 {
   GtkWidget       *table;
@@ -337,11 +337,11 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
     button = gtk_button_new_with_label ( _("Gen Code by name"));
     GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
     g_signal_connect (G_OBJECT (button), "clicked",
-			G_CALLBACK (dialog_button_3_callback), dbbrowser );
+                        G_CALLBACK (dialog_button_3_callback), dbbrowser );
 
     gtk_table_attach (GTK_TABLE (table), button,
-		      cof, cof+1, row, row + 1,
-		      GTK_FILL, 0, 0, 0);
+                      cof, cof+1, row, row + 1,
+                      GTK_FILL, 0, 0, 0);
     gtk_widget_show (button);
 
     row++;
@@ -353,8 +353,8 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
   g_signal_connect (G_OBJECT (dbbrowser->name_button), "clicked",
                       G_CALLBACK (dialog_search_callback), dbbrowser);
   gtk_table_attach (GTK_TABLE (table), dbbrowser->name_button,
-		    cof, cof+1, row, row + 1, 
-		    GTK_FILL, 0, 0, 0);
+                    cof, cof+1, row, row + 1, 
+                    GTK_FILL, 0, 0, 0);
   gtk_widget_show(dbbrowser->name_button);
 
   /* Button Search by Blurb */
@@ -363,8 +363,8 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
   g_signal_connect (G_OBJECT (dbbrowser->blurb_button), "clicked",
                       G_CALLBACK (dialog_search_callback), dbbrowser);
   gtk_table_attach (GTK_TABLE (table), dbbrowser->blurb_button,
-		    cof+1, cof+2, row, row + 1, 
-		    GTK_FILL, 0, 0, 0);
+                    cof+1, cof+2, row, row + 1, 
+                    GTK_FILL, 0, 0, 0);
   gtk_widget_show(dbbrowser->blurb_button);
 
   /* Button Search by Menupath */
@@ -373,8 +373,8 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
   g_signal_connect (G_OBJECT (dbbrowser->menupath_button), "clicked",
                       G_CALLBACK (dialog_search_callback), dbbrowser);
   gtk_table_attach (GTK_TABLE (table), dbbrowser->menupath_button,
-		    cof+2, cof+3, row, row + 1, 
-		    GTK_FILL, 0, 0, 0);
+                    cof+2, cof+3, row, row + 1, 
+                    GTK_FILL, 0, 0, 0);
   gtk_widget_show(dbbrowser->menupath_button);
 
 
@@ -384,10 +384,10 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
     dbbrowser->app_const_button = gtk_button_new_with_label (button_1_txt);
     GTK_WIDGET_SET_FLAGS (dbbrowser->app_const_button, GTK_CAN_DEFAULT);
     g_signal_connect (G_OBJECT (dbbrowser->app_const_button), "clicked",
-			G_CALLBACK (dialog_button_1_callback), dbbrowser );
+                        G_CALLBACK (dialog_button_1_callback), dbbrowser );
     gtk_table_attach (GTK_TABLE (table), dbbrowser->app_const_button,
-		      cof, cof+1, row, row + 1, 
-		      GTK_FILL, 0, 0, 0);
+                      cof, cof+1, row, row + 1, 
+                      GTK_FILL, 0, 0, 0);
     gtk_widget_set_sensitive (dbbrowser->app_const_button, FALSE);
     gtk_widget_show (dbbrowser->app_const_button);
   } else dbbrowser->app_const_button = NULL;
@@ -397,10 +397,10 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
     dbbrowser->app_vary_button = gtk_button_new_with_label (button_2_txt);
     GTK_WIDGET_SET_FLAGS (dbbrowser->app_vary_button, GTK_CAN_DEFAULT);
     g_signal_connect (G_OBJECT (dbbrowser->app_vary_button), "clicked",
-			G_CALLBACK (dialog_button_2_callback), dbbrowser );
+                        G_CALLBACK (dialog_button_2_callback), dbbrowser );
     gtk_table_attach (GTK_TABLE (table), dbbrowser->app_vary_button,
-		      cof+1, cof+2, row, row + 1, 
-		      GTK_FILL, 0, 0, 0);
+                      cof+1, cof+2, row, row + 1, 
+                      GTK_FILL, 0, 0, 0);
     gtk_widget_set_sensitive (dbbrowser->app_vary_button, FALSE);
     gtk_widget_show (dbbrowser->app_vary_button);
   } else dbbrowser->app_vary_button = NULL;
@@ -409,10 +409,10 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
   button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   g_signal_connect (G_OBJECT (button), "clicked",
-		      G_CALLBACK (dialog_close_callback), dbbrowser);
+                      G_CALLBACK (dialog_close_callback), dbbrowser);
   gtk_table_attach (GTK_TABLE (table), button,
-		    cof+2, cof+3, row, row + 1, 
-		    GTK_FILL, 0, 0, 0);
+                    cof+2, cof+3, row, row + 1, 
+                    GTK_FILL, 0, 0, 0);
   gtk_widget_show (button);
 
 
@@ -423,23 +423,23 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
     gtk_widget_show (button);
     dbbrowser->help_id = help_id;
     g_signal_connect (G_OBJECT (button), "clicked",
-			G_CALLBACK (dialog_help_callback), dbbrowser);
+                        G_CALLBACK (dialog_help_callback), dbbrowser);
     gtk_table_attach (GTK_TABLE (table), button,
-		      0, 1, row, row + 1, 
-		      GTK_FILL, 0, 0, 0);
+                      0, 1, row, row + 1, 
+                      GTK_FILL, 0, 0, 0);
   }
 
 
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dbbrowser->dialog)->action_area), 
-			table, TRUE, TRUE, 0);
+                        table, TRUE, TRUE, 0);
 }  /* end p_create_action_area_buttons */
 
 
 
 static void
 procedure_select_callback (GtkTreeSelection *sel,
-			   dbbrowser_t      *dbbrowser)
+                           dbbrowser_t      *dbbrowser)
 {
   GtkTreeIter  iter;
   gchar       *func;
@@ -450,8 +450,8 @@ procedure_select_callback (GtkTreeSelection *sel,
   if (gtk_tree_selection_get_selected (sel, NULL, &iter))
     {
       gtk_tree_model_get (GTK_TREE_MODEL (dbbrowser->store), &iter,
-			  1, &func,
-			  -1);
+                          1, &func,
+                          -1);
       dialog_select (dbbrowser, func);
       if(dbbrowser->app_const_button)
       {
@@ -464,7 +464,7 @@ procedure_select_callback (GtkTreeSelection *sel,
 /* update the description box (right) */
 static void 
 dialog_select (dbbrowser_t *dbbrowser, 
-	       gchar       *proc_name)
+               gchar       *proc_name)
 {
   GtkWidget   *old_description;
 
@@ -490,16 +490,16 @@ dialog_select (dbbrowser_t *dbbrowser,
     
 
   gimp_procedural_db_proc_info (proc_name, 
-				&dbbrowser->selected_proc_blurb,
-				&dbbrowser->selected_proc_help,
-				&dbbrowser->selected_proc_author,
-				&dbbrowser->selected_proc_copyright,
-				&dbbrowser->selected_proc_date,
-				&dbbrowser->selected_proc_type,
-				&dbbrowser->selected_nparams,
-				&dbbrowser->selected_nreturn_vals,
-				&dbbrowser->selected_params,
-				&dbbrowser->selected_return_vals);
+                                &dbbrowser->selected_proc_blurb,
+                                &dbbrowser->selected_proc_help,
+                                &dbbrowser->selected_proc_author,
+                                &dbbrowser->selected_proc_copyright,
+                                &dbbrowser->selected_proc_date,
+                                &dbbrowser->selected_proc_type,
+                                &dbbrowser->selected_nparams,
+                                &dbbrowser->selected_nreturn_vals,
+                                &dbbrowser->selected_params,
+                                &dbbrowser->selected_return_vals);
 
   /* save the "old" table */
   old_description = dbbrowser->description;
@@ -518,7 +518,7 @@ dialog_select (dbbrowser_t *dbbrowser,
                 dbbrowser->selected_nreturn_vals,
                 dbbrowser->selected_params,
                 dbbrowser->selected_return_vals);
-		    
+                    
 
 
   if (old_description)
@@ -583,7 +583,7 @@ dialog_show_message (dbbrowser_t *dbbrowser,
 /* the HELP dialog */
 static void
 dialog_help_callback (GtkWidget   *widget, 
-		       dbbrowser_t *dbbrowser)
+                       dbbrowser_t *dbbrowser)
 {
   if(dbbrowser)
   {
@@ -597,7 +597,7 @@ dialog_help_callback (GtkWidget   *widget,
 /* end of the dialog */
 static void
 dialog_close_callback (GtkWidget   *widget, 
-		       dbbrowser_t *dbbrowser)
+                       dbbrowser_t *dbbrowser)
 {
   GtkWidget *dlg;
   
@@ -620,7 +620,7 @@ dialog_close_callback (GtkWidget   *widget,
 /* GAP dialog_num_button_callback (end of the dialog) */
 static void 
 dialog_num_button_callback (dbbrowser_t* dbbrowser, 
-		            gint button_nr)
+                            gint button_nr)
 {
   if (dbbrowser->selected_proc_name==NULL) 
   {
@@ -664,7 +664,7 @@ dialog_button_3_callback (GtkWidget *widget, dbbrowser_t* dbbrowser)
 /* search in the whole db */
 static void 
 dialog_search_callback (GtkWidget   *widget, 
-		        dbbrowser_t *dbbrowser)
+                        dbbrowser_t *dbbrowser)
 {
   gchar       **proc_list;
   gint          num_procs;
@@ -688,18 +688,18 @@ dialog_search_callback (GtkWidget   *widget,
       query_text = gtk_entry_get_text (GTK_ENTRY (dbbrowser->search_entry));
 
       while (*query_text)
-	{
-	  if ((*query_text == '_') || (*query_text == '-'))
-	    g_string_append (query, "[-_]");
-	  else
-	    g_string_append_c (query, *query_text);
+        {
+          if ((*query_text == '_') || (*query_text == '-'))
+            g_string_append (query, "[-_]");
+          else
+            g_string_append_c (query, *query_text);
 
-	  query_text++;
-	}
+          query_text++;
+        }
 
       gimp_procedural_db_query (query->str,
-			        ".*", ".*", ".*", ".*", ".*", ".*", 
-			        &num_procs, &proc_list);
+                                ".*", ".*", ".*", ".*", ".*", ".*", 
+                                &num_procs, &proc_list);
 
       g_string_free (query, TRUE);
     }
@@ -708,24 +708,24 @@ dialog_search_callback (GtkWidget   *widget,
       dialog_show_message (dbbrowser, _("Searching by blurb - please wait"));
 
       gimp_procedural_db_query (".*", 
-			        (gchar *) gtk_entry_get_text
-				  (GTK_ENTRY (dbbrowser->search_entry)),
-			        ".*", ".*", ".*", ".*", ".*",
-			        &num_procs, &proc_list);
+                                (gchar *) gtk_entry_get_text
+                                  (GTK_ENTRY (dbbrowser->search_entry)),
+                                ".*", ".*", ".*", ".*", ".*",
+                                &num_procs, &proc_list);
     }
   else
     {
       if (widget == dbbrowser->menupath_button)
         {
           dialog_show_message (dbbrowser, _("Searching by menupath - please wait"));
-	}
-	else
+        }
+        else
         {
           dialog_show_message (dbbrowser, _("Searching - please wait"));
-	}
+        }
 
       gimp_procedural_db_query (".*", ".*", ".*", ".*", ".*", ".*", ".*", 
-			        &num_procs, &proc_list);
+                                &num_procs, &proc_list);
     }
 
   dbbrowser->store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
@@ -747,63 +747,63 @@ dialog_search_callback (GtkWidget   *widget,
       pre_selection = FALSE;
       if (widget == dbbrowser->menupath_button)
         {
-	  gchar *menu_path;
-	  
- 	  menu_path = gap_db_get_plugin_menupath(proc_list[i]);
-	  if(menu_path)
-	    {
-	      if(pattern)
-	        {
-	          if(gap_match_name(menu_path
-		                 , pattern
-		                 , GAP_MTCH_ANYWHERE  /* gint32 mode */
-			         , FALSE          /* NOT case_sensitive */
-	            ))
-		    {
-	              pre_selection = TRUE;  /* select matching menupath */
-		    }
-		}
-		else
-		{
-	          pre_selection = TRUE;  /* if we dont have a pattern select all */
-		}
-	    }
-	  g_free(menu_path);
-	}
-	else
-	{
-	  /* for all other cases than menupath_button 
-	   * the pre_selection was already done at gimp_procedural_db_query 
-	   */
-	  pre_selection = TRUE;  
-	}
-	
+          gchar *menu_path;
+          
+          menu_path = gap_db_get_plugin_menupath(proc_list[i]);
+          if(menu_path)
+            {
+              if(pattern)
+                {
+                  if(gap_match_name(menu_path
+                                 , pattern
+                                 , GAP_MTCH_ANYWHERE  /* gint32 mode */
+                                 , FALSE          /* NOT case_sensitive */
+                    ))
+                    {
+                      pre_selection = TRUE;  /* select matching menupath */
+                    }
+                }
+                else
+                {
+                  pre_selection = TRUE;  /* if we dont have a pattern select all */
+                }
+            }
+          g_free(menu_path);
+        }
+        else
+        {
+          /* for all other cases than menupath_button 
+           * the pre_selection was already done at gimp_procedural_db_query 
+           */
+          pre_selection = TRUE;  
+        }
+        
       if (pre_selection)
         {
-	  /* the filter constraint_function checks if the
-	   * PDB-proc has a typical interface to operate on a single drawable.
-	   * all other PDB-procedures are not listed in the GAP-dbbrowser
-	   */
-	  if (0 != (dbbrowser->constraint_func)((char *)proc_list[i], dbbrowser->current_image_id))
+          /* the filter constraint_function checks if the
+           * PDB-proc has a typical interface to operate on a single drawable.
+           * all other PDB-procedures are not listed in the GAP-dbbrowser
+           */
+          if (0 != (dbbrowser->constraint_func)((char *)proc_list[i], dbbrowser->current_image_id))
             {
               i_added++;
-	      
-	      if((dbbrowser->codegen_flag != 0) && (gap_debug))
-	        {
+              
+              if((dbbrowser->codegen_flag != 0) && (gap_debug))
+                {
                   gap_codegen_gen_forward_iter_ALT(proc_list[i]);
                   gap_codegen_gen_tab_iter_ALT(proc_list[i]);
                   gap_codegen_gen_code_iter_ALT(proc_list[i]);
-		}
+                }
               label = g_strdup (proc_list[i]);
               convert_string (label);
               gtk_list_store_append (dbbrowser->store, &iter);
               gtk_list_store_set (dbbrowser->store, &iter,
-    			      0, label,
-			      1, proc_list[i],
-			      -1);
+                              0, label,
+                              1, proc_list[i],
+                              -1);
               g_free (label);
             }
-	}
+        }
       g_free (proc_list[i]);
     }
 
@@ -832,7 +832,7 @@ convert_string (gchar *str)
   while (*str)
     {
       if (*str == '_')
-	*str = '-';
+        *str = '-';
 
       str++;
     }
@@ -916,13 +916,13 @@ gap_db_get_plugin_menupath (const gchar *search_text)
        */
       return_vals = gimp_run_procedure ("gimp_plugins_query",
                                     &nreturn_vals,
-				    GIMP_PDB_STRING,  "", /* search all elements*/
+                                    GIMP_PDB_STRING,  "", /* search all elements*/
                                     GIMP_PDB_END);
 
       if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
         {
-	  initialized = TRUE;
-	}
+          initialized = TRUE;
+        }
      
     }
 
@@ -941,13 +941,13 @@ gap_db_get_plugin_menupath (const gchar *search_text)
 
 
       for (loop = 0; loop < return_vals[1].data.d_int32; loop++)
-	{
-	  if(strcmp(search_text, realname_strs[loop]) == 0)
-	    {
-	      menu_path     = g_strdup (menu_strs[loop]);
-	      break;  /* stop at 1st match */
-	    }
-	}
+        {
+          if(strcmp(search_text, realname_strs[loop]) == 0)
+            {
+              menu_path     = g_strdup (menu_strs[loop]);
+              break;  /* stop at 1st match */
+            }
+        }
     }
 
   /* Dont Destroy, but Keep the Returned Parameters for the lifetime of this process */

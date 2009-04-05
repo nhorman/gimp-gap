@@ -129,12 +129,12 @@ query ()
                                },
     {GIMP_PDB_STRING,   "filtermacro_file", "macro to apply on each handled frame."
                                             " filtermacro_files are textfiles with filter plugin names and LASTVALUE bufferdump,"
-					    " usually created by gimp-gap filermacro dialog "
-					    " (menu: Filters->Filtermacro)"},
+                                            " usually created by gimp-gap filermacro dialog "
+                                            " (menu: Filters->Filtermacro)"},
     {GIMP_PDB_STRING,   "storyboard_file", "textfile with list of one or more images, framesequences, videoclips or audioclips (see storyboard docs for more information)"},
     {GIMP_PDB_INT32,    "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                       "1 ... image is multilayer, range_from/to params refere to layer index. \n"
-				      "2 ... image is ignored, input is specified by storyboard_file parameter."},
+                                      "2 ... image is ignored, input is specified by storyboard_file parameter."},
   };
   static int nargs_qt_enc = sizeof(args_qt_enc) / sizeof(args_qt_enc[0]);
 
@@ -272,7 +272,7 @@ run (const gchar *name,          /* name of plugin */
          */
         if (n_params >= GAP_VENC_NUM_STANDARD_PARAM -1)
         {
-	  l_copy_parameters = TRUE;
+          l_copy_parameters = TRUE;
         }
         else
         {
@@ -281,26 +281,26 @@ run (const gchar *name,          /* name of plugin */
       }
       else 
       {
-	if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-	{
+        if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+        {
           if (n_params >= GAP_VENC_NUM_STANDARD_PARAM -1)
           {
-	    l_copy_parameters = TRUE;
-	  }
-	  /* dont complain on less parameters at INTERCATIVE calls */ 
-	}
-	else
-	{
+            l_copy_parameters = TRUE;
+          }
+          /* dont complain on less parameters at INTERCATIVE calls */ 
+        }
+        else
+        {
            values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
-	}
+        }
       }
       
       if(l_copy_parameters)
       {
            if(param[3].data.d_string)
-	   {
-	     g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s", param[3].data.d_string);
-	   }
+           {
+             g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s", param[3].data.d_string);
+           }
            if (param[4].data.d_int32 >= 0) { gpp->val.range_from =    param[4].data.d_int32; }
            if (param[5].data.d_int32 >= 0) { gpp->val.range_to   =    param[5].data.d_int32; }
            if (param[6].data.d_int32 > 0)  { gpp->val.vid_width  =    param[6].data.d_int32; }
@@ -309,22 +309,22 @@ run (const gchar *name,          /* name of plugin */
            gpp->val.framerate   = MAX(param[9].data.d_float, 1.0);
            gpp->val.samplerate  = param[10].data.d_int32;
            if(param[11].data.d_string) 
-	   { 
-	     g_snprintf(gpp->val.audioname1, sizeof(gpp->val.audioname1), "%s", param[11].data.d_string);
-	   }
-	   if(param[12].data.d_string)
-	   {
+           { 
+             g_snprintf(gpp->val.audioname1, sizeof(gpp->val.audioname1), "%s", param[11].data.d_string);
+           }
+           if(param[12].data.d_string)
+           {
              g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", param[12].data.d_string);
-	   }
-	   if(param[13].data.d_string)
-	   {
+           }
+           if(param[13].data.d_string)
+           {
              g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string);
-	   }
-	   if(param[14].data.d_string)
-	   {
+           }
+           if(param[14].data.d_string)
+           {
              g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string);
-	   }
-	   
+           }
+           
            if (param[15].data.d_int32 >= 0) { gpp->val.input_mode  =   param[15].data.d_int32; }
       }
 
@@ -345,10 +345,10 @@ run (const gchar *name,          /* name of plugin */
             {
               printf("MAIN after gap_cme_gui_master_encoder_dialog ------------------\n");
             }
-	    if(l_rc < 0)
-	    {
+            if(l_rc < 0)
+            {
               values[0].data.d_status = GIMP_PDB_CANCEL;
-	    }
+            }
             
          }
          else

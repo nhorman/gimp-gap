@@ -131,9 +131,9 @@ gap_vin_set_common_keylist(GapValKeyList *keylist, GapVinVideoInfo *vin_ptr, cha
   {
     l_rc = gap_val_rewrite_file(keylist
                           ,l_vin_filename
-			  ,"# GIMP / GAP Videoinfo file"   /*  hdr_text */
-			  ,")"                             /* terminate char */
-			  );
+                          ,"# GIMP / GAP Videoinfo file"   /*  hdr_text */
+                          ,")"                             /* terminate char */
+                          );
     g_free(l_vin_filename);
   }
 

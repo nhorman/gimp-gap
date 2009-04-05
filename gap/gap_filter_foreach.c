@@ -88,7 +88,7 @@ extern int gap_debug;
 static void p_gdisplays_update_full(gint32 image_id);
 static gint p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
                       char *step_backup_file, gint len_step_backup_file,
-		      gint32 layer_idx);
+                      gint32 layer_idx);
 
 static void p_visibilty_restore(gint32 image_id, gint nlayers, int *visible_tab, char *plugin_name);
 static gint32 p_get_indexed_layerid(gint32 image_id, gint *nlayers, gint32 idx, char *plugin_name);
@@ -115,7 +115,7 @@ p_gdisplays_update_full(gint32 image_id)
 static gint
 p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
                       char *step_backup_file, gint len_step_backup_file,
-		      gint32 layer_idx)
+                      gint32 layer_idx)
 {
   const gchar      *l_env;
   gchar            *l_msg;
@@ -130,7 +130,7 @@ p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
 
     gap_arr_arg_init(&l_argv[0], GAP_ARR_WGT_FILESEL);
     l_argv[0].label_txt = _("Backup to file");
-    l_argv[0].entry_width = 140;	/* pixel */
+    l_argv[0].entry_width = 140;        /* pixel */
     l_argv[0].help_txt  = _("Make backup of the image after each step");
     l_argv[0].text_buf_len = len_step_backup_file;
     l_argv[0].text_buf_ret = step_backup_file;
@@ -177,7 +177,7 @@ p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
    }
 
    return 0;  /* continue without question */
-}	/* end p_pitstop */
+}       /* end p_pitstop */
 
 
 
@@ -400,9 +400,9 @@ p_foreach_multilayer2(GimpRunMode run_mode, gint32 image_id,
 
           /* optional dialog between both calls (to see the effect of 1.call) */
           if(p_pitstop(run_mode, canonical_plugin_name, 0,
-	               l_step_backup_file, sizeof(l_step_backup_file), 0
-		      )
-	     < 0)
+                       l_step_backup_file, sizeof(l_step_backup_file), 0
+                      )
+             < 0)
           {
               if(gap_debug) printf("TERMINATED: by pitstop dialog\n");
               /* restore the visibility of all layers */
@@ -489,11 +489,11 @@ p_foreach_multilayer2(GimpRunMode run_mode, gint32 image_id,
           if(l_rc < 0) break;
 
           if(l_pit_rc > 0)   /* last pit_rc was a skip, so ask again for the next layer */
-	  {
+          {
             l_pit_rc = p_pitstop(run_mode, canonical_plugin_name, 1,
-	  	               l_step_backup_file, sizeof(l_step_backup_file),
-		               l_idx );
-	  }
+                               l_step_backup_file, sizeof(l_step_backup_file),
+                               l_idx );
+          }
           if(l_pit_rc < 0)
           {
               if(gap_debug) printf("TERMINATED: by pitstop dialog\n");
@@ -538,17 +538,17 @@ p_foreach_multilayer2(GimpRunMode run_mode, gint32 image_id,
           if(l_rc < 0) break;
 
           if(l_pit_rc == 0)  /* 0 == continue without further dialogs */
-	  {
+          {
              /* call the plugin itself with runmode RUN_WITH_LAST_VALUES */
              l_rc = gap_filt_pdb_call_plugin(canonical_plugin_name, image_id, l_layer_id, GIMP_RUN_WITH_LAST_VALS);
              /* check if to save each step to backup file */
-	     if((l_step_backup_file[0] != '\0') && (l_step_backup_file[0] != ' '))
-	     {
-	       printf ("Saving image to backupfile:%s step = %d\n",
-	               l_step_backup_file, (int)l_idx);
-	       gap_filt_pdb_save_xcf(image_id, l_step_backup_file);
-	     }
-	  }
+             if((l_step_backup_file[0] != '\0') && (l_step_backup_file[0] != ' '))
+             {
+               printf ("Saving image to backupfile:%s step = %d\n",
+                       l_step_backup_file, (int)l_idx);
+               gap_filt_pdb_save_xcf(image_id, l_step_backup_file);
+             }
+          }
 
           if(run_mode == GIMP_RUN_INTERACTIVE)
           {
@@ -556,7 +556,7 @@ p_foreach_multilayer2(GimpRunMode run_mode, gint32 image_id,
             gimp_progress_update (l_percentage);
           }
 
-        }	/* end for */
+        }       /* end for */
 
       }
 
@@ -572,7 +572,7 @@ p_foreach_multilayer2(GimpRunMode run_mode, gint32 image_id,
   if(l_plugin_iterator != NULL)      g_free(l_plugin_iterator);
 
   return l_rc;
-}	/* end p_foreach_multilayer2 */
+}       /* end p_foreach_multilayer2 */
 
 
 /* ------------------------
@@ -595,8 +595,8 @@ gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_name
                                  gap_filt_pdb_constraint_proc_sel1,
                                  gap_filt_pdb_constraint_proc_sel2,
                                  &l_browser_result,
-				 image_id,
-				 GAP_DB_BROWSER_FILTERALL_HELP_ID)
+                                 image_id,
+                                 GAP_DB_BROWSER_FILTERALL_HELP_ID)
       < 0)
     {
       if(gap_debug) printf("DEBUG: gap_db_browser_dialog cancelled\n");
@@ -612,7 +612,7 @@ gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_name
 
   return(p_foreach_multilayer(run_mode,
                               image_id,
-			      plugin_name,
-			      apply_mode ));
+                              plugin_name,
+                              apply_mode ));
 
 }

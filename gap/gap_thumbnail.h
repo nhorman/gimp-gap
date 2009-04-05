@@ -68,12 +68,12 @@ void              gap_thumb_file_rename_thumbnail(char *filename_src, char *file
 gboolean          gap_thumb_file_load_thumbnail(char* filename
                                                , gint32 *th_width, gint32 *th_height
                                                , gint32 *th_data_count
-					       , gint32 *th_bpp
-					       , unsigned char **th_data);
+                                               , gint32 *th_bpp
+                                               , unsigned char **th_data);
 
 
 GdkPixbuf *       gap_thumb_file_load_pixbuf_thumbnail(char* filename
                                     , gint32 *th_width
-				    , gint32 *th_height
+                                    , gint32 *th_height
                                     , gint32 *th_bpp);
 #endif

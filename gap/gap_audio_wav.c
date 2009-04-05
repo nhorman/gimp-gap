@@ -99,7 +99,7 @@ p_check_errno()
   if(l_errno != 0)
   {
     g_message(_("Problem while writing audiofile: %s")
-	       ,g_strerror (l_errno) );
+               ,g_strerror (l_errno) );
     printf("gap_audio_wav errno:%d %s\n", l_errno, g_strerror (l_errno));
     exit (-1);
   }
@@ -219,7 +219,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     {
       printf("p_wav_open_seek_data_private file:%s:\n file does not exist or size 0\n"
             , filename
-	    );
+            );
     }
     /* stat error (file does not exist) */
     return(NULL);
@@ -231,7 +231,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     {
       printf("p_wav_open_seek_data_private file: %s\n file size < 48 byte\n"
             , filename
-	    );
+            );
     }
     return(NULL);  /* too short for WAVE file */
   }
@@ -243,7 +243,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     {
       printf("p_wav_open_seek_data_private file: %s\n open read binary failed\n"
             , filename
-	    );
+            );
     }
     return(NULL);
   }
@@ -281,7 +281,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     {
       printf("check failed on file: %s\n The RIFFWAVEfmt  header string was not found\n"
             , filename
-	    );
+            );
     }
     fclose (fp);
     return(NULL);
@@ -310,10 +310,10 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     {
       if(gap_debug)
       {
-	printf("p_wav_open_seek_data_private file: %s\n l_len_to_read: %d not plausible\n"
+        printf("p_wav_open_seek_data_private file: %s\n l_len_to_read: %d not plausible\n"
               , filename
-	      , (int)l_len_to_read
-	      );
+              , (int)l_len_to_read
+              );
       }
       break;  /* chunk length contains nonsens, give up searching for data chunk */
     }
@@ -374,7 +374,7 @@ gap_audio_wav_file_check(const char *audfile, long *sample_rate, long *channels
     {
       printf ("p_audio_wav_file_check: open read or HDR and data chunk test failed on '%s'\n"
              , audfile
-	     );
+             );
     }
     return(l_rc);
   }
@@ -482,10 +482,10 @@ gap_audio_wav_16bit_save(const char *wavfile
 static t_Playlist_Check_Retcodes
 p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channels
                      , long *bytes_per_sample, long *bits, long *samples
-		     , long *all_playlist_references
-		     , long *valid_playlist_references
-		     , long desired_samplerate
-		     )
+                     , long *all_playlist_references
+                     , long *valid_playlist_references
+                     , long desired_samplerate
+                     )
 {
   t_Playlist_Check_Retcodes l_retval;
   long  l_bytes_per_sample = 4;
@@ -522,7 +522,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
     {
       if((l_buf[0] == '#') || (l_buf[0] == '\n') || (l_buf[0] == '\0'))
       {
-	continue;  /* skip comment lines, and empty lines */
+        continue;  /* skip comment lines, and empty lines */
       }
 
       l_buf[sizeof(l_buf) -1] = '\0';  /* make sure we have a terminated string */
@@ -534,101 +534,101 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
 
 
         if(referred_wavfile)
-	{
-	  g_free(referred_wavfile);
-	}
+        {
+          g_free(referred_wavfile);
+        }
         referred_wavfile = gap_file_make_abspath_filename(&l_buf[0], audfile);
 
-	if(gap_debug)
-	{
-	  printf("p_check_for_valid_playlist: checking reference file: %s\n", referred_wavfile);
-	}
+        if(gap_debug)
+        {
+          printf("p_check_for_valid_playlist: checking reference file: %s\n", referred_wavfile);
+        }
 
-	l_rc = gap_audio_wav_file_check(referred_wavfile
+        l_rc = gap_audio_wav_file_check(referred_wavfile
                               , &l_sample_rate
                               , &l_channels
                               , &l_bytes_per_sample
                               , &l_bits
                               , &l_samples
                               );
-	if(gap_debug)
-	{
-	  printf("REF-file: %s bits:%d (expected:%d) samplerate:%d (expected: %d) l_rc: %d\n"
-	        ,referred_wavfile
-		,(int)l_bits
-		,(int)16
-		,(int)l_sample_rate
-		,(int)desired_samplerate
-		,(int)l_rc
-		);
-	}
+        if(gap_debug)
+        {
+          printf("REF-file: %s bits:%d (expected:%d) samplerate:%d (expected: %d) l_rc: %d\n"
+                ,referred_wavfile
+                ,(int)l_bits
+                ,(int)16
+                ,(int)l_sample_rate
+                ,(int)desired_samplerate
+                ,(int)l_rc
+                );
+        }
         if(l_rc == 0)
         {
-	  (*all_playlist_references)++;
+          (*all_playlist_references)++;
 
-	  /* use audio informations from the 1.st valid referenced file for output
-	   * (or pick information of any other referenced audiofile
-	   * if we have no matching audio file reference)
-	   */
-	  if(ii == 0)
-	  {
-	    *sample_rate = l_sample_rate;
-	    *channels = l_channels;
-	    *bytes_per_sample = l_bytes_per_sample;
-	    *bits = l_bits;
-	    *samples = l_samples;
-	  }
+          /* use audio informations from the 1.st valid referenced file for output
+           * (or pick information of any other referenced audiofile
+           * if we have no matching audio file reference)
+           */
+          if(ii == 0)
+          {
+            *sample_rate = l_sample_rate;
+            *channels = l_channels;
+            *bytes_per_sample = l_bytes_per_sample;
+            *bits = l_bits;
+            *samples = l_samples;
+          }
 
           if((l_bits == 16)
-	  && (l_sample_rate == desired_samplerate))
-	  {
-	    /* we have found at least one reference to an audiofile
-	     * with matching bits and samplerate
-	     * therefore we consider audfile as valid playlist file
-	     */
+          && (l_sample_rate == desired_samplerate))
+          {
+            /* we have found at least one reference to an audiofile
+             * with matching bits and samplerate
+             * therefore we consider audfile as valid playlist file
+             */
             ii++;
             l_retval = IS_VALID_PLAYLIST;
-	  }
-	  else
-	  {
-	    /* the file seems to be a play list
-	     * but the referenced file does not match desired parameters
-	     */
-	    if(l_retval != IS_VALID_PLAYLIST)
-	    {
+          }
+          else
+          {
+            /* the file seems to be a play list
+             * but the referenced file does not match desired parameters
+             */
+            if(l_retval != IS_VALID_PLAYLIST)
+            {
               l_retval = IS_ANY_PLAYLIST;
-	    }
-	    break;
-	  }
-	}
-	else
-	{
+            }
+            break;
+          }
+        }
+        else
+        {
           /* report unexpected content as warning, but only when
-	   * we have already identified that file as playlist
-	   * (otherwise checks on audiofiles would also
-	   * report such a warning that would confusing)
-	   */
-	  if(ii > 0)
-	  {
+           * we have already identified that file as playlist
+           * (otherwise checks on audiofiles would also
+           * report such a warning that would confusing)
+           */
+          if(ii > 0)
+          {
             g_message(_("The file: %s\n"
-	            "has unexpect content that will be ignored.\n"
-		    "You should specify an audio file in RIFF WAVE fileformat,\n"
-		    "or a textfile containing filenames of such audio files")
-		   , audfile
-		   );
-	  }
-	  break;
-	}
+                    "has unexpect content that will be ignored.\n"
+                    "You should specify an audio file in RIFF WAVE fileformat,\n"
+                    "or a textfile containing filenames of such audio files")
+                   , audfile
+                   );
+          }
+          break;
+        }
       }
       else
       {
         g_message(_("The file: %s\n"
-	            "contains too many audio-input tracks\n"
-		    "(only %d tracks are used, the rest are ignored).")
-		 , audfile
-		 , (int) MAX_AUDIO_STREAMS
-		 );
-	break;
+                    "contains too many audio-input tracks\n"
+                    "(only %d tracks are used, the rest are ignored).")
+                 , audfile
+                 , (int) MAX_AUDIO_STREAMS
+                 );
+        break;
       }
       l_buf[0] = '\0';
     }
@@ -639,12 +639,12 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
   if(l_retval == IS_ANY_PLAYLIST)
   {
     g_message(_("The file: %s\n"
-		"is an audio playlist, but contains references to audiofiles that\n"
-		"do not match the desired sample rate of %d Hz\n"
-		"or do not have 16 bits per sample")
-	       , audfile
-	       , (int)desired_samplerate
-	       );
+                "is an audio playlist, but contains references to audiofiles that\n"
+                "do not match the desired sample rate of %d Hz\n"
+                "or do not have 16 bits per sample")
+               , audfile
+               , (int)desired_samplerate
+               );
   }
 
   if(referred_wavfile)
@@ -671,21 +671,21 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
 int
 gap_audio_playlist_wav_file_check(const char *audfile, long *sample_rate, long *channels
                      , long *bytes_per_sample, long *bits, long *samples
-		     , long *all_playlist_references
-		     , long *valid_playlist_references
-		     , long desired_samplerate
-		     )
+                     , long *all_playlist_references
+                     , long *valid_playlist_references
+                     , long desired_samplerate
+                     )
 {
   int    l_rc;
 
   /* check for WAV file, and get audio informations */
   l_rc = gap_audio_wav_file_check(audfile
                      , sample_rate
-		     , channels
+                     , channels
                      , bytes_per_sample
-		     , bits
-		     , samples
-		     );
+                     , bits
+                     , samples
+                     );
 
   if (l_rc ==0)
   {
@@ -697,36 +697,36 @@ gap_audio_playlist_wav_file_check(const char *audfile, long *sample_rate, long *
 
     l_rc_playlistcheck = p_check_for_valid_playlist(audfile
                                                   , sample_rate
-						  , channels
-						  , bytes_per_sample
-						  , bits
-						  , samples
-						  , all_playlist_references
-						  , valid_playlist_references
-						  , desired_samplerate
-						  );
+                                                  , channels
+                                                  , bytes_per_sample
+                                                  , bits
+                                                  , samples
+                                                  , all_playlist_references
+                                                  , valid_playlist_references
+                                                  , desired_samplerate
+                                                  );
     switch(l_rc_playlistcheck)
     {
       case  IS_VALID_PLAYLIST:
-	if(gap_debug)
-	{
-	  printf(": The file %s is a valid playlist\n", audfile);
-	}
-	return 0;
-	break;
+        if(gap_debug)
+        {
+          printf(": The file %s is a valid playlist\n", audfile);
+        }
+        return 0;
+        break;
       case  IS_ANY_PLAYLIST:
-	if(gap_debug)
-	{
-	  printf(": The file %s is a  non matching playlist\n", audfile);
-	}
-	return -2;
-	break;
+        if(gap_debug)
+        {
+          printf(": The file %s is a  non matching playlist\n", audfile);
+        }
+        return -2;
+        break;
       default:
-	if(gap_debug)
-	{
-	  printf(": The file %s is not a playlist\n", audfile);
-	}
-	break;
+        if(gap_debug)
+        {
+          printf(": The file %s is not a playlist\n", audfile);
+        }
+        break;
     }
   }
 

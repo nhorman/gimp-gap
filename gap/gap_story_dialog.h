@@ -47,8 +47,8 @@ void    gap_story_dlg_spw_section_refresh(GapStbSecpropWidget *spw, GapStorySect
 
 
 void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
-				  ,GapStbMainGlobalParams *sgpp
-				  );
+                                  ,GapStbMainGlobalParams *sgpp
+                                  );
 void  gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr);
 void  gap_story_dlg_tabw_update_frame_label (GapStbTabWidgets *tabw
                            , GapStbMainGlobalParams *sgpp

@@ -261,7 +261,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         l_str = g_strdup_printf("%s%lld%s %s"
                , keyptr->keyword   /* "(keyword " */
                , *val_ptr          /* value */
-	           , term_ptr
+               , term_ptr
                , keyptr->comment
                );
         fprintf(fp, "%s\n", l_str);

@@ -256,7 +256,7 @@ run (const gchar *name,          /* name of plugin */
       gimp_set_data (PLUG_IN_NAME, &glob_vals, sizeof (OpaValues));
   }
   values[0].data.d_status = status;
-}	/* end run */
+}       /* end run */
 
 
 
@@ -307,7 +307,7 @@ p_opa_run (gint32 image_id, gint32 drawable_id)
   gimp_layer_set_opacity(drawable_id, CLAMP(l_new_opacity, 0.0, 100.0));
 
   return (drawable_id);
-}	/* end p_opa_run */
+}       /* end p_opa_run */
 
 
 /* ------------------
@@ -368,4 +368,4 @@ p_opa_dialog(void)
   {
       return -1;
   }
-}		/* end p_opa_dialog */
+}               /* end p_opa_dialog */

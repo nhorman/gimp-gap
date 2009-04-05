@@ -63,7 +63,7 @@
 
 
 #ifdef G_OS_WIN32
-#include <process.h>		/* For _getpid() */
+#include <process.h>            /* For _getpid() */
 #endif
 
 /* GAP includes */
@@ -91,9 +91,9 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 char *
 gap_base_shorten_filename(const char *prefix
                         ,const char *filename
-			,const char *suffix
-			,gint32 max_chars
-			)
+                        ,const char *suffix
+                        ,gint32 max_chars
+                        )
 {
   gint len_prefix;
   gint len_fname;
@@ -140,15 +140,15 @@ gap_base_shorten_filename(const char *prefix
       if(pfx)
       {
         ret_string = g_strdup_printf("%s %s"
-	                            ,pfx
-				    ,fnam
-				    );
+                                    ,pfx
+                                    ,fnam
+                                    );
       }
       else
       {
         ret_string = g_strdup_printf("%s"
-				    ,fnam
-				    );
+                                    ,fnam
+                                    );
       }
     }
     else
@@ -162,15 +162,15 @@ gap_base_shorten_filename(const char *prefix
       if(pfx)
       {
         ret_string = g_strdup_printf("%s ...%s"
-	                            ,pfx
-				    ,&fnam[fname_idx]
-				    );
+                                    ,pfx
+                                    ,&fnam[fname_idx]
+                                    );
       }
       else
       {
         ret_string = g_strdup_printf("...%s"
-				    ,&fnam[fname_idx]
-				    );
+                                    ,&fnam[fname_idx]
+                                    );
       }
     }
  
@@ -181,7 +181,7 @@ gap_base_shorten_filename(const char *prefix
 
   ret_string = g_strdup(prefix);
   return(ret_string);
-}  /* end gap_base_shorten_filename */			
+}  /* end gap_base_shorten_filename */                  
 
 
 /* -----------------------------
@@ -331,8 +331,8 @@ gap_base_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_di
 gint
 gap_base_sscan_flt_numbers(gchar   *buf
                   , gdouble *farr
-		  , gint     farr_max
-		  )
+                  , gint     farr_max
+                  )
 {
   gint  l_cnt;
   gchar *nptr;

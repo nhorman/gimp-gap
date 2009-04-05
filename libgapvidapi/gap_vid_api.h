@@ -234,8 +234,8 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gpointer progress_cb_user_data;
   t_GVA_progress_callback_fptr fptr_progress_callback; /* if != NULL: The API calls this user procedure with current progress
                                                         * if the procedure returns TRUE
-							* the API does cancel current seek operations immediate.
-							*/
+                                                        * the API does cancel current seek operations immediate.
+                                                        */
 
 
   /* PUBLIC information (read only outside the API) */
@@ -421,29 +421,29 @@ guchar *       GVA_frame_to_buffer(t_GVA_Handle *gvahand
                 , gint32 framenumber
                 , gint32 deinterlace
                 , gdouble threshold
-		, gint32 *bpp
-		, gint32 *width
-		, gint32 *height
+                , gint32 *bpp
+                , gint32 *width
+                , gint32 *height
                 );
 guchar *       GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
                 , gboolean do_scale
                 , gint32 framenumber
                 , gint32 deinterlace
                 , gdouble threshold
-		, gint32 *bpp
-		, gint32 *width
-		, gint32 *height
+                , gint32 *bpp
+                , gint32 *width
+                , gint32 *height
                 );
 guchar *       GVA_delace_frame(t_GVA_Handle *gvahand
                 , gint32 deinterlace
                 , gdouble threshold
-		);
+                );
 
 void           GVA_delace_drawable(gint32 drawable_id
                 , gint32 deinterlace
                 , gdouble threshold
-		);
-		
+                );
+                
 gint32          GVA_percent_2_frame(gint32 total_frames, gdouble percent);
 gdouble         GVA_frame_2_percent(gint32 total_frames, gdouble framenr);
 

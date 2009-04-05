@@ -110,33 +110,33 @@ gap_match_substitute_framenr (char *buffer, int buff_len, char *new_layername, l
       switch(*new_layername)
       {
         case '[':
-	  if((new_layername[1] == '#') && (l_digits == 0))
-	  {
-	    l_cpy    = 0;
-	    l_digits = 1;
-	  }
-	  break;
+          if((new_layername[1] == '#') && (l_digits == 0))
+          {
+            l_cpy    = 0;
+            l_digits = 1;
+          }
+          break;
         case '#':
-	  if(l_digits > 0)
-	  {
-	    l_cpy    = 0;
-	    l_digits++;
-	  }
-	  break;
+          if(l_digits > 0)
+          {
+            l_cpy    = 0;
+            l_digits++;
+          }
+          break;
         case ']':
-	  if(l_digits > 0)
-	  {
-	    l_digits--;
-	    g_snprintf(&l_fmt_str[2], sizeof(l_fmt_str) -2,  "%dd", l_digits);
-	    g_snprintf(&buffer[l_idx], buff_len - l_idx, l_fmt_str, (int)curr);
-	    l_idx += l_digits;
+          if(l_digits > 0)
+          {
+            l_digits--;
+            g_snprintf(&l_fmt_str[2], sizeof(l_fmt_str) -2,  "%dd", l_digits);
+            g_snprintf(&buffer[l_idx], buff_len - l_idx, l_fmt_str, (int)curr);
+            l_idx += l_digits;
             l_digits = 0;
-	    l_cpy    = 0;
-	  }
-	  break;
-	default:
-	  l_digits = 0;
-	  break;
+            l_cpy    = 0;
+          }
+          break;
+        default:
+          l_digits = 0;
+          break;
       }
       
       src_ptr = new_layername;
@@ -153,11 +153,11 @@ gap_match_substitute_framenr (char *buffer, int buff_len, char *new_layername, l
       if(l_cpy != 0)
       {
         while(src_ptr != new_layername)
-	{
+        {
           buffer[l_idx] = (*src_ptr);
-	  src_ptr++;
+          src_ptr++;
           l_idx++;
-	}
+        }
       }
 
 
@@ -166,7 +166,7 @@ gap_match_substitute_framenr (char *buffer, int buff_len, char *new_layername, l
   }
 
   buffer[l_idx] = '\0';
-}	/* end gap_match_substitute_framenr */
+}       /* end gap_match_substitute_framenr */
 
 
 /* ---------------------------------
@@ -283,7 +283,7 @@ gap_match_number(gint32 layer_idx, const char *pattern)
    }   /* end while */
 
    return(FALSE);
-}	/* end gap_match_number */
+}       /* end gap_match_number */
 
 
 /* ---------------------------------
@@ -323,29 +323,29 @@ p_match_name(const char *layername, const char *pattern, gint32 mode, gboolean u
       case GAP_MTCH_ANYWHERE:
            l_llen = strlen(layername);
            l_plen = strlen(pattern);
-	   uni_ptr = layername;
+           uni_ptr = layername;
            while (l_llen >= l_plen)
-	   {
-	     /* printf("GAP_MTCH :%s: llen:%d \n", uni_ptr, (int)l_llen); */
-	     
+           {
+             /* printf("GAP_MTCH :%s: llen:%d \n", uni_ptr, (int)l_llen); */
+             
              if((l_llen == l_plen) || (mode == GAP_MTCH_ANYWHERE))
-	     {
-	       if(0 == strncmp(uni_ptr, pattern, l_plen))
+             {
+               if(0 == strncmp(uni_ptr, pattern, l_plen))
                {
-        	 return(TRUE);
+                 return(TRUE);
                }
-	     }
+             }
 
-	     if(utf8_compliant)
-	     {
-	       uni_ptr = g_utf8_find_next_char(uni_ptr, NULL);
-	     }
-	     else
-	     {
-	       uni_ptr++;
-	     }
+             if(utf8_compliant)
+             {
+               uni_ptr = g_utf8_find_next_char(uni_ptr, NULL);
+             }
+             else
+             {
+               uni_ptr++;
+             }
              l_llen = strlen(uni_ptr);
-	   }
+           }
            break;
       default:
            break;

@@ -151,7 +151,7 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
                               "%s"
                              ),
                          "http://www.mpeg.org/MSSG",
-			 "ftp://ftp.mpeg.org/pub/mpeg/mssg"
+                         "ftp://ftp.mpeg.org/pub/mpeg/mssg"
                          );
     argv[l_idx].label_txt = txt;
   }
@@ -161,7 +161,7 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
                               "you can get mpeg_encode at\n"
                               "%s"
                              ),
-			 "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+                         "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
                          );
     argv[l_idx].label_txt = txt;
   }
@@ -242,7 +242,7 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
 
   g_free(txt);
   return (l_rc);
-}	/* end p_mpege_info */
+}       /* end p_mpege_info */
 
 
 /* ============================================================================
@@ -523,7 +523,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   mp_ptr->startscript   = &l_startscript[0];
 
   return (l_rc);
-}	/* end p_mpege_dialog */
+}       /* end p_mpege_dialog */
 
 /* ============================================================================
  * p_mpege_extension_check
@@ -556,7 +556,7 @@ char *p_mpege_extension_check(GapAnimInfo *ainfo_ptr)
   }
 
   return(base_file_formats[l_ffidx]);
-}	/* end p_mpege_extension_check */
+}       /* end p_mpege_extension_check */
 
 static
 int p_mpeg2_extension_check(GapAnimInfo *ainfo_ptr)
@@ -574,7 +574,7 @@ int p_mpeg2_extension_check(GapAnimInfo *ainfo_ptr)
   }
 
   return(l_ffidx);
-}	/* end p_mpege_extension_check */
+}       /* end p_mpege_extension_check */
 
 
 /* ============================================================================
@@ -779,7 +779,7 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# general format of each line is:\n");
-  fprintf(l_fp, "#	<option> <spaces and/or tabs> <value>\n");
+  fprintf(l_fp, "#      <option> <spaces and/or tabs> <value>\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# lines can generally be in any order\n");
   fprintf(l_fp, "#\n");
@@ -801,7 +801,7 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# You must specify the type of the input files.  The choices are:\n");
   fprintf(l_fp, "#    YUV, PPM, JMOVIE, Y, JPEG, PNM\n");
-  fprintf(l_fp, "#	(must be upper case)\n");
+  fprintf(l_fp, "#      (must be upper case)\n");
   fprintf(l_fp, "#\n");
 
   if(*l_base_file_format == '\0')
@@ -815,7 +815,7 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
 
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# if YUV format (or using parallel version), must provide width and height\n");
-  fprintf(l_fp, "# YUV_SIZE	widthxheight\n");
+  fprintf(l_fp, "# YUV_SIZE     widthxheight\n");
   fprintf(l_fp, "# this option is ignored if BASE_FILE_FORMAT is not YUV and you're running\n");
   fprintf(l_fp, "# on just one machine\n");
   fprintf(l_fp, "#\n");
@@ -835,13 +835,13 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "# Each occurrence of '*' will be replaced by the input file\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# e.g., if you have a bunch of GIF files, then this might be:\n");
-  fprintf(l_fp, "#	INPUT_CONVERT	giftoppm *\n");
+  fprintf(l_fp, "#      INPUT_CONVERT   giftoppm *\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# e.g., if you have a bunch of files like a.Y a.U a.V, etc., then:\n");
-  fprintf(l_fp, "#	INPUT_CONVERT	cat *.Y *.U *.V\n");
+  fprintf(l_fp, "#      INPUT_CONVERT   cat *.Y *.U *.V\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# e.g., if you are grabbing from laser disc you might have something like\n");
-  fprintf(l_fp, "#	INPUT_CONVERT	goto frame *; grabppm\n");
+  fprintf(l_fp, "#      INPUT_CONVERT   goto frame *; grabppm\n");
   fprintf(l_fp, "# 'INPUT_CONVERT *' means the files are already in the base file format\n");
   fprintf(l_fp, "#\n");
 
@@ -862,17 +862,17 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "# later, will add more flexible GOP signalling\n");
   fprintf(l_fp, "#\n");
 
-  fprintf(l_fp, "GOP_SIZE	%d\n", strlen(mp_ptr->pattern));
+  fprintf(l_fp, "GOP_SIZE       %d\n", strlen(mp_ptr->pattern));
 
   fprintf(l_fp, "# number of slices in a frame\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# 1 is a good number.  another possibility is the number of macroblock rows\n");
   fprintf(l_fp, "# (which is the height divided by 16)\n");
   fprintf(l_fp, "#\n");
-  fprintf(l_fp, "SLICES_PER_FRAME	1\n\n");
+  fprintf(l_fp, "SLICES_PER_FRAME       1\n\n");
 
   fprintf(l_fp, "# directory to get all input files from (makes this file easier to read)\n");
-  fprintf(l_fp, "INPUT_DIR	%s\n", l_dirname_ptr);
+  fprintf(l_fp, "INPUT_DIR      %s\n", l_dirname_ptr);
 
   fprintf(l_fp, "# There are a bunch of ways to specify the input files.\n");
   fprintf(l_fp, "# from a simple one-per-line listing, to the following\n");
@@ -901,22 +901,22 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "# Many of the remaining options have to do with the motion search and qscale\n\n");
 
   fprintf(l_fp, "# FULL or HALF -- must be upper case\n");
-  fprintf(l_fp, "PIXEL		HALF\n\n");
+  fprintf(l_fp, "PIXEL          HALF\n\n");
 
   fprintf(l_fp, "# means +/- this many pixels for both P and B frame searches\n");
   fprintf(l_fp, "# specify two numbers if you wish to serc different ranges in the two.\n");
-  fprintf(l_fp, "RANGE		10\n");
+  fprintf(l_fp, "RANGE          10\n");
 
   fprintf(l_fp, "# this must be one of {EXHAUSTIVE, SUBSAMPLE, LOGARITHMIC}\n");
 
-  fprintf(l_fp, "PSEARCH_ALG	%s\n\n", mp_ptr->psearch);
+  fprintf(l_fp, "PSEARCH_ALG    %s\n\n", mp_ptr->psearch);
 
   fprintf(l_fp, "# this must be one of {SIMPLE, CROSS2, EXHAUSTIVE}\n");
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# note that EXHAUSTIVE is really, really, really slow\n");
   fprintf(l_fp, "#\n");
 
-  fprintf(l_fp, "BSEARCH_ALG	%s\n\n", mp_ptr->bsearch);
+  fprintf(l_fp, "BSEARCH_ALG    %s\n\n", mp_ptr->bsearch);
 
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# these specify the q-scale for I, P, and B frames\n");
@@ -925,12 +925,12 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "# mode, and starting points (but not important) for constant bit rate\n");
   fprintf(l_fp, "#\n");
 
-  fprintf(l_fp, "IQSCALE		%d\n",   (int)mp_ptr->iqscale);
-  fprintf(l_fp, "PQSCALE		%d\n",   (int)mp_ptr->pqscale);
-  fprintf(l_fp, "BQSCALE		%d\n\n", (int)mp_ptr->bqscale);
+  fprintf(l_fp, "IQSCALE                %d\n",   (int)mp_ptr->iqscale);
+  fprintf(l_fp, "PQSCALE                %d\n",   (int)mp_ptr->pqscale);
+  fprintf(l_fp, "BQSCALE                %d\n\n", (int)mp_ptr->bqscale);
 
   fprintf(l_fp, "# this must be ORIGINAL or DECODED\n");
-  fprintf(l_fp, "REFERENCE_FRAME	ORIGINAL\n\n");
+  fprintf(l_fp, "REFERENCE_FRAME        ORIGINAL\n\n");
 
   fprintf(l_fp, "# for parallel parameters see parallel.param in the exmaples subdirectory\n\n");
 
@@ -1103,7 +1103,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
                     /* execute mpeg encoder startscript in an xterm window */
                     l_cmd = g_strdup_printf("xterm -e %s &", mp_par.startscript);
                     l_rc = system(l_cmd);
-		    g_free(l_cmd);
+                    g_free(l_cmd);
                     if(l_rc != 0)
                     {
                        fprintf(stderr, "ERROR: could not execute mpeg_encode (not installed or not in PATH)");
@@ -1118,4 +1118,4 @@ int gap_mpeg_encode(GimpRunMode run_mode,
 
 
   return(l_rc);
-}	/* end gap_mpeg_encode */
+}       /* end gap_mpeg_encode */

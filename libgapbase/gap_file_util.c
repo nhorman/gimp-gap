@@ -122,9 +122,9 @@ gap_file_load_file_segment(const char *filename
 char *
 gap_file_load_file_len(const char *fname, gint32 *filelen)
 {
-  FILE	      *fp;
+  FILE        *fp;
   char        *l_buff_ptr;
-  long	       len;
+  long         len;
 
   *filelen = 0;
 
@@ -145,18 +145,18 @@ gap_file_load_file_len(const char *fname, gint32 *filelen)
   l_buff_ptr[len] = '\0';
 
   /* File in eine Buffer laden */
-  fp = g_fopen(fname, "rb");		    /* open read */
+  fp = g_fopen(fname, "rb");                /* open read */
   if(fp == NULL)
   {
     printf ("open(read) error on '%s'\n", fname);
     return(NULL);
   }
-  fread(l_buff_ptr, 1, (size_t)len, fp);	    /* read */
-  fclose(fp);				    /* close */
+  fread(l_buff_ptr, 1, (size_t)len, fp);            /* read */
+  fclose(fp);                               /* close */
 
   *filelen = len;
   return(l_buff_ptr);
-}	/* end gap_file_load_file_len */
+}       /* end gap_file_load_file_len */
 
 /* -------------------------
  * gap_file_load_file

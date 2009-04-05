@@ -36,22 +36,22 @@ void    gap_player_dlg_create(GapPlayerMainGlobalParams *gpp);
 void    gap_player_dlg_cleanup(GapPlayerMainGlobalParams *gpp);
 void    gap_player_dlg_restart(GapPlayerMainGlobalParams *gpp
                       , gboolean autostart
-		      , gint32   image_id
-		      , char *imagename
-		      , gint32 imagewidth
-		      , gint32 imageheight
-		      , GapStoryBoard *stb_ptr
-		      , gint32 begin_frame
-		      , gint32 end_frame
-		      , gboolean play_selection_only
-		      , gint32 seltrack
-		      , gdouble delace
-		      , const char *preferred_decoder
-		      , gboolean  force_open_as_video
+                      , gint32   image_id
+                      , char *imagename
+                      , gint32 imagewidth
+                      , gint32 imageheight
+                      , GapStoryBoard *stb_ptr
+                      , gint32 begin_frame
+                      , gint32 end_frame
+                      , gboolean play_selection_only
+                      , gint32 seltrack
+                      , gdouble delace
+                      , const char *preferred_decoder
+                      , gboolean  force_open_as_video
                       , gint32 flip_request
                       , gint32 flip_status
                       , gint32 stb_in_track
-		      );
+                      );
 
 void    gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp);
 

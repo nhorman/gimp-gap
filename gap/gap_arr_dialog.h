@@ -179,7 +179,7 @@ long     gap_arr_slider_dialog(const char *title_txt,
                          const char *label_txt,
                          const char *tooltip_txt,
                          long min, long max, long curr, long constraint,
-			 const char *help_id);
+                         const char *help_id);
 
 
 

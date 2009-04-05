@@ -101,21 +101,21 @@ static t_GVA_RetCode             p_gva_worker_get_next_frame(t_GVA_Handle  *gvah
 static t_GVA_RetCode             p_gva_worker_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit);
 static t_GVA_RetCode             p_gva_worker_seek_audio(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit);
 static t_GVA_RetCode             p_gva_worker_get_audio(t_GVA_Handle  *gvahand
-        			    ,gint16 *output_i            /* preallocated buffer large enough for samples * siezeof gint16 */
-        			    ,gint32 channel              /* audiochannel 1 upto n */
-        			    ,gdouble samples             /* number of samples to read */
-        			    ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
-        			    );
+                                    ,gint16 *output_i            /* preallocated buffer large enough for samples * siezeof gint16 */
+                                    ,gint32 channel              /* audiochannel 1 upto n */
+                                    ,gdouble samples             /* number of samples to read */
+                                    ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
+                                    );
 static t_GVA_RetCode             p_gva_worker_count_frames(t_GVA_Handle  *gvahand);
 static t_GVA_RetCode             p_gva_worker_get_video_chunk(t_GVA_Handle  *gvahand
-                        	    , gint32 frame_nr
-                        	    , unsigned char *chunk
-                        	    , gint32 *size
-                        	    , gint32 max_size);
+                                    , gint32 frame_nr
+                                    , unsigned char *chunk
+                                    , gint32 *size
+                                    , gint32 max_size);
 static t_GVA_Handle *            p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
-                		    ,const char *preferred_decoder
-                		    ,gboolean disable_mmx
-                		    );
+                                    ,const char *preferred_decoder
+                                    ,gboolean disable_mmx
+                                    );
 
 /* ---------------------------
  * GVA_percent_2_frame
@@ -869,8 +869,8 @@ p_gva_worker_close(t_GVA_Handle  *gvahand)
 
       if(gvahand->filename)
       {
-	 g_free(gvahand->filename);
-	 gvahand->filename = NULL;
+         g_free(gvahand->filename);
+         gvahand->filename = NULL;
       }
 
       /* free image buffer and row_pointers */
@@ -912,16 +912,16 @@ p_gva_worker_get_next_frame(t_GVA_Handle  *gvahand)
       if(fcache->fc_current)
       {
         /* if fcache framenumber is negative, we can reuse
-	 * that EMPTY element without advance
-	 */
+         * that EMPTY element without advance
+         */
         if(fcache->fc_current->framenumber >= 0)
-	{
+        {
           /* advance current write position to next element in the fcache ringlist */
           fcache->fc_current = fcache->fc_current->next;
           fcache->fc_current->framenumber = -1;
           gvahand->frame_data = fcache->fc_current->frame_data;
           gvahand->row_pointers = fcache->fc_current->row_pointers;
-	}
+        }
 
         /* CALL decoder specific implementation of GET_NEXT_FRAME procedure */
         l_rc = (*dec_elem->fptr_get_next_frame)(gvahand);
@@ -967,22 +967,22 @@ p_gva_worker_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_u
       if(fcache->fc_current)
       {
         /* if fcache framenumber is negative, we can reuse
-	 * that EMPTY element without advance
-	 */
+         * that EMPTY element without advance
+         */
         if(fcache->fc_current->framenumber >= 0)
-	{
+        {
           /* advance current write position to next element in the fcache ringlist
-	   * Some of the seek procedure implementations do dummy reads
-	   * therefore we provide a fcache element, but leave the
-	   * framenumber -1 because this element is invalid in most cases
-	   */
+           * Some of the seek procedure implementations do dummy reads
+           * therefore we provide a fcache element, but leave the
+           * framenumber -1 because this element is invalid in most cases
+           */
           fcache->fc_current = fcache->fc_current->next;
           fcache->fc_current->framenumber = -1;
           gvahand->frame_data = fcache->fc_current->frame_data;
           gvahand->row_pointers = fcache->fc_current->row_pointers;
-	}
+        }
       }
-	
+        
       /* CALL decoder specific implementation of SEEK_FRAME procedure */
       l_rc = (*dec_elem->fptr_seek_frame)(gvahand, pos, pos_unit);
       fcache->fcache_locked = FALSE;
@@ -1674,12 +1674,12 @@ GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
    */
   gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
                       , drawable->width, drawable->height
-		      , FALSE     /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , FALSE     /* dirty */
+                      , FALSE     /* shadow */
+                       );
   gimp_pixel_rgn_get_rect (&pixel_rgn, gvahand->frame_data
                           , 0
-			  , 0
+                          , 0
                           , gvahand->width
                           , gvahand->height);
 
@@ -1881,7 +1881,7 @@ guchar *
 GVA_delace_frame(t_GVA_Handle *gvahand
                 , gint32 deinterlace
                 , gdouble threshold
-		)
+                )
 {
   guchar *l_framedata_copy;
   guchar *l_row_ptr_dest;
@@ -2055,7 +2055,7 @@ void
 GVA_delace_drawable(gint32 drawable_id
                 , gint32 deinterlace
                 , gdouble threshold
-		)
+                )
 {
   GimpDrawable      *drawable;
 
@@ -2118,9 +2118,9 @@ GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
     if(gap_debug)
     {
       printf("API: resolution x/y %f / %f\n"
-	, (float)xresolution
-	, (float)yresolution
-	);
+        , (float)xresolution
+        , (float)yresolution
+        );
     }
   }
 }  /* end GVA_image_set_aspect */
@@ -2205,9 +2205,9 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
        /* resize to image to framesize */
        gimp_image_resize(*image_id
                        , gvahand->width
-		       , gvahand->height
-		       , 0
-		       , 0);
+                       , gvahand->height
+                       , 0
+                       , 0);
        GVA_image_set_aspect(gvahand, *image_id);
      }
   }
@@ -2244,7 +2244,7 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
                                     , gvahand->width
                                     , gvahand->height
                                     , GIMP_RGBA_IMAGE
-				    , 100.0, GIMP_NORMAL_MODE);
+                                    , 100.0, GIMP_NORMAL_MODE);
   }
   else
   {
@@ -2253,7 +2253,7 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
                                     , gvahand->width
                                     , gvahand->height
                                     , GIMP_RGB_IMAGE
-				    , 100.0, GIMP_NORMAL_MODE);
+                                    , 100.0, GIMP_NORMAL_MODE);
   }
   g_free(layername);
 
@@ -2285,21 +2285,21 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
       if (gap_debug)  printf("DEBUG: FILL In the ALPHA CHANNEL\n");
       for (i=(gvahand->width * gvahand->height)-1; i>=0; i--)
       {
-  	 gvahand->fc_frame_data[3+(i*4)] = 255;
+         gvahand->fc_frame_data[3+(i*4)] = 255;
       }
   }
 
 
   gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
                       , drawable->width, drawable->height
-		      , TRUE      /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , TRUE      /* dirty */
+                      , FALSE     /* shadow */
+                       );
   if ((deinterlace == 0) || (gvahand->height < 2))
   {
     gimp_pixel_rgn_set_rect (&pixel_rgn, gvahand->fc_frame_data
                           , 0
-			  , 0
+                          , 0
                           , gvahand->width
                           , gvahand->height);
   }
@@ -2309,13 +2309,13 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
     
     l_framedata_copy = GVA_delace_frame(gvahand
                                        ,deinterlace
-				       ,threshold
-				       );
+                                       ,threshold
+                                       );
     if(l_framedata_copy)
     {
       gimp_pixel_rgn_set_rect (&pixel_rgn, l_framedata_copy
                             , 0
-			    , 0
+                            , 0
                             , gvahand->width
                             , gvahand->height);
       g_free(l_framedata_copy);
@@ -2548,7 +2548,7 @@ GVA_frame_to_gimp_layer(t_GVA_Handle *gvahand
  * ------------------------------------
  *  HINT:
  *  for the calling program it is easier to call
- * 	GVA_fetch_frame_to_buffer
+ *      GVA_fetch_frame_to_buffer
  *
  * IN: gvahand  videohandle
  * IN: do_scale  FALSE: deliver frame at original size (ignore bpp, width and height parameters)
@@ -2578,9 +2578,9 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
                 , gint32 framenumber
                 , gint32 deinterlace
                 , gdouble threshold
-		, gint32 *bpp
-		, gint32 *width
-		, gint32 *height
+                , gint32 *bpp
+                , gint32 *width
+                , gint32 *height
                 )
 {
   gint32  frame_size;
@@ -2599,8 +2599,8 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
 
   if(do_scale)
   {
-    guchar	 *src_row, *src, *dest;
-    gint	 row, col;
+    guchar       *src_row, *src, *dest;
+    gint         row, col;
     gint32       deinterlace_mask;
     gint         *arr_src_col;
 
@@ -2651,23 +2651,23 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
     {
       for ( col = 0; col < (*width); col++ )
       {
-	arr_src_col[ col ] = ( col * gvahand->width / (*width) ) * gvahand->frame_bpp;
+        arr_src_col[ col ] = ( col * gvahand->width / (*width) ) * gvahand->frame_bpp;
       }
 
       dest = frame_data;
       /* copy row by row */
       for ( row = 0; row < *height; row++ )
       {
-	  src_row = gvahand->fc_row_pointers[(row * gvahand->height / (*height)) & deinterlace_mask];
-	  for ( col = 0; col < (*width); col++ )
-	  {
-	      src = &src_row[ arr_src_col[col] ];
-	      dest[0] = src[0];
-	      dest[1] = src[1];
-	      dest[2] = src[2];
-	      dest[3] = 255;
-	      dest += (*bpp);
-	  }
+          src_row = gvahand->fc_row_pointers[(row * gvahand->height / (*height)) & deinterlace_mask];
+          for ( col = 0; col < (*width); col++ )
+          {
+              src = &src_row[ arr_src_col[col] ];
+              dest[0] = src[0];
+              dest[1] = src[1];
+              dest[2] = src[2];
+              dest[3] = 255;
+              dest += (*bpp);
+          }
       }
       g_free(arr_src_col);
     }
@@ -2689,7 +2689,7 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
       frame_data = g_malloc(frame_size);
       if(frame_data == NULL)
       {
-	return (NULL);
+        return (NULL);
       }
       memcpy(frame_data, gvahand->fc_frame_data, frame_size);
     }
@@ -2697,11 +2697,11 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
     {
       frame_data = GVA_delace_frame(gvahand
                                    ,deinterlace
-				   ,threshold
-				   );
+                                   ,threshold
+                                   );
       if(frame_data == NULL)
       {
-	return (NULL);
+        return (NULL);
       }
     }
 
@@ -2715,17 +2715,17 @@ GVA_frame_to_buffer(t_GVA_Handle *gvahand
     {
        gint i;
 
-	if (gap_debug)  printf("DEBUG: FILL In the ALPHA CHANNEL\n");
-	for (i=((*width) * (*height))-1; i>=0; i--)
-	{
-  	   frame_data[3+(i*4)] = 255;
-	}
+        if (gap_debug)  printf("DEBUG: FILL In the ALPHA CHANNEL\n");
+        for (i=((*width) * (*height))-1; i>=0; i--)
+        {
+           frame_data[3+(i*4)] = 255;
+        }
     }
   }
 
   return(frame_data);
   
-}	/* end GVA_frame_to_buffer */
+}       /* end GVA_frame_to_buffer */
 
 
 /* ------------------------------------
@@ -2763,9 +2763,9 @@ GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
                 , gint32 framenumber
                 , gint32 deinterlace
                 , gdouble threshold
-		, gint32 *bpp
-		, gint32 *width
-		, gint32 *height
+                , gint32 *bpp
+                , gint32 *width
+                , gint32 *height
                 )
 {
   guchar *frame_data;
@@ -2777,9 +2777,9 @@ GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
              , framenumber
              , deinterlace
              , threshold
-	     , bpp
-	     , width
-	     , height
+             , bpp
+             , width
+             , height
              );
 
   if(frame_data == NULL)
@@ -2825,9 +2825,9 @@ GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
                  , framenumber
                  , deinterlace
                  , threshold
-		 , bpp
-		 , width
-		 , height
+                 , bpp
+                 , width
+                 , height
                  );
     }
   }

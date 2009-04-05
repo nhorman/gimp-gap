@@ -76,9 +76,9 @@ void  gap_val_set_keyword(GapValKeyList *keylist
              );
 int   gap_val_rewrite_file(GapValKeyList *keylist
              , const char *filename
-	     , const char *hdr_text
-	     , const char *term_str
-	     );
+             , const char *hdr_text
+             , const char *term_str
+             );
 int   gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename);
 
 

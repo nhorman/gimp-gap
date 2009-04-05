@@ -33,8 +33,8 @@
  */
 
 guchar *gap_gve_jpeg_drawable_encode_jpeg(GimpDrawable *drawable, gint32 jpeg_interlaced, gint32 *JPEG_size,
-			       gint32 jpeg_quality, gint32 odd_even, gint32 use_YUV411,
-			       void *app0_buffer, gint32 app0_length);
+                               gint32 jpeg_quality, gint32 odd_even, gint32 use_YUV411,
+                               void *app0_buffer, gint32 app0_length);
 
 
 

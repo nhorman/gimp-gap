@@ -114,7 +114,7 @@ gap_gve_raw_BGR_drawable_encode(GimpDrawable *drawable, gint32 *RAW_size, gboole
      gimp_pixel_rgn_get_rect (&pixel_rgn, pixelrow_data
                               , 0
                               , l_src_row
-			      , drawable->width
+                              , drawable->width
                               , 1);
      for(l_idx=0;l_idx < l_rowstride; l_idx += drawable->bpp)
      {
@@ -186,7 +186,7 @@ gap_gve_raw_RGB_drawable_encode(GimpDrawable *drawable, gint32 *RAW_size, gboole
      gimp_pixel_rgn_get_rect (&pixel_rgn, pixelrow_data
                               , 0
                               , l_src_row
-			      , drawable->width
+                              , drawable->width
                               , 1);
      for(l_idx=0;l_idx < l_rowstride; l_idx += drawable->bpp)
      {
@@ -350,7 +350,7 @@ gap_gve_raw_YUV444_drawable_encode(GimpDrawable *drawable, gint32 *RAW_size, gbo
 
 #define SCALEBITS 8
 #define ONE_HALF  (1 << (SCALEBITS - 1))
-#define FIX(x)		((int) ((x) * (1L<<SCALEBITS) + 0.5))
+#define FIX(x)          ((int) ((x) * (1L<<SCALEBITS) + 0.5))
 
 void
 gap_gve_raw_YUV420P_drawable_encode(GimpDrawable *drawable, guchar *yuv420_buffer)
@@ -399,7 +399,7 @@ gap_gve_raw_YUV420P_drawable_encode(GimpDrawable *drawable, guchar *yuv420_buffe
     gimp_pixel_rgn_get_rect (&srcPR, all_pixelrows
                               , 0
                               , 0
-			      , drawable->width
+                              , drawable->width
                               , drawable->height               /* get all rows */
                               );
 

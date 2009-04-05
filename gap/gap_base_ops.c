@@ -471,7 +471,7 @@ p_del(GapAnimInfo *ainfo_ptr, long cnt)
 
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld") ,l_hi, l_lo);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
      }
      l_lo++;
@@ -603,7 +603,7 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
         gchar *tmp_errtxt;
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_lo, l_hi);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
      }
      l_lo--;
@@ -696,21 +696,21 @@ p_exchg(GapAnimInfo *ainfo_ptr, long dest)
    {
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), dest, l_tmp_nr);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
    }
    if(0 != gap_lib_rename_frame(ainfo_ptr, ainfo_ptr->curr_frame_nr, dest))
    {
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), ainfo_ptr->curr_frame_nr, dest);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
    }
    if(0 != gap_lib_rename_frame(ainfo_ptr, l_tmp_nr, ainfo_ptr->curr_frame_nr))
    {
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_tmp_nr, ainfo_ptr->curr_frame_nr);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
    }
 
@@ -798,7 +798,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
      {
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_lo, l_hi);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
      }
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
@@ -820,7 +820,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
      {
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_lo, l_hi);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
-	g_free(tmp_errtxt);
+        g_free(tmp_errtxt);
         return -1;
      }
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
@@ -973,7 +973,7 @@ gap_base_next(GimpRunMode run_mode, gint32 image_id)
   }
 
   return(rc);
-}	/* end gap_base_next */
+}       /* end gap_base_next */
 
 gint32
 gap_base_prev(GimpRunMode run_mode, gint32 image_id)
@@ -992,7 +992,7 @@ gap_base_prev(GimpRunMode run_mode, gint32 image_id)
   }
 
   return(rc);
-}	/* end gap_base_prev */
+}       /* end gap_base_prev */
 
 /* ============================================================================
  * gap_base_first  gap_base_last
@@ -1021,7 +1021,7 @@ gap_base_first(GimpRunMode run_mode, gint32 image_id)
   }
 
   return(rc);
-}	/* end gap_base_first */
+}       /* end gap_base_first */
 
 gint32
 gap_base_last(GimpRunMode run_mode, gint32 image_id)
@@ -1042,7 +1042,7 @@ gap_base_last(GimpRunMode run_mode, gint32 image_id)
   }
 
   return(rc);
-}	/* end gap_base_last */
+}       /* end gap_base_last */
 
 /* ============================================================================
  * gap_base_goto
@@ -1075,24 +1075,24 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
         l_title = g_strdup_printf (_("Go To Frame (%ld/%ld)")
-				   , ainfo_ptr->curr_frame_nr
-				   , ainfo_ptr->frame_cnt);
+                                   , ainfo_ptr->curr_frame_nr
+                                   , ainfo_ptr->frame_cnt);
         l_hline =  g_strdup_printf (_("Destination Frame Number (%ld - %ld)")
-				    , ainfo_ptr->first_frame_nr
-				    , ainfo_ptr->last_frame_nr);
+                                    , ainfo_ptr->first_frame_nr
+                                    , ainfo_ptr->last_frame_nr);
 
         l_dest = gap_arr_slider_dialog(l_title, l_hline,
-	         _("Number:")
-		,_("Go to this frame number")                 /* tooltip */
+                 _("Number:")
+                ,_("Go to this frame number")                 /* tooltip */
                 , ainfo_ptr->first_frame_nr
                 , ainfo_ptr->last_frame_nr
                 , ainfo_ptr->curr_frame_nr
                 , TRUE
-		, NULL  /* help_id NULL: has no help button */
-		);
+                , NULL  /* help_id NULL: has no help button */
+                );
 
-	g_free (l_title);
-	g_free (l_hline);
+        g_free (l_title);
+        g_free (l_hline);
 
         if(l_dest < 0)
         {
@@ -1120,7 +1120,7 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
   }
 
   return(rc);
-}	/* end gap_base_goto */
+}       /* end gap_base_goto */
 
 
 /* ------------------------
@@ -1176,10 +1176,10 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
         l_title = g_strdup_printf (_("Delete Frames (%ld/%ld)")
-				   , ainfo_ptr->curr_frame_nr
-				   , ainfo_ptr->frame_cnt);
+                                   , ainfo_ptr->curr_frame_nr
+                                   , ainfo_ptr->frame_cnt);
         l_hline = g_strdup_printf (_("Delete frames from %ld to (number)")
-				   , ainfo_ptr->curr_frame_nr);
+                                   , ainfo_ptr->curr_frame_nr);
 
         l_max = ainfo_ptr->last_frame_nr;
         if(l_max == ainfo_ptr->curr_frame_nr)
@@ -1192,20 +1192,20 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
         }
 
         l_tooltip = g_strdup_printf(_("Delete frames starting at current number %d "
-	                              "up to this number (inclusive)")
-	            , (int)ainfo_ptr->curr_frame_nr );
+                                      "up to this number (inclusive)")
+                    , (int)ainfo_ptr->curr_frame_nr );
         l_cnt = gap_arr_slider_dialog(l_title, l_hline
-	      , _("Number:")
-	      , l_tooltip
+              , _("Number:")
+              , l_tooltip
               , ainfo_ptr->curr_frame_nr
               , l_max
               , ainfo_ptr->curr_frame_nr
               , TRUE
-	      , GAP_HELP_ID_DELETE);
+              , GAP_HELP_ID_DELETE);
 
-	g_free (l_tooltip);
-	g_free (l_title);
-	g_free (l_hline);
+        g_free (l_tooltip);
+        g_free (l_title);
+        g_free (l_hline);
 
         if(l_cnt >= 0)
         {
@@ -1243,7 +1243,7 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
 
   return(rc);
 
-}	/* end gap_base_del */
+}       /* end gap_base_del */
 
 
 /* ------------------------
@@ -1479,8 +1479,8 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Duplicate Frames (%ld/%ld)")
-			     , ainfo_ptr->curr_frame_nr
-			     , ainfo_ptr->frame_cnt);
+                             , ainfo_ptr->curr_frame_nr
+                             , ainfo_ptr->frame_cnt);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = _("From Frame:");
@@ -1525,7 +1525,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   }
 
 
-}	/* end p_dup_dialog */
+}       /* end p_dup_dialog */
 
 
 /* ============================================================================
@@ -1551,21 +1551,21 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
       {
          if(0 != gap_lib_chk_framechange(ainfo_ptr)) { l_cnt = -1; }
          else
-	 {
-	   if(*ainfo_ptr->extension == '\0' && ainfo_ptr->frame_cnt == 0)
-	   {
-	     /* duplicate was called on a frame without extension and without framenumer in its name
-	      * (typical for new created images named like 'Untitled' (or 'Unbenannt' for german GUI or .. in other languages)
-	      */
-	       gap_arr_msg_win(ainfo_ptr->run_mode,
-		       _("Operation cancelled.\n"
-			 "GAP video plug-ins only work with filenames\n"
-			 "that end in numbers like _000001.xcf.\n"
-			 "==> Rename your image, then try again."));
-	       return -1;
-	   }
-	   l_cnt = p_dup_dialog(ainfo_ptr, &l_from, &l_to);
-	 }
+         {
+           if(*ainfo_ptr->extension == '\0' && ainfo_ptr->frame_cnt == 0)
+           {
+             /* duplicate was called on a frame without extension and without framenumer in its name
+              * (typical for new created images named like 'Untitled' (or 'Unbenannt' for german GUI or .. in other languages)
+              */
+               gap_arr_msg_win(ainfo_ptr->run_mode,
+                       _("Operation cancelled.\n"
+                         "GAP video plug-ins only work with filenames\n"
+                         "that end in numbers like _000001.xcf.\n"
+                         "==> Rename your image, then try again."));
+               return -1;
+           }
+           l_cnt = p_dup_dialog(ainfo_ptr, &l_from, &l_to);
+         }
 
          if((0 != gap_lib_chk_framechange(ainfo_ptr)) || (l_cnt < 1))
          {
@@ -1593,7 +1593,7 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
 
   return(rc);
 
-}	/* end gap_base_dup */
+}       /* end gap_base_dup */
 
 
 /* ============================================================================
@@ -1632,22 +1632,22 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
            l_initial = ainfo_ptr->last_frame_nr;
          }
          l_title = g_strdup_printf (_("Exchange Current Frame (%ld)")
-				    , ainfo_ptr->curr_frame_nr);
+                                    , ainfo_ptr->curr_frame_nr);
 
          l_tooltip = g_strdup_printf(_("Exchange the current frame %d "
-	                              "with the frame that has the number entered here")
-	            , (int)ainfo_ptr->curr_frame_nr );
+                                      "with the frame that has the number entered here")
+                    , (int)ainfo_ptr->curr_frame_nr );
          l_dest = gap_arr_slider_dialog(l_title,
-				  _("Exchange with Frame"),
-				  _("Number:")
-				  , l_tooltip
-				  , ainfo_ptr->first_frame_nr
-				  , ainfo_ptr->last_frame_nr
-				  , l_initial
-				  , TRUE
-				  , GAP_HELP_ID_EXCHANGE);
-	 g_free (l_tooltip);
-	 g_free (l_title);
+                                  _("Exchange with Frame"),
+                                  _("Number:")
+                                  , l_tooltip
+                                  , ainfo_ptr->first_frame_nr
+                                  , ainfo_ptr->last_frame_nr
+                                  , l_initial
+                                  , TRUE
+                                  , GAP_HELP_ID_EXCHANGE);
+         g_free (l_tooltip);
+         g_free (l_title);
 
          if(0 != gap_lib_chk_framechange(ainfo_ptr))
          {
@@ -1671,7 +1671,7 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
   }
 
   return(rc);
-}	/* end gap_base_exchg */
+}       /* end gap_base_exchg */
 
 /* ============================================================================
  * p_shift_dialog
@@ -1685,8 +1685,8 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Frame Sequence Shift (%ld/%ld)")
-			     , ainfo_ptr->curr_frame_nr
-			     , ainfo_ptr->frame_cnt);
+                             , ainfo_ptr->curr_frame_nr
+                             , ainfo_ptr->frame_cnt);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = _("From Frame:");
@@ -1906,7 +1906,7 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Renumber Frames (%ld)")
-			     , ainfo_ptr->frame_cnt);
+                             , ainfo_ptr->frame_cnt);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = _("First Frame Number:");
@@ -1941,7 +1941,7 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
     return -1;
   }
 
-}	/* end p_renumber_dialog */
+}       /* end p_renumber_dialog */
 
 
 /* ------------------------
@@ -2143,9 +2143,9 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
       {
          if(0 != gap_lib_chk_framechange(ainfo_ptr)) { l_cnt = -1; }
          else
-	 {
-	   l_cnt = p_renumber_dialog(ainfo_ptr, &l_start_frame_nr, &l_digits);
-	 }
+         {
+           l_cnt = p_renumber_dialog(ainfo_ptr, &l_start_frame_nr, &l_digits);
+         }
 
          if(0 != gap_lib_chk_framechange(ainfo_ptr))
          {
@@ -2176,4 +2176,4 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
   }
 
   return(rc);
-}	/* end gap_base_renumber */
+}       /* end gap_base_renumber */

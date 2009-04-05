@@ -104,7 +104,7 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
   if(gap_debug) printf("GAP gap_layer_copy_to_dest_image: ret %d\n", (int)l_ret_id);
 
   return l_ret_id;
-}	/* end gap_layer_copy_to_dest_image */
+}       /* end gap_layer_copy_to_dest_image */
 
 
 /* -----------------------
@@ -153,11 +153,11 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 
   l_new_layer_id = gap_layer_copy_to_dest_image(dst_image_id
                                                ,src_layer_id
-					       ,l_src_opacity
-					       ,l_src_mode
-					       ,&l_src_offset_x
-					       ,&l_src_offset_y
-					       );
+                                               ,l_src_opacity
+                                               ,l_src_mode
+                                               ,&l_src_offset_x
+                                               ,&l_src_offset_y
+                                               );
   if(l_new_layer_id < 0)
   {
      return -1;
@@ -185,7 +185,7 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
  */
 static void
 p_copy_rgn_render_region (const GimpPixelRgn *srcPR
-		    ,const GimpPixelRgn *dstPR)
+                    ,const GimpPixelRgn *dstPR)
 {
   guint    row;
   guchar* src  = srcPR->data;
@@ -229,12 +229,12 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
            ,(int)src_drawable->width
            ,(int)src_drawable->height
            ,(int)src_drawable->bpp
-	   );
+           );
     printf("dst: w:%d h:%d bpp:%d\n"
            ,(int)dst_drawable->width
            ,(int)dst_drawable->height
            ,(int)dst_drawable->bpp
-	   );
+           );
     gimp_drawable_detach(src_drawable);
     gimp_drawable_detach(dst_drawable);
     return FALSE;
@@ -242,14 +242,14 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
 
   gimp_pixel_rgn_init (&srcPR, src_drawable, 0, 0
                       , src_drawable->width, src_drawable->height
-		      , FALSE     /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , FALSE     /* dirty */
+                      , FALSE     /* shadow */
+                       );
   gimp_pixel_rgn_init (&dstPR, dst_drawable, 0, 0
                       , dst_drawable->width, dst_drawable->height
-		      , TRUE      /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , TRUE      /* dirty */
+                      , FALSE     /* shadow */
+                       );
 
 
   for (pr = gimp_pixel_rgns_register (2, &srcPR, &dstPR);
@@ -274,9 +274,9 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
  */
 static void
 p_pick_rgn_render_region (const GimpPixelRgn *srcPR
-		    ,const GimpPixelRgn *dstPR
-		    ,guint src_channel_pick
-		    ,guint dst_channel_pick)
+                    ,const GimpPixelRgn *dstPR
+                    ,guint src_channel_pick
+                    ,guint dst_channel_pick)
 {
   guint    row;
   guchar* src  = srcPR->data;
@@ -284,16 +284,16 @@ p_pick_rgn_render_region (const GimpPixelRgn *srcPR
 
   for (row = 0; row < dstPR->h; row++)
     {
-	guchar* l_src  = src;
-	guchar* l_dest = dest;
-	guint   col = dstPR->w;
+        guchar* l_src  = src;
+        guchar* l_dest = dest;
+        guint   col = dstPR->w;
 
-	while (col--)
-	  {
+        while (col--)
+          {
             l_dest[dst_channel_pick] = l_src[src_channel_pick];
-	    l_src += srcPR->bpp;
-	    l_dest += dstPR->bpp;
-	  }
+            l_src += srcPR->bpp;
+            l_dest += dstPR->bpp;
+          }
 
       src  += srcPR->rowstride;
       dest += dstPR->rowstride;
@@ -319,7 +319,7 @@ p_pick_rgn_render_region (const GimpPixelRgn *srcPR
 gboolean
 gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
                               , gint32 src_drawable_id, guint src_channel_pick
-			      , gboolean shadow)
+                              , gboolean shadow)
 {
   GimpPixelRgn srcPR, dstPR;
   GimpDrawable *src_drawable;
@@ -340,12 +340,12 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
            ,(int)src_drawable->width
            ,(int)src_drawable->height
            ,(int)src_drawable->bpp
-	   );
+           );
     printf("dst: w:%d h:%d bpp:%d\n"
            ,(int)dst_drawable->width
            ,(int)dst_drawable->height
            ,(int)dst_drawable->bpp
-	   );
+           );
     gimp_drawable_detach(src_drawable);
     gimp_drawable_detach(dst_drawable);
     return FALSE;
@@ -357,14 +357,14 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
 
   gimp_pixel_rgn_init (&srcPR, src_drawable, x1, y1
                       , (x2 - x1), (y2 - y1)
-		      , FALSE     /* dirty */
-		      , FALSE     /* shadow */
-		       );
+                      , FALSE     /* dirty */
+                      , FALSE     /* shadow */
+                       );
   gimp_pixel_rgn_init (&dstPR, dst_drawable, x1, y1
                       ,  (x2 - x1), (y2 - y1)
-		      , TRUE      /* dirty */
-		      , shadow    /* shadow */
-		       );
+                      , TRUE      /* dirty */
+                      , shadow    /* shadow */
+                       );
 
   if(shadow)
   {
@@ -379,19 +379,19 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
 
      gimp_pixel_rgn_init (&origPR, dst_drawable, x1, y1
                       ,  (x2 - x1), (y2 - y1)
-		      , FALSE    /* dirty */
-		      , FALSE    /* shadow */
-		       );
+                      , FALSE    /* dirty */
+                      , FALSE    /* shadow */
+                       );
      gimp_pixel_rgn_init (&shadowPR, dst_drawable, x1, y1
                       ,  (x2 - x1), (y2 - y1)
-		      , TRUE    /* dirty */
-		      , TRUE    /* shadow */
-		       );
+                      , TRUE    /* dirty */
+                      , TRUE    /* shadow */
+                       );
      for (pr = gimp_pixel_rgns_register (2, &origPR, &shadowPR);
-	  pr != NULL;
-	  pr = gimp_pixel_rgns_process (pr))
+          pr != NULL;
+          pr = gimp_pixel_rgns_process (pr))
      {
-	 p_copy_rgn_render_region (&origPR, &shadowPR);
+         p_copy_rgn_render_region (&origPR, &shadowPR);
      }
   }
 
@@ -433,10 +433,10 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
 gint32 
 gap_layer_new_from_buffer(gint32 image_id
                                     , gint32 width
-				    , gint32 height
-				    , gint32 bpp
-				    , guchar *data
-				    )
+                                    , gint32 height
+                                    , gint32 bpp
+                                    , guchar *data
+                                    )
 {
   gint32 layer_id;
   GimpImageBaseType l_basetype;
@@ -459,12 +459,12 @@ gap_layer_new_from_buffer(gint32 image_id
 
   layer_id = gimp_layer_new(image_id
                 , "dummy"
-		, width
-		, height
-		, l_type
-		, 100.0   /* full opacity */
-		, 0       /* normal mode */
-		);
+                , width
+                , height
+                , l_type
+                , 100.0   /* full opacity */
+                , 0       /* normal mode */
+                );
 
   if(layer_id >= 0)
   {
@@ -473,17 +473,17 @@ gap_layer_new_from_buffer(gint32 image_id
     gimp_pixel_rgn_init (&dstPR, dst_drawable
                       , 0, 0     /* x1, y1 */
                       , width
-		      , height
-		      , TRUE     /* dirty */
-		      , FALSE    /* shadow */
-		       );
+                      , height
+                      , TRUE     /* dirty */
+                      , FALSE    /* shadow */
+                       );
     
     gimp_pixel_rgn_set_rect(&dstPR
                            ,data
                            ,0
                            ,0
                            ,width
-			   ,height
+                           ,height
                            );
 
     /*  update the processed region  */
@@ -575,19 +575,19 @@ gap_layer_flip(gint32 layer_id, gint32 flip_request)
       axis = (gdouble)(gimp_drawable_width(layer_id)) / 2.0;
       layer_id = gimp_drawable_transform_flip_simple(layer_id
                                    ,GIMP_ORIENTATION_HORIZONTAL
-				   ,TRUE    /* auto_center */
-				   ,axis
-				   ,TRUE    /* clip_result */
-				   );
+                                   ,TRUE    /* auto_center */
+                                   ,axis
+                                   ,TRUE    /* clip_result */
+                                   );
       break;
     case GAP_STB_FLIP_VER:
       axis = (gdouble)(gimp_drawable_height(layer_id)) / 2.0;
       layer_id = gimp_drawable_transform_flip_simple(layer_id
                                    ,GIMP_ORIENTATION_VERTICAL
-				   ,TRUE    /* auto_center */
-				   ,axis
-				   ,TRUE    /* clip_result */
-				   );
+                                   ,TRUE    /* auto_center */
+                                   ,axis
+                                   ,TRUE    /* clip_result */
+                                   );
       break;
     case GAP_STB_FLIP_BOTH:
       center_x = gimp_drawable_width(layer_id) / 2;
@@ -595,11 +595,11 @@ gap_layer_flip(gint32 layer_id, gint32 flip_request)
   
       layer_id = gimp_drawable_transform_rotate_simple(layer_id
                                   ,GIMP_ROTATE_180
-				  ,TRUE      /* auto_center */
-				  ,center_x
-				  ,center_y
-				  ,TRUE      /* clip_result */
-				  );
+                                  ,TRUE      /* auto_center */
+                                  ,center_x
+                                  ,center_y
+                                  ,TRUE      /* clip_result */
+                                  );
       break;
     default:
       break;

@@ -45,8 +45,8 @@
 void       gap_vex_dlg_init_gpp (GapVexMainGlobalParams *gpp);
 gint       gap_vex_dlg_overwrite_dialog(GapVexMainGlobalParams *gpp
                                        , gchar *filename
-				       , gint overwrite_mode
-				       );
+                                       , gint overwrite_mode
+                                       );
 GtkWidget* gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp);
 void       gap_vex_dlg_main_dialog (GapVexMainGlobalParams *gpp);
 

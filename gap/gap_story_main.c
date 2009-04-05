@@ -154,9 +154,9 @@ static void query (void)
   /* get version numbers from config.h (that is derived from ../configure.in) */
   l_plug_in_version = g_strdup_printf(plug_in_version_fmt
                                     ,GAP_MAJOR_VERSION
-				    ,GAP_MINOR_VERSION
-				    ,GAP_MICRO_VERSION
-				    );
+                                    ,GAP_MINOR_VERSION
+                                    ,GAP_MICRO_VERSION
+                                    );
   
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
@@ -165,7 +165,7 @@ static void query (void)
                           "Storyboardfile Editor",
                           "This plug-in is an interactive GUI to create edit storyboard level1 files, "
                           "storyboard level1 files are videoframe playlist textfiles"
-			  "that can be used for playback and encoding",
+                          "that can be used for playback and encoding",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           l_plug_in_version,
@@ -272,4 +272,4 @@ run (const gchar *name,          /* name of plugin */
       gimp_set_data (GAP_STORY_PLUG_IN_PROC, sgpp, sizeof (GapStbMainGlobalParams));
   }
   values[0].data.d_status = status;
-}	/* end run */
+}       /* end run */

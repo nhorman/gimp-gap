@@ -85,57 +85,57 @@ typedef enum
 } GapMovSelMode;
 
 typedef struct {
-	long    dst_frame_nr;     /* current destination frame_nr */
-	long    src_layer_idx;    /* index of current layer (used for multilayer stepmodes) */
-	long    src_frame_idx;    /* current frame number (used for source frame stepmodes) */
-	gdouble src_layer_idx_dbl;
-	gdouble src_frame_idx_dbl;
-	gint32 *src_layers;       /* array of source images layer id's (used for multilayer stepmodes) */
-	long    src_last_layer;   /* index of last layer 0 upto n-1 (used for multilayer stepmodes) */
-	gdouble currX,  currY;
+        long    dst_frame_nr;     /* current destination frame_nr */
+        long    src_layer_idx;    /* index of current layer (used for multilayer stepmodes) */
+        long    src_frame_idx;    /* current frame number (used for source frame stepmodes) */
+        gdouble src_layer_idx_dbl;
+        gdouble src_frame_idx_dbl;
+        gint32 *src_layers;       /* array of source images layer id's (used for multilayer stepmodes) */
+        long    src_last_layer;   /* index of last layer 0 upto n-1 (used for multilayer stepmodes) */
+        gdouble currX,  currY;
         gint    l_handleX;
         gint    l_handleY;
         
-	gdouble currOpacity;
-	gdouble currWidth;
-	gdouble currHeight;
-	gdouble currRotation;
+        gdouble currOpacity;
+        gdouble currWidth;
+        gdouble currHeight;
+        gdouble currRotation;
 
-	gdouble currTTLX;     /*  transform x top left */
-	gdouble currTTLY;     /*  transform y top left */
-	gdouble currTTRX;     /*  transform x top right */
-	gdouble currTTRY;     /*  transform y top right */
-	gdouble currTBLX;     /*  transform x bot left */
-	gdouble currTBLY;     /*  transform y bot left */
-	gdouble currTBRX;     /*  transform x bot right */
-	gdouble currTBRY;     /*  transform y bot right */
-	
-	gdouble currSelFeatherRadius;
+        gdouble currTTLX;     /*  transform x top left */
+        gdouble currTTLY;     /*  transform y top left */
+        gdouble currTTRX;     /*  transform x top right */
+        gdouble currTTRY;     /*  transform y top right */
+        gdouble currTBLX;     /*  transform x bot left */
+        gdouble currTBLY;     /*  transform y bot left */
+        gdouble currTBRX;     /*  transform x bot right */
+        gdouble currTBRY;     /*  transform y bot right */
+        
+        gdouble currSelFeatherRadius;
 } GapMovCurrent;
 
 
 typedef struct {
-	gint    p_x, p_y;   /* +- path koordinates */
-	gdouble opacity;    /* 0.0  upto 100.0% */
-	gdouble w_resize;   /* width resize 10 upto 300% */
-	gdouble h_resize;   /* height resize 10 upto 300% */
-	gdouble rotation;   /* rotatation +- degrees */
-	
-	gint    keyframe_abs;
-	gint    keyframe;
-	
-	/* 4-point transform distortion (perspective) */
-	gdouble ttlx;     /* 0.0 upto 10.0 transform x top left */
-	gdouble ttly;     /* 0.0 upto 10.0 transform y top left */
-	gdouble ttrx;     /* 0.0 upto 10.0 transform x top right */
-	gdouble ttry;     /* 0.0 upto 10.0 transform y top right */
-	gdouble tblx;     /* 0.0 upto 10.0 transform x bot left */
-	gdouble tbly;     /* 0.0 upto 10.0 transform y bot left */
-	gdouble tbrx;     /* 0.0 upto 10.0 transform x bot right */
-	gdouble tbry;     /* 0.0 upto 10.0 transform y bot right */
+        gint    p_x, p_y;   /* +- path koordinates */
+        gdouble opacity;    /* 0.0  upto 100.0% */
+        gdouble w_resize;   /* width resize 10 upto 300% */
+        gdouble h_resize;   /* height resize 10 upto 300% */
+        gdouble rotation;   /* rotatation +- degrees */
+        
+        gint    keyframe_abs;
+        gint    keyframe;
+        
+        /* 4-point transform distortion (perspective) */
+        gdouble ttlx;     /* 0.0 upto 10.0 transform x top left */
+        gdouble ttly;     /* 0.0 upto 10.0 transform y top left */
+        gdouble ttrx;     /* 0.0 upto 10.0 transform x top right */
+        gdouble ttry;     /* 0.0 upto 10.0 transform y top right */
+        gdouble tblx;     /* 0.0 upto 10.0 transform x bot left */
+        gdouble tbly;     /* 0.0 upto 10.0 transform y bot left */
+        gdouble tbrx;     /* 0.0 upto 10.0 transform x bot right */
+        gdouble tbry;     /* 0.0 upto 10.0 transform y bot right */
 
-	/* 4-point transform distortion (perspective) */
-	gdouble sel_feather_radius;
+        /* 4-point transform distortion (perspective) */
+        gdouble sel_feather_radius;
 } GapMovPoint;
 
 #define GAP_MOV_MAX_POINT 1024
@@ -147,9 +147,9 @@ typedef struct {
  */
 
 typedef struct {
-	gint32         src_image_id;   /* source image */
-	gint32         src_layer_id;   /* id of layer (to begin with) */
-	GapMovHandle   src_handle;
+        gint32         src_image_id;   /* source image */
+        gint32         src_layer_id;   /* id of layer (to begin with) */
+        GapMovHandle   src_handle;
         GapMovStepMode src_stepmode;
         GapMovSelMode  src_selmode;
         int            src_paintmode;
@@ -157,8 +157,8 @@ typedef struct {
         gint           src_apply_bluebox;      /* TRUE FALSE */
         gint           clip_to_img;            /* TRUE FALSE */
 
-	gint32         tmpsel_image_id;     /* a temporary image to save the selection of the source image or frame */
-	gint32         tmpsel_channel_id;   /* the selection */
+        gint32         tmpsel_image_id;     /* a temporary image to save the selection of the source image or frame */
+        gint32         tmpsel_channel_id;   /* the selection */
 
         gdouble        step_speed_factor;
         gdouble        tween_opacity_initial;
@@ -168,33 +168,33 @@ typedef struct {
         gint           tracelayer_enable;
         gint           tween_steps;     /* 0 == no virtual tweens between frames */
 
-	gint    point_idx;           /* 0 upto MAX_POINT -1 */
-	gint    point_idx_max;       /* 0 upto MAX_POINT -1 */
-	GapMovPoint point[GAP_MOV_MAX_POINT];
+        gint    point_idx;           /* 0 upto MAX_POINT -1 */
+        gint    point_idx_max;       /* 0 upto MAX_POINT -1 */
+        GapMovPoint point[GAP_MOV_MAX_POINT];
 
-	gint    dst_range_start;  /* use current frame as default */
-	gint    dst_range_end;
-	gint    dst_layerstack;
+        gint    dst_range_start;  /* use current frame as default */
+        gint    dst_range_end;
+        gint    dst_layerstack;
 
-        /* for dialog only */	
-	gint32  dst_image_id;      /* frame image */
-	gint32  tmp_image_id;      /* temp. flattened preview image */
-	gint32  tmp_alt_image_id;  /* temp. preview image (preloaded preview frame) */
-	gint32  tmp_alt_framenr;   /* framenr of the tmp_alt_image_id */
+        /* for dialog only */   
+        gint32  dst_image_id;      /* frame image */
+        gint32  tmp_image_id;      /* temp. flattened preview image */
+        gint32  tmp_alt_image_id;  /* temp. preview image (preloaded preview frame) */
+        gint32  tmp_alt_framenr;   /* framenr of the tmp_alt_image_id */
 
         /* for generating animated preview only */
-	GapMovApvMode  apv_mode;
+        GapMovApvMode  apv_mode;
         gint32   apv_src_frame;     /* image_id of the (already scaled) baseframe
                                      * or -1 in exact mode.
-			             * (exact mode uses unscaled original frames)
-			             */
+                                     * (exact mode uses unscaled original frames)
+                                     */
         gint32   apv_mlayer_image;  /* destination image_id for the animated preview
                                      * -1 if we are not in anim_preview mode
-				     */
+                                     */
         gchar   *apv_gap_paste_buff;  /* Optional PasteBuffer (to store preview frames)
-	                               * "/tmp/gimp_video_paste_buffer/gap_pasteframe_" 
-				       * NULL if we do not copy frames to a paste_buffer
-				       */
+                                       * "/tmp/gimp_video_paste_buffer/gap_pasteframe_" 
+                                       * NULL if we do not copy frames to a paste_buffer
+                                       */
 
         gdouble  apv_framerate;
         gdouble  apv_scalex;
@@ -215,14 +215,14 @@ typedef struct {
         gint   twix;             /* current tweenindex, 0 is used for the real frame, processing order: tween_steps .... 2, 1, 0 */
 
         /* for the bluebox filter */
-	GapBlueboxGlobalParams *bbp;
-	GapBlueboxGlobalParams *bbp_pv;
+        GapBlueboxGlobalParams *bbp;
+        GapBlueboxGlobalParams *bbp_pv;
 
 } GapMovValues;
 
 typedef struct {
-	GapAnimInfo  *dst_ainfo_ptr;      /* destination frames */
-	GapMovValues *val_ptr;
+        GapAnimInfo  *dst_ainfo_ptr;      /* destination frames */
+        GapMovValues *val_ptr;
 } GapMovData;
 
 long  gap_mov_dlg_move_dialog (GapMovData *mov_ptr);

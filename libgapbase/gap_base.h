@@ -52,9 +52,9 @@
 char *
 gap_base_shorten_filename(const char *prefix
                         ,const char *filename
-			,const char *suffix
-			,gint32 max_chars
-			);
+                        ,const char *suffix
+                        ,gint32 max_chars
+                        );
 
 
 /* -----------------------------
@@ -113,8 +113,8 @@ gap_base_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_di
 gint
 gap_base_sscan_flt_numbers(gchar   *buf
                   , gdouble *farr
-		  , gint     farr_max
-		  );
+                  , gint     farr_max
+                  );
 
 
 /* --------------------------------

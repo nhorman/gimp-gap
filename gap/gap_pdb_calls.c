@@ -105,7 +105,7 @@ gap_pdb_procedure_name_available (const gchar *search_name)
        */
        // gimp_procedural_db_query
       gimp_procedural_db_query (".*", ".*", ".*", ".*", ".*", ".*", ".*", 
-			        &num_procs, &proc_list);
+                                &num_procs, &proc_list);
 
       initialized = TRUE;
 
@@ -124,9 +124,9 @@ gap_pdb_procedure_name_available (const gchar *search_name)
       for (loop = 0; loop < num_procs; loop++)
       {
         if(strcmp(search_name, proc_list[loop]) == 0)
-	{
+        {
           found = TRUE;
-	  break;  /* stop at 1st match */
+          break;  /* stop at 1st match */
         }
      }
   }
@@ -166,16 +166,16 @@ gap_pdb_procedure_available(char *proc_name)
    *  regarding a particular procedure.
    */
   if (gimp_procedural_db_proc_info (proc_name,
-				    &l_proc_blurb,
-				    &l_proc_help,
-				    &l_proc_author,
-				    &l_proc_copyright,
-				    &l_proc_date,
-				    &l_proc_type,
-				    &l_nparams,
-				    &l_nreturn_vals,
-				    &l_params,
-				    &l_return_vals))
+                                    &l_proc_blurb,
+                                    &l_proc_help,
+                                    &l_proc_author,
+                                    &l_proc_copyright,
+                                    &l_proc_date,
+                                    &l_proc_type,
+                                    &l_nparams,
+                                    &l_nreturn_vals,
+                                    &l_params,
+                                    &l_return_vals))
     {
       /* procedure found in PDB */
       return (l_nparams);
@@ -183,7 +183,7 @@ gap_pdb_procedure_available(char *proc_name)
 
   printf("Warning: Procedure %s not found.\n", proc_name);
   return -1;
-}	/* end gap_pdb_procedure_available */
+}       /* end gap_pdb_procedure_available */
 
 /* ---------------------- PDB procedure calls  -------------------------- */
 
@@ -207,12 +207,12 @@ gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble a
 
    return(gimp_drawable_transform_rotate_default(drawable_id
                                                 , l_angle_rad
-						, FALSE            /* auto_center */
-						, 0                /* center_x */
-						, 0                /* center_y */
-						, interpolation
-						, FALSE            /* clip_results */
-						));
+                                                , FALSE            /* auto_center */
+                                                , 0                /* center_x */
+                                                , 0                /* center_y */
+                                                , interpolation
+                                                , FALSE            /* clip_results */
+                                                ));
 
    
 }  /* end gap_pdb_gimp_rotate_degree */
@@ -250,7 +250,7 @@ gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
       , p_status_to_string(return_vals[0].data.d_status)
       );
    return(FALSE);
-}	/* end gap_pdb_gimp_displays_reconnect */
+}       /* end gap_pdb_gimp_displays_reconnect */
 
 
 
@@ -289,7 +289,7 @@ gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
       );
 
    return(-1);
-}	/* end gap_pdb_gimp_layer_new_from_drawable */
+}       /* end gap_pdb_gimp_layer_new_from_drawable */
 
 /* ============================================================================
  * gap_pdb_gimp_file_save_thumbnail
@@ -309,7 +309,7 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_IMAGE,     image_id,
-				 GIMP_PDB_STRING,    filename,
+                                 GIMP_PDB_STRING,    filename,
                                  GIMP_PDB_END);
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -321,13 +321,13 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed on file: %s (image_id:%d), d_status:%d %s\n"
           , l_called_proc
-	  , filename
-	  , (int)image_id
+          , filename
+          , (int)image_id
           , (int)return_vals[0].data.d_status
           , p_status_to_string(return_vals[0].data.d_status)
-	  );
+          );
    return(FALSE);
-}	/* end gap_pdb_gimp_file_save_thumbnail */
+}       /* end gap_pdb_gimp_file_save_thumbnail */
 
 
 /* ============================================================================
@@ -338,7 +338,7 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 gboolean
 gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
-			      gint32 *th_data_count, unsigned char **th_data)
+                              gint32 *th_data_count, unsigned char **th_data)
 {
    static char     *l_called_proc = "gimp_image_thumbnail";
    GimpParam          *return_vals;
@@ -361,9 +361,9 @@ gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
 workaround:
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
- 				 GIMP_PDB_IMAGE,    image_id,
- 				 GIMP_PDB_INT32,    width,
- 				 GIMP_PDB_INT32,    height,
+                                 GIMP_PDB_IMAGE,    image_id,
+                                 GIMP_PDB_INT32,    width,
+                                 GIMP_PDB_INT32,    height,
                                  GIMP_PDB_END);
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -415,4 +415,4 @@ workaround:
       , p_status_to_string(return_vals[0].data.d_status)
       );
    return(FALSE);
-}	/* end gap_pdb_gimp_image_thumbnail */
+}       /* end gap_pdb_gimp_image_thumbnail */

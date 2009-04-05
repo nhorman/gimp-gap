@@ -498,9 +498,9 @@ int gap_debug = 0;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -1380,12 +1380,12 @@ navi_scroll_to_current_frame_nr(void)
     printf("navi_scroll_to_current_frame_nr: BEGIN timezoom:%d, item_height:%d\n"
            "  curr_frame_nr: %d  dyn_topframenr: %d  dyn_rows:%d dyn_adj: %d\n"
           , (int)naviD->vin_ptr->timezoom
-	  , (int)naviD->item_height
-	  , (int)naviD->ainfo_ptr->curr_frame_nr
-	  , (int)naviD->dyn_topframenr
-	  , (int)naviD->dyn_rows
-	  , (int)adj_intval
-	  );
+          , (int)naviD->item_height
+          , (int)naviD->ainfo_ptr->curr_frame_nr
+          , (int)naviD->dyn_topframenr
+          , (int)naviD->dyn_rows
+          , (int)adj_intval
+          );
   }
 
 
@@ -1595,7 +1595,7 @@ navi_refresh_image_menu()
 
       gtk_box_pack_start (GTK_BOX (naviD->image_combo_hbox)
                          , naviD->image_combo
-			 , TRUE, TRUE, 0);
+                         , TRUE, TRUE, 0);
       gtk_widget_show (naviD->image_combo);
 
       gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (naviD->image_combo),
@@ -1785,7 +1785,7 @@ navi_thumb_update(gboolean update_all)
                                   , &l_th_width
                                   , &l_th_height
                                   , &l_th_data_count
-				  , &l_th_bpp
+                                  , &l_th_bpp
                                   , &l_raw_thumb
                                   ))
 
@@ -2589,18 +2589,18 @@ navi_render_preview (FrameWidget *fw)
        if(gap_debug) printf("navi_render_preview: fetching THUMBNAILFILE for: %s\n", l_frame_filename);
        if(l_frame_filename)
        {
-	 /* init preferred width and height
-	  * (as hint for the thumbnail loader to decide
-	  *  if thumbnail is to fetch from normal or large thumbnail directory
-	  *  just for the case when both sizes are available)
-	  */
-	 l_th_width = naviD->preview_size;
-	 l_th_height = naviD->preview_size;
+         /* init preferred width and height
+          * (as hint for the thumbnail loader to decide
+          *  if thumbnail is to fetch from normal or large thumbnail directory
+          *  just for the case when both sizes are available)
+          */
+         l_th_width = naviD->preview_size;
+         l_th_height = naviD->preview_size;
          gap_thumb_file_load_thumbnail(l_frame_filename
                                    , &l_th_width
                                    , &l_th_height
                                    , &l_th_data_count
-				   , &l_th_bpp
+                                   , &l_th_bpp
                                    , &l_th_data
                                    );
        }
@@ -3597,8 +3597,8 @@ navi_dyn_adj_set_pos(void)
   {
      printf("navi_dyn_adj_set_pos: adj_intval:%d topval:%d\n"
            , (int)adj_intval
-	   , (int)topval
-	   );
+           , (int)topval
+           );
   }
 
 
@@ -3997,13 +3997,13 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
     l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_OFF);
   }
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Disable active layer tracking"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_acl_tracking_off_callback),
-		     naviD);
+                     G_CALLBACK (p_acl_tracking_off_callback),
+                     naviD);
 
   l_idx = 1;
 
@@ -4020,13 +4020,13 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
     l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_BY_NAME);
   }
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Enable tracking of the active layer by name at framechanges"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_acl_tracking_by_name_callback),
-		     naviD);
+                     G_CALLBACK (p_acl_tracking_by_name_callback),
+                     naviD);
 
 
   l_idx = 2;
@@ -4044,13 +4044,13 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
     l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS);
   }
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Enable tracking of the active layer by stack position at framechanges"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_acl_tracking_by_pos_callback),
-		     naviD);
+                     G_CALLBACK (p_acl_tracking_by_pos_callback),
+                     naviD);
 
   gtk_box_pack_start (GTK_BOX (util_box), radio_table, FALSE, FALSE, 2);
   gtk_widget_show (radio_table);

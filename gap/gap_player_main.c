@@ -367,16 +367,16 @@ run (const gchar *name,          /* name of plugin */
           gpp->pv_pixelsize = MAX(gpp->pv_width, gpp->pv_height);
           
           gpp->audio_enable         = (gboolean) param[14].data.d_int32;
-	  if(param[15].data.d_string)
-	  {
+          if(param[15].data.d_string)
+          {
             g_snprintf(gpp->audio_filename, sizeof(gpp->audio_filename), "%s"
-	              , param[15].data.d_string);
-	  }
-	  else
-	  {
+                      , param[15].data.d_string);
+          }
+          else
+          {
             gpp->audio_filename[0] = '\0';
-	    gpp->audio_enable = FALSE;
-	  }
+            gpp->audio_enable = FALSE;
+          }
           gpp->audio_frame_offset   = (gint) param[16].data.d_int32;
           gpp->audio_volume         = (gdouble) param[17].data.d_float;
       }
@@ -416,4 +416,4 @@ run (const gchar *name,          /* name of plugin */
       gimp_set_data (PLUG_IN_NAME, gpp, sizeof (GapPlayerMainGlobalParams));
   }
   values[0].data.d_status = status;
-}	/* end run */
+}       /* end run */

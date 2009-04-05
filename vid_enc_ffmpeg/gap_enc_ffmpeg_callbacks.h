@@ -61,7 +61,7 @@ on_ff_gdouble_spinbutton_changed  (GtkWidget *widget,
 void
 on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
                                    gint32          *dest_value_ptr);
-				   
+                                   
 
 
 
