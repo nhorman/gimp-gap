@@ -355,7 +355,7 @@ p_write_encoder_status(GapGveMasterEncoderStatus *encStatus)
   }
 
 
-  fp = fopen(filename, "wb");
+  fp = g_fopen(filename, "wb");
   if(fp)
   {
     fwrite(encStatus, sizeof(GapGveMasterEncoderStatus), 1, fp);
@@ -381,7 +381,7 @@ p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
   master_encoder_id = encStatus->master_encoder_id;
   filename = p_gap_build_enc_status_filename(master_encoder_id);
 
-  fp = fopen(filename, "rb");
+  fp = g_fopen(filename, "rb");
   if(fp)
   {
     GapGveMasterEncoderStatus encBuffer;
@@ -496,7 +496,7 @@ gap_gve_misc_set_master_encoder_cancel_request(GapGveMasterEncoderStatus *encSta
    
   filename = p_gap_build_enc_cancel_request_filename(encStatus->master_encoder_id);
 
-  fp = fopen(filename, "w");
+  fp = g_fopen(filename, "w");
   if(fp)
   {
     fprintf(fp, "GAP videoencoder CANCEL requested\n");

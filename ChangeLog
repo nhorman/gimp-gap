@@ -1,3 +1,14 @@
+2009-04-06 Wolfgang Hofer <hof@gimp.org>
+
+- applied fixes for avilib.c (as found at http://svn.xiph.org/trunk/theora-tools/vp32theora/avilib.c)
+  must use O_BINARY flag on win32 platform,  this fixes the bug that did write
+  corrupt AVI files on Win32 Platform (relevant for bug #326201)
+
+- replace fopen by  g_fopen
+
+  * vid_enc_avi/avilib.c 
+  * libgapvidutil/gap_gve_misc_util.c
+
 2009-04-04 Wolfgang Hofer <hof@gimp.org>
 
 - replaced tab characters by blanks
