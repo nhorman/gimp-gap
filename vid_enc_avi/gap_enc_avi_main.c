@@ -599,6 +599,7 @@ p_dimSizeOfRawFrame(GapGveAviGlobalParams *gpp)
 static gint
 p_avi_encode(GapGveAviGlobalParams *gpp)
 {
+#define AUDIO_CHUNK_ADVANCE_FRAMES 16
   GapGveAviValues   *epp;
   avi_t               *l_avifile;
   static GapGveStoryVidHandle *l_vidhand = NULL;
@@ -612,7 +613,6 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 
   FILE *l_fp_inwav = NULL;
   gint32 l_FRAME_size;
-  gint32 datasize;
   gint32 audio_size = 0;
   gint32 audio_stereo = 0;
   long  l_sample_rate = 22050;
@@ -629,13 +629,17 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   gint32         l_cnt_reused_frames;
   gint32         l_check_flags;
   gint32         l_out_frame_nr;
+  
+  gdouble        audio_samples_per_frame;
+  gint32         audio_samples_per_frame_gint32;
+  gint32         audio_bytes_per_frame_gint32;
+  gint32         audio_bytes_done_in_advance = 0;
+  gint32         l_frames_to_go;
 
   gint32 wavsize = 0; /* Data size of the wav file */
   long audio_margin = 8192; /* The audio chunk size */
-  long audio_filled_100 = 0;
-  long audio_per_frame_x100 = -1;
-  long frames_per_second_x100 = 2500;
-  gdouble frames_per_second_x100f = 2500;
+
+
   char databuffer[300000]; /* For transferring audio data */
   gint32   l_video_frame_chunk_size;
   gint32   l_video_frame_chunk_hdr_size;
@@ -735,21 +739,33 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 
     /* open WAVE file and set position to the 1.st audio databyte */
     l_fp_inwav = gap_audio_wav_open_seek_data(gpp->val.audioname1);
+    
+    if(gap_debug)
+    {
+      printf("Audiocheck results for file:%s\n", gpp->val.audioname1);
+      printf("  wavsize:%d\n", (int)wavsize);
+      printf("  l_samples:%d\n", (int)l_samples);
+      printf("  l_bytes_per_sample:%d\n", (int)l_bytes_per_sample);
+      printf("  l_channels:%d\n", (int)l_channels);
+      printf("  l_sample_rate:%d\n", (int)l_sample_rate);
+      printf("  audio_size (in bits):%d\n", (int)audio_size);
+      printf("  audio_stereo:%d\n", (int)audio_stereo);
+    }
   }
 
 
   /* Calculations for encoding the sound into the avi
    */
+  audio_samples_per_frame = l_sample_rate / MAX(1.0, gpp->val.framerate);
+  audio_samples_per_frame_gint32 = (audio_samples_per_frame + 0.5);
+  audio_bytes_per_frame_gint32 = audio_samples_per_frame_gint32 * l_bytes_per_sample;
 
-  /* ORIGINAL CODE:
-   *  frames_per_second_x100 = (norm == 0) ? 2500 : 2997;
-   *  audio_per_frame_x100 = (100 * 100 * l_sample_rate * audio_size / 8 *
-   *                        ((audio_stereo == TRUE) ? 2 : 1)) / frames_per_second_x100;
-   */
-
-  frames_per_second_x100f = (100.0 * gpp->val.framerate) + 0.5;
-  frames_per_second_x100 = frames_per_second_x100f;
-  audio_per_frame_x100 = (100 * 100 * l_sample_rate * l_bytes_per_sample) / MAX(1,frames_per_second_x100);
+  if(gap_debug)
+  {
+    printf("  audio_samples_per_frame:%f\n", (float)audio_samples_per_frame);
+    printf("  audio_samples_per_frame_gint32:%d\n", (int)audio_samples_per_frame_gint32);
+    printf("  audio_bytes_per_frame_gint32:%d\n", (int)audio_bytes_per_frame_gint32);
+  }
 
 
   /* build AVI 4 byte codec name
@@ -786,11 +802,20 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
                , l_sample_rate
                , (int)l_bits
                , (int)WAVE_FORMAT_PCM    /* format 1 == pcm */
-               , (long)0                 /* mp3rate (WHAT else shall i use if NO MP3 is supplied ???) */
+               , (long)((l_sample_rate * 8) / 1000)    /* mp3rate,
+                                          * as seen seen in some AVI files)
+                                          * note that some mplayer versions freezes on attempt
+                                          * to playback AVI files with mp3rate 0
+                                          */
                );
+
+    //l_avifile->must_use_index = 1;
   }
 
-  if(gap_debug) printf("next is INIT Encoder Instance ?\n");
+  if(gap_debug)
+  {
+    printf("next is INIT Encoder Instance ?\n");
+  }
 
 #ifdef ENABLE_LIBXVIDCORE
   if ((strcmp(epp->codec_name, GAP_AVI_CODEC_RGB) != 0)
@@ -810,7 +835,10 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
       printf("ERROR creation of XVID encoder instance FAILED\n");
       l_rc = -1;
     }
-    if(gap_debug)  printf("creation of XVID encoder instance DONE OK\n");
+    if(gap_debug)
+    {
+      printf("creation of XVID encoder instance DONE OK\n");
+    }
   }
 #endif
 
@@ -831,6 +859,10 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   l_begin = gpp->val.range_from;
   l_end   = gpp->val.range_to;
   l_max_master_frame_nr = abs(l_end - l_begin) + 1;
+  l_frames_to_go = l_max_master_frame_nr;
+
+
+  l_frames_to_go = l_max_master_frame_nr;
 
   l_cur_frame_nr = l_begin;
   while(l_rc >= 0)
@@ -864,7 +896,8 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
     }     /* end setup of 1.st frame (l_cur_frame_nr == l_begin) */
 
 
-    /* calling the frame fetcher */
+
+    /* encode VIDEO PART, call the frame fetcher */
     {
       gboolean l_fetch_ok;
       gboolean l_force_keyframe;
@@ -1005,8 +1038,14 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         if(buffer)
         {
           /* store the compressed video frame */
-          if (gap_debug) printf("GAP_AVI: Writing frame nr. %d, size %d\n",
-                                (int)l_cur_frame_nr, (int)l_FRAME_size);
+          if (gap_debug)
+          {
+            printf("GAP_AVI: Writing frame nr. %d, size %d  l_keyframe:%d\n"
+                 , (int)l_cur_frame_nr
+                 , (int)l_FRAME_size
+                 , (int)l_keyframe
+                 );
+          }
           AVI_write_frame(l_avifile, buffer, l_FRAME_size, l_keyframe);
           /* free the (un)compressed Frame data buffer */
           g_free(buffer);
@@ -1027,48 +1066,90 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);
       }
+      
+      
+    }     /* end if l_rc == 0 */
+
+
+
+
+
 
       /* encode AUDIO PART */
-      /* As long as there is a video frame, "fill" the fake audio buffer */
-      if (l_fp_inwav)
+      /* As long as there is a video frame, write audio chunks.
+       * set AUDIO_CHUNK_ADVANCE_FRAMES = 1 triggers writing of an audio chunk for each handled frame.
+       * values > 1 do write one longer audio chunk in advance for duration of the defined number of frames,
+       * in this case the next audio chunk is written after the number of video frames reached.
+       * in case the audio input is shorter than video playtime write the rest
+       * and stop writing audio for all further frame.
+       * in case the audio input is longer than video playtime it is truncated.
+       * (e.g. the remaining audio is not written to the resulting video file).
+       */
+      if ((l_fp_inwav) && (wavsize > 0))
       {
-        audio_filled_100 += audio_per_frame_x100;
+        gint32 datasize;
+        gint32 l_frames_advance;
+        
+        
+        l_frames_advance = MIN(AUDIO_CHUNK_ADVANCE_FRAMES, l_frames_to_go);
+        audio_margin = MIN((audio_bytes_per_frame_gint32 * l_frames_advance), sizeof(databuffer) -1);
+        
+        if(gap_debug)
+        {
+          printf("audio_bytes_per_frame:%d  audio_margin: %d (to_go:%d advance:%d)\n"
+             , (int)audio_bytes_per_frame_gint32
+             , (int)audio_margin
+             , (int)l_frames_to_go
+             , (int)l_frames_advance
+             );
+        }
+
+        datasize = 0;
+        if (audio_bytes_done_in_advance <= 0)
+        {
+          if (wavsize >= audio_margin)
+          {
+              datasize = fread(databuffer, 1, audio_margin, l_fp_inwav);
+              if (datasize != audio_margin)
+              {
+                printf("Warning: Read %d bytes from wav file failed. (got %d bytes)\n"
+                      ,(int)audio_margin
+                      ,(int)datasize
+                      );
+              }
+              wavsize -= audio_margin;
+          }
+          else
+          {
+              datasize = fread(databuffer, 1, wavsize, l_fp_inwav);
+              if (datasize != wavsize)
+              {
+                printf("Warning: Read rest of %d bytes from wav file failed. (got %d bytes)\n"
+                      ,(int)wavsize
+                      ,(int)datasize
+                      );
+              }
+              wavsize = 0;
+          }
+        }
+        if (datasize > 0)
+        {
+          if(gap_debug)
+          {
+            printf("Now saving audio frame datasize:%d\n", (int)datasize);
+          }
+          AVI_write_audio(l_avifile, databuffer, datasize);
+
+          if(gap_debug)
+          {
+            printf("audio chunk written\n");
+          }
+          audio_bytes_done_in_advance = datasize;
+        }
+        audio_bytes_done_in_advance -= audio_bytes_per_frame_gint32;
       }
 
-      /* Now "empty" the fake audio buffer, until it goes under the margin again */
-      while ((audio_filled_100 >= (audio_margin * 100)) && (wavsize > 0))
-      {
-        if (gap_debug) printf("Audio processing: Audio buffer at %ld bytes.\n", audio_filled_100);
-        if (wavsize >= audio_margin)
-        {
-            datasize = fread(databuffer, 1, audio_margin, l_fp_inwav);
-            if (datasize != audio_margin)
-            {
-              printf("Warning: Read from wav file failed. (non-critical)\n");
-            }
-            wavsize -= audio_margin;
-        }
-        else
-        {
-            datasize = fread(databuffer, 1, wavsize, l_fp_inwav);
-            if (datasize != wavsize)
-            {
-              printf("Warning: Read from wav file failed. (non-critical)\n");
-            }
-            wavsize = 0;
-        }
 
-        if (gap_debug) printf("Now saving audio frame datasize:%d\n", (int)datasize);
-
-        /*XXX ?? - TODO check if write in portions or all at once */
-        /* XX     - check if we should use write or append Procedure ? */
-
-        AVI_write_audio(l_avifile, databuffer, datasize);
-        /*AVI_append_audio(l_avifile, databuffer, datasize);*/
-
-        audio_filled_100 -= audio_margin * 100;
-      }
-    }     /* end if l_rc == 0 */
 
 
     l_percentage += l_percentage_step;
@@ -1097,8 +1178,11 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
        break;
     }
     l_cur_frame_nr += l_step;
+    l_frames_to_go--;
 
   }  /* end loop foreach frame */
+
+
 
   if(l_avifile != NULL)
   {

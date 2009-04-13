@@ -1,4 +1,4 @@
-This is an unstable developers version 2.3.0 of the GIMP Video menu.
+This is an unstable developers version 2.5.0 of the GIMP Video menu.
 
 The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
 to extend the GIMP with capabilities to edit and create
@@ -7,12 +7,12 @@ Animations as sequences of single frames.
 
 Requires:
 =========
- - gimp 2.2 or higher.
-     This release was tested with gimp-2.2.11
+ - gimp 2.6.0 or higher.
+     This release was tested with gimp-2.6.6
      
      Note: GIMP-GAP provides some features that are able to call many of the
            GIMP standard filters. (plug-in programs that are shiped with 
-           gimp-2.2.11) Those features depend on the tested PDB interface
+           gimp-2.6.6) Those features depend on the tested PDB interface
            versions and may fail if newer version are used.
 
  - glib 2.8 or higher.
@@ -23,8 +23,7 @@ Requires:
    ffmpeg and libmpeg3 are included as sourcecode tarball in this
    GIMP-GAP distribution.
    
-   - nasm  and the old gcc 3.3 version 
-           are required only in case when compiling of the
+   - nasm  is required only in case when compiling of the
            (optional) libmpeg3 is desired.
            (nasm for the .asm sources)
    
@@ -34,15 +33,8 @@ Requires:
 
  Optional libs for decode/encode videofiles:
 
- - liba52     0.7.4
-                   recent ffmpeg libraries do no longer include
-                   this library that is required to encode/decode
-                   DVD audio, but ffmpeg supports dynamic linking of the liba52
-                   library if it is installed and the GPL licence 
-                   configure option is set ( --enable-gpl --enable-liba52 )
-                   installation of liba52 is Recommanded.
 
- - xvid       1.0.2
+ - libxvid       1.0.2
                    The free XVID Codec is used for MPEG4 encoding
 		   with the gimp-gap AVI fileformat encoding plug-in.
 		   (the FFMPEG libs have built in MPEG4 support
@@ -50,6 +42,15 @@ Requires:
 		 
 		   You can get the xvid codec at:
 		       http://www.xvid.org/downloads.html
+ 
+ Optional libs for decode/encode videofiles based on ffmpeg
+ 
+ - libbz2
+ - libfaac 
+ - libfaad
+ - libmp3lame
+ - libx264
+
 
 
 For general information about GIMP-GAP concepts
@@ -69,7 +70,7 @@ external libraries :
 - ffmpeg
 - libmpeg3
 
-Those libs are built automatically.
+Those libs are built automatically in case their requirements are available.
 Configuration options for those libs can be set by editing the
 files:
 
@@ -79,20 +80,20 @@ files:
 Those configure_option files are read by the master .configure script
 
 
-Installation:
 
-  ./autogen.sh   # includes the ./configure call
+Installation from SVN source tree:
+==================================
+
+  ./autogen.sh   # includes generation of the configure script ant the ./configure call
   make
   make install
 
 
 
 
-
-
 A correct installation adds the follwing menu trees to the GIMP:
   <Image>/Video
-  <Xtns>/Split Video to Frames
+  <Filters>/Split Video to Frames
   
 An overview of all menus can be found at
 docs/reference/txt/INTRODUCTION.txt    
@@ -102,18 +103,15 @@ For the generic installation instructions, see the file INSTALL.
 
 Additional notes:
   This version of GIMP-GAP is a separated Package since GIMP-1.3.x
-  and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.2.
+  and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.4.
 
 
 Notes:
 ======
-   
-   - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP 
-     as standard plug-in (named gap) with no need of extra installation.
-
-
    - GIMP-GAP provides frontend dialogs for:
       - mplayer 1.0
+      
+      OLD frontends:
       - xanim 2.80.1 exporting edition (with the extensions from loki
         entertainment)
       - mpeg_encode (V1.5R2)
@@ -124,17 +122,19 @@ Notes:
      The programs mpeg2encode, mpeg_encode, and xanim
      are old and you may not need them at all since GIMP-GAP-2.2
      provides improved alternatives for all of them.
+     Note that the old frontends are not bulit by default.
      
-     But it is higly recommanded to install the program mplayer.
-     MPlayer does support very much videofileformats.
-     
-     
-     If you like to use that stuff, you should install
-       mplayer
+     If you want to use that old stuff, you should install
        xanim 2.80.1 (loki)
        mpeg_encode and mpeg_play
        mpeg2encode and mpeg2decode
-     on your system.
+     on your system and configure gimp-gap with the option --enable-unix-frontends
+     
+     
+     
+     It is recommanded to install the program mplayer.
+     MPlayer does support very much videofileformats.
+     
 
    - The GIMP-GAP playback module provides audiosupport for audiofiles
      in RIFF WAV format.  The audiosupport is based on wavplay (tested
@@ -156,6 +156,11 @@ Notes:
      
    - There is no need to install all those external programs to
      compile GIMP-GAP.
+
+   
+   - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP 
+     as standard plug-in (named gap) with no need of extra installation.
+
 
 
 Bugs

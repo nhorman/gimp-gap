@@ -25,6 +25,20 @@
  *
  */
 
+/* hof: 2009.04.12
+ * use "00dc" for compressed video chunks  and use "00db"
+ * uncompressed video (where AVI->compressor is 0)
+ *
+ * idx1 offsets are written realtive to data start adress in the movi chunk
+ +
+ * fixes at write/update of the AVI audio stream header related to pcm audiodata
+ * (samplesize, blockAlign and averageBytesPerSec.
+ *  incorrect values resultes in video playback that is NOT synchron to the audio).
+ *
+ * avi_sampsize  allow samplesize < 4 (that is required for mono samples 8 and 16 bit)
+ */
+ 
+
 #include "avilib.h"
 #include "../config.h"
 
@@ -152,7 +166,8 @@ static int avi_sampsize(avi_t *AVI, int j)
    int s;
    s = ((AVI->track[j].a_bits+7)/8)*AVI->track[j].a_chans;
    //   if(s==0) s=1; /* avoid possible zero divisions */
-   if(s<4) s=4; /* avoid possible zero divisions */
+   //if(s<4) s=4; /* avoid possible zero divisions */
+   if(s<1) s=1; /* avoid possible zero divisions */
    return s;
 }
 
@@ -510,7 +525,8 @@ int avi_update_header(avi_t *AVI)
        OUTLONG(-1);            /* Quality */
 
        // ThOe /4
-       OUTLONG(sampsize/4);    /* SampleSize */
+       ///OUTLONG(sampsize/4);    /* SampleSize */
+       OUTLONG(sampsize);    /* SampleSize hof: full samplesize */
 
        OUTLONG(0);             /* Frame */
        OUTLONG(0);             /* Frame */
@@ -525,10 +541,17 @@ int avi_update_header(avi_t *AVI)
        OUTSHRT(AVI->track[j].a_chans);         /* Number of channels */
        OUTLONG(AVI->track[j].a_rate);          /* SamplesPerSec */
        // ThOe
-       OUTLONG(1000*AVI->track[j].mp3rate/8);
+
+       if(AVI->track[j].a_fmt == 1) {
+           // hof: calculate average bytes per sec for simple PCM encoded data
+           OUTLONG(AVI->track[j].a_rate * sampsize);
+       } else {
+           OUTLONG(1000*AVI->track[j].mp3rate/8);
+       }
        //ThOe (/4)
 
-       OUTSHRT(sampsize/4);           /* BlockAlign */
+       ///OUTSHRT(sampsize/4);           /* BlockAlign */
+       OUTSHRT(sampsize);           /* BlockAlign hof: align to full sample size */
 
 
        OUTSHRT(AVI->track[j].a_bits);          /* BitsPerSample */
@@ -784,7 +807,8 @@ static int avi_close_output_file(avi_t *AVI)
          OUTLONG(-1);            /* Quality */
 
          // ThOe /4
-         OUTLONG(sampsize/4);    /* SampleSize */
+         ///OUTLONG(sampsize/4);    /* SampleSize */
+         OUTLONG(sampsize);    /* SampleSize hof: full samplesize */
 
          OUTLONG(0);             /* Frame */
          OUTLONG(0);             /* Frame */
@@ -799,10 +823,17 @@ static int avi_close_output_file(avi_t *AVI)
          OUTSHRT(AVI->track[j].a_chans);         /* Number of channels */
          OUTLONG(AVI->track[j].a_rate);          /* SamplesPerSec */
          // ThOe
-         OUTLONG(1000*AVI->track[j].mp3rate/8);
+         
+         if(AVI->track[j].a_fmt == 1) {
+           // hof: calculate average bytes per sec for simple PCM encoded data
+           OUTLONG(AVI->track[j].a_rate * sampsize);
+         } else {
+           OUTLONG(1000*AVI->track[j].mp3rate/8);
+         }
          //ThOe (/4)
 
-         OUTSHRT(sampsize/4);           /* BlockAlign */
+         ///OUTSHRT(sampsize/4);           /* BlockAlign */
+         OUTSHRT(sampsize);           /* BlockAlign hof: align to full sample size */
 
 
          OUTSHRT(AVI->track[j].a_bits);          /* BitsPerSample */
@@ -913,6 +944,7 @@ static int avi_write_data(avi_t *AVI, char *data, unsigned long length, int audi
    int n;
 
    unsigned char astr[5];
+   unsigned long idx_pos;        /* index position relative to the movi chunk in file */
 
    /* Check for maximum file length */
 
@@ -921,15 +953,24 @@ static int avi_write_data(avi_t *AVI, char *data, unsigned long length, int audi
      return -1;
    }
 
+
+   if(AVI->movi_pos == 0)
+      AVI->movi_pos = AVI->pos;
+      
+   idx_pos = 4 + (AVI->pos - AVI->movi_pos);
+
    /* Add index entry */
 
    //set tag for current audio track
    sprintf((char *)astr, "0%1dwb", AVI->aptr+1);
 
    if(audio)
-     n = avi_add_index_entry(AVI,astr,0x00,AVI->pos,length);
+     n = avi_add_index_entry(AVI,astr,0x00,idx_pos,length);
    else
-     n = avi_add_index_entry(AVI,(unsigned char *) "00db",((keyframe)?0x10:0x0),AVI->pos,length);
+     if (AVI->compressor[0] == 0)
+       n = avi_add_index_entry(AVI,(unsigned char *) "00db",((keyframe)?0x10:0x0),idx_pos,length);
+     else
+       n = avi_add_index_entry(AVI,(unsigned char *) "00dc",((keyframe)?0x10:0x0),idx_pos,length);
 
    if(n) return -1;
 
@@ -938,7 +979,10 @@ static int avi_write_data(avi_t *AVI, char *data, unsigned long length, int audi
    if(audio)
      n = avi_add_chunk(AVI,(unsigned char *) astr,data,length);
    else
-     n = avi_add_chunk(AVI,(unsigned char *) "00db",data,length);
+     if (AVI->compressor[0] == 0)
+       n = avi_add_chunk(AVI,(unsigned char *) "00db",data,length);
+     else
+       n = avi_add_chunk(AVI,(unsigned char *) "00dc",data,length);
 
    if (n) return -1;
 
@@ -963,10 +1007,19 @@ int AVI_write_frame(avi_t *AVI, char *data, long bytes, int keyframe)
 
 int AVI_dup_frame(avi_t *AVI)
 {
+   unsigned long idx_pos;        /* index position relative to the movi chunk in file */
+
    if(AVI->mode==AVI_MODE_READ) { AVI_errno = AVI_ERR_NOT_PERM; return -1; }
 
    if(AVI->last_pos==0) return 0; /* No previous real frame */
-   if(avi_add_index_entry(AVI,(unsigned char *)"00db",0x10,AVI->last_pos,AVI->last_len)) return -1;
+
+   idx_pos = 4 + (AVI->last_pos - AVI->movi_pos);
+
+   if (AVI->compressor[0] == 0)
+     if(avi_add_index_entry(AVI,(unsigned char *)"00db",0x10,idx_pos,AVI->last_len)) return -1;
+   else
+     if(avi_add_index_entry(AVI,(unsigned char *)"00dc",0x10,idx_pos,AVI->last_len)) return -1;
+   
    AVI->video_frames++;
    AVI->must_use_index = 1;
    return 0;

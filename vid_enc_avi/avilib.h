@@ -117,6 +117,8 @@ typedef struct
   
   int anum;            // total number of audio tracks 
   int aptr;            // current audio working track 
+
+  unsigned long movi_pos;        /* position of the movi chunk in file */
   
 } avi_t;
 

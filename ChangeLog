@@ -1,3 +1,33 @@
+2009-04-13 Wolfgang Hofer <hof@gimp.org>
+
+- fixed audio handling in the AVI1 encoder
+  playback of resulting avi files was tested with mplayer (linux and Windosws XP)
+  and with MS mediaplayer (Windows XP)
+  
+  - mp3rate must not be 0 
+   (with value 0 playback attempts of the resulting avi file
+    causes freeze of mplayer)
+
+  - changed internal handling of audio chunk size.
+    AUDIO_CHUNK_ADVANCE_FRAMES defines the duration of one audio chunk (unit frames)
+    with the hardcoded deaults, an audio chunk is written every 16 video frames
+
+  - fixes in avilib.c:
+   a) idx1 chunks offesets are now written relative to the start of the movi chunk data
+      (old implementation used global offsets in the file that was not correct)
+      
+   b) fixs in write/update of the AVI audio stream header related to pcm audiodata
+      (samplesize, blockAlign and averageBytesPerSec.
+       incorrect values resulted in video playback that is NOT synchron to the audio.
+   c) use "00dc" for compressed video chunks (old avilib always used "00db" that
+      should be used for uncompressed video according to AVI specification)
+
+   d) allow samplesize < 4 (that is required for mono samples 8 and 16 bit)
+   
+  * vid_enc_avi/avilib.c [.h]
+  * vid_enc_avi/gap_enc_main_avi.c
+  * README
+
 2009-04-06 Wolfgang Hofer <hof@gimp.org>
 
 - applied fixes for avilib.c (as found at http://svn.xiph.org/trunk/theora-tools/vp32theora/avilib.c)
