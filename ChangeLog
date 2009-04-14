@@ -1,3 +1,13 @@
+2009-04-14 Wolfgang Hofer <hof@gimp.org>
+
+- fixed audio extract problem that delivered unusable results 
+  for videos with 8bit audiotracks,
+  (as found in AVI files written by OLYMPUS digital cameras)
+  the ffmpeg based videoapi now automatically converts to signed 16 bit format, 
+  that is required in subsequent audio processing in GIMP-GAP.
+
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+
 2009-04-13 Wolfgang Hofer <hof@gimp.org>
 
 - fixed audio handling in the AVI1 encoder

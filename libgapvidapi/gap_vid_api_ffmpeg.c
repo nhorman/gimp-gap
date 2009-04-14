@@ -29,6 +29,7 @@
 #include "avformat.h"
 #include "stdlib.h"
 #include "gap_val_file.h"
+#include "audioconvert.h"
 
 
 #define READSTEPS_PROBE_TIMECODE 32
@@ -91,6 +92,7 @@ typedef struct t_GVA_ffmpeg
 
  AVPacket        vid_pkt;         /* the current packet (read from the video stream) */
  AVPacket        aud_pkt;         /* the current packet (read from the audio stream) */
+ AVAudioConvert *reformat_ctx;    /* for audioformat conversion */
 
  AVFrame         big_picture_rgb;
  AVFrame         big_picture_yuv;
@@ -178,6 +180,9 @@ static t_GVA_RetCode p_seek_private(t_GVA_Handle *gvahand
 static t_GVA_RetCode p_seek_native_timcode_based(t_GVA_Handle *gvahand
                               , gint32 target_frame);
 
+static int       p_audio_convert_to_s16(t_GVA_ffmpeg *handle
+                     , int data_size
+                     );
 
 static gint32    p_pick_channel( t_GVA_ffmpeg *handle
                                , t_GVA_Handle *gvahand
@@ -343,6 +348,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   handle->bytes_filled[1] = 0;
   handle->biggest_data_size = 4096;
   handle->output_samples_ptr = NULL;    /* current write position (points somewhere into samples_buffer) */
+  handle->reformat_ctx = NULL;          /* context for audio conversion (only in case input is NOT SAMPLE_FMT_S16) */
   handle->samples_buffer_size = 0;
   handle->samples_read = 0;
   handle->key_frame_detection_works = FALSE;  /* assume a Codec with non working detection */
@@ -3952,6 +3958,70 @@ p_ffmpeg_aud_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
 }  /* end p_ffmpeg_aud_reopen_read */
 
 
+/* ------------------------------
+ * p_audio_convert_to_s16
+ * ------------------------------
+ *
+ * convert audio samples in specified data_length at handle->output_samples_ptr 
+ * to signed 16 bit little endian audio format.
+ * The original content of handle->output_samples_ptr is replaced by the conversion result
+ * that may also change data length.
+ *
+ * return converted_data_size
+ */
+static int
+p_audio_convert_to_s16(t_GVA_ffmpeg *handle
+                     , int data_size
+                     )
+{
+  guchar         *audio_convert_in_buffer;
+  AVCodecContext *dec;
+  int             converted_data_size;
+
+  dec = handle->aud_codec_context;
+  converted_data_size = 0;
+  if (handle->reformat_ctx == NULL)
+  {
+    handle->reformat_ctx = av_audio_convert_alloc(SAMPLE_FMT_S16, 1,
+                                           dec->sample_fmt, 1, NULL, 0);
+    if (!handle->reformat_ctx) 
+    {
+      printf("ERROR: Cannot convert %s sample format to %s sample format\n",
+          avcodec_get_sample_fmt_name(dec->sample_fmt),
+          avcodec_get_sample_fmt_name(SAMPLE_FMT_S16));
+      return (converted_data_size);
+    }
+  }
+  
+  audio_convert_in_buffer = g_malloc(data_size);
+  if (audio_convert_in_buffer != NULL) 
+  {
+    /* copy samples in a new buffer to be used as input for the conversion */
+    memcpy(audio_convert_in_buffer, handle->output_samples_ptr, data_size);
+    
+    /* convert and write converted samples back to handle->output_samples_ptr */ 
+    if (handle->reformat_ctx) 
+    {
+       const void *ibuf[6]= {audio_convert_in_buffer};
+       void *obuf[6]= {handle->output_samples_ptr};
+       int istride[6]= {av_get_bits_per_sample_format(dec->sample_fmt)/8};
+       int ostride[6]= {2};
+       int len= data_size/istride[0];
+       converted_data_size = len * ostride[0];
+       if (av_audio_convert(handle->reformat_ctx, obuf, ostride, ibuf, istride, len) < 0)
+       {
+           printf("av_audio_convert() failed\n");
+           converted_data_size = 0;
+       }
+
+    }
+    g_free(audio_convert_in_buffer);
+  }
+
+  return (converted_data_size);
+
+}  /* end p_audio_convert_to_s16 */
+
 
 
 /* ------------------------------
@@ -4239,10 +4309,14 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
 
     if (gap_debug)
     {
-      printf("after avcodec_decode_audio2: l_len:%d data_size:%d samples_read:%d\n"
+      printf("after avcodec_decode_audio2: l_len:%d data_size:%d samples_read:%d \n"
+             " sample_fmt:%d %s (expect:%d SAMPLE_FMT_S16)\n"
                          , (int)l_len
                          , (int)data_size
                          , (int)handle->samples_read
+                         , (int)handle->aud_codec_context->sample_fmt
+                         , avcodec_get_sample_fmt_name(handle->aud_codec_context->sample_fmt)
+                         , (int)SAMPLE_FMT_S16
                          );
     }
 
@@ -4264,6 +4338,23 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
     if (data_size > 0)
     {
        gint    bytes_per_sample;
+       int     converted_data_size;
+       if (handle->aud_codec_context->sample_fmt != SAMPLE_FMT_S16)
+       {
+         /* convert audio */
+         converted_data_size = p_audio_convert_to_s16(handle
+                                     , data_size
+                                     );
+         if(converted_data_size <= 0)
+         {
+           l_rc = 2;
+           break;
+         }
+       }
+       else
+       {
+         converted_data_size = data_size;
+       }
 
        /* debug code block: count not null bytes in the decoded data block */
        if(gap_debug)
@@ -4272,7 +4363,7 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
           gint32   l_sum;
 
           l_sum = 0;
-          for(ii=0; ii < data_size; ii++)
+          for(ii=0; ii < converted_data_size; ii++)
           {
             /* if(ii%60 == 0) printf("\n%012d:", (int)&handle->output_samples_ptr[ii]); */
             /* printf("%02x", (int)handle->output_samples_ptr[ii]); */
@@ -4286,16 +4377,16 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
        }
 
        /* check for the biggest uncompressed packet size */
-       if (data_size  > handle->biggest_data_size)
+       if (converted_data_size  > handle->biggest_data_size)
        {
-         handle->biggest_data_size = data_size;
+         handle->biggest_data_size = converted_data_size;
        }
        /* add the decoded packet size to one of the samples_buffers
         * and advance write position
         */
        bytes_per_sample =  MAX((2 * gvahand->audio_cannels), 1);
-       handle->bytes_filled[handle->bf_idx] += data_size;
-       handle->samples_read += (data_size  / bytes_per_sample);
+       handle->bytes_filled[handle->bf_idx] += converted_data_size;
+       handle->samples_read += (converted_data_size  / bytes_per_sample);
 
        /* check if we have enough space in the current samples_buffer (for the next packet) */
        if(handle->bytes_filled[handle->bf_idx] + handle->biggest_data_size  > GVA_SAMPLES_BUFFER_SIZE)
@@ -4315,7 +4406,7 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
        else
        {
          /* enouch space, continue writing to the same buffer */
-         handle->output_samples_ptr += data_size;
+         handle->output_samples_ptr += converted_data_size;
        }
 
        /* if more samples found then update total_aud_samples (that was just a guess) */
@@ -4338,7 +4429,6 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
 
   return(l_rc);
 }  /* end p_read_audio_packets */
-
 
 
 /* ----------------------------------
