@@ -1,3 +1,28 @@
+2009-04-24 Wolfgang Hofer <hof@gimp.org>
+
+- ffmpeg based video encoder colormodel conversion to YUV420P is only done
+  for codecs that require this as input colormodel.
+  For codecs that do not want YUV420P
+  use ffmpeg's img_convert procedure to convert from rgb.
+  (old implementation always used YUV420P as input for the conversion
+  which may results in loss of quality)
+
+- ffmpeg based video encoder now terminates with error message
+  in case the auido input is not supported by the selected audio codec.
+  (the old implementation crashed in such cases)
+  this typically occurs for non standard samplerates
+  therfore the error message includes the hint to try
+  48 kHz, 44.1 kHz or 32 KHz
+
+- master video encoder combo box for selection of commonly used samplerate
+  is now updated automatically when a commonly used samplerate is entered
+  in the corresponding spinbutton widget.
+  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
+  * vid_common/gap_cme_callbacks.c
+  * vid_common/gap_cme_gui.c
+
 2009-04-14 Wolfgang Hofer <hof@gimp.org>
 
 - fixed audio extract problem that delivered unusable results 

@@ -13,7 +13,7 @@
                         (Video only seems OK)
 */
 
-/* gap_enc_main_ffmpeg.c
+/* gap_enc_ffmpeg_main.c
  *  by hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
@@ -265,14 +265,17 @@ static gboolean          p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
                                       , gint ii
                                       , GapGveFFMpegGlobalParams *gpp
                                       , long audio_samplerate
-                                      , long audio_channels);
+                                      , long audio_channels
+                                      , long bits
+                                      );
 static t_ffmpeg_handle * p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                       , gint32 current_pass
                                       , t_awk_array *awp
                                       , gint video_tracks
                                       );
 static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track);
-static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_track);
+static uint8_t * p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track);
+static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track);
 static int    p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes, gint aud_track);
 static void   p_ffmpeg_close(t_ffmpeg_handle *ffh);
 static gint   p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp);
@@ -1349,16 +1352,21 @@ p_sound_precalculations(t_ffmpeg_handle *ffh
     if(ffh->ast[ii].aud_codec_context)
     {
        /* the audio codec gives us the correct audio frame size, in samples */
-       if (gap_debug) printf("Codec ontext frame_size[%d]:%d  channels:%d\n"
+       if (gap_debug)
+       {
+         printf("Audio Codec context frame_size[%d]:%d  channels:%d\n"
                              , (int)ii
                              , (int)ffh->ast[ii].aud_codec_context->frame_size
                              , (int)ffh->ast[ii].aud_codec_context->channels
                              );
-
+       }
        awp->awk[ii].audio_margin = ffh->ast[ii].aud_codec_context->frame_size * 2 * ffh->ast[ii].aud_codec_context->channels;
     }
 
-    if(gap_debug) printf("audio_margin[%d]: %d\n", (int)ii, (int)awp->awk[ii].audio_margin);
+    if(gap_debug)
+    {
+      printf("audio_margin[%d]: %d\n", (int)ii, (int)awp->awk[ii].audio_margin);
+    }
   }
 
 
@@ -2268,13 +2276,20 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
              , gint ii
              , GapGveFFMpegGlobalParams *gpp
              , long audio_samplerate
-             , long audio_channels)
+             , long audio_channels
+             , long bits
+             )
 {
   GapGveFFMpegValues   *epp;
   AVCodecContext *audio_enc = NULL;
+  gboolean audioOK;
+  char *msg;
 
   epp = &gpp->evl;
 
+  audioOK = TRUE;
+  msg = NULL;
+  
   /* ------------ Start Audio CODEC init -------   */
   if(audio_channels > 0)
   {
@@ -2283,13 +2298,15 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
     ffh->ast[ii].aud_codec = avcodec_find_encoder_by_name(epp->acodec_name);
     if(!ffh->ast[ii].aud_codec)
     {
-       printf("Unknown Audio CODEC: %s\n", epp->acodec_name);
+       audioOK = FALSE;
+       msg = g_strdup_printf(_("Unknown Audio CODEC: %s"), epp->acodec_name);
     }
     else
     {
       if(ffh->ast[ii].aud_codec->type != CODEC_TYPE_AUDIO)
       {
-         printf("CODEC: %s is no VIDEO CODEC!\n", epp->acodec_name);
+         audioOK = FALSE;
+         msg = g_strdup_printf(_("CODEC: %s is no AUDIO CODEC!"), epp->acodec_name);
          ffh->ast[ii].aud_codec = NULL;
       }
       else
@@ -2315,33 +2332,71 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         audio_enc->channels = audio_channels;       /* 1=mono, 2 = stereo (from wav file) */
 
 
-        /* open audio codec */
-        if (avcodec_open(ffh->ast[ii].aud_codec_context, ffh->ast[ii].aud_codec) < 0)
-        {
-          if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-          {
-            printf("could not avcodec_open audio-codec: %s\n", epp->acodec_name);
-          }
-          else
-          {
-            g_message("could not open audio codec: %s\n", epp->acodec_name);
-          }
-          ffh->ast[ii].aud_codec = NULL;
-        }
-
         /* the following options were added after ffmpeg 0.4.8 */
         audio_enc->thread_count = epp->thread_count;
         audio_enc->strict_std_compliance = epp->strict;
         audio_enc->workaround_bugs       = epp->workaround_bugs;
         audio_enc->error_recognition     = epp->error_recognition;
         audio_enc->cutoff                = epp->cutoff;
-        audio_enc->channel_layout        = epp->channel_layout;
+        
+        if (bits == 16)
+        {
+          audio_enc->sample_fmt = SAMPLE_FMT_S16;
+        }
+        if (bits == 8)
+        {
+          audio_enc->sample_fmt = SAMPLE_FMT_U8;
+        }
+        
+        
+        switch (audio_channels)
+        {
+          case 1:
+            audio_enc->channel_layout = CH_LAYOUT_MONO;
+            break;
+          case 2:
+            audio_enc->channel_layout = CH_LAYOUT_STEREO;  /* CH_LAYOUT_STEREO_DOWNMIX ? */
+            break;
+          default:
+            audio_enc->channel_layout = epp->channel_layout;
+            break;
+            
+        }
+
+        /* open audio codec */
+        if (avcodec_open(ffh->ast[ii].aud_codec_context, ffh->ast[ii].aud_codec) < 0)
+        {
+          audioOK = FALSE;
+          
+          msg = g_strdup_printf(_("could not open audio codec: %s\n"
+                      "at audio_samplerate:%d channels:%d bits per channel:%d\n"
+                      "(try to convert to 48 KHz, 44.1KHz or 32 kHz samplerate\n"
+                      "that is supported by most codecs)")
+                     , epp->acodec_name
+                     , (int)audio_samplerate
+                     , (int)audio_channels
+                     , (int)bits
+                     );
+          ffh->ast[ii].aud_codec = NULL;
+        }
         
       }
     }
   }
 
-  return (TRUE); /* OK */
+  if (msg != NULL)
+  {
+    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    {
+      printf("** Error: %s\n", msg);
+    }
+    else
+    {
+       g_message(msg);
+    }
+    g_free(msg);
+  }
+  return (audioOK);
 
 } /* end p_init_and_open_audio_codec */
 
@@ -2481,6 +2536,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                          , gpp
                                          , awp->awk[ii].sample_rate
                                          , awp->awk[ii].channels
+                                         , awp->awk[ii].bits
                                          );
     if(!codec_ok)
     {
@@ -2722,6 +2778,92 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
 }  /* end p_ffmpeg_write_frame_chunk */
 
 
+/* -----------------------
+ * p_convert_colormodel
+ * -----------------------
+ * convert video frame specified in the rgb_buffer
+ * from PIX_FMT_BGR24 to the colormodel that is required
+ * by the video codec.
+ *
+ * conversion is done based on ffmpegs img_convert procedure.
+ */
+static uint8_t *
+p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track)
+{
+  AVFrame   *big_picture_rgb;
+  AVPicture *picture_rgb;
+  uint8_t   *l_convert_buffer;
+  int        ii;
+  int        l_rc;
+
+  ii = ffh->vst[vid_track].video_stream_index;
+
+  /* source picture (RGB) */
+  big_picture_rgb = avcodec_alloc_frame();
+  picture_rgb = (AVPicture *)big_picture_rgb;
+
+    
+  /* allocate buffer for image conversion large enough for for uncompressed RGBA32 colormodel */
+  l_convert_buffer = g_malloc(4 * ffh->frame_width * ffh->frame_height);
+
+  if(gap_debug)
+  {
+    printf("HAVE TO convert  TO pix_fmt: %d\n"
+            , (int)ffh->vst[ii].vid_codec_context->pix_fmt
+            );
+  }
+
+
+
+  /* init destination picture structure (the codec context tells us what pix_fmt is needed)
+   */
+   avpicture_fill(picture_codec
+                  ,l_convert_buffer
+                  ,ffh->vst[ii].vid_codec_context->pix_fmt          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
+                  ,ffh->frame_width
+                  ,ffh->frame_height
+                  );
+  /* source picture (has RGB24 colormodel) */
+   avpicture_fill(picture_rgb
+                  ,rgb_buffer
+                  ,PIX_FMT_RGB24
+                  ,ffh->frame_width
+                  ,ffh->frame_height
+                  );
+
+  /* AVFrame is the new structure introduced in FFMPEG 0.4.6,
+   * (same as AVPicture but with additional members at the end)
+   */
+
+  if(gap_debug)
+  {
+    printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n"
+        , (int)ffh->vst[ii].vid_codec_context->pix_fmt
+        , (int)PIX_FMT_YUV420P);
+  }
+
+  /* convert to pix_fmt needed by the codec */
+  l_rc = img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
+               ,picture_rgb, PIX_FMT_BGR24                    /* src */
+               ,ffh->frame_width
+               ,ffh->frame_height
+               );
+
+  if(gap_debug)
+  {
+    printf("after img_convert: l_rc:%d\n", l_rc);
+  }
+
+  g_free(big_picture_rgb);
+
+
+  if(gap_debug)
+  {
+    printf("DONE p_convert_colormodel\n");
+  }
+
+  return (l_convert_buffer);
+}  /* end p_convert_colormodel */
 
 /* --------------------
  * p_ffmpeg_write_frame
@@ -2730,10 +2872,8 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
  * the encoded frame to the mediafile as packet.
  */
 static int
-p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_track)
+p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track)
 {
-  AVFrame   *big_picture_yuv;
-  AVPicture *picture_yuv;
   AVPicture *picture_codec;
   int encoded_size;
   int ret;
@@ -2771,16 +2911,19 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
   /* picture to feed the codec */
   picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
 
-  /* source picture (YUV420) */
-  big_picture_yuv = avcodec_alloc_frame();
-  picture_yuv = (AVPicture *)big_picture_yuv;
 
   if(ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P)
   {
     if(gap_debug)
     {
-      printf("USE YUV420 (no pix_fmt convert needed)\n");
+      printf("USE PIX_FMT_YUV420P (no pix_fmt convert needed)\n");
     }
+
+
+
+    /* fill the yuv420_buffer with current frame image data */
+    gap_gve_raw_YUV420P_drawable_encode(drawable, ffh->vst[0].yuv420_buffer);
+
 
     /* most of the codecs wants YUV420
       * (we can use the picture in ffh->vst[ii].yuv420_buffer without pix_fmt conversion
@@ -2794,53 +2937,39 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
   }
   else
   {
-    /* allocate buffer for image conversion large enough for for uncompressed RGBA32 colormodel */
-    l_convert_buffer = g_malloc(4 * ffh->frame_width * ffh->frame_height);
+    guchar     *rgb_buffer;
+    gint32      rgb_size;
 
-    if(gap_debug)
+    rgb_buffer = gap_gve_raw_RGB_drawable_encode(drawable, &rgb_size, FALSE /* no vflip */
+                                                , NULL  /* app0_buffer */
+                                                , 0     /*  app0_length */
+                                                );
+
+    if (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_BGR24)
     {
-      printf("HAVE TO convert  pix_fmt: %d\n (PIX_FMT_YUV420P %d)"
-            , (int)ffh->vst[ii].vid_codec_context->pix_fmt
-            , (int)PIX_FMT_YUV420P
-            );
-    }
-
-
-    /* init destination picture structure (the codec context tells us what pix_fmt is needed)
-     */
-     avpicture_fill(picture_codec
-                  ,l_convert_buffer
-                  ,ffh->vst[ii].vid_codec_context->pix_fmt          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
+      if(gap_debug)
+      {
+        printf("USE PIX_FMT_BGR24 (no pix_fmt convert needed)\n");
+      }
+      avpicture_fill(picture_codec
+                  ,rgb_buffer
+                  ,PIX_FMT_BGR24          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                   ,ffh->frame_width
                   ,ffh->frame_height
                   );
-    /* source picture (has YUV420P colormodel) */
-     avpicture_fill(picture_yuv
-                  ,ffh->vst[ii].yuv420_buffer
-                  ,PIX_FMT_YUV420P
-                  ,ffh->frame_width
-                  ,ffh->frame_height
-                  );
-
-    /* AVFrame is the new structure introduced in FFMPEG 0.4.6,
-     * (same as AVPicture but with additional members at the end)
-     */
+    }
+    else
+    {
+      l_convert_buffer = p_convert_colormodel(ffh, picture_codec, rgb_buffer, vid_track);
+    }
+    
 
     if(gap_debug)
     {
-      printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n"
-        , (int)ffh->vst[ii].vid_codec_context->pix_fmt
-        , (int)PIX_FMT_YUV420P);
+      printf("before g_free rgb_buffer\n");
     }
 
-    /* convert to pix_fmt needed by the codec */
-    img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
-               ,picture_yuv, PIX_FMT_BGR24                    /* src */
-               ,ffh->frame_width
-               ,ffh->frame_height
-               );
-
-    if(gap_debug)  printf("after img_convert\n");
+    g_free(rgb_buffer);
   }
 
   /* AVFrame is the new structure introduced in FFMPEG 0.4.6,
@@ -2955,7 +3084,6 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
 
   if(gap_debug)  printf("before free picture structures\n");
 
-  g_free(big_picture_yuv);
 
   if(l_convert_buffer) g_free(l_convert_buffer);
 
@@ -3561,14 +3689,10 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
                 );
         }
 
-
-        /* fill the yuv420_buffer with current frame image data */
-        gap_gve_raw_YUV420P_drawable_encode(l_drawable, ffh->vst[0].yuv420_buffer);
-
         /* store the compressed video frame */
         if (gap_debug) printf("GAP_FFMPEG: Writing frame nr. %d\n", (int)l_cur_frame_nr);
 
-        p_ffmpeg_write_frame(ffh, l_force_keyframe, 0 /* vid_track */);
+        p_ffmpeg_write_frame(ffh, l_drawable, l_force_keyframe, 0 /* vid_track */);
         gimp_drawable_detach (l_drawable);
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);

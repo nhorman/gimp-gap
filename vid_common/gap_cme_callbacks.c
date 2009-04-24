@@ -442,7 +442,12 @@ on_cme__combo_outsamplerate  (GtkWidget     *widget,
 
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
 
-  if(gap_debug) printf("CB: on_cme__combo_outsamplerate value: %d\n", (int)value);
+  if(gap_debug)
+  {
+    printf("CB: on_cme__combo_outsamplerate value: %d\n", (int)value);
+  }
+
+
 
   if(gpp->cme__spinbutton_samplerate_adj)
   {
@@ -462,7 +467,7 @@ on_cme__combo_vid_norm  (GtkWidget     *widget,
 {
   gint       value;
 
-  if(gap_debug) printf("CB: on_cme__combo_outsamplerate\n");
+  if(gap_debug) printf("CB: on_cme__combo_vid_norm\n");
 
   if(gpp == NULL) return;
 
@@ -967,13 +972,46 @@ on_cme__spinbutton_samplerate_changed  (GtkEditable     *editable,
  adj = GTK_ADJUSTMENT(gpp->cme__spinbutton_samplerate_adj);
  if(adj)
  {
-   if(gap_debug) printf("samplerate spin value: %f\n", (float)adj->value );
-
-   if((gint)adj->value != gpp->val.samplerate)
+   gint gintValue;
+   
+   if(gap_debug)
    {
-     gpp->val.samplerate = (gint)adj->value;
+     printf("samplerate spin value: %f\n", (float)adj->value );
+   }
+   gintValue = (gint)adj->value;
+   
+   if(gintValue != gpp->val.samplerate)
+   {
+     gpp->val.samplerate = gintValue;
      gap_cme_gui_update_aud_labels (gpp);
    }
+
+   switch (gintValue)
+   {
+     case 8000:
+     case 11025:
+     case 12000:
+     case 16000:
+     case 22050:
+     case 24000:
+     case 32000:
+     case 44100:
+     case 48000:
+       if (gpp->cme__combo_outsamplerate != NULL)
+       {
+         if(gap_debug)
+         {
+           printf("detected a commonly used samplerate value: %d\n", (int)gintValue );
+         }
+         gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (gpp->cme__combo_outsamplerate)
+             , gintValue);
+       }
+       break;
+     default:
+       break;
+   }
+
+
  }
 
 }

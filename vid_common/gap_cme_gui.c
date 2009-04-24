@@ -3418,7 +3418,9 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), button, 2, 3, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
-  gimp_help_set_help_data (button, _("Convert audiofile to tmpfile"), NULL);
+  gimp_help_set_help_data (button, _("Convert audio input file to a temporary file\n"
+                                     "and feed the temporary file to the selected encoder\n"
+                                     "(the temporary file is deleted when encoding is done)"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_gen_tmp_audfile_clicked),
                       gpp);
