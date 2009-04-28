@@ -1237,10 +1237,6 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp, gint32 vectors_id, gint32 stroke_id, 
                                          );
 
 
-    p_clear_one_point(l_ii);
-    pvals->point[l_ii].p_x = rint(xdouble);
-    pvals->point[l_ii].p_y = rint(ydouble);
-
     if(gap_debug)
     {
       printf("PATH distance: %.3f, (%.4f / %.4f) X:%03d Y: %03d slope:%.3f valid:%d success:%d\n"
@@ -1263,6 +1259,9 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp, gint32 vectors_id, gint32 stroke_id, 
        return;
     }
     pvals->point_idx_max = l_ii;
+    p_clear_one_point(l_ii);
+    pvals->point[l_ii].p_x = rint(xdouble);
+    pvals->point[l_ii].p_y = rint(ydouble);
 
     distance += step_length;
   }

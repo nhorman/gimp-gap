@@ -1,3 +1,9 @@
+2009-04-28 Wolfgang Hofer <hof@gimp.org>
+
+- fixed Grab Path Points default settings bug #580416
+
+ * gap/gap_mov_dialog.c
+
 2009-04-24 Wolfgang Hofer <hof@gimp.org>
 
 - ffmpeg based video encoder colormodel conversion to YUV420P is only done
