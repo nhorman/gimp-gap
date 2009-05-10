@@ -44,17 +44,17 @@ if BUILD_FFMPEG_LIBS
 $(x_ffmpeg_libavformat):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make
+	$(EXGMAKE)
 
 $(x_ffmpeg_libavcodec):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make
+	$(EXGMAKE)
 
 $(x_ffmpeg_libavutil):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make
+	$(EXGMAKE)
 
 endif
 
@@ -63,7 +63,7 @@ if BUILD_LIBMPEG3_LIB
 $(x_libmpeg3):
 	echo "cd $(LMPEG3_DIR)"; \
 	cd $(LMPEG3_DIR); \
-	make
+	$(EXGMAKE)
 
 endif
 

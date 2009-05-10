@@ -1,3 +1,21 @@
+2009-05-10 Wolfgang Hofer <hof@gimp.org>
+
+configure and build issues to fix Mac specific bugs reported by David Evans.
+
+- applied patch from David Evans  for properly detection of  FAAD2. (provided at Bug #581807) 
+- use gmake via variable $EXGMAKE for build external libs if available. if gmake not available
+  $EXGMAKE points to make program. (shall fix #581805)
+
+- pass configue options 
+    --prefix=
+    --with-ff-extra-cflags
+    --with-ff-extra-ldflags
+  to ffmpeg configure. (shall fix #581809)
+
+  
+  * configure.in
+  * extern_libs/Makefile.am
+
 2009-04-28 Wolfgang Hofer <hof@gimp.org>
 
 - fixed Grab Path Points default settings bug #580416
