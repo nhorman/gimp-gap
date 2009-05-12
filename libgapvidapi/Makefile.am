@@ -12,9 +12,9 @@ INC_LIBGAPBASE = -I$(top_srcdir)/libgapbase
 
 INCLUDES = \
 	-I$(top_srcdir)	\
+	$(GAPVIDEOAPI_EXTINCS)	\
 	$(GLIB_CFLAGS)	\
 	$(GIMP_CFLAGS)	\
-	$(GAPVIDEOAPI_EXTINCS)	\
 	$(INC_LIBGAPBASE)	\
 	-I$(includedir)
 

@@ -76,9 +76,8 @@ AC_MSG_RESULT([$target_or_host])
 
 dnl check if gmake is available
 EXGMAKE=make
-type gmake
-rc_gmake_check=$?
-if test $rc_gmake_check = 0; then
+AC_CHECK_PROG(GMAKE_AVAILABLE, gmake, yes, no)
+if test $GMAKE_AVAILABLE = yes; then
   EXGMAKE=gmake
 fi
 AC_SUBST(EXGMAKE)
@@ -948,7 +947,7 @@ dnl Test for audiosupport
 dnl audiosupport currently is based on wavplay that is available on UNIX systems
 dnl (the wavplay client does not compile on Windows)
 dnl ------------------------
-AC_ARG_ENABLE(audiosupport,
+AC_ARG_ENABLE(audio_support,
               [  --disable-audio-support      don't build with audio support])
   if test "x$os_win32" = "xyes"; then
      enable_audio_support=no
@@ -972,7 +971,7 @@ AM_CONDITIONAL(GAP_AUDIO_SUPPORT, test "x$enable_audio_support" != "xno")
 
 dnl optional compile preview widget with GDK-pixbuf support
 dnl 
-AC_ARG_ENABLE(gdkpixbuf,
+AC_ARG_ENABLE(gdkpixbuf_pview,
               [  --enable-gdkpixbuf-pview     use GdkPixbuf thumbnail rendering (default=no)])
   if test "x$enable_gdkpixbuf_pview" = "xyes"; then
     AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1,

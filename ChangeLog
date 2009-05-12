@@ -1,3 +1,17 @@
+2009-05-12 Wolfgang Hofer <hof@gimp.org>
+
+- applied patch from David Evans #582241 to make sure to include
+  ffmpeg header files of the the local embedded copy of ffmpeg
+  even if another copy of ffmpeg is installed in system include paths.
+
+- fixed confusing configure warnings (reported in #582216)
+  unrecognized options: --disable-audio-support, --enable-gdkpixbuf-pview
+
+- use autool typical AC_CHECK_PROG to check gmake program 
+
+  * configure.in
+  * libgapvidapi/Makefile.am
+  
 2009-05-10 Wolfgang Hofer <hof@gimp.org>
 
 configure and build issues to fix Mac specific bugs reported by David Evans.
