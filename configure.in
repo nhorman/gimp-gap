@@ -210,11 +210,19 @@ AC_ARG_ENABLE(ff_libfaad,
           FF_LIBFAAD="-lfaad",
           faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
       faad_warn="faad library (libfaad) not found (not critical)")    
+
+    dnl additional check for faad1 library (that is also sufficient for building ffmpeg 0.5)
+
+    if test "x$FF_LIBFAAD" = "x"; then
+      AC_CHECK_LIB(faad, faacDecOpen,
+        [AC_CHECK_HEADER(faad.h,
+          FF_LIBFAAD="-lfaad",
+          faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
+        faad_warn="faad library (libfaad) not found (not critical)")    
+    fi
+
   fi
 dnl
-
-
-
 
 
 

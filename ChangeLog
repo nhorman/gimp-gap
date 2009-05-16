@@ -1,3 +1,10 @@
+2009-05-16 Wolfgang Hofer <hof@gimp.org>
+
+- configure now checks for detection of FAAD2 or FAAD library
+  that is also sufficient to build with ffmpeg 0.5
+
+  * configure.in
+
 2009-05-12 Wolfgang Hofer <hof@gimp.org>
 
 - applied patch from David Evans #582241 to make sure to include
