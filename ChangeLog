@@ -1,5 +1,21 @@
-2009-05-16 Wolfgang Hofer <hof@gimp.org>
+2009-05-17 Wolfgang Hofer <hof@gimp.org>
 
+- iconify storyboard dialog window when calling video encoder from storyboard menu
+  and deiconify when the encoder call returns.
+  
+  On my gnome windowmanager the encoder dialog always opened behind the storyboard dialog window
+  but the storyboard dialog is not refreshed due to the synchron call of the encoder plug-in.
+  the iconify /deiconify is a practicable workaround to avoid this annoying situation.
+
+- Master Video encoder moved from "Video/Encode" to "Video" Menu
+  menu name "Master Videoencoder..." now has ending ... to inidcate that ist opens a dialog.
+  note that the other old video encoders are not built by default
+  therefore the submenu is not required for normal gimp-gap users.
+
+  * gap/gap_story_dialog.c
+  * vid_common/gap_cme_main.c
+
+2009-05-16 Wolfgang Hofer <hof@gimp.org>
 - configure now checks for detection of FAAD2 or FAAD library
   that is also sufficient to build with ffmpeg 0.5
 

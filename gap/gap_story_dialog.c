@@ -1945,7 +1945,12 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   l_rc = -1;
   gap_story_get_master_size_respecting_aspect(stb, &vid_width, &vid_height);
 
-
+  gtk_window_iconify(sgpp->shell_window);
+  while (gtk_events_pending ())
+  {
+    gtk_main_iteration ();
+  }
+   
   dummy_layer_id = gap_image_get_any_layer(sgpp->image_id);
   /* generic call of GAP master video encoder plugin */
   l_params = gimp_run_procedure (GAP_PLUG_IN_MASTER_ENCODER,
@@ -1984,6 +1989,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
       break;
   }
   g_free(l_params);
+  gtk_window_deiconify(sgpp->shell_window);
 
 }  /* end p_call_master_encoder */
 

@@ -157,16 +157,15 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("Master Videoencoder"),
+                         N_("Master Videoencoder..."),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          nargs_qt_enc, nreturn_vals,
                          args_qt_enc, return_vals);
 
   //gimp_plugin_menu_branch_register("<Image>", "Video");
-  //gimp_plugin_menu_branch_register("<Image>/Video", "Encode");
-  
-  gimp_plugin_menu_register (GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER, N_("<Image>/Video/Encode/"));
+
+  gimp_plugin_menu_register (GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER, N_("<Image>/Video/"));
 
 }       /* end query */
 
