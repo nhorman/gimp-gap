@@ -1,3 +1,11 @@
+2009-05-19 Wolfgang Hofer <hof@gimp.org>
+
+- configure.in updated Version to 2.6.0.
+
+  * configure.in
+  * README
+  * NEWS
+
 2009-05-17 Wolfgang Hofer <hof@gimp.org>
 
 - iconify storyboard dialog window when calling video encoder from storyboard menu
