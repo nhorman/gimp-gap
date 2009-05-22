@@ -51,7 +51,7 @@ AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_FUNCS(bind_textdomain_codeset)
 
 
-PKG_CHECK_MODULES(GIMP, gimp-2.0 >= 2.6.0 gimpui-2.0 >= 2.4.0 gimpthumb-2.0)
+PKG_CHECK_MODULES(GIMP, gimp-2.0 >= 2.6.0 gimpui-2.0 >= 2.6.0 gimpthumb-2.0)
 
 GIMP_DATA_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimpdatadir`
 GIMP_PLUGIN_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimplibdir`
@@ -994,10 +994,9 @@ AM_CONDITIONAL(BUILD_LIBMPEG3_LIB, test "x$build_libmpeg3_lib_yesno" != "xno")
 
 GAPLIBDIR=${libdir}/$PACKAGE-$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION
 
-ALL_LINGUAS="ar az bg ca cs da de dz el en_CA en_GB es eu fi fr gl gu hi hr hu it ja ko lt ml mr nb ne nl nn oc pa pl pt pt_BR ru rw sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
 
 
-AC_PROG_INTLTOOL
+IT_PROG_INTLTOOL([0.35.0])
 AM_GLIB_GNU_GETTEXT
 
 LOCALEDIR='$(prefix)/$(DATADIRNAME)/locale'
