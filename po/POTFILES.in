@@ -2,6 +2,7 @@
 # marked to allow runtime translation of messages
 
 gap/gap_arr_dialog.c
+gap/gap_audio_extract.c
 gap/gap_audio_wav.c
 gap/gap_base_ops.c
 gap/gap_bluebox.c
@@ -23,6 +24,7 @@ gap/gap_mod_layer_dialog.c
 gap/gap_morph_dialog.c
 gap/gap_morph_exec.c
 gap/gap_morph_main.c
+gap/gap_morph_tween_dialog.c
 gap/gap_mov_dialog.c
 gap/gap_mov_exec.c
 gap/gap_mpege.c
@@ -56,6 +58,7 @@ gap/gap_wr_color_curve.c
 gap/gap_wr_color_huesat.c
 gap/gap_wr_color_levels.c
 gap/gap_wr_opacity.c
+gap/gap_wr_resynth.c
 gap/gap_wr_trans.c
 libgapvidapi/gap_vid_api_mpeg3.c
 libgapvidapi/gap_vid_api_vidindex.c
@@ -69,4 +72,5 @@ vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+vid_enc_rawframes/gap_enc_rawframes_main.c
 vid_enc_single/gap_enc_singleframes_main.c
