@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-29 22:28-0300\n"
-"PO-Revision-Date: 2009-05-30 23:30-0300\n"
+"PO-Revision-Date: 2009-05-31 01:28-0300\n"
 "Last-Translator: Joao S. O. Bueno <gwidion@mpc.com.br>\n"
 "Language-Team: Brazilian Portuguese <GNOME-l10n-br <Gnome-l10n-BR@listas.cipsga.org.br>>\n"
 "MIME-Version: 1.0\n"
@@ -163,12 +163,12 @@ msgstr "procurando posição do áudio..."
 
 #: ../gap/gap_audio_extract.c:439
 msgid "Extracting Audio..."
-msgstr "Extraindo áudio:..."
+msgstr "Extraindo áudio..."
 
 #: ../gap/gap_audio_wav.c:101
 #, c-format
 msgid "Problem while writing audiofile: %s"
-msgstr "Problema ao gravar arquivo de áudio: %s"
+msgstr "Problema ao gravar arquivo de áudio '%s'"
 
 #: ../gap/gap_audio_wav.c:613 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1584
 #, c-format
@@ -385,9 +385,9 @@ msgid ""
 "ON: Duplicate frames to get a target rate that is density * original_rate..\n"
 "OFF: Delete frames to get a target rate that is original_rate/density."
 msgstr ""
-"Ligado: Duplica os quadros de forma a atingir uma taxa que é a  densidade * "
+"Lig.: Duplica os quadros de forma a atingir uma taxa que é a  densidade * "
 "taxa original\n"
-"Desligado: Remove quadros para atingir uma taxa que é a taxa original/"
+"Desl.: Remove quadros para atingir uma taxa que é a taxa original/"
 "densidade"
 
 #: ../gap/gap_base_ops.c:1369
@@ -586,7 +586,7 @@ msgstr "Enevoar bordas:"
 
 #: ../gap/gap_bluebox.c:384
 msgid "ON: Feather edges using feather radius"
-msgstr "Ligado: Enevoa as bordas utilizando o raio para Enevoar"
+msgstr "Lig.: Enevoa as bordas utilizando o raio para Enevoar"
 
 #: ../gap/gap_bluebox.c:394
 msgid "Feather Radius:"
@@ -620,7 +620,7 @@ msgstr "Visualização automática:"
 
 #: ../gap/gap_bluebox.c:438
 msgid "ON: Keep preview image up to date"
-msgstr "Ligado: Mantém a imagem de pré-visualização sempre atualizada"
+msgstr "Lig.: Mantém a imagem de pré-visualização sempre atualizada"
 
 #. button
 #. the preview frame
@@ -806,7 +806,7 @@ msgstr "Camada mestra"
 
 #: ../gap/gap_bluebox_main.c:180
 msgid "Bluebox ..."
-msgstr "Caixa azul ..."
+msgstr "Caixa azul..."
 
 #. gimp_plugin_menu_branch_register("<Image>", "Video");
 #. Menu names
@@ -968,18 +968,18 @@ msgstr "Faixa de vídeo:"
 
 #: ../gap/gap_decode_mplayer.c:468
 msgid "Number of videotrack to extract. (0 == ignore video)"
-msgstr "Número da faixa de vídeo a extrair. (0 == ignorar vídeo)"
+msgstr "Número da faixa de vídeo a extrair. (0 = ignorar vídeo)"
 
 #. Sample Offset
 #. the audiotrack to label
 #: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6648
 #: ../gap/gap_vex_dialog.c:2276
 msgid "Audiotrack:"
-msgstr "Faixa de áudio::"
+msgstr "Faixa de áudio:"
 
 #: ../gap/gap_decode_mplayer.c:480
 msgid "Number of audiotrack to extract. (0 == ignore audio)"
-msgstr "Número da faixa (trilha) de áudio a extrair. (0 == ignorar áudio)"
+msgstr "Número da faixa (trilha) de áudio a extrair. (0 = ignorar áudio)"
 
 #: ../gap/gap_decode_mplayer.c:492
 msgid "Output Audio:"
@@ -1032,19 +1032,19 @@ msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:532 ../gap/gap_decode_xanim.c:294
 msgid "Jpeg Quality:"
-msgstr "Qualidade de jpeg:"
+msgstr "Qualidade de JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:533
 msgid ""
 "Quality for resulting jpeg frames where 100 is best quality (ignored when "
 "other formats are used)"
 msgstr ""
-"Qualidade para quadros Jpeg exportados, onde 100 é a qualidade máxima (Evite "
+"Qualidade para quadros JPEG exportados, onde 100 é a qualidade máxima (Evite "
 "usar > 95. Opção ignorada quando se usam outros formatos)"
 
 #: ../gap/gap_decode_mplayer.c:543
 msgid "Jpeg Optimize:"
-msgstr "Otimização do jpeg:"
+msgstr "Otimização do JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:544
 msgid "optimization factor(is ignored when other formats are used)"
@@ -1052,7 +1052,7 @@ msgstr "Fator de otimização  (ignorado quando se usam outros formatos)"
 
 #: ../gap/gap_decode_mplayer.c:554
 msgid "Jpeg Smooth:"
-msgstr "Suavização do jpeg:"
+msgstr "Suavização do JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:555
 msgid "Smooth factor(is ignored when other formats are used)"
@@ -1060,7 +1060,7 @@ msgstr "Fator de suavização (ignorado quando se usam outros formatos)"
 
 #: ../gap/gap_decode_mplayer.c:565
 msgid "Jpeg Progressive:"
-msgstr "Jpeg progressivo:"
+msgstr "JPEG progressivo:"
 
 #: ../gap/gap_decode_mplayer.c:566
 msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
@@ -1073,7 +1073,7 @@ msgstr "JPEG básico:"
 #: ../gap/gap_decode_mplayer.c:573
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
 msgstr ""
-"Habilita codificação básica (baseline) de jpeg (ignorado quando se usam "
+"Habilita codificação básica (baseline) de JPEG (ignorado quando se usam "
 "outros  formatos)"
 
 #: ../gap/gap_decode_mplayer.c:584
@@ -1142,7 +1142,7 @@ msgstr "Tempo de início ilegal: %s"
 #: ../gap/gap_decode_mplayer.c:692 ../gap/gap_decode_xanim.c:365
 #: ../gap/gap_range_ops.c:1460 ../gap/gap_split.c:101
 msgid "Overwrite Frame"
-msgstr "Sobre-Escrever quadro"
+msgstr "Sobrescrever quadro"
 
 #: ../gap/gap_decode_mplayer.c:694 ../gap/gap_decode_xanim.c:367
 #: ../gap/gap_range_ops.c:1462 ../gap/gap_split.c:103
@@ -1506,7 +1506,7 @@ msgstr "Aplicar com variação"
 
 #: ../gap/gap_filter_main.c:136
 msgid "Filter all Layers..."
-msgstr "Filtrar  todas as camadas..."
+msgstr "Filtrar todas as camadas..."
 
 #. ------------------ ALTernative Iterators ------------------------------
 #: ../gap/gap_filter_main.c:158 ../gap/gap_fmac_main.c:216
@@ -2678,8 +2678,8 @@ msgid ""
 "ON: Descending deform action from workpoint (full) to radius (zero). Descend "
 "by power of intensity.OFF: Linear deform action inside the radius"
 msgstr ""
-"Ligado: Intensidade da deformação do Ponto de Trabalho (força total) até o "
-"Raio (zero)  é uma curva com a Intensidade como expoente. Desligado: A ação "
+"Lig.: Intensidade da deformação do Ponto de Trabalho (força total) até o "
+"Raio (zero)  é uma curva com a Intensidade como expoente. Desl.: A ação "
 "de deformação é linear."
 
 #. the use_quality_wp_selection checkbutton
@@ -2692,8 +2692,8 @@ msgid ""
 "ON: Use quality workpoint selection algorithm.OFF: Use fast workpoint "
 "selection algorithm."
 msgstr ""
-"Ligado: Use o algoritmo de seleção de Ponto de Trabalho de maior qualidade. "
-"Desligado: Use o algoritmo mais rápido"
+"Lig.: Use o algoritmo de seleção de Ponto de Trabalho de maior qualidade. "
+"Desl.: Use o algoritmo mais rápido"
 
 #: ../gap/gap_morph_dialog.c:3762
 msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
@@ -2751,8 +2751,8 @@ msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
 msgstr ""
-"Ligado: Cria número especificado de camadas intermediárias. Desligado: Opera "
-"nas camadas existentes, abaixo da camada de destino."
+"Lig.: Cria número especificado de camadas intermediárias. "
+"Desl.: Opera nas camadas existentes, abaixo da camada de destino."
 
 #. the multiple pointsets checkbutton
 #: ../gap/gap_morph_dialog.c:3881
@@ -2767,12 +2767,12 @@ msgid ""
 "first and last pointset\n"
 "OFF: use current set of workpoints"
 msgstr ""
-"Ligado: Usa 2 ou mais conjuntos de pontos lidos de arquivos. É necessário "
+"Lig.: Usa 2 ou mais conjuntos de pontos lidos de arquivos. É necessário "
 "criar e salvar os conjuntos de pontos primeiro, usando nomes de arquivo com "
 "um padrão de  2 digitos antecedendo a extensão (Ex. points_01.txt, points_02."
 "txt, points_03.txt). Então abra, e abra com \"SHIFT\" o primeiro e o último "
 "conjunto de pontos. \n"
-"Desligado: Usar conjunto de pontos atual"
+"Desl.: Usa conjunto de pontos atual"
 
 #. the lower workpoint label
 #: ../gap/gap_morph_dialog.c:3918
@@ -3208,7 +3208,7 @@ msgstr "Modo de passo:"
 #. table col, row
 #: ../gap/gap_mov_dialog.c:2849
 msgid "SpeedFactor:"
-msgstr "Fator de velocidade"
+msgstr "Fator de velocidade:"
 
 #. label text
 #. scalesize spinsize
@@ -3459,7 +3459,8 @@ msgid ""
 msgstr ""
 "Remove todos os pontos de controle e os substitui com uma cópia de todos os "
 "pontos de âncora do vetor corrente da imagem de onde 'Mover ao Longo de "
-"Caminho'  foi invocado."
+"Caminho'  foi invocado. Segure SHIFT apertado para criar pontos de controle para "
+"cada quadro tratado, ao longo do caminho Bezier."
 
 #: ../gap/gap_mov_dialog.c:3216
 msgid "Insert controlpoint. The current controlpoint is duplicated."
@@ -3522,7 +3523,7 @@ msgstr "Excluir todos os pontos de controle"
 
 #: ../gap/gap_mov_dialog.c:3365
 msgid "Load controlpoints from file"
-msgstr "Carrega Pontos de controle de arquivo."
+msgstr "Carregar pontos de controle de arquivo."
 
 #: ../gap/gap_mov_dialog.c:3378
 msgid "Save controlpoints to file"
@@ -3614,7 +3615,7 @@ msgstr "Largura:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3610
 msgid "Scale source layer's width in percent"
-msgstr "Quanto Redimensionar a largura da camada de origem, em porcentagem"
+msgstr "Quanto redimensionar a largura da camada de origem, em porcentagem"
 
 #. Height Scale
 #. table col, row
@@ -3634,7 +3635,7 @@ msgstr "Altura:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3628
 msgid "Scale source layer's height in percent"
-msgstr "Quanto Redimensionar a altura da camada de origem, em porcentagem"
+msgstr "Quanto redimensionar a altura da camada de origem, em porcentagem"
 
 #: ../gap/gap_mov_dialog.c:3645 ../gap/gap_resi_dialog.c:812
 msgid "Constrain aspect ratio"
@@ -3732,7 +3733,7 @@ msgstr "x2:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3772
 msgid "Transformfactor for upper right corner X coordinate"
-msgstr "Fator de Transformação para a coordenada X do canto superior direito"
+msgstr "Fator de transformação para a coordenada X do canto superior direito"
 
 #. ttry transformfactor
 #. table col, row
@@ -3750,7 +3751,7 @@ msgstr "y2:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3790
 msgid "Transformfactor for upper right corner Y coordinate"
-msgstr "Fator de Transformação para a coordenada Y do canto superior esquerdo"
+msgstr "Fator de transformação para a coordenada Y do canto superior esquerdo"
 
 #. tblx transformfactor
 #. table col, row
@@ -3768,7 +3769,7 @@ msgstr "x3:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3808
 msgid "Transformfactor for lower left corner X coordinate"
-msgstr "Fator de Transformação para a coordenada X do canto inferior esquerdo"
+msgstr "Fator de transformação para a coordenada X do canto inferior esquerdo"
 
 #. tbly transformfactor
 #. table col, row
@@ -3786,7 +3787,7 @@ msgstr "y3:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3826
 msgid "Transformfactor for lower left corner Y coordinate"
-msgstr "Fator de Transformação para a coordenada Y do canto inferior esquerdo"
+msgstr "Fator de transformação para a coordenada Y do canto inferior esquerdo"
 
 #. tbrx transformfactor
 #. table col, row
@@ -3804,7 +3805,7 @@ msgstr "x4"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3844
 msgid "Transformfactor for lower right corner X coordinate"
-msgstr "Fator de Transformação para a coordenada X do canto inferior direito"
+msgstr "Fator de transformação para a coordenada X do canto inferior direito"
 
 #. tbry transformfactor
 #. table col, row
@@ -3822,7 +3823,7 @@ msgstr "y4:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3862
 msgid "Transformfactor for lower right corner Y coordinate"
-msgstr "Fator de Transformação para a coordenada Y do canto inferior direito"
+msgstr "Fator de transformação para a coordenada Y do canto inferior direito"
 
 #. Selection combo
 #: ../gap/gap_mov_dialog.c:3901
@@ -4110,8 +4111,8 @@ msgid ""
 "or 'Split Image to Frames' from the video menu)"
 msgstr ""
 "Você precisa de uma série de imagens simples em disco (quadros de vídeo),\n"
-"todas no formato JPEG  (ou YUV ou PNM ou PPM)  (use a opção 'Converter "
-"Quadros'\n"
+"todas no formato JPEG  (ou YUV ou PNM ou PPM)\n"
+"(use a opção 'Converter Quadros'\n"
 "ou a opção 'Dividir a Imagem em Quadros' do menu de vídeo)"
 
 #: ../gap/gap_mpege.c:204
@@ -4193,7 +4194,7 @@ msgstr "Arquivo de parâmetros:"
 #: ../gap/gap_mpege.c:358
 msgid "Name of the encoder-parameterfile (to be generated)"
 msgstr ""
-"Nome do arquivo de parâmetros para  o codificador\n"
+"Nome do arquivo de parâmetros para  o codificador"
 "(será criado)"
 
 #: ../gap/gap_mpege.c:364
@@ -4204,7 +4205,7 @@ msgstr "Script de início:"
 #: ../gap/gap_mpege.c:366
 msgid "Name of the startscript (to be generated/executed)"
 msgstr ""
-"Nome do Script de Início\n"
+"Nome do script de início"
 "(será criado/executado)"
 
 #: ../gap/gap_mpege.c:382
@@ -4408,8 +4409,8 @@ msgid ""
 "ON: Create a new layer.\n"
 "OFF: Render on active drawable."
 msgstr ""
-"Ligado: Cria uma nova camada.\n"
-"Desligado: Renderiza no desenhável ativo."
+"Lig.: Cria uma nova camada.\n"
+"Desl.: Renderiza no desenhável ativo."
 
 #: ../gap/gap_name2layer_main.c:518
 msgid "Render Filename to Layer"
@@ -4668,8 +4669,8 @@ msgid ""
 "ON: Far neighbour frames have the higher opacity.\n"
 "OFF: Near neighbour frames have the higher opacity."
 msgstr ""
-"Ligado: Quadros que são vizinhos distantes tem opacidade mais alta.\n"
-"Desligado:  Quadros que são vizinhos próximos tem opacidade mais alta."
+"Lig. Quadros que são vizinhos distantes tem opacidade mais alta.\n"
+"Desl.:  Quadros que são vizinhos próximos tem opacidade mais alta."
 
 #: ../gap/gap_onion_dialog.c:1057
 msgid "Frame Reference:"
@@ -4690,7 +4691,7 @@ msgstr "Cíclica"
 
 #: ../gap/gap_onion_dialog.c:1089
 msgid "ON: Next frame of last is first and vice versa."
-msgstr "Ligado: O quadro seguinte ao último é o primeiro"
+msgstr "Lig.: O quadro seguinte ao último é o primeiro"
 
 #: ../gap/gap_onion_dialog.c:1094
 msgid "Stackposition:"
@@ -4709,8 +4710,8 @@ msgid ""
 "ON: 0 is top of stack (in front).\n"
 "OFF: 0 is bottom of stack (in background)."
 msgstr ""
-"Ligado: 0 é o topo da pilha (por cima da imagem).\n"
-"Desligado: 0 é o fundo da pilha (por baixo da imagem)."
+"Lig.: 0 é o topo da pilha (por cima da imagem).\n"
+"Desl.: 0 é o fundo da pilha (por baixo da imagem)."
 
 #: ../gap/gap_onion_dialog.c:1152
 msgid "Opacity of first onionskin layer (0 is transparent, 100 full opaque)"
@@ -4766,8 +4767,8 @@ msgid ""
 "ON: Case sensitive pattern.\n"
 "OFF: Ignore case."
 msgstr ""
-"Ligado: Padrão sensível a caixa alta/baixa.\n"
-"Desligado: Ignorar caixa"
+"Lig.: Padrão sensível a caixa alta/baixa.\n"
+"Desl.: Ignorar caixa"
 
 #: ../gap/gap_onion_dialog.c:1269
 msgid "Invert Selection"
@@ -4778,8 +4779,8 @@ msgid ""
 "ON: Select non-matching layers.\n"
 "OFF: Select matching layers"
 msgstr ""
-"Ligado: Selecionar camadas que não correspondam ao padrão.\n"
-"Desligado: Selecionar camadas de acordo com o padrão"
+"Lig.: Selecionar camadas que não correspondam ao padrão.\n"
+"Desl.: Selecionar camadas de acordo com o padrão"
 
 #: ../gap/gap_onion_dialog.c:1277
 msgid "Select Pattern:"
@@ -4808,7 +4809,7 @@ msgid ""
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
 msgstr ""
-"Ligado: Criação/atualização automática das camadas casca de cebola. Funciona "
+"Lig.: Criação/atualização automática das camadas casca de cebola. Funciona "
 "em mudanças de quadro via Navegador de Vídeo e em operações \"Ir Para\" do "
 "menu de vídeo -- mas não ao abrir um quadro explicitamente pelo menu de "
 "arquivo."
@@ -4824,7 +4825,7 @@ msgid ""
 "save from the file menu. Use this option if you dont want onionskin layers "
 "to appear in thumbnail files."
 msgstr ""
-"Ligado: Remoção automática das camadas casca de cebola. Funciona em mudanças "
+"Lig.: Remoção automática das camadas casca de cebola. Funciona em mudanças "
 "de quadro via Navegador de Vídeo e em operações \"Ir Para\" do menu de vídeo "
 "-- mas não ao salvar um quadro explicitamente pelo menu de arquivo. Use esta "
 "opção se não desejar que as camadas de casca de cebola apareçam nos arquivos "
@@ -4917,8 +4918,8 @@ msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
 msgstr ""
-"Ligado: Recria a amostragem da cópia na taxa especificada.\n"
-"OFF: Usa a taxa de amostragem original"
+"Lig.: Recria a amostragem da cópia na taxa especificada.\n"
+"Desl.: Usa a taxa de amostragem original"
 
 #. Audio Samplerate
 #. the Samplerate label
@@ -4935,7 +4936,7 @@ msgstr ""
 
 #: ../gap/gap_player_dialog.c:476
 msgid "Copy Audiofile as Wavefile"
-msgstr "Copia arquivo de Áudio: como arquivo de Onda"
+msgstr "Copia arquivo de Áudio como arquivo de Onda"
 
 #: ../gap/gap_player_dialog.c:477 ../gap/gap_story_dialog.c:5139
 #: ../gap/gap_story_dialog.c:8543 ../gap/gap_story_dialog.c:8969
@@ -4995,7 +4996,7 @@ msgid ""
 "does not point to an executable program\n"
 "the current value is: %s\n"
 msgstr ""
-"ALERTA: A variável de ambiente %s\n"
+"AVISO: A variável de ambiente %s\n"
 "não aponta para um programa executável\n"
 "o valor atual é: %s\n"
 
@@ -5163,7 +5164,7 @@ msgstr "Selecione arquivo de áudio:"
 #: ../gap/gap_player_dialog.c:6506 ../gap/gap_vex_dialog.c:2685
 #: ../vid_common/gap_cme_gui.c:3287
 msgid "Audiofile:"
-msgstr "Arquivo de áudio::"
+msgstr "Arquivo de áudio:"
 
 #: ../gap/gap_player_dialog.c:6518
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
@@ -5192,8 +5193,8 @@ msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
 msgstr ""
-"Ligado: Botão \"Reproduzir\" reproduz vídeo e áudio.\n"
-"Desligado: Reproduz o vídeo em silêncio"
+"Lig.: Botão \"Reproduzir\" reproduz vídeo e áudio.\n"
+"Desl.: Reproduz o vídeo em silêncio"
 
 #. Sample Offset
 #: ../gap/gap_player_dialog.c:6592
@@ -5266,12 +5267,12 @@ msgstr "Deslocamento de tempo:"
 #. the audio timing information labels
 #: ../gap/gap_player_dialog.c:6752 ../vid_common/gap_cme_gui.c:3520
 msgid "Audiotime:"
-msgstr "Tempo de áudio::"
+msgstr "Tempo de áudio:"
 
 #. Length (frames)
 #: ../gap/gap_player_dialog.c:6767
 msgid "Audioframes:"
-msgstr "Quadros de áudio::"
+msgstr "Quadros de áudio:"
 
 #. Audiolength (Samples)
 #: ../gap/gap_player_dialog.c:6782
@@ -5327,8 +5328,8 @@ msgid ""
 "ON: Show the go button array positioning tool.\n"
 "OFF: Hide the go button array."
 msgstr ""
-"Ligado: Exibe a ferramenta de posicionamento de botões \n"
-"Desligado: Esconde a lista de botões"
+"Lig.: Exibe a ferramenta de posicionamento de botões \n"
+"Desl.: Esconde a lista de botões"
 
 #. Show Position Scale (configure to show/hide this optional positioning tool)
 #: ../gap/gap_player_dialog.c:7152
@@ -5339,7 +5340,9 @@ msgstr "Exibir barra de posição"
 msgid ""
 "ON: Show the position scale.\n"
 "OFF: Hide the position scale."
-msgstr "Ligado: Exibe a barra de posição Desligado: Esconde a  barra de posição"
+msgstr ""
+"Lig.: Exibe a barra de posição\n"
+"Desl.: Esconde a  barra de posição"
 
 #. Save Player Preferences label
 #: ../gap/gap_player_dialog.c:7171
@@ -5456,8 +5459,8 @@ msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr ""
-"Ligado: Reproduz os índices repetindo sem parar.\n"
-"Desligado: Reproduz os vídeos somente uma vez"
+"Lig.: Reproduz os índices repetindo sem parar.\n"
+"Desl.: Reproduz os vídeos somente uma vez"
 
 #. SelOnly Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:7888
@@ -5469,8 +5472,8 @@ msgid ""
 "ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
 msgstr ""
-"Ligado: Reproduz apenas quadros da faixa selecionada.\n"
-"Desligado: Reproduz todos os quadros"
+"Lig.: Reproduz apenas quadros da faixa selecionada.\n"
+"Desl.: Reproduz todos os quadros"
 
 #. PingPong Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:7907
@@ -5479,7 +5482,7 @@ msgstr "Pingue-pongue"
 
 #: ../gap/gap_player_dialog.c:7913
 msgid "ON: Play alternating forward/backward"
-msgstr "Ligado: Reproduz vídeo alternando normal e para trás."
+msgstr "Lig.: Reproduz vídeo alternando normal e para trás."
 
 #. UseThumbnails Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:7926
@@ -5491,8 +5494,8 @@ msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
 msgstr ""
-"Ligado: Usar miniaturas quando disponíveis.\n"
-"Desligado: Ler os quadros completos."
+"Lig.: Usar miniaturas quando disponíveis.\n"
+"Desl.: Ler os quadros completos."
 
 #. ExactTiming Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:7947
@@ -5504,8 +5507,8 @@ msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
 msgstr ""
-"Ligado: Pular quadros para manter o tempo correto.\n"
-"Desligado: Sempre passa todos os quadros."
+"Lig.: Pular quadros para manter o tempo correto.\n"
+"Desl.: Sempre passa todos os quadros."
 
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
 #: ../gap/gap_player_dialog.c:8011
@@ -6100,8 +6103,8 @@ msgid ""
 "ON: Start with frame 000001 at top layer.\n"
 "OFF: Start with frame 000001 at background layer."
 msgstr ""
-"Ligado: A Camada do topo é o quadro 000001.\n"
-"Desligado: A camada de fundo é o quadro 000001."
+"Lig.: A Camada do topo é o quadro 000001.\n"
+"Desl.: A camada de fundo é o quadro 000001."
 
 #: ../gap/gap_split.c:470
 msgid ""
@@ -6109,9 +6112,9 @@ msgid ""
 "with the background color.\n"
 "OFF: Layers in the resulting frames keep their alpha channel."
 msgstr ""
-"Ligado: Remove o canal alfa dos quadros resultantes. Partes transparentes "
+"Lig.: Remove o canal alfa dos quadros resultantes. Partes transparentes "
 "são preenchidas com a cor de fundo.\n"
-"Desligado: Camadas nos quadros resultantes mantém seu canal alfa."
+"Desl.: Camadas nos quadros resultantes mantém seu canal alfa."
 
 #: ../gap/gap_split.c:477
 msgid "Only Visible:"
@@ -6122,8 +6125,8 @@ msgid ""
 "ON: Handle only visible layers.\n"
 "OFF: handle all layers and force visibiblity"
 msgstr ""
-"Ligado: Apenas as camadas visíveis se tornam quadros.\n"
-"Desligado: Todas as camadas se tornam quadros,  e força visibilidade"
+"Lig.: Apenas as camadas visíveis se tornam quadros.\n"
+"Desl.: Todas as camadas se tornam quadros,  e força visibilidade"
 
 #: ../gap/gap_split.c:485
 msgid "Copy properties:"
@@ -6135,8 +6138,8 @@ msgid ""
 "images.\n"
 "OFF: copy only layers without image properties to frame images"
 msgstr ""
-"Ligado: Copia todas as propriedades de imagem (canais, vetores, guias) para todos os quadros.\n"
-"Desligado: copia apenas as camadas para os quadros"
+"Lig.: Copia todas as propriedades de imagem (canais, vetores, guias) para todos os quadros.\n"
+"Desl.: copia apenas as camadas para os quadros"
 
 #: ../gap/gap_split.c:495
 msgid "How many digits to use for the framenumber filename part"
@@ -6282,8 +6285,8 @@ msgid ""
 "ON: keep proportions at scaling.  (this may result in black borders)OFF: "
 "allow changes of image proportions at scaling"
 msgstr ""
-"Ligado: mantém proporções ao redimensionar (isso pode resultar em bordas "
-"pretas) Desligado: Permite mudanças nas proporções das imagens ao "
+"Lig.: mantém proporções ao redimensionar (isso pode resultar em bordas "
+"pretas) Desl.: Permite mudanças nas proporções das imagens ao "
 "redimensionar"
 
 #. the overlap label (same row as FitSize)
@@ -6303,7 +6306,7 @@ msgstr "Número de quadros de sobreposição nesta trilha"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2740
 msgid "ON: Enable opacity settings"
-msgstr "Ligado: Habilita configurações de opacidade"
+msgstr "Lig.: Habilita configurações de opacidade"
 
 #: ../gap/gap_story_att_trans_dlg.c:2742
 msgid ""
@@ -6339,7 +6342,7 @@ msgstr "Movimento X:"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2766
 msgid "ON: Enable move horizontal settings"
-msgstr "Ligado: Habilita  configurações de movimento horizontal"
+msgstr "Lig.: Habilita  configurações de movimento horizontal"
 
 #: ../gap/gap_story_att_trans_dlg.c:2768
 msgid ""
@@ -6371,7 +6374,7 @@ msgstr "Movimento Y: "
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2793
 msgid "ON: Enable move vertical settings"
-msgstr "Ligado: Habilita  configurações de movimento  vertical"
+msgstr "Lig.: Habilita  configurações de movimento  vertical"
 
 #: ../gap/gap_story_att_trans_dlg.c:2795
 msgid ""
@@ -6403,7 +6406,7 @@ msgstr "Redimensionar largura:"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2819
 msgid "ON: Enable scale width settings"
-msgstr "Ligado: habilita as configurações de redimensionamento de largura"
+msgstr "Lig.: habilita as configurações de redimensionamento de largura"
 
 #: ../gap/gap_story_att_trans_dlg.c:2821
 msgid ""
@@ -6433,7 +6436,7 @@ msgstr "Redimensionar altura:"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2845
 msgid "ON: Enable scale height settings"
-msgstr "Ligado: habilita as configurações de redimensionamento de altura"
+msgstr "Lig.: habilita as configurações de redimensionamento de altura"
 
 #: ../gap/gap_story_att_trans_dlg.c:2847
 msgid ""
@@ -6571,7 +6574,7 @@ msgstr "Forçar proporção:"
 msgid ""
 "ON: player shows clips transformed to aspect setting from the Storyboard "
 "properties.OFF: player shows clips according to their original pixel sizes"
-msgstr "Ligado: o reprodutor mostra os clips transformados para a configuração de proporção das propriedades do Storyboard. Desligado: o reprodutor exibe os clips em seu formato original"
+msgstr "Lig.: o reprodutor mostra os clips transformados para a configuração de proporção das propriedades do Storyboard. Desl.: o reprodutor exibe os clips em seu formato original"
 
 #: ../gap/gap_story_dialog.c:5136
 msgid "Use the standard built in layout settings"
@@ -6843,7 +6846,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:8523
 msgid "Replace Audiotrack:"
-msgstr "Substituir faixa de áudio::"
+msgstr "Substituir faixa de áudio:"
 
 #: ../gap/gap_story_dialog.c:8524
 msgid ""
@@ -6934,8 +6937,8 @@ msgstr "Trilha 1 no topo:"
 #: ../gap/gap_story_dialog.c:8806
 msgid "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
-"Ligado: Trilha de vídeo 1 é o topo da pilha (por cima da imagem). "
-"Desligado: Trilha 1 é o fundo da pilha (por baixo da imagem)."
+"Lig.: Trilha de vídeo 1 é o topo da pilha (por cima da imagem). "
+"Desl.: Trilha 1 é o fundo da pilha (por baixo da imagem)."
 
 #. the qdiff label
 #: ../gap/gap_story_dialog.c:8844 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1533
@@ -7056,13 +7059,13 @@ msgstr ""
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr ""
-"palavra chave ilegal: %s (palavras chave esperadas são:  width, height, "
-"both, none"
+"palavra chave ilegal: %s (as palavras chave esperadas são:  width, height, "
+"both, none)"
 
 #: ../gap/gap_story_file.c:3492
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: keep, change"
-msgstr "palavra chave ilegal: %s (palavras chave esperadas são:  keep, change"
+msgstr "palavra chave ilegal: %s (as palavras chave esperadas são:  keep, change)"
 
 #. unsupported lines raise an error for files without correct Header
 #.
@@ -7420,7 +7423,7 @@ msgstr "ativar"
 
 #: ../gap/gap_story_properties.c:4388
 msgid "ON: Enable layer mask"
-msgstr "Ligado: Aplica máscara de camada"
+msgstr "Lig.: Aplica máscara de camada"
 
 #. the Mask Anchor Mode label
 #: ../gap/gap_story_properties.c:4425
@@ -7794,7 +7797,7 @@ msgid ""
 "ON: emulate seek operations by sequential reads, even when videoindex is "
 "available"
 msgstr ""
-"Ligado: Emula operações de busca por leitura seqüencial, mesmo quando um "
+"Lig.: Emula operações de busca por leitura seqüencial, mesmo quando um "
 "índice de vídeo estiver disponível"
 
 #. the Aspect Ratio Label(s)
@@ -7818,9 +7821,9 @@ msgid ""
 "On: extracted frames are stored in one multilayer image\n"
 "Off: extracted frames are written to frame files on disc"
 msgstr ""
-"Ligado: os quadros extraídos ficam todos em uma única imagem com várias "
+"Lig.: os quadros extraídos ficam todos em uma única imagem com várias "
 "camadas\n"
-"Desligado: os quadros extraídos ficam cada um em um arquivo de imagem no "
+"Desl.: os quadros extraídos ficam cada um em um arquivo de imagem no "
 "disco."
 
 #: ../gap/gap_vex_dialog.c:2477
@@ -8980,7 +8983,7 @@ msgstr "Configuração do programa externo de ferramenta de áudio"
 #. the audiotool (sox) label
 #: ../vid_common/gap_cme_gui.c:3146
 msgid "Audiotool:"
-msgstr "Ferramenta de áudio::"
+msgstr "Ferramenta de áudio:"
 
 #: ../vid_common/gap_cme_gui.c:3160
 msgid "name of audiotool (something like sox with or without path)"
@@ -9540,7 +9543,7 @@ msgstr "Quantização máxima:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1063
 msgid "upper limit for quantize Range 1 == BEST Quality"
-msgstr "limite superior para a Faixa de quantização 1 == MELHOR Qualidade"
+msgstr "limite superior para a Faixa de quantização 1 = MELHOR Qualidade"
 
 #. the xvid min_quantizer label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1069
@@ -9549,7 +9552,7 @@ msgstr "Quantização mínima:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1093
 msgid "lower limit for quantize Range 1 == BEST Quality"
-msgstr "limite inferior para a Faixa de quantização 1 == MELHOR Qualidade"
+msgstr "limite inferior para a Faixa de quantização 1 = MELHOR Qualidade"
 
 #. the xvid max_key_interval label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1100
@@ -9563,12 +9566,12 @@ msgstr "distância máxima entre quadros-chave (I-frames)"
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1154
 msgid "XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)"
 msgstr ""
-"Parâmetros pré-definidos do Codec de XVID onde 0 == baixa qualidade (rápido) "
-"6 == melhor (lento)"
+"Parâmetros pré-definidos do Codec de XVID onde 0 = baixa qualidade (rápido) "
+"6 = melhor (lento)"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:206
 msgid "avi video encoding for anim frames. Menu: @AVI@"
-msgstr "codificação de vídeo avi para quadros de animação. Menu: @AVI@"
+msgstr "codificação de vídeo avi para quadros de animação."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:207
 msgid ""
@@ -9726,7 +9729,7 @@ msgstr "O codec de áudio"
 #. the audio bitrate label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1248
 msgid "Audio Bitrate:"
-msgstr "Taxa de bits de áudio::"
+msgstr "Taxa de bits de áudio:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1264
 msgid "Audio bitrate in kBit/sec"
@@ -10277,7 +10280,7 @@ msgstr "Habilita inter vic Alternativo (AIV) (somente CODEC h263+)"
 #. the interlace dct checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2309
 msgid "Interlace DCT"
-msgstr "Entrelaçamento DCT:"
+msgstr "Entrelaçamento DCT"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2315
 msgid "Use interlaced dct"
@@ -10594,7 +10597,7 @@ msgstr "qcomp:"
 msgid ""
 "Video quantiser scale compression (VBR) amount of qscale change between easy "
 "& hard scenes (0.0-1.0)"
-msgstr "Compressão do quantizador de vídeo (VBR). Quantidade de altreação da \"qscale\" entre cenas fáceis e difíceis (0.0-1.0)"
+msgstr "Compressão do quantizador de vídeo (VBR). Quantidade de alteração da \"qscale\" entre cenas fáceis e difíceis (0.0-1.0)"
 
 #. the rc-init-cplx label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2960
