@@ -68,9 +68,9 @@ $(x_libmpeg3):
 endif
 
 install-data-hook:
-	rm -f $(GAPLIBDIR)/libavformat.a \
-	rm -f $(GAPLIBDIR)/libavcodec.a \
-	rm -f $(GAPLIBDIR)/libmpeg3.a
+	rm -f $(DESTDIR)$(GAPLIBDIR)/libavformat.a \
+	rm -f $(DESTDIR)$(GAPLIBDIR)/libavcodec.a \
+	rm -f $(DESTDIR)$(GAPLIBDIR)/libmpeg3.a
 
 EXTRA_DIST = \
 	README_extern_libs		\

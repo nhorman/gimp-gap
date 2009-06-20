@@ -33,7 +33,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
 
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -41,6 +43,7 @@
 #include "libgimp/gimp.h"
 
 
+#include "gap_image.h"
 #include "gap_libgapbase.h"
 #include "gap_gve_misc_util.h"
 

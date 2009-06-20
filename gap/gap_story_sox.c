@@ -21,6 +21,8 @@
 
 #include <config.h>
 
+#include <stdlib.h>
+
 #include <glib/gstdio.h>
 
 #include "gap_story_sox.h"

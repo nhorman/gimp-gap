@@ -76,9 +76,11 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "imgconvert.h"
 
 #include "gap-intl.h"
 
+#include "gap_file_util.h"
 #include "gap_libgapvidutil.h"
 #include "gap_libgimpgap.h"
 #include "gap_enc_ffmpeg_main.h"

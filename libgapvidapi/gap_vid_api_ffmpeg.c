@@ -29,8 +29,9 @@
 #include "avformat.h"
 #include "stdlib.h"
 #include "gap_val_file.h"
+#include "gap_base.h"
 #include "audioconvert.h"
-
+#include "imgconvert.h"
 
 #define READSTEPS_PROBE_TIMECODE 32
 

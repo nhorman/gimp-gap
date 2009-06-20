@@ -227,9 +227,15 @@ GVA_md5_string(char *name, const char *uri)
   {
     guchar       digest[16];
     guchar       n;
-    gint         i;
-    
-    gimp_md5_get_digest (uri, -1, digest);
+    GChecksum *checksum;
+    gsize      len;
+    gsize      i;
+
+    len = sizeof (digest);
+    checksum = g_checksum_new (G_CHECKSUM_MD5);
+    g_checksum_update (checksum, (const guchar *) uri, -1);
+    g_checksum_get_digest (checksum, digest, &len);
+    g_checksum_free (checksum);
 
     for (i = 0; i < 16; i++)
     {

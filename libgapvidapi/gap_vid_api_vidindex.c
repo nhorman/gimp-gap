@@ -15,6 +15,8 @@
  *
  */
 
+#include "gap_file_util.h"
+
 static char *   p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name);
 static gboolean p_equal_mtime(time_t mtime_idx, time_t mtime_file);
 

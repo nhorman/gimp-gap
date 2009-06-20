@@ -1,3 +1,38 @@
+2009-06-20 Wolfgang Hofer <hof@gimp.org>
+
+- fixes for many compiler warnings
+  applied patches provided by Stanislav Brabecat at bugzilla #585343
+  this includes a fix in gap_vid_api.c relevant for 
+  correct handling of deinterlacing video frames.
+
+- replaced deprecated gimp_md5_get_digest procedure by GChecksum from GLib
+  (as suggested in the gimpmd5.c sourcecode)
+
+  * extern_libs/Makefile.am
+  * gap/gap_pdb_calls.c
+  * gap/gap_pdb_calls.h
+  * gap/gap_split.c
+  * gap/gap_story_dialog.c
+  * gap/gap_story_dialog.h
+  * gap/gap_story_properties.c
+  * gap/gap_story_section_properties.c
+  * gap/gap_story_sox.c
+  * gap/gap_wr_color_curve.c
+  * gap/gimplastvaldesc.c
+  * libgapbase/gap_base.c
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * libgapvidapi/gap_vid_api_util.c
+  * libgapvidapi/gap_vid_api_vidindex.c
+  * libgapvidutil/gap_gve_misc_util.c
+  * libgapvidutil/gap_gve_png.c
+  * libgapvidutil/gap_gve_png.h
+  * vid_common/gap_cme_gui.c
+  * vid_enc_avi/gap_enc_avi_main.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+ 
+  * libgapvidapi/gap_vid_api.c
+  * vid_common/gap_cme_callbacks.c
+
 2009-05-22 Wolfgang Hofer <hof@gimp.org>
 
 - applied changes from gap-2-6 branch to master

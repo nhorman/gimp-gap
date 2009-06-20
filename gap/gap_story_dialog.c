@@ -393,8 +393,6 @@ static GtkWidget *  p_create_button_bar(GapStbTabWidgets *tabw
                    ,gint32 mount_vs_row
                    );
 
-GtkWidget *    p_gtk_button_new_from_stock_icon(const char *stock_id);
-
 static gint32  p_get_gimprc_preview_size(const char *gimprc_option_name);
 static void    p_save_gimprc_preview_size(const char *gimprc_option_name, gint32 preview_size);
 static void    p_save_gimprc_int_value(const char *gimprc_option_name, gint32 value);
@@ -2443,7 +2441,6 @@ p_player_img_mode_cb (GtkWidget *w,
 {
   gint32 imagewidth;
   gint32 imageheight;
-  long   framenr;
 
 
 
@@ -2464,8 +2461,8 @@ p_player_img_mode_cb (GtkWidget *w,
                      ,imageheight
                      ,GAP_PLAYER_DONT_FORCE_ASPECT
                      ,sgpp->image_id
-                     ,framenr         /* play from start */
-                     ,framenr         /* play until end */
+                     ,-1                /* play from start */
+                     ,-1                /* play until end */
                      ,FALSE      /* play all */
                      ,1         /* seltrack */
                      ,0.0       /* delace */
@@ -7611,7 +7608,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   /* with_load_and_save button */
   {
     /*  The Load button  */
-    button = p_gtk_button_new_from_stock_icon (GTK_STOCK_OPEN );
+    button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_OPEN );
     gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
     g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (p_tabw_load_file_cb),
@@ -7631,7 +7628,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
     gtk_widget_show (button);
 
     /*  The Save button  */
-    button = p_gtk_button_new_from_stock_icon (GTK_STOCK_SAVE );
+    button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_SAVE );
     tabw->save_button = button;
     gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
     if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
@@ -7673,7 +7670,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   }
 
   /*  The Section Properties button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_PROPERTIES );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_PROPERTIES );
   //tabw->edit_story_properties_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7708,7 +7705,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
 
 
   /*  The Undo button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_UNDO );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_UNDO );
   tabw->undo_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7718,7 +7715,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Redo button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_REDO );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_REDO );
   tabw->redo_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7729,7 +7726,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
 
 
   /*  The Cut button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_CUT );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_CUT );
   tabw->edit_cut_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7741,7 +7738,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Copy button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_COPY );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_COPY );
   tabw->edit_copy_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7753,7 +7750,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Paste button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_PASTE );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_PASTE );
   tabw->edit_paste_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -7765,7 +7762,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The New Clip button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_NEW );
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_NEW );
   tabw->new_clip_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "button_press_event",
@@ -7782,7 +7779,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
 
 
   /*  The Play Button */
-  button = p_gtk_button_new_from_stock_icon (GAP_STOCK_PLAY);
+  button = gap_gtk_button_new_from_stock_icon (GAP_STOCK_PLAY);
   tabw->play_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   gimp_help_set_help_data (button,
@@ -7885,13 +7882,13 @@ p_create_button_bar(GapStbTabWidgets *tabw
 }  /* end p_create_button_bar */
 
 /* --------------------------------
- * p_gtk_button_new_from_stock_icon
+ * gap_gtk_button_new_from_stock_icon
  * --------------------------------
  * create a  button from stock, using only the icon
  * (the text assotiated with the stock id is not rendered,
  * to keep the button width small)
  */
-GtkWidget * p_gtk_button_new_from_stock_icon(const char *stock_id)
+GtkWidget * gap_gtk_button_new_from_stock_icon(const char *stock_id)
 {
   GtkWidget *button;
   GtkWidget *image;
@@ -7903,7 +7900,7 @@ GtkWidget * p_gtk_button_new_from_stock_icon(const char *stock_id)
   gtk_container_add (GTK_CONTAINER (button), image);
   return(button);
 
-}  /* end p_gtk_button_new_from_stock_icon */
+}  /* end gap_gtk_button_new_from_stock_icon */
 
 
 

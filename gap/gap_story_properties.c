@@ -55,6 +55,7 @@
 #include "gap_timeconv.h"
 #include "gap_thumbnail.h"
 #include "gap_fmac_base.h"
+#include "gap_fmac_name.h"
 #include "gap_story_vthumb.h"
 
 

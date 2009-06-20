@@ -54,6 +54,7 @@
 #endif
 
 /* GIMP includes */
+#include <glib/gstdio.h>
 #include "gtk/gtk.h"
 #include "config.h"
 #include "gap-intl.h"

@@ -1837,6 +1837,7 @@ p_calculate_mix_threshold(gdouble threshold)
   threshold = CLAMP(threshold, 0.0, 1.0);
   l_threshold = (gdouble)MIX_MAX_THRESHOLD * (threshold * threshold * threshold);
   l_mix_threshold = CLAMP((gint32)l_threshold, 0, MIX_MAX_THRESHOLD);
+  return l_mix_threshold;
 }
 
 

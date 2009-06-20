@@ -40,12 +40,15 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include <glib/gstdio.h>
+
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 
 /* GAP includes */
 #include "gap_libgapbase.h"
+#include "gap_pdb_calls.h"
 
 #include "gtk/gtk.h"
 
@@ -66,7 +69,7 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
 
    if(gap_debug)
    {
-     printf("GAP: PNG encode via call of %s on filename: %s, image_id:%d, drawable_id:%d %s\n"
+     printf("GAP: PNG encode via call of %s on filename: %s, image_id:%d, drawable_id:%d\n"
             , l_called_proc
             , filename
             , image_id
@@ -105,7 +108,7 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
           , image_id
           , drawable_id
           , (int)return_vals[0].data.d_status
-          , p_status_to_string(return_vals[0].data.d_status)
+          , gap_status_to_string(return_vals[0].data.d_status)
           );
    return(FALSE);
 

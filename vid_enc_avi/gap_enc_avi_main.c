@@ -58,6 +58,7 @@
 #include "gap_gve_story.h"     /* for STORYBOARD support */
 
 #include "gap_gve_jpeg.h"      /* for the builtin JPEG support */
+#include "gap_gve_png.h"       /* for the builtin PNG support */
 #include "gap_gve_raw.h"       /* for raw CODEC support */
 #include "gap_gve_xvid.h"      /* for XVID CODEC support */
 #include "gap_enc_avi_main.h"

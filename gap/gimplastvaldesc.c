@@ -77,7 +77,7 @@ static void      p_fwrite_lines_remaining_without_keyname(FILE *fp, const char *
 static void      p_lastvals_register_persistent(const gchar *keyname, GimpLastvalDescType *lastval_desc_arr, gint32 argc);
 
 
-static GimpLastvalTokenTabType token_tab[GIMP_LASTVAL_END];
+static GimpLastvalTokenTabType token_tab[GIMP_LASTVAL_END + 1];
 
 
 gboolean

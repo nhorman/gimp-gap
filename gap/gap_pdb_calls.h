@@ -40,6 +40,8 @@
 
 #include "libgimp/gimp.h"
 
+const char *gap_status_to_string(int status);
+
 gint gap_pdb_procedure_available(char *proc_name);
 
 gint32 gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg);

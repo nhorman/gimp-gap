@@ -53,6 +53,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
 #include "gap-intl.h"
