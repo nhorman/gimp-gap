@@ -866,7 +866,7 @@ gap_story_section_spw_properties_dialog (GapStbSecpropWidget *spw)
   gtk_widget_show (entry);
 
   /* the delete button  */
-  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_DELETE);
+  button = gap_gtk_button_new_from_stock_icon (GTK_STOCK_DELETE);
   spw->spw_delete_button = button;
   gimp_help_set_help_data (button,
                              _("Delete storyboard section"),

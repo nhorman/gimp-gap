@@ -71,4 +71,6 @@ void            gap_story_dlg_update_edit_settings(GapStoryBoard *stb
                    , GapStbTabWidgets *tabw
                    );
 
+GtkWidget *    gap_gtk_button_new_from_stock_icon(const char *stock_id);
+
 #endif

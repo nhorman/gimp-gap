@@ -849,7 +849,7 @@ p_read_curves_from_file_gimp2_6_format (const char *filename, FILE *fp, wr_curve
   
   if (strcmp (buf, "# GIMP curves tool settings\n") != 0)
   {
-    printf("ERROR: file %s does not start with '%s'\n", "# GIMP curves tool settings");
+    printf("ERROR: file %s does not start with '%s'\n", filename, "# GIMP curves tool settings");
     return FALSE;
   }
   

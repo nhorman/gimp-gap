@@ -52,11 +52,11 @@
 extern int gap_debug;
 
 /* ============================================================================
- * p_status_to_string
+ * gap_status_to_string
  * ============================================================================
  */
 const char *
-p_status_to_string(int status)
+gap_status_to_string(int status)
 {
   switch (status)
   {
@@ -73,7 +73,7 @@ p_status_to_string(int status)
     default:
       return ("* unknown *");
   }
-}  /* end p_status_to_string */
+}  /* end gap_status_to_string */
 
 
 /* check if procedure name is available in the PDB.
@@ -247,7 +247,7 @@ gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
    printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
       , l_called_proc
       , (int)return_vals[0].data.d_status
-      , p_status_to_string(return_vals[0].data.d_status)
+      , gap_status_to_string(return_vals[0].data.d_status)
       );
    return(FALSE);
 }       /* end gap_pdb_gimp_displays_reconnect */
@@ -285,7 +285,7 @@ gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
    printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
       , l_called_proc
       , (int)return_vals[0].data.d_status
-      , p_status_to_string(return_vals[0].data.d_status)
+      , gap_status_to_string(return_vals[0].data.d_status)
       );
 
    return(-1);
@@ -324,7 +324,7 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
           , filename
           , (int)image_id
           , (int)return_vals[0].data.d_status
-          , p_status_to_string(return_vals[0].data.d_status)
+          , gap_status_to_string(return_vals[0].data.d_status)
           );
    return(FALSE);
 }       /* end gap_pdb_gimp_file_save_thumbnail */
@@ -412,7 +412,7 @@ workaround:
    printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
       , l_called_proc
       , (int)return_vals[0].data.d_status
-      , p_status_to_string(return_vals[0].data.d_status)
+      , gap_status_to_string(return_vals[0].data.d_status)
       );
    return(FALSE);
 }       /* end gap_pdb_gimp_image_thumbnail */

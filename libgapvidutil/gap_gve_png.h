@@ -23,7 +23,7 @@
        app0_length: the length of the APP0-marker.
    out:PNG_size: The size of the buffer that is returned.
    returns: guchar *: A buffer, allocated by this routines, which contains
-                      the compressed PNG, NULL on error. */
+                      the compressed PNG, NULL on error.
  */
 
 guchar *gap_gve_png_drawable_encode_png(GimpDrawable *drawable, gint32 png_interlaced, gint32 *PNG_size,

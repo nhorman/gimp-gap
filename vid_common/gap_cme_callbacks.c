@@ -45,7 +45,7 @@
 
 static void            p_start_encoder_status_poll_timer(GapCmeGlobalParams *gpp);
 static void            p_remove_encoder_status_poll_timer(GapCmeGlobalParams *gpp);
-static gint32          p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp);
+static void            p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp);
 static void            on_encoder_status_poll_timer(gpointer   user_data);
 
 
@@ -142,7 +142,7 @@ on_productive_encoder_start(gpointer   user_data)
  * p_drop_chache_and_start_video_encoder
  * ----------------------------------------
  */
-static gint32
+static void
 p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp)
 {
   /* delete images in the cache
