@@ -4,16 +4,16 @@
          xmlns:gnome="http://api.gnome.org/doap-extensions#"
          xmlns="http://usefulinc.com/ns/doap#">
 
-  <name xml:lang="en">GIMP Animation Package</name>
-  <shortdesc xml:lang="en">GIMP-GAP is a set of plug-ins for the GIMP (the GNU Image Manipulation Program). A freely distributed piece of software that adds the video menu with animation features to the GIMP.</shortdesc>
-  <homepage rdf:resource="http://www.gimp.org" />
+  <name xml:lang="en">gimp-gap</name>
+  <shortdesc xml:lang="en">GIMP Animation Package</shortdesc>
+  <homepage rdf:resource="http://www.gimp.org/" />
   <mailing-list rdf:resource="http://gimp.org/mail_lists.html" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#productivity" />
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Sven Neumann</foaf:name>
-      <gnome:userid>neo</gnome:userid>
+      <foaf:name>Wolfgang Hofer</foaf:name>
+      <gnome:userid>wolfgangh</gnome:userid>
     </foaf:Person>
   </maintainer>
 </Project>
