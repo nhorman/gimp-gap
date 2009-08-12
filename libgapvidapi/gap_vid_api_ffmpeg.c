@@ -3536,7 +3536,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   AVFormatContext *ic;
   AVInputFormat *iformat;
   int err, ii, ret;
-  AVRational rfps;
+  int rfps, rfps_base;
 
   if(gap_debug) printf("p_ff_open_input: START  vid_open:%d\n", (int)vid_open);
 
@@ -3614,6 +3614,9 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
             if((gvahand->vtracks == gvahand->vid_track)
             || (gvahand->vtracks == 1))
             {
+              gdouble containerFramerate;
+              gdouble codecFramerate;
+              
               if(vid_open)
               {
                 handle->vid_stream_index = ii;
@@ -3629,7 +3632,9 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               p_set_aspect_ratio(gvahand, handle);
               
 
-              rfps = ic->streams[ii]->r_frame_rate;
+              rfps      = ic->streams[ii]->r_frame_rate.num;
+              rfps_base = ic->streams[ii]->r_frame_rate.den;
+
               acc->strict_std_compliance = FF_COMPLIANCE_NORMAL;
               acc->workaround_bugs = FF_BUG_AUTODETECT;
               acc->error_recognition = FF_ER_COMPLIANT;
@@ -3643,26 +3648,56 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               {
                   acc->flags|= CODEC_FLAG_TRUNCATED;
               }
-              
-              if(FALSE)
+
+
+              /* attempt to get the framerate */              
+              containerFramerate = 1.0;
+              codecFramerate = 1.0;
+
+              gvahand->framerate = 1.0;
+              if (acc->time_base.num != 0)
               {
-                if ((acc->time_base.den != rfps.den)
-                || (acc->time_base.num != rfps.num))
+                 codecFramerate = (gdouble)acc->time_base.den / (gdouble)acc->time_base.num;
+                
+                if (acc->ticks_per_frame > 1)
                 {
-                    printf("\nSeems stream %d codec frame rate differs from container frame rate: %2.2f (%d/%d) -> %2.2f (%d/%d)\n"
-                         ,ii
-                         , (float)acc->time_base.den / acc->time_base.num
-                         , acc->time_base.den
-                         , acc->time_base.num
-                         , (float)rfps.den / rfps.num
-                         , rfps.den
-                         , rfps.num
-                         );
+                  /* videos with interlaced frames typically deliver framerates at double speed
+                   * because they refere to half-frames per second and have set  ticks_per_frame to value 2.
+                   * therefoe divide by ticks_per_frame to deliver the framerate of full frame
+                   */
+                  codecFramerate /= (gdouble)acc->ticks_per_frame;
                 }
               }
 
-              /* update the current frame rate to match the stream frame rate */
-              gvahand->framerate = (gdouble)acc->time_base.den / (gdouble)acc->time_base.num;
+              if (rfps_base != 0)
+              {
+                containerFramerate = (gdouble)rfps / (gdouble)rfps_base;
+              }
+
+              gvahand->framerate = codecFramerate;
+              if(containerFramerate != codecFramerate)
+              {
+                /* in case the framerate values of the codec and container are different
+                 * pick the smaller value (but only if it is greater than plausibility threshold of 10 fps)
+                 */
+              
+                if((containerFramerate > 10.0)
+                && (containerFramerate < codecFramerate))
+                {
+                   gvahand->framerate = containerFramerate;
+                }
+              
+                printf("\nSeems stream %d codec frame rate differs from container frame rate: %2.2f (%d/%d) -> %2.2f (%d/%d) ticksPerFrame:%d\n"
+                         ,ii
+                         , (float)acc->time_base.den /  (float)acc->time_base.num
+                         , acc->time_base.den
+                         , acc->time_base.num
+                         , (float)rfps /  (float)rfps_base
+                         , rfps
+                         , rfps_base
+                         , acc->ticks_per_frame
+                         );
+              }
             }
             break;
         default:
@@ -5235,8 +5270,8 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
         printf("p_probe_timecode_offset: step: (%d) timecode offset: %lld, stepsize:%ld (avg_measured: %ld avg: %.3f)\n"
           , (int)l_readsteps
           , master_handle->timecode_offset_frame1
-          , master_handle->timecode_steps[l_readsteps -1]
-          , master_handle->timecode_step_avg
+          , (long)master_handle->timecode_steps[l_readsteps -1]
+          , (long)master_handle->timecode_step_avg
           , (float)avg_fstepsize
           );
       }

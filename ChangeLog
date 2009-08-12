@@ -1,3 +1,19 @@
+2009-08-11 Wolfgang Hofer <hof@gimp.org>
+
+- detection of videofiles by extension now also accepts.mp4 videos.
+- fixed broken videoapi framerate detection (did not work on some video files)
+  the fix for the libavformat based api now takes care of the
+  ticks_per_frame value of the video codec
+  (that is typically 2 in interlaced videos)
+  an additional fallback uses the container framerate in case the codec delivers
+  unplausible value.
+  now it seems to work, tested with videos of different types mpg, vob, wma, avi, mp4
+
+  * gap/gap_story_file.c
+  * gap/gap_story_dialog.c
+  * libgapvidapi/gap_vid_api_ffmpeg.c  
+ 
+ 
 2009-07-28 Wolfgang Hofer <hof@gimp.org>
 
 - fixed broken initialisation of default values in case the file

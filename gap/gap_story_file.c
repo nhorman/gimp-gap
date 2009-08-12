@@ -1149,6 +1149,8 @@ gap_story_filename_is_videofile_by_ext(const char *filename)
     ||  (strcmp(l_ext, "mpg") == 0)
     ||  (strcmp(l_ext, "MPEG") == 0)
     ||  (strcmp(l_ext, "MPG") == 0)
+    ||  (strcmp(l_ext, "mp4") == 0)
+    ||  (strcmp(l_ext, "MP4") == 0)
     ||  (strcmp(l_ext, "avi") == 0)
     ||  (strcmp(l_ext, "AVI") == 0)
     ||  (strcmp(l_ext, "mov") == 0)   /* Quicktime videos */

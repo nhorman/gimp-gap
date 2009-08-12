@@ -8682,7 +8682,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
   GapArrArg  argv[12];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
-  static char *radio_aspect_args[3]  = { N_("none"), "4:3", "16:9"};
+  static char *radio_aspect_args[4]  = { N_("none"), "4:3", "16:9", "3:2"};
   gint   l_ii;
   gint   l_decoder_idx;
   gint   l_aspect_idx;
