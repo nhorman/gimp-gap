@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-16 17:52+0100\n"
-"PO-Revision-Date: 2009-02-16 19:10+0100\n"
+"POT-Creation-Date: 2009-09-04 11:15+0200\n"
+"PO-Revision-Date: 2009-09-04 11:15+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
@@ -23,53 +23,57 @@ msgid "Font Browser"
 msgstr "Letra-tipoen arakatzailea"
 
 #. parameter settings
-#: ../gap/gap_arr_dialog.c:1294
+#: ../gap/gap_arr_dialog.c:1302
 msgid "Enter Values"
 msgstr "Sartu balioak"
 
-#: ../gap/gap_arr_dialog.c:1314 ../gap/gap_arr_dialog.c:1461
+#: ../gap/gap_arr_dialog.c:1322 ../gap/gap_arr_dialog.c:1469
 msgid "Value:"
 msgstr "Balioa:"
 
-#: ../gap/gap_arr_dialog.c:1653
+#: ../gap/gap_arr_dialog.c:1661
 msgid "Press Button"
 msgstr "Sakatu botoia"
 
-#: ../gap/gap_arr_dialog.c:1654
+#: ../gap/gap_arr_dialog.c:1662
 msgid "Select"
 msgstr "Hautatu"
 
-#: ../gap/gap_arr_dialog.c:1804
+#: ../gap/gap_arr_dialog.c:1812
 #, c-format
 msgid "Directory '%s' already exists"
 msgstr "'%s' direktorioa badago lehendik ere"
 
-#: ../gap/gap_arr_dialog.c:1809
+#: ../gap/gap_arr_dialog.c:1817
 #, c-format
 msgid "File '%s' already exists"
 msgstr "'%s' fitxategia badago lehendik ere"
 
-#: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:247
-#: ../vid_common/gap_cme_gui.c:2323
+#: ../gap/gap_arr_dialog.c:1818 ../gap/gap_vex_dialog.c:247
+#: ../vid_common/gap_cme_gui.c:2373
 msgid "Overwrite"
 msgstr "Gainidatzi"
 
-#: ../gap/gap_arr_dialog.c:1821 ../gap/gap_decode_mplayer.c:702
+#: ../gap/gap_arr_dialog.c:1829 ../gap/gap_decode_mplayer.c:702
 #: ../gap/gap_decode_xanim.c:375 ../gap/gap_range_ops.c:1467
-#: ../gap/gap_split.c:110
+#: ../gap/gap_split.c:112
 msgid "GAP Question"
 msgstr "GAP galdera"
 
-#: ../gap/gap_arr_dialog.c:1822
+#: ../gap/gap_arr_dialog.c:1830
 msgid "File Overwrite Warning"
 msgstr "Fitxategia gainidazteko oharra"
 
-#: ../gap/gap_arr_dialog.c:1907
+#: ../gap/gap_arr_dialog.c:1895 ../vid_common/gap_cme_gui.c:169
+msgid "GAP Message"
+msgstr "GAP mezua"
+
+#: ../gap/gap_arr_dialog.c:1945
 #, c-format
 msgid "ERROR: could not create directory:'%s'%s"
 msgstr "ERROREA: ezin izan da direktorioa sortu: '%s'%s"
 
-#: ../gap/gap_arr_dialog.c:1960
+#: ../gap/gap_arr_dialog.c:1998
 #, c-format
 msgid ""
 "ERROR: Failed to write videoindex\n"
@@ -80,7 +84,7 @@ msgstr ""
 "fitxategia idaztean: '%s'\n"
 "%s"
 
-#: ../gap/gap_arr_dialog.c:2065
+#: ../gap/gap_arr_dialog.c:2103
 #, c-format
 msgid ""
 "Do you want to create a videoindex file ?\n"
@@ -99,7 +103,7 @@ msgstr ""
 "lerro hau gimprc fitxategiari:\n"
 "%s"
 
-#: ../gap/gap_arr_dialog.c:2091
+#: ../gap/gap_arr_dialog.c:2129
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -112,7 +116,7 @@ msgstr ""
 "bideoaren indizea sortzea EZ DA GOMENDAGARRIA\n"
 "(ez luke funtzionatuko)\n"
 
-#: ../gap/gap_arr_dialog.c:2096
+#: ../gap/gap_arr_dialog.c:2134
 #, c-format
 msgid ""
 "TIP:\n"
@@ -128,7 +132,7 @@ msgstr ""
 "eskatzen du.\n"
 "(denbora luzea har lezake).\n"
 
-#: ../gap/gap_arr_dialog.c:2102
+#: ../gap/gap_arr_dialog.c:2140
 #, c-format
 msgid ""
 "INFO:\n"
@@ -141,24 +145,32 @@ msgstr ""
 "Ez da bideoaren indizerik behar, eta bertan\n"
 "behera utzi beharko litzateke.\n"
 
-#: ../gap/gap_arr_dialog.c:2113 ../gap/gap_decode_xanim.c:237
+#: ../gap/gap_arr_dialog.c:2151 ../gap/gap_decode_xanim.c:237
 msgid "Video:"
 msgstr "Bideoa:"
 
-#: ../gap/gap_arr_dialog.c:2122
+#: ../gap/gap_arr_dialog.c:2160
 msgid "Index:"
 msgstr "Indizea:"
 
-#: ../gap/gap_arr_dialog.c:2127
+#: ../gap/gap_arr_dialog.c:2165
 msgid "Create Videoindex file"
 msgstr "Sortu bideo-indizeen fitxategia"
+
+#: ../gap/gap_audio_extract.c:391
+msgid "Seek Audio Position..."
+msgstr "Audioaren posizioa bilatzea..."
+
+#: ../gap/gap_audio_extract.c:439
+msgid "Extracting Audio..."
+msgstr "Audioa erauzten..."
 
 #: ../gap/gap_audio_wav.c:101
 #, c-format
 msgid "Problem while writing audiofile: %s"
 msgstr "Arazoa gertatu da audio-fitxategia idaztean: %s"
 
-#: ../gap/gap_audio_wav.c:613 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1576
+#: ../gap/gap_audio_wav.c:613 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1586
 #, c-format
 msgid ""
 "The file: %s\n"
@@ -171,7 +183,7 @@ msgstr ""
 "Zehaztu RIFF WAVE fitxategi-formatuko audio-fitxategi bat\n"
 "edo audio-fitxategi horien fitxategi-izenak dituen testu-fitxategi bat"
 
-#: ../gap/gap_audio_wav.c:625 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1587
+#: ../gap/gap_audio_wav.c:625 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1597
 #, c-format
 msgid ""
 "The file: %s\n"
@@ -218,7 +230,7 @@ msgstr "Errorea: ezin izan da %s fotograma gorde"
 #: ../gap/gap_base_ops.c:697 ../gap/gap_base_ops.c:704
 #: ../gap/gap_base_ops.c:711 ../gap/gap_base_ops.c:799
 #: ../gap/gap_base_ops.c:821 ../gap/gap_base_ops.c:912
-#: ../gap/gap_base_ops.c:920 ../gap/gap_base_ops.c:928 ../gap/gap_lib.c:3366
+#: ../gap/gap_base_ops.c:920 ../gap/gap_base_ops.c:928 ../gap/gap_lib.c:3148
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Errorea: ezin izan zaio %ld fotogramari %ld izena jarri"
@@ -321,10 +333,10 @@ msgstr "Aldatu fotograma-dentsitatea"
 #: ../gap/gap_base_ops.c:1332 ../gap/gap_base_ops.c:1486
 #: ../gap/gap_base_ops.c:1692 ../gap/gap_base_ops.c:1751
 #: ../gap/gap_decode_xanim.c:247 ../gap/gap_mod_layer_dialog.c:1354
-#: ../gap/gap_mov_dialog.c:3479 ../gap/gap_mpege.c:301
+#: ../gap/gap_mov_dialog.c:3479 ../gap/gap_mpege.c:302
 #: ../gap/gap_onion_dialog.c:914 ../gap/gap_range_ops.c:296
 #: ../gap/gap_range_ops.c:505 ../gap/gap_range_ops.c:700
-#: ../gap/gap_vex_dialog.c:2129 ../vid_common/gap_cme_gui.c:3524
+#: ../gap/gap_vex_dialog.c:2129 ../vid_common/gap_cme_gui.c:3576
 msgid "From Frame:"
 msgstr "Fotograma honetatik:"
 
@@ -340,10 +352,10 @@ msgstr "Eraginpeko bitartea fotograma-zenbaki honetan hasten da"
 #: ../gap/gap_base_ops.c:1340 ../gap/gap_base_ops.c:1494
 #: ../gap/gap_base_ops.c:1700 ../gap/gap_base_ops.c:1759
 #: ../gap/gap_decode_xanim.c:257 ../gap/gap_mod_layer_dialog.c:1376
-#: ../gap/gap_mov_dialog.c:3497 ../gap/gap_mpege.c:311
+#: ../gap/gap_mov_dialog.c:3497 ../gap/gap_mpege.c:312
 #: ../gap/gap_onion_dialog.c:921 ../gap/gap_range_ops.c:306
 #: ../gap/gap_range_ops.c:513 ../gap/gap_range_ops.c:708
-#: ../gap/gap_vex_dialog.c:2185 ../vid_common/gap_cme_gui.c:3558
+#: ../gap/gap_vex_dialog.c:2185 ../vid_common/gap_cme_gui.c:3610
 msgid "To Frame:"
 msgstr "Fotograma honetara:"
 
@@ -385,7 +397,7 @@ msgstr "Aldatu fotogramen dentsitatea"
 #. plugin was called on a frame without extension and without framenumer in its name
 #. * (typical for new created images named like 'Untitled'
 #.
-#: ../gap/gap_base_ops.c:1432 ../gap/gap_base_ops.c:1561 ../gap/gap_lib.c:1887
+#: ../gap/gap_base_ops.c:1432 ../gap/gap_base_ops.c:1561 ../gap/gap_lib.c:1669
 #: ../gap/gap_morph_main.c:295
 msgid ""
 "Operation cancelled.\n"
@@ -481,7 +493,7 @@ msgid "New framenumber for the first frame"
 msgstr "Lehen fotogramaren fotograma-zenbaki berria"
 
 #. the framenumber digits label
-#: ../gap/gap_base_ops.c:1920 ../gap/gap_split.c:493
+#: ../gap/gap_base_ops.c:1920 ../gap/gap_split.c:495
 #: ../gap/gap_vex_dialog.c:2494
 msgid "Digits:"
 msgstr "Digituak:"
@@ -804,9 +816,9 @@ msgstr "Bluebox..."
 #. Menu names
 #. gimp_plugin_menu_branch_register("<Image>", "Video");
 #: ../gap/gap_bluebox_main.c:187 ../gap/gap_main.c:1129
-#: ../gap/gap_name2layer_main.c:177 ../gap/gap_navigator_dialog.c:551
+#: ../gap/gap_name2layer_main.c:177 ../gap/gap_navigator_dialog.c:552
 #: ../gap/gap_onion_main.c:205 ../gap/gap_player_main.c:293
-#: ../gap/gap_story_main.c:182
+#: ../gap/gap_story_main.c:182 ../vid_common/gap_cme_main.c:168
 msgid "<Image>/Video/"
 msgstr "<Image>/Bideoa/"
 
@@ -951,7 +963,7 @@ msgid "Number of frames to extract"
 msgstr "ateratzeko fotograma kopurua"
 
 #. the videotrack to label
-#: ../gap/gap_decode_mplayer.c:467 ../gap/gap_story_properties.c:4041
+#: ../gap/gap_decode_mplayer.c:467 ../gap/gap_story_properties.c:4043
 #: ../gap/gap_vex_dialog.c:2242
 msgid "Videotrack:"
 msgstr "Bideo-pista:"
@@ -962,7 +974,7 @@ msgstr "ateratzeko bideo-pista kopurua. (0 == ezikusi egin bideoari)"
 
 #. Sample Offset
 #. the audiotrack to label
-#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6496
+#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6648
 #: ../gap/gap_vex_dialog.c:2276
 msgid "Audiotrack:"
 msgstr "Audio-pista:"
@@ -1125,7 +1137,7 @@ msgstr "MPlayer-en oinarrituta ateratzea"
 msgid "Select Frame Range"
 msgstr "Hautatu fotograma-bitartea"
 
-#: ../gap/gap_decode_mplayer.c:650 ../gap/gap_decode_mplayer.c:1495
+#: ../gap/gap_decode_mplayer.c:650 ../gap/gap_decode_mplayer.c:1492
 #, c-format
 msgid "videofile %s not existent\n"
 msgstr "ez dago %s bideo-fitxategia\n"
@@ -1136,18 +1148,18 @@ msgid "Illegal starttime %s"
 msgstr "%s hasiera-ordua baliogabea da"
 
 #: ../gap/gap_decode_mplayer.c:692 ../gap/gap_decode_xanim.c:365
-#: ../gap/gap_range_ops.c:1460 ../gap/gap_split.c:100
+#: ../gap/gap_range_ops.c:1460 ../gap/gap_split.c:102
 msgid "Overwrite Frame"
 msgstr "Gainidatzi fotograma"
 
 #: ../gap/gap_decode_mplayer.c:694 ../gap/gap_decode_xanim.c:367
-#: ../gap/gap_range_ops.c:1462 ../gap/gap_split.c:102
+#: ../gap/gap_range_ops.c:1462 ../gap/gap_split.c:104
 #: ../gap/gap_vex_dialog.c:238
 msgid "Overwrite All"
 msgstr "Gainidatzi denak"
 
 #: ../gap/gap_decode_mplayer.c:703 ../gap/gap_decode_xanim.c:376
-#: ../gap/gap_split.c:111
+#: ../gap/gap_split.c:113
 msgid "File already exists"
 msgstr "Fitxategia badago lehendik ere"
 
@@ -1168,7 +1180,7 @@ msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr "fotogramak ez dira atera, %s(e)n gainidazketa bertan behera utzi delako"
 
 #: ../gap/gap_decode_mplayer.c:1007 ../gap/gap_decode_xanim.c:612
-#: ../gap/gap_split.c:346
+#: ../gap/gap_split.c:348
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "huts egin du %s gainidaztean (egiaztatu baimenak ?)"
@@ -1206,11 +1218,11 @@ msgstr ""
 msgid "The mediaplayer executable file '%s' was not found."
 msgstr "Ez da aurkitu mediaplayer-en '%s' fitxategi exekutagarria."
 
-#: ../gap/gap_decode_mplayer.c:1485
+#: ../gap/gap_decode_mplayer.c:1482
 msgid "Exit, neither video nor audio track was selected"
 msgstr "Irten, ez dago bideo- edo audio-pista hautaturik"
 
-#: ../gap/gap_decode_mplayer.c:1543
+#: ../gap/gap_decode_mplayer.c:1540
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -1219,15 +1231,15 @@ msgstr ""
 "ezin izan da %s direktorioa sortu\n"
 "(hori beharrezkoa da mplayer-en bidez fotogramak esportatzeko)"
 
-#: ../gap/gap_decode_mplayer.c:1556 ../gap/gap_decode_xanim.c:1133
+#: ../gap/gap_decode_mplayer.c:1553 ../gap/gap_decode_xanim.c:1133
 msgid "Extracting frames..."
 msgstr "Fotogramak ateratzen..."
 
-#: ../gap/gap_decode_mplayer.c:1560
+#: ../gap/gap_decode_mplayer.c:1557
 msgid "Extracting audio..."
 msgstr "Audioa ateratzen..."
 
-#: ../gap/gap_decode_mplayer.c:1578
+#: ../gap/gap_decode_mplayer.c:1575
 #, c-format
 msgid ""
 "could not start mplayer process\n"
@@ -1236,7 +1248,7 @@ msgstr ""
 "ezin izan da mplayer prozesua abiarazi\n"
 "(programa=%s)"
 
-#: ../gap/gap_decode_mplayer.c:1606
+#: ../gap/gap_decode_mplayer.c:1603
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -1245,11 +1257,11 @@ msgstr ""
 "ezin da ateratako fotogramarik aurkitu,\n"
 "mplayer-ek huts egin du edo bertan behera utzi da"
 
-#: ../gap/gap_decode_mplayer.c:1632 ../gap/gap_decode_xanim.c:1198
+#: ../gap/gap_decode_mplayer.c:1629 ../gap/gap_decode_xanim.c:1198
 msgid "Renaming frames..."
 msgstr "Fotogramak izenez aldatzen..."
 
-#: ../gap/gap_decode_mplayer.c:1642 ../gap/gap_decode_xanim.c:1203
+#: ../gap/gap_decode_mplayer.c:1639 ../gap/gap_decode_xanim.c:1203
 #: ../gap/gap_range_ops.c:1333
 msgid "Converting frames..."
 msgstr "Fotogramak bihurtzen..."
@@ -1326,7 +1338,7 @@ msgid "Enable extraction of frames"
 msgstr "Gaitu fotogramak ateratzea"
 
 #. create extract audio otone track button
-#: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6523
+#: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6675
 msgid "Extract Audio"
 msgstr "Atera audioa"
 
@@ -1454,7 +1466,7 @@ msgid "Make backup of the image after each step"
 msgstr "Egin irudiaren babeskopia urrats bakoitzaren ondoren"
 
 #: ../gap/gap_filter_foreach.c:138 ../gap/gap_mod_layer.c:107
-#: ../gap/gap_story_dialog.c:6227
+#: ../gap/gap_story_dialog.c:6226
 msgid "Continue"
 msgstr "Jarraitu"
 
@@ -1563,7 +1575,7 @@ msgstr "Iragazki-makroaren script-fitxategiaren izena"
 msgid "Open filebrowser window to select a filename"
 msgstr "Ireki fitxategi-arakatzailearen leihoa fitxategi-izen bat hautatzeko"
 
-#: ../gap/gap_fmac_main.c:760 ../gap/gap_video_index_creator.c:1288
+#: ../gap/gap_fmac_main.c:760 ../gap/gap_video_index_creator.c:1328
 msgid "Nr"
 msgstr "Zk"
 
@@ -1579,7 +1591,7 @@ msgstr "Menuaren bide-izena"
 msgid "** No menu path available **"
 msgstr "** Ez dago menuaren biderik erabilgarri **"
 
-#: ../gap/gap_fmac_main.c:971 ../gap/gap_video_index_creator.c:1239
+#: ../gap/gap_fmac_main.c:971 ../gap/gap_video_index_creator.c:1279
 msgid "** Empty **"
 msgstr "** Hutsa **"
 
@@ -1588,7 +1600,7 @@ msgid "** File is not a filtermacro **"
 msgstr "** Fitxategia ez da iragazki-makroa **"
 
 #: ../gap/gap_fmac_main.c:1018 ../gap/gap_onion_dialog.c:1366
-#: ../gap/gap_player_dialog.c:7879
+#: ../gap/gap_player_dialog.c:8031
 msgid "Show help page"
 msgstr "Erakutsi laguntza-orria"
 
@@ -1632,7 +1644,7 @@ msgstr ""
 "barneko bufferra ezarri duten iragazkiak soilik bistaratzen ditu PDB "
 "arakatzaileak"
 
-#: ../gap/gap_fmac_main.c:1078 ../gap/gap_player_dialog.c:7927
+#: ../gap/gap_fmac_main.c:1078 ../gap/gap_player_dialog.c:8079
 msgid "Close window"
 msgstr "Itxi leihoa"
 
@@ -1668,13 +1680,11 @@ msgid "MPEG2..."
 msgstr "MPEG2..."
 
 #. Menu names
-#. gimp_plugin_menu_branch_register("<Image>", "Video");
-#. gimp_plugin_menu_branch_register("<Image>/Video", "Encode");
-#: ../gap/gap_frontends_main.c:187 ../vid_common/gap_cme_main.c:169
+#: ../gap/gap_frontends_main.c:187
 msgid "<Image>/Video/Encode/"
 msgstr "<Image>/Bideoa/Kodetu/"
 
-#: ../gap/gap_lib.c:1864
+#: ../gap/gap_lib.c:1646
 msgid ""
 "Operation cancelled.\n"
 "Current frame was changed while dialog was open."
@@ -1682,15 +1692,15 @@ msgstr ""
 "Eragiketa bertan behera utzi da.\n"
 "Uneko fotograma elkarrizketa-koadroa irekita zegoela aldatu da."
 
-#: ../gap/gap_lib.c:2062
+#: ../gap/gap_lib.c:1844
 msgid "Save Flattened"
 msgstr "Gorde berdinduta"
 
-#: ../gap/gap_lib.c:2064
+#: ../gap/gap_lib.c:1846
 msgid "Save As Is"
 msgstr "Gorde dagoen bezala"
 
-#: ../gap/gap_lib.c:2068
+#: ../gap/gap_lib.c:1850
 #, c-format
 msgid ""
 "You are using another file format than xcf.\n"
@@ -1709,11 +1719,11 @@ msgstr ""
 "gimprc fitxategiari:\n"
 "(%s %s)."
 
-#: ../gap/gap_lib.c:2077
+#: ../gap/gap_lib.c:1859
 msgid "Fileformat Warning"
 msgstr "Fitxategi-formatuaren abisua"
 
-#: ../gap/gap_lock.c:135
+#: ../gap/gap_lock.c:101
 #, c-format
 msgid ""
 "Can't execute more than 1 video function\n"
@@ -2187,7 +2197,9 @@ msgstr "Sortu geruza-maskara geruza-maskararen kopia gisa (ezikusi egin alfari)"
 
 #: ../gap/gap_mod_layer_dialog.c:794
 msgid "Create mask layer as copy of the alpha channel (ignore layermask)"
-msgstr "Sortu geruza-maskara alfa kanalaren kopia gisa (ezikusi egin geruza-maskarari)"
+msgstr ""
+"Sortu geruza-maskara alfa kanalaren kopia gisa (ezikusi egin geruza-"
+"maskarari)"
 
 #. apply filter has no sub_menu
 #: ../gap/gap_mod_layer_dialog.c:812
@@ -2377,7 +2389,7 @@ msgstr "Fotograma-bitartea"
 #. constrain
 #. lower unconstrained
 #. upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1363 ../gap/gap_mpege.c:302
+#: ../gap/gap_mod_layer_dialog.c:1363 ../gap/gap_mpege.c:303
 #: ../gap/gap_onion_dialog.c:939 ../gap/gap_range_ops.c:297
 #: ../gap/gap_range_ops.c:506 ../gap/gap_range_ops.c:701
 msgid "First handled frame"
@@ -2390,7 +2402,7 @@ msgstr "Maneiatutako lehen fotograma"
 #. constrain
 #. lower unconstrained
 #. upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1385 ../gap/gap_mpege.c:312
+#: ../gap/gap_mod_layer_dialog.c:1385 ../gap/gap_mpege.c:313
 #: ../gap/gap_onion_dialog.c:957 ../gap/gap_range_ops.c:307
 #: ../gap/gap_range_ops.c:514 ../gap/gap_range_ops.c:709
 msgid "Last handled frame"
@@ -2784,7 +2796,7 @@ msgstr "A puntu sorta:"
 msgid "Pointset B:"
 msgstr "B puntu sorta:"
 
-#: ../gap/gap_morph_exec.c:372
+#: ../gap/gap_morph_exec.c:373
 #, c-format
 msgid ""
 "File: %s\n"
@@ -2793,7 +2805,7 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> ez da kontrol-puntuen fitxategia (goiburua falta zaio)"
 
-#: ../gap/gap_morph_exec.c:400
+#: ../gap/gap_morph_exec.c:401
 #, c-format
 msgid ""
 "file: %s\n"
@@ -2802,7 +2814,7 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (LAYER-SIZES erregistroak 4 zenbaki behar ditu)"
 
-#: ../gap/gap_morph_exec.c:418
+#: ../gap/gap_morph_exec.c:419
 #, c-format
 msgid ""
 "file: %s\n"
@@ -2811,14 +2823,14 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (TWEEN-STEPS erregistroak zenbaki 1 behar du)"
 
-#: ../gap/gap_morph_exec.c:436
+#: ../gap/gap_morph_exec.c:437
 #, c-format
 msgid "file: %s ==> is corrupted (AFFECT-RADIUS record requires 1 number)"
 msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (AFFECT-RADIUS erregistroak zenbaki 1 behar du)"
 
-#: ../gap/gap_morph_exec.c:458
+#: ../gap/gap_morph_exec.c:459
 #, c-format
 msgid ""
 "file: %s\n"
@@ -2827,7 +2839,7 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (INTENSITY erregistroak zenbaki 1 behar du)"
 
-#: ../gap/gap_morph_exec.c:480
+#: ../gap/gap_morph_exec.c:481
 #, c-format
 msgid ""
 "file: %s\n"
@@ -2836,7 +2848,7 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (QUALITY-WP-SELECT erregistroak zenbaki 1 behar du)"
 
-#: ../gap/gap_morph_exec.c:514
+#: ../gap/gap_morph_exec.c:515
 #, c-format
 msgid ""
 "file: %s\n"
@@ -2845,34 +2857,34 @@ msgstr ""
 "Fitxategia: %s\n"
 " ==> hondatuta dago (WP erregistroak 4 zenbaki behar ditu)"
 
-#: ../gap/gap_morph_exec.c:2723
+#: ../gap/gap_morph_exec.c:2724
 msgid "creating morph tween layers..."
 msgstr "Itxuraldaketaren tarteko geruzak sortzen..."
 
-#: ../gap/gap_morph_exec.c:2727
+#: ../gap/gap_morph_exec.c:2728
 msgid "creating warp tween layers..."
 msgstr "Deformazioaren tarteko geruzak sortzen..."
 
-#: ../gap/gap_morph_exec.c:3072
+#: ../gap/gap_morph_exec.c:3073
 msgid "creating morph tween frames..."
 msgstr "itxuraldaketaren tarteko fotogramak sortzen..."
 
-#: ../gap/gap_morph_exec.c:3096
+#: ../gap/gap_morph_exec.c:3097
 #, c-format
 msgid "target frame does not exist, name: %s"
 msgstr "helburuko fotograma ez da existitzen, izena: %s"
 
-#: ../gap/gap_morph_exec.c:3150
+#: ../gap/gap_morph_exec.c:3151
 #, c-format
 msgid "creating morph tween frame: %d"
 msgstr "itxuraldaketaren tarteko fotogramak sortzen: %d"
 
-#: ../gap/gap_morph_exec.c:3166
+#: ../gap/gap_morph_exec.c:3167
 #, c-format
 msgid "file: %s already exists"
 msgstr "%s fitxategia badago lehendik ere"
 
-#: ../gap/gap_morph_exec.c:3189
+#: ../gap/gap_morph_exec.c:3190
 #, c-format
 msgid "file: %s save failed"
 msgstr "fitxategia: huts egin du '%s' gordetzean"
@@ -2894,33 +2906,100 @@ msgstr "Itxuraldatu tarteko bat..."
 msgid "<Image>/Video/Morph/"
 msgstr "<Image>/Bideoa/Itxuraldatzea/"
 
-#: ../gap/gap_mov_dialog.c:618
+#: ../gap/gap_morph_tween_dialog.c:142
+msgid "Enter Morph Workpoint filename"
+msgstr "Sartu Morphing-aren kontrol-puntuen fitxategia"
+
+#. morph workpoint entry
+#: ../gap/gap_morph_tween_dialog.c:224
+msgid "Morph Workpoint file:"
+msgstr "Morphing-aren kontrol-puntuen fitxategia:"
+
+#: ../gap/gap_morph_tween_dialog.c:238
+msgid ""
+"Name of a Workpointfile created with the Morph feature\n"
+"(note that tweens are created via simple fade operations when no "
+"workpointfile is available))"
+msgstr ""
+"Morphing-areki sortutako kontrol-puntuen fitxategiaren izena\n"
+"(jakin ezazu kontrol-punturik ez dagoenean, bitartekoak iraungitze eragiketa "
+"bakun baten bidez sortzen direla)"
+
+#: ../gap/gap_morph_tween_dialog.c:284
+msgid "Create one tween"
+msgstr "Sortu bitarteko bat"
+
+#: ../gap/gap_morph_tween_dialog.c:317
+msgid "tween mix:"
+msgstr "bitarte nahasketa:"
+
+#. layer combo_box (source)
+#: ../gap/gap_morph_tween_dialog.c:328
+msgid "Source Layer:"
+msgstr "Iturburuko geruza:"
+
+#. layer combo_box (source)
+#: ../gap/gap_morph_tween_dialog.c:349
+msgid "Destination Layer:"
+msgstr "Helburuko geruza:"
+
+#: ../gap/gap_morph_tween_dialog.c:428
+msgid "Create Tween Frames"
+msgstr "Sortu bitarteko fotogramak"
+
+#. morph workpoint entry
+#: ../gap/gap_morph_tween_dialog.c:460
+msgid "Information:"
+msgstr "Informazioa:"
+
+#: ../gap/gap_morph_tween_dialog.c:469
+#, c-format
+msgid "this operation creates %d mising frames between frame %d and %d"
+msgstr "eragiketa honek falta diren %d fotograma surtzen ditu (%d eta %d artean)"
+
+#: ../gap/gap_morph_tween_dialog.c:480
+msgid ""
+"WARNING this operation will overwrite all frames between the specified frame "
+"range"
+msgstr ""
+"ABISUA: eragiketa honek zehaztutako fotogramen barrutiko fotograma guztiak "
+"gainidatziko ditu"
+
+#: ../gap/gap_morph_tween_dialog.c:491 ../gap/gap_story_properties.c:3901
+msgid "From:"
+msgstr "Hasi:"
+
+#: ../gap/gap_morph_tween_dialog.c:507 ../gap/gap_story_properties.c:3930
+msgid "To:"
+msgstr "Amaitu:"
+
+#: ../gap/gap_mov_dialog.c:619
 msgid "Move Path"
 msgstr "Animazioaren bidea"
 
-#: ../gap/gap_mov_dialog.c:661
+#: ../gap/gap_mov_dialog.c:662
 msgid "Show preview frame with selected source layer at current controlpoint"
 msgstr ""
 "Bistaratu aurrebista-fotograma hautatutako iturburu-geruzarekin, uneko "
 "kontrol-puntuan"
 
-#: ../gap/gap_mov_dialog.c:672
+#: ../gap/gap_mov_dialog.c:673
 msgid "Generate animated preview as multilayer image"
 msgstr "Sortu aurrebista animatua geruza anitzeko irudi gisa"
 
-#: ../gap/gap_mov_dialog.c:693
+#: ../gap/gap_mov_dialog.c:694
 msgid "Copy moving source-layer(s) into frames"
 msgstr "Kopiatu iturburu-geruza mugikorra(k) fotogrametan"
 
-#: ../gap/gap_mov_dialog.c:720
+#: ../gap/gap_mov_dialog.c:721
 msgid "Source Select"
 msgstr "Iturburuko hautapena"
 
-#: ../gap/gap_mov_dialog.c:728
+#: ../gap/gap_mov_dialog.c:729
 msgid "Advanced Settings"
 msgstr "Ezarpen aurreratuak"
 
-#: ../gap/gap_mov_dialog.c:797
+#: ../gap/gap_mov_dialog.c:798
 msgid ""
 "No source image was selected.\n"
 "Please open a 2nd image of the same type before opening 'Move Path'"
@@ -2928,46 +3007,46 @@ msgstr ""
 "Ez da hautatu iturburu-irudirik.\n"
 "Ireki mota bereko 2. irudia 'Animazioaren bidea' ireki baino lehen"
 
-#: ../gap/gap_mov_dialog.c:985
+#: ../gap/gap_mov_dialog.c:986
 msgid "Object on empty frames"
 msgstr "Objektua fotograma hutsetan"
 
-#: ../gap/gap_mov_dialog.c:986
+#: ../gap/gap_mov_dialog.c:987
 msgid "Object on one frame"
 msgstr "Objektua fotograma batean"
 
-#: ../gap/gap_mov_dialog.c:987
+#: ../gap/gap_mov_dialog.c:988
 msgid "Exact object on frames"
 msgstr "Objektu zehatza fotogrametan"
 
-#: ../gap/gap_mov_dialog.c:1018
+#: ../gap/gap_mov_dialog.c:1019
 msgid "Anim Preview Mode:"
 msgstr "Animazioaren aurrebista modua:"
 
-#: ../gap/gap_mov_dialog.c:1040
+#: ../gap/gap_mov_dialog.c:1041
 msgid "Scale Preview:"
 msgstr "Eskalatu aurrebista:"
 
-#: ../gap/gap_mov_dialog.c:1041
+#: ../gap/gap_mov_dialog.c:1042
 msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Txikitu sortutako aurrebista animatua (%)"
 
 #. the Framerate lable
-#: ../gap/gap_mov_dialog.c:1051 ../gap/gap_mpege.c:320
-#: ../gap/gap_navigator_dialog.c:4255 ../gap/gap_story_dialog.c:8860
-#: ../vid_common/gap_cme_gui.c:3659
+#: ../gap/gap_mov_dialog.c:1052 ../gap/gap_mpege.c:321
+#: ../gap/gap_navigator_dialog.c:4255 ../gap/gap_story_dialog.c:8783
+#: ../vid_common/gap_cme_gui.c:3711
 msgid "Framerate:"
 msgstr "Fotograma-tasa:"
 
-#: ../gap/gap_mov_dialog.c:1052
+#: ../gap/gap_mov_dialog.c:1053
 msgid "Framerate to use in the animated preview in frames/sec"
 msgstr "Aurrebista animatuan erabili beharreko fotograma-tasa (fotograma/s)"
 
-#: ../gap/gap_mov_dialog.c:1068
+#: ../gap/gap_mov_dialog.c:1069
 msgid "Copy to Video Buffer:"
 msgstr "Kopiatu bideo-bufferrera:"
 
-#: ../gap/gap_mov_dialog.c:1069
+#: ../gap/gap_mov_dialog.c:1070
 msgid ""
 "Save all single frames of animated preview to video buffer.(configured in "
 "gimprc by video-paste-dir and video-paste-basename)"
@@ -2976,28 +3055,28 @@ msgstr ""
 "(konfiguratu gimprc-en, video-paste-dir eta video-paste-basename erabiliz)."
 
 #. the Default button
-#: ../gap/gap_mov_dialog.c:1076 ../gap/gap_mpege.c:372
-#: ../gap/gap_name2layer_main.c:512 ../gap/gap_split.c:503
-#: ../gap/gap_story_dialog.c:5133 ../gap/gap_video_index_creator.c:966
-#: ../gap/gap_wr_opacity.c:352 ../vid_common/gap_cme_gui.c:3195
+#: ../gap/gap_mov_dialog.c:1077 ../gap/gap_mpege.c:373
+#: ../gap/gap_name2layer_main.c:512 ../gap/gap_split.c:505
+#: ../gap/gap_story_dialog.c:5132 ../gap/gap_video_index_creator.c:1006
+#: ../gap/gap_wr_opacity.c:356 ../vid_common/gap_cme_gui.c:3245
 msgid "Default"
 msgstr "Lehenetsia"
 
-#: ../gap/gap_mov_dialog.c:1077 ../gap/gap_mpege.c:373
-#: ../gap/gap_name2layer_main.c:513 ../gap/gap_split.c:504
-#: ../gap/gap_video_index_creator.c:967
+#: ../gap/gap_mov_dialog.c:1078 ../gap/gap_mpege.c:374
+#: ../gap/gap_name2layer_main.c:513 ../gap/gap_split.c:506
+#: ../gap/gap_video_index_creator.c:1007
 msgid "Reset all parameters to default values"
 msgstr "Berrezarri parametro guztiak balio lehenetsietan"
 
-#: ../gap/gap_mov_dialog.c:1079
+#: ../gap/gap_mov_dialog.c:1080
 msgid "Move Path Animated Preview"
 msgstr "Animazioaren bidearen arabera animatutako aurrebista"
 
-#: ../gap/gap_mov_dialog.c:1080
+#: ../gap/gap_mov_dialog.c:1081
 msgid "Options"
 msgstr "Aukerak"
 
-#: ../gap/gap_mov_dialog.c:1132
+#: ../gap/gap_mov_dialog.c:1133
 msgid "Generation of animated preview failed"
 msgstr "Ezin izan da aurrebista animatua sortu"
 
@@ -3107,8 +3186,8 @@ msgstr "Zehaztutako bitarteko helburuko fotogrametan txertatzeko iturburu-objekt
 #. Paintmode combo (menu)
 #. the operating Mode label
 #: ../gap/gap_mov_dialog.c:2786 ../gap/gap_name2layer_main.c:444
-#: ../gap/gap_vex_dialog.c:2437 ../gap/gap_video_index_creator.c:942
-#: ../gap/gap_wr_opacity.c:340
+#: ../gap/gap_vex_dialog.c:2437 ../gap/gap_video_index_creator.c:982
+#: ../gap/gap_wr_opacity.c:344
 msgid "Mode:"
 msgstr "Modua:"
 
@@ -3176,7 +3255,7 @@ msgstr ""
 #. Loop Stepmode combo
 #. the playback mode checkbuttons
 #. Loop Toggle
-#: ../gap/gap_mov_dialog.c:2869 ../gap/gap_player_dialog.c:7716
+#: ../gap/gap_mov_dialog.c:2869 ../gap/gap_player_dialog.c:7868
 msgid "Loop"
 msgstr "Begiztak"
 
@@ -3198,8 +3277,8 @@ msgstr "Aurrera-atzerakoa"
 
 #. radio button delace_mode None
 #. radio button flip_request None
-#: ../gap/gap_mov_dialog.c:2874 ../gap/gap_story_properties.c:2060
-#: ../gap/gap_story_properties.c:4077 ../gap/gap_story_properties.c:4223
+#: ../gap/gap_mov_dialog.c:2874 ../gap/gap_story_properties.c:2062
+#: ../gap/gap_story_properties.c:4079 ../gap/gap_story_properties.c:4225
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -3280,7 +3359,7 @@ msgstr ""
 "ezartzeko"
 
 #. toggle Tracelayer
-#: ../gap/gap_mov_dialog.c:3029 ../gap/gap_mov_exec.c:929
+#: ../gap/gap_mov_dialog.c:3029 ../gap/gap_mov_exec.c:930
 msgid "Tracelayer"
 msgstr "Aztarna-geruza"
 
@@ -3547,8 +3626,8 @@ msgstr "Ebaki kopiatutako iturburu-geruza guztiak helburu-fotogramaren mugetan"
 #. Width Scale
 #. table col, row
 #. the width label
-#: ../gap/gap_mov_dialog.c:3602 ../gap/gap_story_dialog.c:8837
-#: ../vid_common/gap_cme_gui.c:3584
+#: ../gap/gap_mov_dialog.c:3602 ../gap/gap_story_dialog.c:8760
+#: ../vid_common/gap_cme_gui.c:3636
 msgid "Width:"
 msgstr "Zabalera:"
 
@@ -3567,8 +3646,8 @@ msgstr "Eskalatu iturburu-geruzaren zabalera ehunekotan"
 #. Height Scale
 #. table col, row
 #. the height label
-#: ../gap/gap_mov_dialog.c:3620 ../gap/gap_story_dialog.c:8848
-#: ../vid_common/gap_cme_gui.c:3633
+#: ../gap/gap_mov_dialog.c:3620 ../gap/gap_story_dialog.c:8771
+#: ../vid_common/gap_cme_gui.c:3685
 msgid "Height:"
 msgstr "Altuera:"
 
@@ -3594,7 +3673,7 @@ msgstr "Murriztu aspektu-erlazioa"
 #. Opacity
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3654 ../gap/gap_onion_dialog.c:1130
-#: ../gap/gap_story_att_trans_dlg.c:2728 ../gap/gap_wr_opacity.c:329
+#: ../gap/gap_story_att_trans_dlg.c:2728 ../gap/gap_wr_opacity.c:332
 msgid "Opacity:"
 msgstr "Opakutasuna:"
 
@@ -3932,11 +4011,11 @@ msgstr ""
 "Errore-zerrenda:\n"
 "%s"
 
-#: ../gap/gap_mov_exec.c:237
+#: ../gap/gap_mov_exec.c:238
 msgid "Tweenlayer"
 msgstr "Tarteko geruza"
 
-#: ../gap/gap_mov_exec.c:687
+#: ../gap/gap_mov_exec.c:688
 msgid ""
 "No source image was selected.\n"
 "Please open a 2nd image of the same type before opening 'Move Path'."
@@ -3944,15 +4023,15 @@ msgstr ""
 "Ez da hautatu iturburu-irudirik.\n"
 "Ireki mota bereko 2. irudia 'Animazioaren bidea' ireki baino lehen."
 
-#: ../gap/gap_mov_exec.c:698
+#: ../gap/gap_mov_exec.c:699
 msgid "Copying layers into frames..."
 msgstr "Geruzak fotogrametan kopiatzen..."
 
-#: ../gap/gap_mov_exec.c:702
+#: ../gap/gap_mov_exec.c:703
 msgid "Generating animated preview..."
 msgstr "Aurrebista animatua sortzen..."
 
-#: ../gap/gap_mov_exec.c:1868
+#: ../gap/gap_mov_exec.c:1869
 #, c-format
 msgid ""
 "\n"
@@ -3962,7 +4041,7 @@ msgstr ""
 "Errorea: [%2$d] puntuko %1$d gako-fotograma azken maneiatutako fotogramaren "
 "berdina edo handiagoa da"
 
-#: ../gap/gap_mov_exec.c:1876
+#: ../gap/gap_mov_exec.c:1877
 #, c-format
 msgid ""
 "\n"
@@ -3974,7 +4053,7 @@ msgstr ""
 "(fotogramak)\n"
 "aurreko kontrol-puntuentzat"
 
-#: ../gap/gap_mov_exec.c:1886
+#: ../gap/gap_mov_exec.c:1887
 #, c-format
 msgid ""
 "\n"
@@ -3983,7 +4062,7 @@ msgstr ""
 "\n"
 "Errorea: %d gako-fotograma ez dago sekuentzian [%d] puntuan"
 
-#: ../gap/gap_mov_exec.c:1904
+#: ../gap/gap_mov_exec.c:1905
 #, c-format
 msgid ""
 "\n"
@@ -3992,7 +4071,7 @@ msgstr ""
 "\n"
 "Errorea: [%d] kontrol-puntua maneiatutako fotograma-bitartetik kanpo dago"
 
-#: ../gap/gap_mov_exec.c:1918
+#: ../gap/gap_mov_exec.c:1919
 #, c-format
 msgid ""
 "\n"
@@ -4003,15 +4082,15 @@ msgstr ""
 "Errorea: maneiatutako fotogramak (%2$d) baino kontrol-puntu (%1$d)gehiago "
 "daude.\\nMurriztu kontrol-puntuak edo hautatu fotograma gehiago"
 
-#: ../gap/gap_mpege.c:126
+#: ../gap/gap_mpege.c:127
 msgid "Requirements to run mpeg2encode 1.2:"
 msgstr "mpeg2encode 1.2 exekutatzeko eskakizunak:"
 
-#: ../gap/gap_mpege.c:130
+#: ../gap/gap_mpege.c:131
 msgid "Requirements to run mpeg_encode 1.5:"
 msgstr "mpeg_encode 1.5 exekutatzeko eskakizunak:"
 
-#: ../gap/gap_mpege.c:146
+#: ../gap/gap_mpege.c:147
 #, c-format
 msgid ""
 "mpeg2encode 1.2 must be installed\n"
@@ -4026,7 +4105,7 @@ msgstr ""
 "edo hemen:\n"
 "%s"
 
-#: ../gap/gap_mpege.c:159
+#: ../gap/gap_mpege.c:160
 #, c-format
 msgid ""
 "mpeg_encode 1.5 must be installed\n"
@@ -4037,7 +4116,7 @@ msgstr ""
 "mpeg_encode hemen eskura dezakezu:\n"
 "%s"
 
-#: ../gap/gap_mpege.c:178
+#: ../gap/gap_mpege.c:179
 msgid ""
 "You need a series of single images on disk (video frames),\n"
 "all with fileformat PPM (or YUV)\n"
@@ -4049,7 +4128,7 @@ msgstr ""
 "(erabili bideo-menuko 'Bihurtu fotogramak'\n"
 "edo 'Zatitu irudia fotogrametan')"
 
-#: ../gap/gap_mpege.c:186
+#: ../gap/gap_mpege.c:187
 msgid ""
 "You need a series of single images on disk (video frames)\n"
 "all with fileformat JPEG (or YUV or PNM or PPM)\n"
@@ -4061,7 +4140,7 @@ msgstr ""
 "(erabili bideo-menuko 'Bihurtu fotogramak'\n"
 "edo 'Zatitu irudia fotogrametan')"
 
-#: ../gap/gap_mpege.c:203
+#: ../gap/gap_mpege.c:204
 msgid ""
 "All images must have the same size,\n"
 "width and height must be a multiple of 16\n"
@@ -4071,11 +4150,11 @@ msgstr ""
 "eta zabalerak eta altuerak 16ren multiplo izan behar dute\n"
 "(erabili bideo-menuko Eskalatu edo Moztu)"
 
-#: ../gap/gap_mpege.c:210
+#: ../gap/gap_mpege.c:211
 msgid "All images must have the same size,"
 msgstr "Irudi guztiek tamaina bera izan behar dute,"
 
-#: ../gap/gap_mpege.c:218
+#: ../gap/gap_mpege.c:219
 msgid ""
 "\n"
 "NOTE:\n"
@@ -4087,35 +4166,35 @@ msgstr ""
 "MPEG kodetzea eraginkorragoa izateko, erabili menu hau:\n"
 "Bideoa->Kodetu->Bideo-kodetzaile maisua"
 
-#: ../gap/gap_mpege.c:236
+#: ../gap/gap_mpege.c:237
 msgid "MPEG_ENCODE Information"
 msgstr "MPEG_ENCODE Informazioa"
 
-#: ../gap/gap_mpege.c:274
+#: ../gap/gap_mpege.c:275
 msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
 msgstr "MPEG1 (ISO/IEC 11172-2) korrontea sortzen du"
 
-#: ../gap/gap_mpege.c:275
+#: ../gap/gap_mpege.c:276
 msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
 msgstr "MPEG2 (ISO/IEC DIS 13818-2) korrontea sortzen du"
 
-#: ../gap/gap_mpege.c:285
+#: ../gap/gap_mpege.c:286
 msgid "GenParams"
 msgstr "Sortu parametroak"
 
-#: ../gap/gap_mpege.c:287
+#: ../gap/gap_mpege.c:288
 msgid "Gen + Encode"
 msgstr "Sortu eta kodetu"
 
-#: ../gap/gap_mpege.c:321
+#: ../gap/gap_mpege.c:322
 msgid "Framerate in frames/second"
 msgstr "Fotograma-tasa fotograma/segundotan"
 
-#: ../gap/gap_mpege.c:330
+#: ../gap/gap_mpege.c:331
 msgid "Bitrate:"
 msgstr "Bit-emaria:"
 
-#: ../gap/gap_mpege.c:331
+#: ../gap/gap_mpege.c:332
 msgid ""
 "Used for constant bitrates (bit/sec). low rate gives good compression + bad "
 "quality"
@@ -4123,34 +4202,34 @@ msgstr ""
 "Bit-emari (bit/s) konstanterako erabilia. Emari txikiek konpresio ona eta "
 "kalitate txarra ematen dute"
 
-#: ../gap/gap_mpege.c:347
+#: ../gap/gap_mpege.c:348
 msgid "Outputfile:"
 msgstr "Irteera-fitxategia:"
 
 #. pixel
-#: ../gap/gap_mpege.c:349
+#: ../gap/gap_mpege.c:350
 msgid "Name of the resulting MPEG outputfile"
 msgstr "Lortzen den MPEG irteera-fitxategiaren izena"
 
-#: ../gap/gap_mpege.c:355
+#: ../gap/gap_mpege.c:356
 msgid "Paramfile:"
 msgstr "Parametro-fitxategia:"
 
 #. pixel
-#: ../gap/gap_mpege.c:357
+#: ../gap/gap_mpege.c:358
 msgid "Name of the encoder-parameterfile (to be generated)"
 msgstr "Kodetzailearen parametro-fitxategiaren izena (sortzekoa)"
 
-#: ../gap/gap_mpege.c:363
+#: ../gap/gap_mpege.c:364
 msgid "Startscript:"
 msgstr "Hasierako scripta:"
 
 #. pixel
-#: ../gap/gap_mpege.c:365
+#: ../gap/gap_mpege.c:366
 msgid "Name of the startscript (to be generated/executed)"
 msgstr "Hasierako script-aren izena (sortzekoa/exekutatzekoa)"
 
-#: ../gap/gap_mpege.c:381
+#: ../gap/gap_mpege.c:382
 msgid ""
 "Generate parameterfile for mpeg_encode 1.5\n"
 "(the freely distributed Berkeley MPEG-1 video encoder.)\n"
@@ -4158,28 +4237,28 @@ msgstr ""
 "mpeg_encode 1.5erako parametro-fitxategia sortzen du\n"
 "(doan banatzen den Berkeley-ko MPEG-1 bideo-kodetzailea da hori.)\n"
 
-#: ../gap/gap_mpege.c:385
+#: ../gap/gap_mpege.c:386
 msgid "Constant Bitrate:"
 msgstr "Bit-emari konstantea:"
 
-#: ../gap/gap_mpege.c:386
+#: ../gap/gap_mpege.c:387
 msgid "Ignore I/P/QSCALE values and use constant bit-rate"
 msgstr "Ez ikusi egin I/P/QSCALE balioei eta erabili bit-emari konstantea"
 
-#: ../gap/gap_mpege.c:393
+#: ../gap/gap_mpege.c:394
 msgid "Pattern:"
 msgstr "Eredua:"
 
 #. pixel
-#: ../gap/gap_mpege.c:395
+#: ../gap/gap_mpege.c:396
 msgid "How to encode MPEG frame sequence (I/P/B frames)"
 msgstr "Nola kodetu MPEG fotograma-sekuentzia (I/P/B fotogramak)"
 
-#: ../gap/gap_mpege.c:403
+#: ../gap/gap_mpege.c:404
 msgid "IQSCALE:"
 msgstr "IKSCALE:"
 
-#: ../gap/gap_mpege.c:404
+#: ../gap/gap_mpege.c:405
 msgid ""
 "Quality scale for I-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -4187,11 +4266,11 @@ msgstr ""
 "I-fotogramen kalitate-eskala\n"
 "(1 = kalitaterik onena, 31 = konpresiorik onena)"
 
-#: ../gap/gap_mpege.c:413
+#: ../gap/gap_mpege.c:414
 msgid "PQSCALE:"
 msgstr "PKESKALA:"
 
-#: ../gap/gap_mpege.c:414
+#: ../gap/gap_mpege.c:415
 msgid ""
 "Quality scale for P-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -4199,11 +4278,11 @@ msgstr ""
 "P-fotogramen kalitate-eskala\n"
 "(1 = kalitaterik onena, 31 = konpresiorik onena)"
 
-#: ../gap/gap_mpege.c:423
+#: ../gap/gap_mpege.c:424
 msgid "BQSCALE:"
 msgstr "BKESKALA:"
 
-#: ../gap/gap_mpege.c:424
+#: ../gap/gap_mpege.c:425
 msgid ""
 "Quality scale for B-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -4211,31 +4290,31 @@ msgstr ""
 "B-fotogramen kalitate-eskala\n"
 "(1 = kalitaterik onena, 31 = konpresiorik onena)"
 
-#: ../gap/gap_mpege.c:433
+#: ../gap/gap_mpege.c:434
 msgid "P-Search:"
 msgstr "P-Bilaketa:"
 
-#: ../gap/gap_mpege.c:434
+#: ../gap/gap_mpege.c:435
 msgid "Search algorithmus used for P-frames"
 msgstr "P fotogrametarako erabilitako bilaketa-algoritmoak"
 
-#: ../gap/gap_mpege.c:442
+#: ../gap/gap_mpege.c:443
 msgid "B-Search:"
 msgstr "B-Bilaketa:"
 
-#: ../gap/gap_mpege.c:443
+#: ../gap/gap_mpege.c:444
 msgid "Search algorithmus used for B-frames"
 msgstr "B fotogrametarako erabilitako bilaketa-algoritmoak"
 
-#: ../gap/gap_mpege.c:450
+#: ../gap/gap_mpege.c:451
 msgid "Gen MPEG_ENCODE Parameters"
 msgstr "Sortu MPEG_ENCODE parametroak"
 
-#: ../gap/gap_mpege.c:451 ../gap/gap_mpege.c:494
+#: ../gap/gap_mpege.c:452 ../gap/gap_mpege.c:495
 msgid "Encode Values"
 msgstr "Kodetu balioak"
 
-#: ../gap/gap_mpege.c:468
+#: ../gap/gap_mpege.c:469
 msgid ""
 "Generate parameterfile for mpeg2encode 1.2\n"
 "(MPEG-2 video encoder.)\n"
@@ -4243,24 +4322,24 @@ msgstr ""
 "mpeg2encode 1.2rako parametro-fitxategia sortzen du\n"
 "(MPEG-2 bideo-kodetzailea da hori.)\n"
 
-#: ../gap/gap_mpege.c:471
+#: ../gap/gap_mpege.c:472
 msgid "MPEG-type:"
 msgstr "MPEG mota:"
 
-#: ../gap/gap_mpege.c:482
+#: ../gap/gap_mpege.c:483
 msgid "Videoformat:"
 msgstr "Bideo-formatua:"
 
-#: ../gap/gap_mpege.c:483
+#: ../gap/gap_mpege.c:484
 msgid "Videoformat"
 msgstr "Bideo-formatua"
 
 #. framerates above 30 ar not allowed in mpeg2encode
-#: ../gap/gap_mpege.c:493
+#: ../gap/gap_mpege.c:494
 msgid "Gen MPEG2ENCODE Parameters"
 msgstr "Sortu MPEG2ENCODE parametroak"
 
-#: ../gap/gap_mpege.c:1058
+#: ../gap/gap_mpege.c:1059
 msgid ""
 "\n"
 "WARNING: mpeg_encode does not support fileformat "
@@ -4268,7 +4347,7 @@ msgstr ""
 "\n"
 "ABISUA: mpeg_encode-k ez du fitxategi-formatua onartzen "
 
-#: ../gap/gap_mpege.c:1061
+#: ../gap/gap_mpege.c:1062
 msgid ""
 "\n"
 "ERROR: width not a multiple of 16"
@@ -4276,7 +4355,7 @@ msgstr ""
 "\n"
 "ERROREA: zabalera ez da 16ren multiploa"
 
-#: ../gap/gap_mpege.c:1062
+#: ../gap/gap_mpege.c:1063
 msgid ""
 "\n"
 "ERROR: height not a multiple of 16"
@@ -4284,7 +4363,7 @@ msgstr ""
 "\n"
 "ERROREA: altuera ez da 16ren multiploa"
 
-#: ../gap/gap_mpege.c:1068
+#: ../gap/gap_mpege.c:1069
 msgid ""
 "\n"
 "WARNING: mpeg2encode does not support fileformat "
@@ -4292,7 +4371,7 @@ msgstr ""
 "\n"
 "ABISUA: mpeg2encode-k ez du fitxategi-formatua onartzen "
 
-#: ../gap/gap_mpege.c:1073
+#: ../gap/gap_mpege.c:1074
 msgid ""
 "\n"
 "ERROR: invoked from a single image, but video frame is required"
@@ -4359,12 +4438,12 @@ msgstr ""
 msgid "Render Filename to Layer"
 msgstr "Errendatu fitxategi-izena geruzara"
 
-#: ../gap/gap_name2layer_main.c:519 ../gap/gap_video_index_creator.c:973
-#: ../gap/gap_wr_opacity.c:356
+#: ../gap/gap_name2layer_main.c:519 ../gap/gap_video_index_creator.c:1013
+#: ../gap/gap_wr_opacity.c:360
 msgid "Settings :"
 msgstr "Ezarpenak:"
 
-#: ../gap/gap_navigator_dialog.c:439
+#: ../gap/gap_navigator_dialog.c:440
 msgid ""
 "Playback\n"
 "SHIFT converts the selected frames to temporary image, and does "
@@ -4374,7 +4453,7 @@ msgstr ""
 "Maius teklak hautatutako fotogramak aldi baterako irudi bihurtzen  ditu, eta "
 "geruza-animazioa erreproduzitzen du aldi baterako irudian"
 
-#: ../gap/gap_navigator_dialog.c:445
+#: ../gap/gap_navigator_dialog.c:446
 msgid ""
 "Smart update thumbnails\n"
 "SHIFT forces thumbnail update for all frames"
@@ -4382,19 +4461,19 @@ msgstr ""
 "Koadro txikien eguneratze azkarra\n"
 "Maius teklak fotograma guztietako koadro txikiak eguneratzea behartzen du"
 
-#: ../gap/gap_navigator_dialog.c:450
+#: ../gap/gap_navigator_dialog.c:451
 msgid "Duplicate selected frames"
 msgstr "Bikoiztu hautatutako fotogramak"
 
-#: ../gap/gap_navigator_dialog.c:454
+#: ../gap/gap_navigator_dialog.c:455
 msgid "Delete selected frames"
 msgstr "Ezabatu hautatutako fotogramak"
 
-#: ../gap/gap_navigator_dialog.c:463
+#: ../gap/gap_navigator_dialog.c:464
 msgid "Goto first frame"
 msgstr "Joan lehen fotogramara"
 
-#: ../gap/gap_navigator_dialog.c:467
+#: ../gap/gap_navigator_dialog.c:468
 msgid ""
 "Goto prev frame\n"
 "SHIFT use timezoom stepsize"
@@ -4402,7 +4481,7 @@ msgstr ""
 "Joan aurreko fotogramara\n"
 "Maius teklak denbora-zoomaren urrats-tamaina erabiltzen du"
 
-#: ../gap/gap_navigator_dialog.c:472
+#: ../gap/gap_navigator_dialog.c:473
 msgid ""
 "Goto next frame\n"
 "SHIFT use timezoom stepsize"
@@ -4410,11 +4489,11 @@ msgstr ""
 "Joan hurrengo fotogramara\n"
 "Maius teklak denbora-zoomaren urrats-tamaina erabiltzen du"
 
-#: ../gap/gap_navigator_dialog.c:477
+#: ../gap/gap_navigator_dialog.c:478
 msgid "Goto last frame"
 msgstr "Joan azken fotogramara"
 
-#: ../gap/gap_navigator_dialog.c:545
+#: ../gap/gap_navigator_dialog.c:546
 msgid "VCR Navigator..."
 msgstr "Bideo-grabagailuaren nabigatzailea..."
 
@@ -4534,7 +4613,7 @@ msgid "Select None"
 msgstr "Ez hautatu bat ere"
 
 #. Video Length (frames)
-#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:6703
+#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:6855
 msgid "Videoframes:"
 msgstr "Bideo-fotogramak:"
 
@@ -4556,7 +4635,7 @@ msgid "Video Navigator"
 msgstr "Bideo-nabigatzailea"
 
 #. set layername
-#: ../gap/gap_onion_base.c:557
+#: ../gap/gap_onion_base.c:558
 #, c-format
 msgid "onionskin_%06d"
 msgstr "tipula-papera_%06d"
@@ -4834,7 +4913,7 @@ msgid "Removing onionskin layers..."
 msgstr "Tipula-paper motako geruzak kentzen..."
 
 #. Format the message
-#: ../gap/gap_player_dialog.c:403
+#: ../gap/gap_player_dialog.c:404
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
@@ -4843,23 +4922,23 @@ msgstr ""
 "Arazoa dago audioaren erreprodukzioarekin. Audiolib-ek hau jakinarazi du:\n"
 "%s"
 
-#: ../gap/gap_player_dialog.c:424
+#: ../gap/gap_player_dialog.c:425
 msgid "Audiosource:"
 msgstr "Audio-iturburua:"
 
-#: ../gap/gap_player_dialog.c:435
+#: ../gap/gap_player_dialog.c:436
 msgid "Wavefile:"
 msgstr "Soinu-fitxategia:"
 
-#: ../gap/gap_player_dialog.c:437
+#: ../gap/gap_player_dialog.c:438
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
 msgstr "RIFF WAVE formatuan kopia gisa sortu beharreko soinu-fitxategiaren izena"
 
-#: ../gap/gap_player_dialog.c:444
+#: ../gap/gap_player_dialog.c:445
 msgid "Resample:"
 msgstr "Berriz lagindu:"
 
-#: ../gap/gap_player_dialog.c:445
+#: ../gap/gap_player_dialog.c:446
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -4869,27 +4948,27 @@ msgstr ""
 
 #. Audio Samplerate
 #. the Samplerate label
-#: ../gap/gap_player_dialog.c:453 ../gap/gap_player_dialog.c:6645
-#: ../gap/gap_story_dialog.c:8979 ../vid_common/gap_cme_gui.c:3299
+#: ../gap/gap_player_dialog.c:454 ../gap/gap_player_dialog.c:6797
+#: ../gap/gap_story_dialog.c:8902 ../vid_common/gap_cme_gui.c:3349
 msgid "Samplerate:"
 msgstr "Lagintze-maiztasuna:"
 
-#: ../gap/gap_player_dialog.c:454
+#: ../gap/gap_player_dialog.c:455
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
 "Helburuko audioaren lagintze-maiztasuna lagin/s-tan ematen da. Ez ikusi egin "
 "desaktibatuta badago"
 
-#: ../gap/gap_player_dialog.c:475
+#: ../gap/gap_player_dialog.c:476
 msgid "Copy Audiofile as Wavefile"
 msgstr "Kopiatu audio-fitxategia soinu-fitxategi gisa"
 
-#: ../gap/gap_player_dialog.c:476 ../gap/gap_story_dialog.c:5137
-#: ../gap/gap_story_dialog.c:8617 ../gap/gap_story_dialog.c:9043
+#: ../gap/gap_player_dialog.c:477 ../gap/gap_story_dialog.c:5136
+#: ../gap/gap_story_dialog.c:8540 ../gap/gap_story_dialog.c:8966
 msgid "Settings"
 msgstr "Ezarpenak"
 
-#: ../gap/gap_player_dialog.c:569
+#: ../gap/gap_player_dialog.c:570
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -4901,29 +4980,29 @@ msgstr ""
 "Wavplay exekutagarria nonbait instalatu baduzu, \n"
 "WAVPLAYPATH ingurune-aldagaia ezar dezakezu gimp abiarazi baino lehen\n"
 
-#: ../gap/gap_player_dialog.c:632
+#: ../gap/gap_player_dialog.c:633
 msgid "Audio Delay"
 msgstr "Audio-atzerapena"
 
-#: ../gap/gap_player_dialog.c:644
+#: ../gap/gap_player_dialog.c:645
 msgid "Syncron"
 msgstr "Sinkron."
 
-#: ../gap/gap_player_dialog.c:648
+#: ../gap/gap_player_dialog.c:649
 msgid "Audio Skipped"
 msgstr "Audioa saltatu egin da"
 
-#: ../gap/gap_player_dialog.c:660
+#: ../gap/gap_player_dialog.c:661
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (%.4f fotograma/s)"
 
-#: ../gap/gap_player_dialog.c:757
+#: ../gap/gap_player_dialog.c:758
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Errorea gertatu da WAV goiburua '%s' fitxategitik irakurtzean"
 
-#: ../gap/gap_player_dialog.c:1105
+#: ../gap/gap_player_dialog.c:1110
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -4934,7 +5013,7 @@ msgstr ""
 "ez du programa exekutagarririk seinalatzen\n"
 "%s(e)rako konfiguratutako balioa hau da: %s\n"
 
-#: ../gap/gap_player_dialog.c:1126
+#: ../gap/gap_player_dialog.c:1131
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -4945,7 +5024,7 @@ msgstr ""
 "ez du programa exekutagarririk seinalatzen;\n"
 "uneko balioa hau da: %s\n"
 
-#: ../gap/gap_player_dialog.c:1162
+#: ../gap/gap_player_dialog.c:1167
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -4963,71 +5042,71 @@ msgstr ""
 "GIMP abiarazi baino lehen"
 
 #. filename prefix shortcut for storyboard single track playback for specified track number
-#: ../gap/gap_player_dialog.c:2037
+#: ../gap/gap_player_dialog.c:2124
 #, c-format
 msgid "STB:[%d]"
 msgstr "GidoiGr:[%d]"
 
 #. filename prefix shortcut for storyboard in composite video playback mode
-#: ../gap/gap_player_dialog.c:2042
+#: ../gap/gap_player_dialog.c:2129
 msgid "STB:"
 msgstr "GidoiGr:"
 
 #. shortname prefix to indicate that displayed filename is a single videofile
-#: ../gap/gap_player_dialog.c:2059
+#: ../gap/gap_player_dialog.c:2146
 msgid "VIDEO:"
 msgstr "BIDEOA:"
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
-#: ../gap/gap_player_dialog.c:2071
+#: ../gap/gap_player_dialog.c:2158
 msgid "FRAMES:"
 msgstr "FOTOGRAMAK:"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: ../gap/gap_player_dialog.c:2170 ../gap/gap_player_dialog.c:4387
+#: ../gap/gap_player_dialog.c:2257 ../gap/gap_player_dialog.c:4539
 msgid "Playing"
 msgstr "Erreproduzitzen"
 
 #. the status value label
-#: ../gap/gap_player_dialog.c:2209 ../gap/gap_player_dialog.c:7815
+#: ../gap/gap_player_dialog.c:2296 ../gap/gap_player_dialog.c:7967
 msgid "Ready"
 msgstr "Prest"
 
-#: ../gap/gap_player_dialog.c:2342
+#: ../gap/gap_player_dialog.c:2430
 msgid "cheking audiotrack"
 msgstr "audioaren pista egiaztatzen"
 
-#: ../gap/gap_player_dialog.c:2362
+#: ../gap/gap_player_dialog.c:2450
 msgid "extracted audio is up to date"
 msgstr "erauzitako audioa eguneratuta dago"
 
-#: ../gap/gap_player_dialog.c:2371
+#: ../gap/gap_player_dialog.c:2459
 msgid "extracting audio"
 msgstr "audioa erauzten"
 
-#: ../gap/gap_player_dialog.c:2402
+#: ../gap/gap_player_dialog.c:2490
 msgid "Audio Extract CANCELLED"
 msgstr "Audioa erauztea bertan behera utzi da"
 
-#: ../gap/gap_player_dialog.c:2412 ../gap/gap_player_dialog.c:2423
+#: ../gap/gap_player_dialog.c:2500 ../gap/gap_player_dialog.c:2511
 msgid "Audio Extract FAILED"
 msgstr "Huts egin du audioa erauztean"
 
-#: ../gap/gap_player_dialog.c:2413 ../gap/gap_player_dialog.c:2424
+#: ../gap/gap_player_dialog.c:2501 ../gap/gap_player_dialog.c:2512
 #, c-format
 msgid "Extract of audiotrack failed on videofile: %s"
 msgstr "Huts egin du audio-pista erauztean bideo-fitxategian: %s"
 
-#: ../gap/gap_player_dialog.c:2689
+#: ../gap/gap_player_dialog.c:2827
 msgid "seek-selftest"
 msgstr "bilaketa-proba"
 
-#: ../gap/gap_player_dialog.c:2711 ../gap/gap_story_vthumb.c:301
+#: ../gap/gap_player_dialog.c:2849 ../gap/gap_story_vthumb.c:301
 #, c-format
 msgid "Creating Index"
 msgstr "Indizea sortzen"
 
-#: ../gap/gap_player_dialog.c:2734
+#: ../gap/gap_player_dialog.c:2879
 #, c-format
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
@@ -5036,27 +5115,27 @@ msgstr ""
 "Ez dago bideo-indize erabilgarririk. Fitxategiaren irakurketa sekuentziala "
 "(motela) egiteko soilik sar daiteke: %s"
 
-#: ../gap/gap_player_dialog.c:2817 ../gap/gap_story_dialog.c:6500
+#: ../gap/gap_player_dialog.c:2962 ../gap/gap_story_dialog.c:6499
 #, c-format
 msgid "Videoseek"
 msgstr "Bideo-bilaketa"
 
-#: ../gap/gap_player_dialog.c:3390 ../gap/gap_player_dialog.c:3854
+#: ../gap/gap_player_dialog.c:3542 ../gap/gap_player_dialog.c:4006
 #: ../gap/gap_story_vthumb.c:359
 msgid "Canceled"
 msgstr "Bertan behera utzi da"
 
 #. printf("DROP (SKIP) frame\n");
-#: ../gap/gap_player_dialog.c:4370
+#: ../gap/gap_player_dialog.c:4522
 msgid "Skip"
 msgstr "Saltatu"
 
-#: ../gap/gap_player_dialog.c:4399
+#: ../gap/gap_player_dialog.c:4551
 #, c-format
 msgid "Delay %.2f"
 msgstr "Atzerapena: %.2f"
 
-#: ../gap/gap_player_dialog.c:6037
+#: ../gap/gap_player_dialog.c:6189
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -5067,7 +5146,7 @@ msgstr ""
 "ez du programa exekutagarria seinalatzen\n"
 "%s(e)rako konfiguratutako balioa hau da: %s\n"
 
-#: ../gap/gap_player_dialog.c:6059
+#: ../gap/gap_player_dialog.c:6211
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -5078,7 +5157,7 @@ msgstr ""
 "ez du programa exekutagarririk seinalatzen;\n"
 "uneko balioa hau da: %s\n"
 
-#: ../gap/gap_player_dialog.c:6078
+#: ../gap/gap_player_dialog.c:6230
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
@@ -5087,53 +5166,53 @@ msgstr ""
 "ERROREA: audioa bihurtzeko kanpoko programa ez da exekutagarria.\n"
 "Fitxategi-izena: '%s'\n"
 
-#: ../gap/gap_player_dialog.c:6098
+#: ../gap/gap_player_dialog.c:6250
 msgid "Creating audiofile - please wait"
 msgstr "Audio-fitxategia sortzen - itxaron"
 
-#: ../gap/gap_player_dialog.c:6134
+#: ../gap/gap_player_dialog.c:6286
 msgid "external audioconverter FAILED."
 msgstr "kanpoko audio bihurtzaileak HUTS EGIN DU."
 
-#: ../gap/gap_player_dialog.c:6135
+#: ../gap/gap_player_dialog.c:6287
 msgid "extern audioconverter FAILED"
 msgstr "kanpoko audio bihurtzaileak HUTS EGIN DU"
 
-#: ../gap/gap_player_dialog.c:6281
+#: ../gap/gap_player_dialog.c:6433
 msgid "Select Audiofile"
 msgstr "Hautatu audio-fitxategia"
 
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: ../gap/gap_player_dialog.c:6354 ../gap/gap_vex_dialog.c:2685
-#: ../vid_common/gap_cme_gui.c:3238
+#: ../gap/gap_player_dialog.c:6506 ../gap/gap_vex_dialog.c:2685
+#: ../vid_common/gap_cme_gui.c:3288
 msgid "Audiofile:"
 msgstr "Audio-fitxategia:"
 
-#: ../gap/gap_player_dialog.c:6366
+#: ../gap/gap_player_dialog.c:6518
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr "Sartu audio-fitxategi bat. Fitxategiak RIFF WAVE formatuan egon behar du."
 
-#: ../gap/gap_player_dialog.c:6387
+#: ../gap/gap_player_dialog.c:6539
 msgid "Open audiofile selection browser dialog window"
 msgstr "Ireki audio-fitxategia hautatzeko arakatzailearen elkarrizketa-koadroa"
 
 #. Volume
-#: ../gap/gap_player_dialog.c:6399 ../gap/gap_story_dialog.c:8995
+#: ../gap/gap_player_dialog.c:6551 ../gap/gap_story_dialog.c:8918
 msgid "Volume:"
 msgstr "Bolumena:"
 
-#: ../gap/gap_player_dialog.c:6419
+#: ../gap/gap_player_dialog.c:6571
 msgid "Audio Volume"
 msgstr "Audioaren bolumena"
 
 #. check button
-#: ../gap/gap_player_dialog.c:6425
+#: ../gap/gap_player_dialog.c:6577
 msgid "Enable"
 msgstr "Gaitu"
 
-#: ../gap/gap_player_dialog.c:6430
+#: ../gap/gap_player_dialog.c:6582
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
@@ -5142,11 +5221,11 @@ msgstr ""
 "DESAKTIBATUTA: bideoa isilik erreproduzitzen du"
 
 #. Sample Offset
-#: ../gap/gap_player_dialog.c:6440
+#: ../gap/gap_player_dialog.c:6592
 msgid "Offset:"
 msgstr "Desplazamendua:"
 
-#: ../gap/gap_player_dialog.c:6460
+#: ../gap/gap_player_dialog.c:6612
 msgid ""
 "Audio offset in frames at original video playback speed. A value of 0 starts "
 "audio and video at synchron time. A value of -10 will play frame 1 up to "
@@ -5162,11 +5241,11 @@ msgstr ""
 "erreprodukzio-abiaduran 10 fotograma erreproduzitzeko behar duen denboran."
 
 #. check button
-#: ../gap/gap_player_dialog.c:6475
+#: ../gap/gap_player_dialog.c:6627
 msgid "original audio"
 msgstr "jatorrizko audioa"
 
-#: ../gap/gap_player_dialog.c:6480
+#: ../gap/gap_player_dialog.c:6632
 msgid ""
 "ON: for video clip playback sync audio startposition according to original "
 "position in the referenced video. Use this option if the audiofile is an "
@@ -5178,15 +5257,15 @@ msgstr ""
 "erreproduzitzeko (erreferentziatutako bideoaren hasierako posizioaren "
 "arabera). Erabili aukera hau audio-fitxategia erreferentziatutako bideo "
 "osoaren erauzitako audio-pista denean.\n"
-"DESAKTIBATUA: ez sinkronizatu audioa "
-"jatorrizko posizioarekin erreferentziatutako bideoetan. Erabili aukera hau "
-"audio-fitxategi independentea erreproduzitzeko."
+"DESAKTIBATUA: ez sinkronizatu audioa jatorrizko posizioarekin "
+"erreferentziatutako bideoetan. Erabili aukera hau audio-fitxategi "
+"independentea erreproduzitzeko."
 
-#: ../gap/gap_player_dialog.c:6516
+#: ../gap/gap_player_dialog.c:6668
 msgid "Audio Track"
 msgstr "Audio-pista"
 
-#: ../gap/gap_player_dialog.c:6526
+#: ../gap/gap_player_dialog.c:6678
 msgid ""
 "Extract Audio Track from videofile for the current videofile and use it for "
 "origial audiotrack playback"
@@ -5195,11 +5274,11 @@ msgstr ""
 "erabili jatorrizko audio-pista erreproduzitzeko"
 
 #. create wavfile button
-#: ../gap/gap_player_dialog.c:6540
+#: ../gap/gap_player_dialog.c:6692
 msgid "Copy As Wavfile"
 msgstr "Kopiatu soinu-fitxategi gisa"
 
-#: ../gap/gap_player_dialog.c:6542
+#: ../gap/gap_player_dialog.c:6694
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
@@ -5207,78 +5286,78 @@ msgstr ""
 "Sortu audio-fitxategiaren kopia RIFF WAVE audio-fitxategi gisa, eta erabili "
 "kopia hori audioa erreproduzitzeko"
 
-#: ../gap/gap_player_dialog.c:6554
+#: ../gap/gap_player_dialog.c:6706
 msgid "Reset offset and volume"
 msgstr "Leheneratu desplazamendua eta bolumena"
 
 #. Audio Offset Length (mm:ss:msec)
-#: ../gap/gap_player_dialog.c:6586
+#: ../gap/gap_player_dialog.c:6738
 msgid "Offsettime:"
 msgstr "Desplazamendu-denbora:"
 
 #. Total Audio Length (mm:ss:msec)
 #. the audio timing information labels
-#: ../gap/gap_player_dialog.c:6600 ../vid_common/gap_cme_gui.c:3469
+#: ../gap/gap_player_dialog.c:6752 ../vid_common/gap_cme_gui.c:3521
 msgid "Audiotime:"
 msgstr "Audio-denbora:"
 
 #. Length (frames)
-#: ../gap/gap_player_dialog.c:6615
+#: ../gap/gap_player_dialog.c:6767
 msgid "Audioframes:"
 msgstr "Audio-fotogramak:"
 
 #. Audiolength (Samples)
-#: ../gap/gap_player_dialog.c:6630
+#: ../gap/gap_player_dialog.c:6782
 msgid "Samples:"
 msgstr "Laginak:"
 
 #. Audio Channels
-#: ../gap/gap_player_dialog.c:6659
+#: ../gap/gap_player_dialog.c:6811
 msgid "Channels:"
 msgstr "Kanalak:"
 
 #. Bits per Audio Sample
-#: ../gap/gap_player_dialog.c:6673
+#: ../gap/gap_player_dialog.c:6825
 msgid "Bits/Sample:"
 msgstr "Bit/Lagin:"
 
 #. Total Video Length (mm:ss:msec)
 #. the video timing information labels
-#: ../gap/gap_player_dialog.c:6688 ../vid_common/gap_cme_gui.c:3442
+#: ../gap/gap_player_dialog.c:6840 ../vid_common/gap_cme_gui.c:3494
 msgid "Videotime:"
 msgstr "Bideo-denbora:"
 
 #. Cahe size label
-#: ../gap/gap_player_dialog.c:6900
+#: ../gap/gap_player_dialog.c:7052
 msgid "Cache Size (MB):"
 msgstr "Cache-aren tamaina (MB):"
 
-#: ../gap/gap_player_dialog.c:6926
+#: ../gap/gap_player_dialog.c:7078
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
 msgstr ""
 "Fotograma-erreproduzigailuaren cache-aren tamaina maximoa (MB). 0 balioak "
 "cachea itzali egiten du."
 
-#: ../gap/gap_player_dialog.c:6935
+#: ../gap/gap_player_dialog.c:7087
 msgid "Clear the frame cache"
 msgstr "Garbitu fotogramaren cachea"
 
 #. Chache Status (number of frames currently in the cache)
-#: ../gap/gap_player_dialog.c:6946
+#: ../gap/gap_player_dialog.c:7098
 msgid "Cached Frames:"
 msgstr "Cachean gordetako fotogramak:"
 
 #. Layout Options label
-#: ../gap/gap_player_dialog.c:6971
+#: ../gap/gap_player_dialog.c:7123
 msgid "Layout Options:"
 msgstr "Diseinuaren aukerak:"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:6981
+#: ../gap/gap_player_dialog.c:7133
 msgid "Show Button Array"
 msgstr "Erakutsi botoi-taula"
 
-#: ../gap/gap_player_dialog.c:6987
+#: ../gap/gap_player_dialog.c:7139
 msgid ""
 "ON: Show the go button array positioning tool.\n"
 "OFF: Hide the go button array."
@@ -5287,11 +5366,11 @@ msgstr ""
 "taula ezkutatzen du."
 
 #. Show Position Scale (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:7000
+#: ../gap/gap_player_dialog.c:7152
 msgid "Show Position Scale"
 msgstr "Erakutsi kokapen-eskala"
 
-#: ../gap/gap_player_dialog.c:7006
+#: ../gap/gap_player_dialog.c:7158
 msgid ""
 "ON: Show the position scale.\n"
 "OFF: Hide the position scale."
@@ -5300,48 +5379,48 @@ msgstr ""
 "DESAKTIBATUTA: Kokapen-eskala ezkutatzen du."
 
 #. Save Player Preferences label
-#: ../gap/gap_player_dialog.c:7019
+#: ../gap/gap_player_dialog.c:7171
 msgid "Save Preferences:"
 msgstr "Gorde hobespenak:"
 
-#: ../gap/gap_player_dialog.c:7031
+#: ../gap/gap_player_dialog.c:7183
 msgid "Save player cache and layout settings (as gimprc parameters)"
 msgstr ""
 "Gorde erreproduzigailuaren cachea eta diseinu-ezarpenak (gimprc parametro "
 "gisa)"
 
-#: ../gap/gap_player_dialog.c:7146
+#: ../gap/gap_player_dialog.c:7298
 msgid "Videoframe Playback"
 msgstr "Bideo-fotogramak erreproduzitzea"
 
 #. vid options TAB frame
 #. the video options notebook tab
-#: ../gap/gap_player_dialog.c:7161 ../vid_common/gap_cme_gui.c:2544
+#: ../gap/gap_player_dialog.c:7313 ../vid_common/gap_cme_gui.c:2594
 msgid "Video Options"
 msgstr "Bideo-aukerak"
 
 #. configure options TAB frame
-#: ../gap/gap_player_dialog.c:7185
+#: ../gap/gap_player_dialog.c:7337
 msgid "Preferences"
 msgstr "Hobespenak"
 
 #. audio options TAB frame
 #. the Audio Options notebook tab
-#: ../gap/gap_player_dialog.c:7201 ../vid_common/gap_cme_gui.c:2556
+#: ../gap/gap_player_dialog.c:7353 ../vid_common/gap_cme_gui.c:2606
 msgid "Audio Options"
 msgstr "Audio-aukerak"
 
-#: ../gap/gap_player_dialog.c:7294
+#: ../gap/gap_player_dialog.c:7446
 msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Klik: joan fotogramara, Ktrl+klik: ezarri 'Fotograma honetatik:', Alt+klik: "
 "ezarri 'Fotograma honetara:'"
 
-#: ../gap/gap_player_dialog.c:7367 ../gap/gap_player_dialog.c:7500
+#: ../gap/gap_player_dialog.c:7519 ../gap/gap_player_dialog.c:7652
 msgid "The currently displayed frame number"
 msgstr "Unean bistaratutako fotogramaren zenbakia"
 
-#: ../gap/gap_player_dialog.c:7447
+#: ../gap/gap_player_dialog.c:7599
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -5350,13 +5429,13 @@ msgstr ""
 "bitartearen hasiera gisa,\n"
 "Maius+klik: kargatu fotograma hori irudi dei-egilean"
 
-#: ../gap/gap_player_dialog.c:7458
+#: ../gap/gap_player_dialog.c:7610
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr ""
 "Ezarri uneko fotogramaren zenbakia 'Fotograma honetatik:' hautapen-"
 "bitartearen hasiera gisa"
 
-#: ../gap/gap_player_dialog.c:7474
+#: ../gap/gap_player_dialog.c:7626
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -5365,53 +5444,53 @@ msgstr ""
 "bitartearen amaiera gisa,\n"
 "Maius+klik: kargatu fotograma hori irudi dei-egilean"
 
-#: ../gap/gap_player_dialog.c:7485
+#: ../gap/gap_player_dialog.c:7637
 msgid "Set current framenr as selection range end 'To Frame'"
 msgstr ""
 "Ezarri uneko fotogramaren zenbakia 'Fotograma honetara:' hautapen-"
 "bitartearen amaiera gisa"
 
-#: ../gap/gap_player_dialog.c:7528
+#: ../gap/gap_player_dialog.c:7680
 msgid "Add range to cliplist"
 msgstr "Gehitu bitartea klip-zerrendari"
 
-#: ../gap/gap_player_dialog.c:7532
+#: ../gap/gap_player_dialog.c:7684
 msgid "Print range to stdout"
 msgstr "Inprimatu bitartea irteera estandarrean (stdout)"
 
-#: ../gap/gap_player_dialog.c:7554
+#: ../gap/gap_player_dialog.c:7706
 msgid "Start framenumber of selection range"
 msgstr "Hautapen-bitarteko hasierako fotograma-zenbakia"
 
-#: ../gap/gap_player_dialog.c:7577
+#: ../gap/gap_player_dialog.c:7729
 msgid "Add inverse range to cliplist"
 msgstr "Gehitu bitarte alderantzikatua klip-zerrendari"
 
-#: ../gap/gap_player_dialog.c:7581
+#: ../gap/gap_player_dialog.c:7733
 msgid "Print inverse range to stdout"
 msgstr "Inprimatu bitarte alderantzikatua irteera estandarrean (stdout)"
 
-#: ../gap/gap_player_dialog.c:7605
+#: ../gap/gap_player_dialog.c:7757
 msgid "End framenumber of selection range"
 msgstr "Hautapen-bitarteko amaierako fotograma-zenbakia"
 
-#: ../gap/gap_player_dialog.c:7621
+#: ../gap/gap_player_dialog.c:7773
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Leheneratu erreprodukzio-abiadura jatorrizko (edo aurreko) baliora"
 
-#: ../gap/gap_player_dialog.c:7644
+#: ../gap/gap_player_dialog.c:7796
 msgid "Current playback speed (frames/sec)"
 msgstr "Uneko erreprodukzio-abiadura (fotograma/s)"
 
-#: ../gap/gap_player_dialog.c:7670
+#: ../gap/gap_player_dialog.c:7822
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Txandakatu 128/256 tamainak. Maius: ezarri 1:1 irudiaren tamaina oso gisa"
 
-#: ../gap/gap_player_dialog.c:7692
+#: ../gap/gap_player_dialog.c:7844
 msgid "Video preview size (pixels)"
 msgstr "Bideo-aurrebistaren tamaina (pixelak)"
 
-#: ../gap/gap_player_dialog.c:7722
+#: ../gap/gap_player_dialog.c:7874
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -5420,11 +5499,11 @@ msgstr ""
 "DESAKTIBATUTA: erreproduzitu behin"
 
 #. SelOnly Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7736
+#: ../gap/gap_player_dialog.c:7888
 msgid "Selection only"
 msgstr "Hautapena soilik"
 
-#: ../gap/gap_player_dialog.c:7742
+#: ../gap/gap_player_dialog.c:7894
 msgid ""
 "ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
@@ -5433,20 +5512,20 @@ msgstr ""
 "DESAKTIBATUTA: erreproduzitu fotograma guztiak"
 
 #. PingPong Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7755
+#: ../gap/gap_player_dialog.c:7907
 msgid "Ping pong"
 msgstr "Aurrera-atzerakoa"
 
-#: ../gap/gap_player_dialog.c:7761
+#: ../gap/gap_player_dialog.c:7913
 msgid "ON: Play alternating forward/backward"
 msgstr "AKTIBATUTA: erreproduzitu aurrera/atzera txandakatuz"
 
 #. UseThumbnails Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7774
+#: ../gap/gap_player_dialog.c:7926
 msgid "Thumbnails"
 msgstr "Koadro txikiak"
 
-#: ../gap/gap_player_dialog.c:7780
+#: ../gap/gap_player_dialog.c:7932
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -5455,11 +5534,11 @@ msgstr ""
 "DESAKTIBATUTA: irakurri tamaina osoko fotogramak"
 
 #. ExactTiming Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7795
+#: ../gap/gap_player_dialog.c:7947
 msgid "Exact timing"
 msgstr "Tenporizazio zehatza"
 
-#: ../gap/gap_player_dialog.c:7801
+#: ../gap/gap_player_dialog.c:7953
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -5468,11 +5547,11 @@ msgstr ""
 "DESAKTIBATUTA: desgaitu fotogramak saltatzea"
 
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
-#: ../gap/gap_player_dialog.c:7859
+#: ../gap/gap_player_dialog.c:8011
 msgid "Cancel Videoindex creation"
 msgstr "Bertan behera utzi bideo-indizea sortzea"
 
-#: ../gap/gap_player_dialog.c:7863
+#: ../gap/gap_player_dialog.c:8015
 msgid ""
 "Cancel videoindex creation. Videoindex creation requires full scanning of "
 "the video but allows fast random access to frames afterwards. Without a "
@@ -5483,7 +5562,7 @@ msgstr ""
 "aukera ematen du. Bideo-indizerik gabe, irakurketa sekuentzial oso motela "
 "behar da fotogramak atzitzeko"
 
-#: ../gap/gap_player_dialog.c:7890
+#: ../gap/gap_player_dialog.c:8042
 msgid ""
 "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
@@ -5492,7 +5571,7 @@ msgstr ""
 "irudi gisa jatorrizko tamainan Ktrl: aurrebista-tamainan egiten ditu "
 "argazkiak Alt: irudi baten argazki berria sortzea behartzen du"
 
-#: ../gap/gap_player_dialog.c:7903
+#: ../gap/gap_player_dialog.c:8055
 msgid ""
 "Pause if playing (any mousebutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
@@ -5501,7 +5580,7 @@ msgstr ""
 "Erreproduzitzen ari ez bada, joan hasiera/aktibatuta/amaiera hautapenera "
 "(saguaren ezkerreko/erdiko/eskuineko botoia)"
 
-#: ../gap/gap_player_dialog.c:7913
+#: ../gap/gap_player_dialog.c:8065
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames  in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
@@ -5558,8 +5637,8 @@ msgstr "Eskalatu bideo-fotogramak (denak)"
 msgid "Scale (original %dx%d)"
 msgstr "Eskalatu (jatorrizkoa %dx%d)"
 
-#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:8607
-#: ../gap/gap_story_dialog.c:9030
+#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:8530
+#: ../gap/gap_story_dialog.c:8953
 msgid "Reset"
 msgstr "Berrezarri"
 
@@ -5690,7 +5769,7 @@ msgstr ""
 "(000001.ext) automatikoki gehitzen zaizkie bihurtutako fotograma guztiei."
 
 #. the extension label
-#: ../gap/gap_range_ops.c:530 ../gap/gap_split.c:452
+#: ../gap/gap_range_ops.c:530 ../gap/gap_split.c:454
 #: ../gap/gap_vex_dialog.c:2575
 msgid "Extension:"
 msgstr "Luzapena:"
@@ -5723,7 +5802,7 @@ msgstr ""
 "bihurtu behar izatea. Adibidez: GIF formatuak ezin du GBU maneiatu eta irudi "
 "mota indexatu bihurtzea behar du."
 
-#: ../gap/gap_range_ops.c:550 ../gap/gap_split.c:468
+#: ../gap/gap_range_ops.c:550 ../gap/gap_split.c:470
 msgid "Flatten:"
 msgstr "Berdindu:"
 
@@ -6017,11 +6096,11 @@ msgstr "Zentratu horizontalki"
 msgid "Center Vertical"
 msgstr "Zentratu bertikalki"
 
-#: ../gap/gap_split.c:170
+#: ../gap/gap_split.c:172
 msgid "Splitting image into frames..."
 msgstr "Irudia fotogrametan zatitzen..."
 
-#: ../gap/gap_split.c:363
+#: ../gap/gap_split.c:365
 msgid ""
 "Split Frames: Save operation failed.\n"
 "desired save plugin can't handle type\n"
@@ -6031,7 +6110,7 @@ msgstr ""
 "Gordetzeko nahi den pluginak ez du mota hori maneiatzen\n"
 "edo plugin hori ez dago erabilgarri."
 
-#: ../gap/gap_split.c:437
+#: ../gap/gap_split.c:439
 #, c-format
 msgid ""
 "Make a frame (diskfile) from each layer.\n"
@@ -6048,7 +6127,7 @@ msgstr ""
 "\n"
 "%s000001.%s\n"
 
-#: ../gap/gap_split.c:453
+#: ../gap/gap_split.c:455
 msgid ""
 "Extension of resulting frames. The extension is also used to define "
 "fileformat."
@@ -6056,11 +6135,11 @@ msgstr ""
 "Lortzen diren fotogramen luzapena. Luzapena fitxategi-formatua definitzeko "
 "ere erabiltzen da."
 
-#: ../gap/gap_split.c:460
+#: ../gap/gap_split.c:462
 msgid "Inverse Order:"
 msgstr "Ordena alderantzikatua:"
 
-#: ../gap/gap_split.c:461
+#: ../gap/gap_split.c:463
 msgid ""
 "ON: Start with frame 000001 at top layer.\n"
 "OFF: Start with frame 000001 at background layer."
@@ -6068,7 +6147,7 @@ msgstr ""
 "AKTIBATUTA: hasi 000001 fotogramarekin goiko geruzan.\n"
 "DESAKTIBATUTA: Hasi 000001 fotogramarekin atzeko planoko geruzan."
 
-#: ../gap/gap_split.c:469
+#: ../gap/gap_split.c:471
 msgid ""
 "ON: Remove alpha channel in resulting frames. Transparent parts are filled "
 "with the background color.\n"
@@ -6079,11 +6158,11 @@ msgstr ""
 "DESAKTIBATUTA: lortzen diren fotogrametako geruzek beren alfa kanala "
 "mantentzen dute."
 
-#: ../gap/gap_split.c:476
+#: ../gap/gap_split.c:478
 msgid "Only Visible:"
 msgstr "Ikusgai bakarrik:"
 
-#: ../gap/gap_split.c:477
+#: ../gap/gap_split.c:479
 msgid ""
 "ON: Handle only visible layers.\n"
 "OFF: handle all layers and force visibiblity"
@@ -6091,30 +6170,32 @@ msgstr ""
 "AKTIBATUTA: maneiatu ikusgai dauden geruzak.\n"
 "DESAKTIBATUTA: maneiatu geruza guztiak eta behartu ikusgaitasuna"
 
-#: ../gap/gap_split.c:484
+#: ../gap/gap_split.c:486
 msgid "Copy properties:"
 msgstr "Kopiatu propietateak:"
 
-#: ../gap/gap_split.c:485
+#: ../gap/gap_split.c:487
 msgid ""
 "ON: Copy all image properties (channels, pathes, guides) to all frame "
 "images.\n"
 "OFF: copy only layers without image properties to frame images"
 msgstr ""
-"AKTIBATUTA: kopiatu irudiaren propietate guztiak (kanalak, bideak, gidak) fotogramen irudi guztietan\n"
-"DESAKTIBATUTA: geruzak bakarrik kopiatu (irudiaren propietaterik gabe) fotogramen irudietan"
+"AKTIBATUTA: kopiatu irudiaren propietate guztiak (kanalak, bideak, gidak) "
+"fotogramen irudi guztietan\n"
+"DESAKTIBATUTA: geruzak bakarrik kopiatu (irudiaren propietaterik gabe) "
+"fotogramen irudietan"
 
-#: ../gap/gap_split.c:494
+#: ../gap/gap_split.c:496
 msgid "How many digits to use for the framenumber filename part"
 msgstr ""
 "Zenbat digitu erabili behar diren fitxategi-izeneko fotograma-zenbakiaren "
 "zatian"
 
-#: ../gap/gap_split.c:510
+#: ../gap/gap_split.c:512
 msgid "Split Image into Frames"
 msgstr "Zatitu irudia fotogrametan"
 
-#: ../gap/gap_split.c:511
+#: ../gap/gap_split.c:513
 msgid "Split Settings"
 msgstr "Zatitze-ezarpenak"
 
@@ -6210,9 +6291,9 @@ msgid "Transition Attributes"
 msgstr "Trantsizio-atributuak"
 
 #. the frame
-#: ../gap/gap_story_att_trans_dlg.c:2591 ../gap/gap_story_dialog.c:5931
-#: ../gap/gap_story_dialog.c:6010 ../gap/gap_story_dialog.c:6110
-#: ../gap/gap_story_properties.c:3766
+#: ../gap/gap_story_att_trans_dlg.c:2591 ../gap/gap_story_dialog.c:5930
+#: ../gap/gap_story_dialog.c:6009 ../gap/gap_story_dialog.c:6109
+#: ../gap/gap_story_properties.c:3768
 #: ../gap/gap_story_section_properties.c:779
 msgid "Properties"
 msgstr "Propietateak"
@@ -6417,18 +6498,18 @@ msgstr ""
 
 #. the comment label
 #. the Comment lable
-#: ../gap/gap_story_att_trans_dlg.c:2896 ../gap/gap_story_properties.c:4626
+#: ../gap/gap_story_att_trans_dlg.c:2896 ../gap/gap_story_properties.c:4628
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3589
 msgid "Comment:"
 msgstr "Iruzkina:"
 
 #. refuse player call while vthumb prefetch is busy
 #.
-#: ../gap/gap_story_dialog.c:1646
+#: ../gap/gap_story_dialog.c:1644
 msgid "playback was blocked (video file access is busy)"
 msgstr "erreprodukzioa blokeatuta dago (bideo-fitxategia lanpetuta dago)"
 
-#: ../gap/gap_story_dialog.c:2210 ../gap/gap_story_dialog.c:2248
+#: ../gap/gap_story_dialog.c:2219 ../gap/gap_story_dialog.c:2257
 #, c-format
 msgid ""
 "** ERROR: Storyboard parser reported:\n"
@@ -6437,101 +6518,101 @@ msgstr ""
 "** ERROREA: gidoi grafikoaren analizatzaileak honen berri eman du:\n"
 "%s\n"
 
-#: ../gap/gap_story_dialog.c:2968
+#: ../gap/gap_story_dialog.c:2967
 msgid "Load Storyboard"
 msgstr "Kargatu gidoi grafikoa"
 
-#: ../gap/gap_story_dialog.c:2972
+#: ../gap/gap_story_dialog.c:2971
 msgid "Load Cliplist"
 msgstr "Kargatu klip-zerrenda"
 
-#: ../gap/gap_story_dialog.c:3010
+#: ../gap/gap_story_dialog.c:3009
 msgid "Save Storyboard file"
 msgstr "Gorde gidoi grafikoaren fitxategia"
 
-#: ../gap/gap_story_dialog.c:4617
+#: ../gap/gap_story_dialog.c:4616
 #, c-format
 msgid "UNDO %s"
 msgstr "DESEGIN %s"
 
-#: ../gap/gap_story_dialog.c:4622 ../gap/gap_story_dialog.c:7715
+#: ../gap/gap_story_dialog.c:4621 ../gap/gap_story_dialog.c:7714
 msgid "UNDO"
 msgstr "DESEGIN"
 
-#: ../gap/gap_story_dialog.c:4656
+#: ../gap/gap_story_dialog.c:4655
 #, c-format
 msgid "REDO %s"
 msgstr "BERREGIN %s"
 
-#: ../gap/gap_story_dialog.c:4661 ../gap/gap_story_dialog.c:7725
+#: ../gap/gap_story_dialog.c:4660 ../gap/gap_story_dialog.c:7724
 msgid "REDO"
 msgstr "BERREGIN"
 
-#: ../gap/gap_story_dialog.c:5030
+#: ../gap/gap_story_dialog.c:5029
 msgid "Global Layout Properties dialog already open"
 msgstr "Diseinu orokorraren propietateen elkarrizketa-koadroa dagoeneko irekia dago"
 
-#: ../gap/gap_story_dialog.c:5037
+#: ../gap/gap_story_dialog.c:5036
 msgid "large"
 msgstr "handia"
 
-#: ../gap/gap_story_dialog.c:5038
+#: ../gap/gap_story_dialog.c:5037
 msgid "medium"
 msgstr "tartekoa"
 
-#: ../gap/gap_story_dialog.c:5039
+#: ../gap/gap_story_dialog.c:5038
 msgid "small"
 msgstr "txikia"
 
-#: ../gap/gap_story_dialog.c:5044
+#: ../gap/gap_story_dialog.c:5043
 msgid "Cliplist Layout:"
 msgstr "Klip-zerrendaren diseinua:"
 
-#: ../gap/gap_story_dialog.c:5049 ../gap/gap_story_dialog.c:5089
+#: ../gap/gap_story_dialog.c:5048 ../gap/gap_story_dialog.c:5088
 msgid "Thumbnail Size:"
 msgstr "Koadro txikien tamaina:"
 
-#: ../gap/gap_story_dialog.c:5050
+#: ../gap/gap_story_dialog.c:5049
 msgid "Thumbnail size in the cliplist"
 msgstr "Klip-zerrendako koadro txikien tamaina"
 
-#: ../gap/gap_story_dialog.c:5060 ../gap/gap_story_dialog.c:5100
+#: ../gap/gap_story_dialog.c:5059 ../gap/gap_story_dialog.c:5099
 msgid "Columns:"
 msgstr "Zutabeak:"
 
-#: ../gap/gap_story_dialog.c:5061
+#: ../gap/gap_story_dialog.c:5060
 msgid "columns in the cliplist"
 msgstr "klip-zerrendako zutabeak"
 
-#: ../gap/gap_story_dialog.c:5071 ../gap/gap_story_dialog.c:5111
+#: ../gap/gap_story_dialog.c:5070 ../gap/gap_story_dialog.c:5110
 msgid "Rows:"
 msgstr "Errenkadak:"
 
-#: ../gap/gap_story_dialog.c:5072
+#: ../gap/gap_story_dialog.c:5071
 msgid "rows in the cliplist"
 msgstr "klip-zerrendako errenkadak"
 
-#: ../gap/gap_story_dialog.c:5084
+#: ../gap/gap_story_dialog.c:5083
 msgid "Storyboard Layout:"
 msgstr "Gidoi grafikoaren diseinua:"
 
-#: ../gap/gap_story_dialog.c:5090
+#: ../gap/gap_story_dialog.c:5089
 msgid "Thumbnail size in the storyboard list"
 msgstr "gidoi grafikoen zerrendako koadro txikien tamaina"
 
-#: ../gap/gap_story_dialog.c:5101
+#: ../gap/gap_story_dialog.c:5100
 msgid "columns in the storyboard list"
 msgstr "gidoi grafikoen zerrendako zutabeak"
 
-#: ../gap/gap_story_dialog.c:5112
+#: ../gap/gap_story_dialog.c:5111
 msgid "rows in the storyboard list"
 msgstr "gidoi grafikoen zerrendako errenkadak"
 
-#: ../gap/gap_story_dialog.c:5123
+#: ../gap/gap_story_dialog.c:5122
 msgid "Force Aspect:"
 msgstr "Derrigortu aspektua:"
 
-#: ../gap/gap_story_dialog.c:5124
+#: ../gap/gap_story_dialog.c:5123
 msgid ""
 "ON: player shows clips transformed to aspect setting from the Storyboard "
 "properties.OFF: player shows clips according to their original pixel sizes"
@@ -6540,15 +6621,15 @@ msgstr ""
 "bihurtutako klipak erakusten ditu erreproduzitzaileak. DESAKTIBATUA: klipak "
 "haien jatorrizko pixel tamainekin bat erakusten ditu erreproduzitzaileak."
 
-#: ../gap/gap_story_dialog.c:5134
+#: ../gap/gap_story_dialog.c:5133
 msgid "Use the standard built in layout settings"
 msgstr "Erabili aurrezarpen estandarrak diseinuaren ezarpenetan"
 
-#: ../gap/gap_story_dialog.c:5136
+#: ../gap/gap_story_dialog.c:5135
 msgid "Global Layout Properties"
 msgstr "Diseinu orokorraren propietateak"
 
-#: ../gap/gap_story_dialog.c:5250
+#: ../gap/gap_story_dialog.c:5249
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therefore thumbnails for "
 "videoframes can not be displayed."
@@ -6556,7 +6637,7 @@ msgstr ""
 "Videoapi-ren euskarririk gabe konpilatu da GIMP-GAP. Beraz, ezin dira "
 "bistaratu bideo-fotogramen koadro txikiak."
 
-#: ../gap/gap_story_dialog.c:5400
+#: ../gap/gap_story_dialog.c:5399
 #, c-format
 msgid ""
 "Failed to write cliplistfile\n"
@@ -6567,7 +6648,7 @@ msgstr ""
 "fitxategi-izena: '%s':\n"
 "%s"
 
-#: ../gap/gap_story_dialog.c:5657
+#: ../gap/gap_story_dialog.c:5656
 #, c-format
 msgid ""
 "Failed to write storyboardfile\n"
@@ -6578,156 +6659,156 @@ msgstr ""
 "fitxategi-izena: '%s':\n"
 "%s"
 
-#: ../gap/gap_story_dialog.c:5929
+#: ../gap/gap_story_dialog.c:5928
 msgid "Global"
 msgstr "Orokorra"
 
-#: ../gap/gap_story_dialog.c:5937
+#: ../gap/gap_story_dialog.c:5936
 msgid "Videothumbnails"
 msgstr "Bideoaren koadro txikiak"
 
-#: ../gap/gap_story_dialog.c:5945
+#: ../gap/gap_story_dialog.c:5944
 msgid "DEBUG: log to stdout"
 msgstr "Arazketa: erregistroa irteera estandarrean"
 
-#: ../gap/gap_story_dialog.c:5965
+#: ../gap/gap_story_dialog.c:5964
 msgid "Help"
 msgstr "Laguntza"
 
 #. the clp_frame
-#: ../gap/gap_story_dialog.c:5980 ../gap/gap_story_dialog.c:8334
+#: ../gap/gap_story_dialog.c:5979 ../gap/gap_story_dialog.c:8257
 msgid "Cliplist"
 msgstr "Klip-zerrenda"
 
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: ../gap/gap_story_dialog.c:6004 ../gap/gap_story_dialog.c:6104
-#: ../gap/gap_story_dialog.c:8385
+#: ../gap/gap_story_dialog.c:6003 ../gap/gap_story_dialog.c:6103
+#: ../gap/gap_story_dialog.c:8308
 msgid "Playback"
 msgstr "Erreproduzitu"
 
-#: ../gap/gap_story_dialog.c:6016 ../gap/gap_story_dialog.c:6116
+#: ../gap/gap_story_dialog.c:6015 ../gap/gap_story_dialog.c:6115
 msgid "Create Clip"
 msgstr "Sortu klipa"
 
-#: ../gap/gap_story_dialog.c:6022 ../gap/gap_story_dialog.c:6122
+#: ../gap/gap_story_dialog.c:6021 ../gap/gap_story_dialog.c:6121
 msgid "Create Section Clip"
 msgstr "Sortu atalaren klipa"
 
-#: ../gap/gap_story_dialog.c:6028 ../gap/gap_story_dialog.c:6128
+#: ../gap/gap_story_dialog.c:6027 ../gap/gap_story_dialog.c:6127
 msgid "Create Transition"
 msgstr "Sortu trantsizioa"
 
-#: ../gap/gap_story_dialog.c:6033 ../gap/gap_story_dialog.c:6133
+#: ../gap/gap_story_dialog.c:6032 ../gap/gap_story_dialog.c:6132
 msgid "Toggle Unit"
 msgstr "Txandakatu unitatea"
 
-#: ../gap/gap_story_dialog.c:6039 ../gap/gap_story_dialog.c:6139
-msgid "Add Audio Otone"
-msgstr "Gehitu Otone audioa"
+#: ../gap/gap_story_dialog.c:6038 ../gap/gap_story_dialog.c:6138
+msgid "Add Original Audio Track"
+msgstr "Gehitu jatorrizko audioaren pista"
 
-#: ../gap/gap_story_dialog.c:6045 ../gap/gap_story_dialog.c:6145
+#: ../gap/gap_story_dialog.c:6044 ../gap/gap_story_dialog.c:6144
 msgid "Encode"
 msgstr "Kodetu"
 
-#: ../gap/gap_story_dialog.c:6080
+#: ../gap/gap_story_dialog.c:6079
 msgid "_Storyboard"
 msgstr "_Gidoi grafikoa"
 
-#: ../gap/gap_story_dialog.c:6199
+#: ../gap/gap_story_dialog.c:6198
 #, c-format
 msgid "Unsaved cliplist changes '%s'"
 msgstr "Klip-zerrendaren gorde gabeko aldaketak '%s'"
 
-#: ../gap/gap_story_dialog.c:6211
+#: ../gap/gap_story_dialog.c:6210
 #, c-format
 msgid "Unsaved storyboard changes '%s'"
 msgstr "Gidoi grafikoaren gorde gabeko aldaketak '%s'"
 
-#: ../gap/gap_story_dialog.c:6223
+#: ../gap/gap_story_dialog.c:6222
 msgid "Quit Storyboard"
 msgstr "Irten gidoi grafikotik"
 
-#: ../gap/gap_story_dialog.c:6236 ../gap/gap_story_dialog.c:6237
+#: ../gap/gap_story_dialog.c:6235 ../gap/gap_story_dialog.c:6236
 msgid "Storyboard unsaved changes"
 msgstr "Gidoi grafikoaren gorde gabeko aldaketak"
 
-#: ../gap/gap_story_dialog.c:6289
+#: ../gap/gap_story_dialog.c:6288
 msgid "Storyboard:"
 msgstr "Gidoi grafikoa:"
 
-#: ../gap/gap_story_dialog.c:6304 ../gap/gap_story_dialog.c:6333
+#: ../gap/gap_story_dialog.c:6303 ../gap/gap_story_dialog.c:6332
 msgid "(modified)"
 msgstr "(aldatua)"
 
-#: ../gap/gap_story_dialog.c:6310
+#: ../gap/gap_story_dialog.c:6309
 msgid "Cliplist:"
 msgstr "Klip-zerrenda:"
 
-#: ../gap/gap_story_dialog.c:6496
+#: ../gap/gap_story_dialog.c:6495
 #, c-format
 msgid "Videoseek (decoder: %s)"
 msgstr "Bideo-bilaketa (kodetzailea: %s)"
 
-#: ../gap/gap_story_dialog.c:6631
+#: ../gap/gap_story_dialog.c:6630
 msgid "videothumbnail cancelled"
 msgstr "Bideoaren koadro txikiak bertan behera utzi dira"
 
-#: ../gap/gap_story_dialog.c:6657
+#: ../gap/gap_story_dialog.c:6656
 #, c-format
 msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgstr "Kliparentzat bideoaren koadro txikiak hartzen: %d / %d"
 
-#: ../gap/gap_story_dialog.c:7502 ../gap/gap_story_section_properties.c:637
+#: ../gap/gap_story_dialog.c:7501 ../gap/gap_story_section_properties.c:637
 msgid "MAIN"
 msgstr "NAGUSIA"
 
-#: ../gap/gap_story_dialog.c:7505
+#: ../gap/gap_story_dialog.c:7504
 msgid "Masks"
 msgstr "Maskarak"
 
-#: ../gap/gap_story_dialog.c:7620
+#: ../gap/gap_story_dialog.c:7619
 msgid "Load storyboard file"
 msgstr "Kargatu gidoi grafikoaren fitxategia"
 
-#: ../gap/gap_story_dialog.c:7626
+#: ../gap/gap_story_dialog.c:7625
 msgid "Load cliplist file"
 msgstr "Kargatu klip-zerrendaren fitxategia"
 
-#: ../gap/gap_story_dialog.c:7641
+#: ../gap/gap_story_dialog.c:7640
 msgid "Save storyboard to file"
 msgstr "Gorde gidoi grafikoa fitxategian"
 
-#: ../gap/gap_story_dialog.c:7650
+#: ../gap/gap_story_dialog.c:7649
 msgid "Save cliplist to file"
 msgstr "Gorde klip-zerrenda fitxategian"
 
-#: ../gap/gap_story_dialog.c:7681
+#: ../gap/gap_story_dialog.c:7680
 msgid "Show Section properites window"
 msgstr "Erakutsi atalaren propietateen leihoa"
 
 #. Track label
-#: ../gap/gap_story_dialog.c:7686 ../gap/gap_video_index_creator.c:930
+#: ../gap/gap_story_dialog.c:7685 ../gap/gap_video_index_creator.c:970
 msgid "Track:"
 msgstr "Pista:"
 
-#: ../gap/gap_story_dialog.c:7701
+#: ../gap/gap_story_dialog.c:7700
 msgid "Video Track Number (0 refers to mask definition track)"
 msgstr "Bideoaren pista-zenbakia (0: maskara definitzeko pista)"
 
-#: ../gap/gap_story_dialog.c:7737
+#: ../gap/gap_story_dialog.c:7736
 msgid "Cut a clip"
 msgstr "Ebaki klipa"
 
-#: ../gap/gap_story_dialog.c:7749
+#: ../gap/gap_story_dialog.c:7748
 msgid "Copy a clip"
 msgstr "Kopiatu klipa"
 
-#: ../gap/gap_story_dialog.c:7761
+#: ../gap/gap_story_dialog.c:7760
 msgid "Paste a clip after last (selected) element"
 msgstr "Itsatsi klipa (hautatutako) azken elementuaren ondoren"
 
-#: ../gap/gap_story_dialog.c:7773
+#: ../gap/gap_story_dialog.c:7772
 msgid ""
 "Create new clip\n"
 "(SHIFT create transition\n"
@@ -6737,7 +6818,7 @@ msgstr ""
 "(Maius: sortu trantsizioa\n"
 "Ktrl: sortu atalaren klipa)"
 
-#: ../gap/gap_story_dialog.c:7787
+#: ../gap/gap_story_dialog.c:7786
 msgid ""
 "Play selected clips\n"
 "SHIFT: Playback all clips of current track.\n"
@@ -6749,61 +6830,61 @@ msgstr ""
 
 #. gtk_widget_show (entry);
 #. Row label
-#: ../gap/gap_story_dialog.c:7818
+#: ../gap/gap_story_dialog.c:7817
 msgid "Row:"
 msgstr "Errenkada:"
 
-#: ../gap/gap_story_dialog.c:7832
+#: ../gap/gap_story_dialog.c:7831
 msgid "Top rownumber"
 msgstr "Goiko errenkada-zenbakia"
 
 #. of label
-#: ../gap/gap_story_dialog.c:7838
+#: ../gap/gap_story_dialog.c:7837
 msgid "of:"
 msgstr "/"
 
 #. the stb_frame
 #. radio button Storyboard input_mode
-#: ../gap/gap_story_dialog.c:8283 ../gap/gap_story_dialog.c:8401
-#: ../vid_common/gap_cme_gui.c:2457
+#: ../gap/gap_story_dialog.c:8206 ../gap/gap_story_dialog.c:8324
+#: ../vid_common/gap_cme_gui.c:2507
 msgid "Storyboard"
 msgstr "Gidoi grafikoa"
 
-#: ../gap/gap_story_dialog.c:8474
+#: ../gap/gap_story_dialog.c:8397
 msgid "ON: clip target is storyboard (for clips created from playback range)."
 msgstr ""
 "AKTIBATUA: helburuko klipa gidoi grafikoa da (erreprodukzio barrutitik "
 "sortutako klipentzako)."
 
-#: ../gap/gap_story_dialog.c:8504 ../vid_common/gap_cme_gui.c:2329
+#: ../gap/gap_story_dialog.c:8427 ../vid_common/gap_cme_gui.c:2379
 msgid "Cancel"
 msgstr "Utzi"
 
-#: ../gap/gap_story_dialog.c:8508 ../gap/gap_video_index_creator.c:1407
+#: ../gap/gap_story_dialog.c:8431 ../gap/gap_video_index_creator.c:1447
 msgid "Cancel video access if in progress and disable automatic videothumbnails"
 msgstr ""
 "Bertan behera utzi bideoaren atzipena lanean ari bada, eta desgaitu bideoen "
 "koadro txikiak automatikoki"
 
-#: ../gap/gap_story_dialog.c:8566
+#: ../gap/gap_story_dialog.c:8489
 msgid "Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 "Jatorrizko tonua duen audio-pista bat sortzen du gidoi grafikoko bideo-klip "
 "guztientzat"
 
-#: ../gap/gap_story_dialog.c:8572
+#: ../gap/gap_story_dialog.c:8495
 msgid "Input Audiotrack:"
 msgstr "Sarrerako audio-pista:"
 
-#: ../gap/gap_story_dialog.c:8573
+#: ../gap/gap_story_dialog.c:8496
 msgid "select input audiotrack in the videofile(s)."
 msgstr "sarrerako audio-pista hautatzen du bideo-fitxategi(et)an."
 
-#: ../gap/gap_story_dialog.c:8584
+#: ../gap/gap_story_dialog.c:8507
 msgid "Output Audiotrack:"
 msgstr "Irteerako audio-pista:"
 
-#: ../gap/gap_story_dialog.c:8585
+#: ../gap/gap_story_dialog.c:8508
 msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
@@ -6814,11 +6895,11 @@ msgstr ""
 "gidoi grafikoaren audio-pistak, erabilitako bideo-klipen erreferentzia "
 "guztiei dagokiena."
 
-#: ../gap/gap_story_dialog.c:8597
+#: ../gap/gap_story_dialog.c:8520
 msgid "Replace Audiotrack:"
 msgstr "Ordeztu audio-pista:"
 
-#: ../gap/gap_story_dialog.c:8598
+#: ../gap/gap_story_dialog.c:8521
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
@@ -6826,15 +6907,15 @@ msgstr ""
 "AKTIBATUTA: gidoi grafikoan lehendik dauden audio-klipen erreferentziak "
 "ordeztea onartzen du"
 
-#: ../gap/gap_story_dialog.c:8608
+#: ../gap/gap_story_dialog.c:8531
 msgid "Reset parameters to default values"
 msgstr "Berrezarri parametroak balio lehenetsietan"
 
-#: ../gap/gap_story_dialog.c:8616
+#: ../gap/gap_story_dialog.c:8539
 msgid "Generate Original Tone Audio"
 msgstr "Sortu jatorrizko tonuaren audioa"
 
-#: ../gap/gap_story_dialog.c:8650
+#: ../gap/gap_story_dialog.c:8573
 #, c-format
 msgid ""
 "Original tone track was not created.\n"
@@ -6847,7 +6928,7 @@ msgstr ""
 "baditu lehendik audio-klipen erreferentziak %d pistan.\n"
 "Hurrengo saioan erabili beste pista-zenbaki bat edo utzi ordezten."
 
-#: ../gap/gap_story_dialog.c:8662
+#: ../gap/gap_story_dialog.c:8585
 #, c-format
 msgid ""
 "Original tone track was created with warnings.\n"
@@ -6862,60 +6943,60 @@ msgstr ""
 "ez da berdina\n"
 "Sortutako audioa ez dago bideoarekin sinkronizatua."
 
-#: ../gap/gap_story_dialog.c:8761
+#: ../gap/gap_story_dialog.c:8684
 msgid "automatic"
 msgstr "automatikoa"
 
-#: ../gap/gap_story_dialog.c:8762
+#: ../gap/gap_story_dialog.c:8685
 msgid "none"
 msgstr "bat ere ez"
 
 #. the section_name label
-#: ../gap/gap_story_dialog.c:8805 ../gap/gap_story_section_properties.c:849
+#: ../gap/gap_story_dialog.c:8728 ../gap/gap_story_section_properties.c:849
 msgid "Name:"
 msgstr "Izena:"
 
-#: ../gap/gap_story_dialog.c:8809
+#: ../gap/gap_story_dialog.c:8732
 msgid "Name of the Storyboardfile"
 msgstr "Gidoi grafikoaren fitxategiaren izena"
 
-#: ../gap/gap_story_dialog.c:8815
+#: ../gap/gap_story_dialog.c:8738
 msgid "Name of the Cliplistfile"
 msgstr "Klip-zerrendaren fitxategiaren izena"
 
-#: ../gap/gap_story_dialog.c:8825 ../gap/gap_story_dialog.c:8829
+#: ../gap/gap_story_dialog.c:8748 ../gap/gap_story_dialog.c:8752
 #, c-format
 msgid "Name: %s"
 msgstr "Izena: %s"
 
-#: ../gap/gap_story_dialog.c:8838
+#: ../gap/gap_story_dialog.c:8761
 msgid "Master width of the resulting video in pixels"
 msgstr "Sortutako bideoaren zabalera maisua pixeletan"
 
-#: ../gap/gap_story_dialog.c:8849
+#: ../gap/gap_story_dialog.c:8772
 msgid "Master height of the resulting video in pixels)"
 msgstr "Sortutako bideoaren altuera maisua pixeletan"
 
-#: ../gap/gap_story_dialog.c:8861
+#: ../gap/gap_story_dialog.c:8784
 msgid "Framerate in frames/sec."
 msgstr "Fotograma-tasa fotograma/segundotan"
 
-#: ../gap/gap_story_dialog.c:8879
+#: ../gap/gap_story_dialog.c:8802
 msgid "Track 1 on top:"
 msgstr "1. pista aurrean:"
 
-#: ../gap/gap_story_dialog.c:8880
+#: ../gap/gap_story_dialog.c:8803
 msgid "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
 "AKTIBATUTA: bideoaren 1. pista aurreko planoan dago (aurrean). "
 "DESAKTIBATUTA: bideoaren 1. pista atzeko planoan dago (atzean)"
 
 #. the qdiff label
-#: ../gap/gap_story_dialog.c:8918 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1533
+#: ../gap/gap_story_dialog.c:8841 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1533
 msgid "Aspect:"
 msgstr "Itxura:"
 
-#: ../gap/gap_story_dialog.c:8919
+#: ../gap/gap_story_dialog.c:8842
 msgid ""
 "Select video frame aspect ratio; enter a string like \"4:3\" or \"16:9\" to "
 "specify the aspect. Enter none or leave empty if no special aspect shall be "
@@ -6928,12 +7009,12 @@ msgstr ""
 "erabiltzen da bideo-fotogramak bistaratzeko)."
 
 #. the (preferred) Decoder label
-#: ../gap/gap_story_dialog.c:8961 ../gap/gap_vex_dialog.c:2312
-#: ../gap/gap_video_index_creator.c:916
+#: ../gap/gap_story_dialog.c:8884 ../gap/gap_vex_dialog.c:2312
+#: ../gap/gap_video_index_creator.c:956
 msgid "Decoder:"
 msgstr "Deskodetzailea:"
 
-#: ../gap/gap_story_dialog.c:8962
+#: ../gap/gap_story_dialog.c:8885
 msgid ""
 "Select preferred video decoder library, or leave empty for automatic "
 "selection.The decoder setting is only relevant if videoclips are used (but "
@@ -6944,37 +7025,41 @@ msgstr ""
 "soilik bideo-klipak erabiltzen badira (baina ez irudi-fitxategi diren "
 "fotogramentzat)"
 
-#: ../gap/gap_story_dialog.c:8980
+#: ../gap/gap_story_dialog.c:8903
 msgid "Master audio samplerate for the resulting video in samples/sec."
 msgstr "Sortzen den bideoaren audioaren lagintze-maiztasun maisua (lagin/s)."
 
-#: ../gap/gap_story_dialog.c:8996
+#: ../gap/gap_story_dialog.c:8919
 msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Audioaren bolumen maisua (1.0: jatorrizko bolumena)"
 
-#: ../gap/gap_story_dialog.c:9018
+#: ../gap/gap_story_dialog.c:8941
 msgid "AreaFormat:"
 msgstr "Area-formatua:"
 
 #. pixel
-#: ../gap/gap_story_dialog.c:9020
+#: ../gap/gap_story_dialog.c:8943
 #, c-format
 msgid ""
 "Format string for area replacement in movie clips. (e.g automatic logo "
 "insert)this string shall contain \\%s as placeholder for the basename of a "
 "videoclip and optional \\%06d as placeholder for the framenumber."
 msgstr ""
+"Filmearen klipetako ordezpeneko arearen katearen formatua (adib. logotipo "
+"automatikoa txertatzea). Kate honek \\%s eduki dezake bideokliparen "
+"oinarrizko izenaren leku-marka gisa eta aukerako \\%06d fotograma-"
+"zenbakiaren leku-marka gisa."
 
 #. should use GIMP_STOCK_RESET if possible
-#: ../gap/gap_story_dialog.c:9031
+#: ../gap/gap_story_dialog.c:8954
 msgid "Reset parameters to inital values"
 msgstr "Berrezarri parametroak hasierako balioetan"
 
-#: ../gap/gap_story_dialog.c:9042
+#: ../gap/gap_story_dialog.c:8965
 msgid "Master Properties"
 msgstr "Propietate maisuak"
 
-#: ../gap/gap_story_dialog.c:9511
+#: ../gap/gap_story_dialog.c:9434
 msgid "STORY_new.txt"
 msgstr "GIDOI_berria.txt"
 
@@ -7053,7 +7138,7 @@ msgstr ""
 msgid "Storyboard..."
 msgstr "Gidoi grafikoa..."
 
-#: ../gap/gap_story_properties.c:514
+#: ../gap/gap_story_properties.c:516
 #, c-format
 msgid ""
 "Error: references could not be updated from the\n"
@@ -7066,13 +7151,13 @@ msgstr ""
 "maskara-izen berrira: \"%s\"\n"
 "maskara-izen berria dagoeneko erabiltzen delako."
 
-#: ../gap/gap_story_properties.c:696
+#: ../gap/gap_story_properties.c:698
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 msgstr ""
 "Eszenen detekzio automatikoak FILM eta FOTOGRAMAK motako klipekin soilik "
 "funtzionatzen du"
 
-#: ../gap/gap_story_properties.c:703
+#: ../gap/gap_story_properties.c:705
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
@@ -7080,7 +7165,7 @@ msgstr ""
 "Eszenen detekzioa bideoaren koadro txikien baitan dago. Gaitu bideoaren "
 "koadro txikiak (Leihoa menuan)"
 
-#: ../gap/gap_story_properties.c:764 ../gap/gap_story_properties.c:832
+#: ../gap/gap_story_properties.c:766 ../gap/gap_story_properties.c:834
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
@@ -7088,7 +7173,7 @@ msgstr ""
 "Eszenen detekzioa koadro txikien baitan dago FOTOGRAMAK motako klipetan. "
 "Sortu fotogramen koadro txikiak eta saiatu berriz."
 
-#: ../gap/gap_story_properties.c:1786
+#: ../gap/gap_story_properties.c:1788
 #, c-format
 msgid ""
 "Error: the mask name:  \"%s\" is already in use\n"
@@ -7097,140 +7182,132 @@ msgstr ""
 "Errorea: maskararen izena: \"%s\" jadanik erabilita dago\n"
 "Idatzi bestelako izena."
 
-#: ../gap/gap_story_properties.c:2321
+#: ../gap/gap_story_properties.c:2323
 msgid "Set Image or Frame Filename"
 msgstr "Ezarri irudiaren edo fotogramaren fitxategi-izena"
 
-#: ../gap/gap_story_properties.c:2445
+#: ../gap/gap_story_properties.c:2447
 msgid "Set Filtermacro Filename"
 msgstr "Ezarri iragazki-makroaren fitxategia"
 
-#: ../gap/gap_story_properties.c:2559
+#: ../gap/gap_story_properties.c:2561
 msgid "EMPTY"
 msgstr "HUTSIK"
 
-#: ../gap/gap_story_properties.c:2562
+#: ../gap/gap_story_properties.c:2564
 msgid "COLOR"
 msgstr "KOLOREA"
 
-#: ../gap/gap_story_properties.c:2565
+#: ../gap/gap_story_properties.c:2567
 msgid "SINGLE-IMAGE"
 msgstr "IRUDI BAKUNA"
 
-#: ../gap/gap_story_properties.c:2569
+#: ../gap/gap_story_properties.c:2571
 msgid "ANIM-IMAGE"
 msgstr "IRUDI ANIMATUA"
 
-#: ../gap/gap_story_properties.c:2573
+#: ../gap/gap_story_properties.c:2575
 msgid "FRAME-IMAGES"
 msgstr "FOTOFRAMA-IRUDIAK"
 
-#: ../gap/gap_story_properties.c:2578
+#: ../gap/gap_story_properties.c:2580
 msgid "MOVIE"
 msgstr "FILMA"
 
-#: ../gap/gap_story_properties.c:2582
+#: ../gap/gap_story_properties.c:2584
 msgid "SECTION"
 msgstr "ATALA"
 
-#: ../gap/gap_story_properties.c:2586
+#: ../gap/gap_story_properties.c:2588
 msgid "BLACKSECTION"
 msgstr "ATALBELTZA"
 
-#: ../gap/gap_story_properties.c:2589
+#: ../gap/gap_story_properties.c:2591
 msgid "COMMENT"
 msgstr "IRUZKINA"
 
-#: ../gap/gap_story_properties.c:2592
+#: ../gap/gap_story_properties.c:2594
 msgid "** UNKNOWN **"
 msgstr "** EZEZAGUNA **"
 
-#: ../gap/gap_story_properties.c:2621
+#: ../gap/gap_story_properties.c:2623
 #: ../gap/gap_story_section_properties.c:591
 #, c-format
 msgid "%d (frames)"
 msgstr "%d (fotogramak)"
 
-#: ../gap/gap_story_properties.c:3347 ../gap/gap_story_properties.c:3355
+#: ../gap/gap_story_properties.c:3349 ../gap/gap_story_properties.c:3357
 msgid "Filtermacro2: "
 msgstr "Iragazki-makroa2:"
 
 #. prefix
 #. filenamepart
-#: ../gap/gap_story_properties.c:3349
+#: ../gap/gap_story_properties.c:3351
 msgid " (ON)"
 msgstr " (AKTIBATUA)"
 
 #. prefix
 #. filenamepart
-#: ../gap/gap_story_properties.c:3357
+#: ../gap/gap_story_properties.c:3359
 msgid " (OFF)"
 msgstr " (DESAKTIBATUTA)"
 
-#: ../gap/gap_story_properties.c:3709 ../gap/gap_story_properties.c:3719
+#: ../gap/gap_story_properties.c:3711 ../gap/gap_story_properties.c:3721
 msgid "Mask Properties"
 msgstr "Maskararen propietateak"
 
-#: ../gap/gap_story_properties.c:3731 ../gap/gap_story_properties.c:3743
+#: ../gap/gap_story_properties.c:3733 ../gap/gap_story_properties.c:3745
 msgid "Clip Properties"
 msgstr "Klipen propietateak"
 
-#: ../gap/gap_story_properties.c:3736 ../gap/gap_story_properties.c:3747
+#: ../gap/gap_story_properties.c:3738 ../gap/gap_story_properties.c:3749
 msgid "Find Scene End"
 msgstr "Bilatu eszena-amaiera"
 
-#: ../gap/gap_story_properties.c:3737 ../gap/gap_story_properties.c:3748
+#: ../gap/gap_story_properties.c:3739 ../gap/gap_story_properties.c:3750
 msgid "Auto Scene Split"
 msgstr "Zatitu eszena automatikoki"
 
 #. the masktype label
-#: ../gap/gap_story_properties.c:3789
+#: ../gap/gap_story_properties.c:3791
 msgid "Mask Type:"
 msgstr "Maskara mota:"
 
 #. the cliptype label
-#: ../gap/gap_story_properties.c:3794
+#: ../gap/gap_story_properties.c:3796
 msgid "Clip Type:"
 msgstr "Klip mota:"
 
 #. the duration label
-#: ../gap/gap_story_properties.c:3826
+#: ../gap/gap_story_properties.c:3828
 #: ../gap/gap_story_section_properties.c:825
 msgid "Duration:"
 msgstr "Iraupena:"
 
 #. the filename label
-#: ../gap/gap_story_properties.c:3850
+#: ../gap/gap_story_properties.c:3852
 msgid "File:"
 msgstr "Fitxategia:"
 
-#: ../gap/gap_story_properties.c:3899
-msgid "From:"
-msgstr "Hasi:"
-
 #. lower/upper
 #. step, page
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:3906
+#: ../gap/gap_story_properties.c:3908
 msgid "framenumber of the first frame in the clip range"
 msgstr "klip-bitarteko lehen fotogramaren fotograma-zenbakia"
 
-#: ../gap/gap_story_properties.c:3928
-msgid "To:"
-msgstr "Amaitu:"
-
 #. lower/upper
 #. step, page
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:3935
+#: ../gap/gap_story_properties.c:3937
 msgid "framenumber of the last frame in the clip range"
 msgstr "klip-bitarteko azken fotogramaren fotograma-zenbakia"
 
-#: ../gap/gap_story_properties.c:3956
+#: ../gap/gap_story_properties.c:3958
 msgid "Loops:"
 msgstr "Begiztak:"
 
@@ -7239,20 +7316,20 @@ msgstr "Begiztak:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:3963
+#: ../gap/gap_story_properties.c:3965
 msgid "number of loops (how often to play the framerange)"
 msgstr "begizta kopurua (zenbatean behin erreproduzitu fotograma-bitartea)"
 
 #. pingpong
-#: ../gap/gap_story_properties.c:3984
+#: ../gap/gap_story_properties.c:3986
 msgid "Pingpong:"
 msgstr "Aurrera-atzerakoa:"
 
-#: ../gap/gap_story_properties.c:4001
+#: ../gap/gap_story_properties.c:4003
 msgid "ON: Play clip in pingpong mode"
 msgstr "AKTIBATUTA: erreproduzitu klipa aurrera-atzerako moduan"
 
-#: ../gap/gap_story_properties.c:4021
+#: ../gap/gap_story_properties.c:4023
 msgid "Stepsize:"
 msgstr "Urrats-tamaina:"
 
@@ -7261,7 +7338,7 @@ msgstr "Urrats-tamaina:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:4028
+#: ../gap/gap_story_properties.c:4030
 msgid ""
 "Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. a value of "
 "0.5 shows each input frame 2 times. a value of 2.0 shows only every 2nd "
@@ -7276,112 +7353,116 @@ msgstr ""
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:4048
+#: ../gap/gap_story_properties.c:4050
 msgid "select input videotrack (most videofiles have just 1 track)"
 msgstr "hautatu sarrerako bideo-pista (bideo-fitxategi gehienek pista bakarra dute)"
 
 #. the Deinterlace Mode label
 #. the deinterlace Mode label
-#: ../gap/gap_story_properties.c:4059 ../gap/gap_vex_dialog.c:2639
+#: ../gap/gap_story_properties.c:4061 ../gap/gap_vex_dialog.c:2639
 msgid "Deinterlace:"
 msgstr "Gurutzelarkatuak bereizi:"
 
-#: ../gap/gap_story_properties.c:4086
+#: ../gap/gap_story_properties.c:4088
 msgid "Read videoframes 1:1 without de-interlace filter"
 msgstr "Irakurri bideo-fotogramak 1:1, gurutzelarkatuak bereizteko iragazkirik gabe"
 
 #. radio button delace_mode odd
-#: ../gap/gap_story_properties.c:4095
+#: ../gap/gap_story_properties.c:4097
 msgid "Odd"
 msgstr "Bakoitia"
 
-#: ../gap/gap_story_properties.c:4104
+#: ../gap/gap_story_properties.c:4106
 msgid "Apply odd-lines filter when reading videoframes"
 msgstr "Aplikatu lerro bakoitien iragazkia bideo-fotogramak irakurtzean"
 
 #. radio button delace_mode even
-#: ../gap/gap_story_properties.c:4113
+#: ../gap/gap_story_properties.c:4115
 msgid "Even"
 msgstr "Bikoitia"
 
-#: ../gap/gap_story_properties.c:4122
+#: ../gap/gap_story_properties.c:4124
 msgid "Apply even-lines filter when reading videoframes"
 msgstr "Aplikatu lerro bikoitien iragazkia bideo-fotogramak irakurtzean"
 
 #. radio button delace_mode odd
-#: ../gap/gap_story_properties.c:4135
+#: ../gap/gap_story_properties.c:4137
 msgid "Odd First"
 msgstr "Bakoitiak lehenengo"
 
-#: ../gap/gap_story_properties.c:4144
+#: ../gap/gap_story_properties.c:4146
 msgid "Apply odd-lines, switch to even lines on tween position >= 0.5"
 msgstr ""
+"Aplikatu 'lerro bakoitiak' iragazkia, aldatu 'lerro bikoitiak' bitartekoen "
+"posizioa >= 05 denean"
 
 #. radio button delace_mode even
-#: ../gap/gap_story_properties.c:4153
+#: ../gap/gap_story_properties.c:4155
 msgid "Even First"
 msgstr "Bikoitiak lehenengo"
 
-#: ../gap/gap_story_properties.c:4162
+#: ../gap/gap_story_properties.c:4164
 msgid "Apply even-lines, switch to even lines on tween position >= 0.5"
 msgstr ""
+"Aplikatu 'lerro bikoitiak' iragazkia, aldatu 'lerro bikoitiak' bitartekoen "
+"posizioa >= 05 denean"
 
-#: ../gap/gap_story_properties.c:4187
+#: ../gap/gap_story_properties.c:4189
 msgid "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
 "gurutzelarkatuak bereizteko atalasea: 0.0, interpolaziorik ez; 0.999, "
 "interpolazio leuna"
 
 #. the Transform (flip_request) label
-#: ../gap/gap_story_properties.c:4204
+#: ../gap/gap_story_properties.c:4206
 msgid "Transform:"
 msgstr "Eraldatu:"
 
-#: ../gap/gap_story_properties.c:4233
+#: ../gap/gap_story_properties.c:4235
 msgid "Do not apply internal transformations"
 msgstr "Ez aplikatu barne-eraldaketarik"
 
 #. radio button flip_request rotate 180 degree
-#: ../gap/gap_story_properties.c:4242
+#: ../gap/gap_story_properties.c:4244
 msgid "Rotate 180"
 msgstr "Biratu 180"
 
-#: ../gap/gap_story_properties.c:4251
+#: ../gap/gap_story_properties.c:4253
 msgid "Rotate all frames of this clip by 180 degree"
 msgstr "Klipeko fotograma guztiak 180 gradu biratzen ditu"
 
 #. radio button flip_request hor
-#: ../gap/gap_story_properties.c:4260
+#: ../gap/gap_story_properties.c:4262
 msgid "Flip Horizontally"
 msgstr "Irauli horizontalki"
 
-#: ../gap/gap_story_properties.c:4269
+#: ../gap/gap_story_properties.c:4271
 msgid "Flip all frames of this clip horizontally"
 msgstr "Irauli horizontalki klipeko fotograma guztiak"
 
 #. radio button flip_request ver
-#: ../gap/gap_story_properties.c:4278
+#: ../gap/gap_story_properties.c:4280
 msgid "Flip Vertically"
 msgstr "Irauli bertikalki"
 
-#: ../gap/gap_story_properties.c:4287
+#: ../gap/gap_story_properties.c:4289
 msgid "Flip all frames of this clip vertically"
 msgstr "Irauli bertikalki klipeko fotograma guztiak"
 
 #. the mask_name label
-#: ../gap/gap_story_properties.c:4306 ../gap/gap_story_properties.c:4317
+#: ../gap/gap_story_properties.c:4308 ../gap/gap_story_properties.c:4319
 msgid "Mask Name:"
 msgstr "Maskararen izena:"
 
-#: ../gap/gap_story_properties.c:4307
+#: ../gap/gap_story_properties.c:4309
 msgid "Set the mask name"
 msgstr "Ezarri maskara-izena"
 
-#: ../gap/gap_story_properties.c:4336
+#: ../gap/gap_story_properties.c:4338
 msgid "Name of the layermask definition clip"
 msgstr "Geruza-markara definitzeko kliparen izena"
 
-#: ../gap/gap_story_properties.c:4348
+#: ../gap/gap_story_properties.c:4350
 msgid ""
 "Reference to a layermask definition clip in the Mask section.\n"
 "Layermasks are used to control opacity."
@@ -7390,41 +7471,41 @@ msgstr ""
 "Opakutasuna kontrolatzeko erabiltzen dira geruza-maskarak."
 
 #. the mask enable check button
-#: ../gap/gap_story_properties.c:4378
+#: ../gap/gap_story_properties.c:4380
 msgid "enable"
 msgstr "gaitu"
 
-#: ../gap/gap_story_properties.c:4387
+#: ../gap/gap_story_properties.c:4389
 msgid "ON: Enable layer mask"
 msgstr "AKTIBATUTA: geruza-maskarak gaitzen ditu"
 
 #. the Mask Anchor Mode label
-#: ../gap/gap_story_properties.c:4424
+#: ../gap/gap_story_properties.c:4426
 msgid "Mask Anchor:"
 msgstr "Maskara-aingura:"
 
 #. radio button mask_anchor None
-#: ../gap/gap_story_properties.c:4443
+#: ../gap/gap_story_properties.c:4445
 msgid "Clip"
 msgstr "Klipa"
 
-#: ../gap/gap_story_properties.c:4452
+#: ../gap/gap_story_properties.c:4454
 msgid "Attach mask to clip at clip position in clip size"
 msgstr "Erantsi maskara klipari, kliparen posizioan eta tamainan"
 
 #. radio button mask_anchor odd
 #. Hue Mode the radio buttons
 #. Channel the radio buttons
-#: ../gap/gap_story_properties.c:4461 ../gap/gap_wr_color_huesat.c:645
+#: ../gap/gap_story_properties.c:4463 ../gap/gap_wr_color_huesat.c:645
 #: ../gap/gap_wr_color_levels.c:654
 msgid "Master"
 msgstr "Maisua"
 
-#: ../gap/gap_story_properties.c:4470
+#: ../gap/gap_story_properties.c:4472
 msgid "Attach mask in resulting master video size at fixed position"
 msgstr "Erantsi maskara sortutako bideo maisuaren tamainan eta kokapen finkoan"
 
-#: ../gap/gap_story_properties.c:4494
+#: ../gap/gap_story_properties.c:4496
 msgid "Maskstepsize:"
 msgstr "Maskararen urrats-tamaina:"
 
@@ -7433,7 +7514,7 @@ msgstr "Maskararen urrats-tamaina:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:4501
+#: ../gap/gap_story_properties.c:4503
 msgid ""
 "Stepsize density for the layer mask. Use 1.0 for normal 1:1 frame by frame "
 "steps. a value of 0.5 shows each input mask frame 2 times. a value of 2.0 "
@@ -7444,11 +7525,11 @@ msgstr ""
 "da; 2.0, sarrerako bi fotogramatik bat bistaratzen da soilik"
 
 #. the filtermacro label
-#: ../gap/gap_story_properties.c:4531
+#: ../gap/gap_story_properties.c:4533
 msgid "Filtermacro:"
 msgstr "Iragazki-makroa:"
 
-#: ../gap/gap_story_properties.c:4563
+#: ../gap/gap_story_properties.c:4565
 msgid ""
 "filter macro to be performed when frames of this clips are rendered. A 2nd "
 "macrofile is implicite referenced by naming convetion via the keyword ."
@@ -7458,87 +7539,87 @@ msgstr ""
 "fitxategia inplizitoki erreferentziatuta teklatuaren bidez izendatuz. "
 "ALDAKORRA (atzizki gisa, edo luzapenaren aurretik)"
 
-#: ../gap/gap_story_properties.c:4602
+#: ../gap/gap_story_properties.c:4604
 msgid "Steps for macro applying with varying values: (1 for apply with const values)"
 msgstr ""
 "Makroak balio aldakorrekin aplikatzeko urratsak. (1 balio konstanteekin "
 "aplikatzeko)"
 
-#: ../gap/gap_story_render_audio.c:439
+#: ../gap/gap_story_render_audio.c:449
 #, c-format
 msgid "cant load:  %s to memory"
 msgstr "ezin da hau memorian kargatu: %s"
 
-#: ../gap/gap_story_render_audio.c:820
+#: ../gap/gap_story_render_audio.c:834
 #, c-format
 msgid "extracting audio to tmp audiofile"
 msgstr "audioa tmp audio-fitxategira ateratzen"
 
-#: ../gap/gap_story_render_audio.c:825
+#: ../gap/gap_story_render_audio.c:839
 #, c-format
 msgid "seeking audio"
 msgstr "audioa bilatzen"
 
-#: ../gap/gap_story_render_audio.c:1093
+#: ../gap/gap_story_render_audio.c:1111
 #, c-format
 msgid "file not found:  %s for audioinput"
 msgstr "ez da audio-sarreraren fitxategi hau aurkitu:  %s"
 
-#: ../gap/gap_story_render_audio.c:1242 ../gap/gap_story_render_audio.c:1387
+#: ../gap/gap_story_render_audio.c:1261 ../gap/gap_story_render_audio.c:1408
 #, c-format
 msgid "converting audio (via external programm)"
 msgstr "audioa bihurtzen (kanpoko programa baten bidez)"
 
-#: ../gap/gap_story_render_audio.c:1308 ../gap/gap_story_render_audio.c:1436
+#: ../gap/gap_story_render_audio.c:1327 ../gap/gap_story_render_audio.c:1457
 #, c-format
 msgid "cant use file:  %s as audioinput"
 msgstr "ezin da erabili fitxategi hau audio-sarrera gisa: %s"
 
-#: ../gap/gap_story_render_audio.c:1325
+#: ../gap/gap_story_render_audio.c:1344
 #, c-format
 msgid "ERROR file: %s is not a supported videoformat"
 msgstr "ERROREA: %s fitxategiaren bideo-formatua ez da onartzen"
 
-#: ../gap/gap_story_render_audio.c:1576
+#: ../gap/gap_story_render_audio.c:1599
 #, c-format
 msgid "checking audio peaks"
 msgstr "audio-gailurren kontrola"
 
-#: ../gap/gap_story_render_audio.c:1610
+#: ../gap/gap_story_render_audio.c:1633
 #, c-format
 msgid "writing composite audiofile"
 msgstr "audio-fitxategi konposatua idaztea"
 
-#: ../gap/gap_story_render_audio.c:1629
+#: ../gap/gap_story_render_audio.c:1652
 #, c-format
 msgid "cant write audio to file: %s "
 msgstr "ezin da audioa fitxategi honetan idatzi: %s "
 
-#: ../gap/gap_story_render_audio.c:1641 ../vid_common/gap_cme_gui.c:1387
-#: ../vid_common/gap_cme_gui.c:1553
+#: ../gap/gap_story_render_audio.c:1664 ../vid_common/gap_cme_gui.c:1437
+#: ../vid_common/gap_cme_gui.c:1603
 #, c-format
 msgid "ready"
 msgstr "prest"
 
-#: ../gap/gap_story_render_processor.c:768
+#: ../gap/gap_story_render_processor.c:774
 #, c-format
 msgid "encoding_video_frame_%06d"
 msgstr "bideo_fotograma_kodetzea_%06d"
 
-#: ../gap/gap_story_render_processor.c:2782
+#: ../gap/gap_story_render_processor.c:2788
 #, c-format
 msgid "analyze line %d (out of %d)"
 msgstr "%d / %d lerroa aztertzea"
 
-#: ../gap/gap_story_render_processor.c:2924
+#: ../gap/gap_story_render_processor.c:2930
 msgid "No Frames or Images found ...."
 msgstr "Ez da fotogramarik edo irudirik aurkitu..."
 
-#: ../gap/gap_story_render_processor.c:5011
+#: ../gap/gap_story_render_processor.c:5110
 msgid "Seek Inputvideoframe..."
 msgstr "Bilatu sarrerako bideo-fotograma..."
 
-#: ../gap/gap_story_render_processor.c:5016
+#: ../gap/gap_story_render_processor.c:5115
 msgid "Continue Encoding..."
 msgstr "Jarraitu kodetzen..."
 
@@ -7650,7 +7731,7 @@ msgstr "Hautatu sarrerako bideo-fitxategia"
 msgid "Select basename for frame(s)"
 msgstr "Hautatu fotogram(ar)en oinarri-izena"
 
-#: ../gap/gap_vex_dialog.c:1879 ../vid_common/gap_cme_gui.c:2230
+#: ../gap/gap_vex_dialog.c:1879 ../vid_common/gap_cme_gui.c:2280
 msgid "Select Audiofilename"
 msgstr "Hautatu audioaren fitxategi-izena"
 
@@ -7694,9 +7775,9 @@ msgstr "Bideo-fitxategiaren izena (sarrera-fitxategi gisa erabilia)"
 #. the Audiofile filebrowser button
 #. the pass_logfile fileselector button
 #: ../gap/gap_vex_dialog.c:2109 ../gap/gap_vex_dialog.c:2481
-#: ../gap/gap_vex_dialog.c:2705 ../vid_common/gap_cme_gui.c:2634
-#: ../vid_common/gap_cme_gui.c:2912 ../vid_common/gap_cme_gui.c:2948
-#: ../vid_common/gap_cme_gui.c:3264
+#: ../gap/gap_vex_dialog.c:2705 ../vid_common/gap_cme_gui.c:2684
+#: ../vid_common/gap_cme_gui.c:2962 ../vid_common/gap_cme_gui.c:2998
+#: ../vid_common/gap_cme_gui.c:3314
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3352
 msgid "..."
 msgstr "..."
@@ -7795,7 +7876,7 @@ msgstr "Itxuraren proportzioa:"
 
 #. the output frame
 #. the hbox
-#: ../gap/gap_vex_dialog.c:2421 ../vid_common/gap_cme_gui.c:2607
+#: ../gap/gap_vex_dialog.c:2421 ../vid_common/gap_cme_gui.c:2657
 msgid "Output"
 msgstr "Irteera"
 
@@ -7958,46 +8039,51 @@ msgstr ""
 "huts egin du fitxategia gordetzean:\n"
 "'%s'"
 
-#: ../gap/gap_video_index_creator.c:207
+#: ../gap/gap_video_index_creator.c:208
 msgid "Video Index Creation..."
 msgstr "Bideo-indizea sortzea..."
 
 #. Menu names
-#: ../gap/gap_video_index_creator.c:217
+#: ../gap/gap_video_index_creator.c:218
 msgid "<Toolbox>/Xtns/"
 msgstr "<Toolbox>/Hedap/"
 
-#: ../gap/gap_video_index_creator.c:467
+#: ../gap/gap_video_index_creator.c:496
 msgid "NO vindex created (QUICK)"
 msgstr "Ez da bideo-indizerik sortu (BIZKORRA)"
 
-#: ../gap/gap_video_index_creator.c:504
+#: ../gap/gap_video_index_creator.c:527
 msgid "vindex already OK"
 msgstr "bideo-indizea ONGI dago"
 
-#: ../gap/gap_video_index_creator.c:529
+#: ../gap/gap_video_index_creator.c:552
 msgid "vindex created (FULLSCAN OK)"
 msgstr "bideo-indizea sortuta (ESKANEATZE OSOA ONGI)"
 
-#: ../gap/gap_video_index_creator.c:535
+#: ../gap/gap_video_index_creator.c:568
 #, c-format
 msgid "NO vindex created (SMART %.1f%% %d frames)"
 msgstr "Ez da bideo-indizerik sortu (AZKARRA: %% %.1f %d fotograma)"
 
-#: ../gap/gap_video_index_creator.c:620
+#: ../gap/gap_video_index_creator.c:575
+#, c-format
+msgid "incomplete vindex created (%d frames)"
+msgstr "ez da bideo-indize osoa sortu (%d fotograma)"
+
+#: ../gap/gap_video_index_creator.c:660
 msgid "counting and checking videofiles"
 msgstr "bideo-fitxategiak zenbatzen eta egiaztatzen"
 
-#: ../gap/gap_video_index_creator.c:652 ../gap/gap_video_index_creator.c:703
+#: ../gap/gap_video_index_creator.c:692 ../gap/gap_video_index_creator.c:743
 msgid "unprocessed"
 msgstr "prozesatu gabea"
 
-#: ../gap/gap_video_index_creator.c:803
+#: ../gap/gap_video_index_creator.c:843
 #, c-format
 msgid "  %s (%d of %d)"
 msgstr "  %s (%d / %d)"
 
-#: ../gap/gap_video_index_creator.c:884
+#: ../gap/gap_video_index_creator.c:924
 msgid ""
 "Conditional video index creation,  based on a few quick timcode probereads.\n"
 "Skip index creation if native seek seems possible\n"
@@ -8010,10 +8096,10 @@ msgstr ""
 "Saltatu indizearen sorrera jatorrizko bilaketa posiblea dela badirudi.\n"
 "\n"
 "ABISUA: jatorrizko bilaketaren bidez posizio batean kokatzeak baliteke "
-"fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren "
-"urratsak ez badirua detektatu proba bizkorrean)"
+"fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren urratsak ez "
+"badirua detektatu proba bizkorrean)"
 
-#: ../gap/gap_video_index_creator.c:889
+#: ../gap/gap_video_index_creator.c:929
 msgid ""
 "Conditional video index creation, based on probereads for the specified "
 "percentage of frames.\n"
@@ -8029,10 +8115,10 @@ msgstr ""
 "denbora-kode kritikoen urratsik ez bada detektatu probako irakurketan.\n"
 "\n"
 "ABISUA: jatorrizko bilaketaren bidez posizio batean kokatzeak baliteke "
-"fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren "
-"urratsak ez badirua detektatu proba bizkorrean)"
+"fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren urratsak ez "
+"badirua detektatu proba bizkorrean)"
 
-#: ../gap/gap_video_index_creator.c:895
+#: ../gap/gap_video_index_creator.c:935
 msgid ""
 "Create video index. Requires unconditional full scann of all frames.Native "
 "seek is enabled only in case all timecodes are OK."
@@ -8041,11 +8127,11 @@ msgstr ""
 "egitea eskatzen du. Jatorrizko bilaketa gaituta egongo da baldi eta denbora-"
 "kode guztiak ongi badaude."
 
-#: ../gap/gap_video_index_creator.c:904
+#: ../gap/gap_video_index_creator.c:944
 msgid "Videofile:"
 msgstr "Bideo-fitxategia:"
 
-#: ../gap/gap_video_index_creator.c:905
+#: ../gap/gap_video_index_creator.c:945
 msgid ""
 "Name of a videofile to create a videoindex for. You also can enter the name "
 "of a textfile containing a list of videofile names (one name per line) to "
@@ -8057,23 +8143,23 @@ msgstr ""
 "dezakezu aldi berean bideo-indize guztiak sortzeko. Bideo-indize batek bideo-"
 "fitxategi bateko posizioan azkar eta zehaztasunez kokatzea gaitzen du."
 
-#: ../gap/gap_video_index_creator.c:917
+#: ../gap/gap_video_index_creator.c:957
 msgid "Create video index based on the specified decoder library"
 msgstr "Sortu bideoaren indizea zehaztutako dekodetzailearen liburutegian oinarrituz"
 
-#: ../gap/gap_video_index_creator.c:931
+#: ../gap/gap_video_index_creator.c:971
 msgid "Select video track"
 msgstr "Hautatu bideo-pista"
 
-#: ../gap/gap_video_index_creator.c:943
+#: ../gap/gap_video_index_creator.c:983
 msgid "operation mode"
 msgstr "eragiketa modua"
 
-#: ../gap/gap_video_index_creator.c:953
+#: ../gap/gap_video_index_creator.c:993
 msgid "Percentage:"
 msgstr "Ehunekoa:"
 
-#: ../gap/gap_video_index_creator.c:954
+#: ../gap/gap_video_index_creator.c:994
 msgid ""
 "stop scann after percentage reached and no unplausible timecode was detected "
 "so far (only relevant in smart mode)"
@@ -8081,54 +8167,54 @@ msgstr ""
 "gelditu eskaneatzea ehunekora iritsitakoan, eta ez bada denbora-koderik "
 "detektatu (modu azkarrean soilik egokia)"
 
-#: ../gap/gap_video_index_creator.c:972
+#: ../gap/gap_video_index_creator.c:1012
 msgid "Video Index Creation"
 msgstr "Bideo-indizea sortzea"
 
-#: ../gap/gap_video_index_creator.c:1116 ../gap/gap_video_index_creator.c:1196
+#: ../gap/gap_video_index_creator.c:1156 ../gap/gap_video_index_creator.c:1236
 msgid " ** no video **"
 msgstr "** ez dago bideorik **"
 
-#: ../gap/gap_video_index_creator.c:1122
+#: ../gap/gap_video_index_creator.c:1162
 msgid "processing not finished"
 msgstr "prozesua ez da amaitu"
 
-#: ../gap/gap_video_index_creator.c:1202
+#: ../gap/gap_video_index_creator.c:1242
 msgid "processing in progress"
 msgstr "prozesua lanean dago"
 
-#: ../gap/gap_video_index_creator.c:1294
+#: ../gap/gap_video_index_creator.c:1334
 msgid "videofile"
 msgstr "bideo-fitxategia"
 
 #. the Status frame
-#: ../gap/gap_video_index_creator.c:1300 ../vid_common/gap_cme_gui.c:2646
+#: ../gap/gap_video_index_creator.c:1340 ../vid_common/gap_cme_gui.c:2696
 msgid "Status"
 msgstr "Egoera"
 
-#: ../gap/gap_video_index_creator.c:1349
+#: ../gap/gap_video_index_creator.c:1389
 msgid "Video Index Creation Progress"
 msgstr "Bideo-indizea sortzearen aurrerapena"
 
-#: ../gap/gap_video_index_creator.c:1476
+#: ../gap/gap_video_index_creator.c:1516
 msgid "processing cancelled"
 msgstr "prozesua bertan behera utzita"
 
-#: ../gap/gap_video_index_creator.c:1480
+#: ../gap/gap_video_index_creator.c:1520
 msgid "processing finished"
 msgstr "prozesua amaituta"
 
-#: ../gap/gap_video_index_creator.c:1534
+#: ../gap/gap_video_index_creator.c:1574
 #, c-format
 msgid "Quick check %0.3f %%"
 msgstr "Egiaztapen bizkorra %% %0.3f"
 
-#: ../gap/gap_video_index_creator.c:1545
+#: ../gap/gap_video_index_creator.c:1585
 #, c-format
 msgid "Smart check %0.3f %% (of %0.3f %%)"
 msgstr "Egiaztapen azkarra %% %0.3f (/ %% %0.3f)"
 
-#: ../gap/gap_video_index_creator.c:1551
+#: ../gap/gap_video_index_creator.c:1591
 #, c-format
 msgid "Creating video index %0.3f %%"
 msgstr "Bideo-indizea sortzen %% %.03f"
@@ -8282,20 +8368,20 @@ msgstr "Irteera txikia:"
 msgid "High Output:"
 msgstr "Irteera handia:"
 
-#: ../gap/gap_wr_opacity.c:138
+#: ../gap/gap_wr_opacity.c:141
 msgid "Set Layer Opacity..."
 msgstr "Ezarri geruzaren opakutasuna..."
 
 #. Menu names
-#: ../gap/gap_wr_opacity.c:147
-msgid "<Image>/Video/Layer/"
-msgstr "<Image>/Bideoa/Geruza/"
+#: ../gap/gap_wr_opacity.c:150
+msgid "<Image>/Video/Layer/Attributes/"
+msgstr "<Image>/Bideoa/Geruza/Atributuak/"
 
-#: ../gap/gap_wr_opacity.c:330
+#: ../gap/gap_wr_opacity.c:333
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
 msgstr "Opakutasunaren balio berria, non 0 gardena baita eta 100.0 opakua"
 
-#: ../gap/gap_wr_opacity.c:341
+#: ../gap/gap_wr_opacity.c:345
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
@@ -8303,13 +8389,76 @@ msgstr ""
 "Moduek opakutasuna ezartzen dute edo opakutasunaren balio zaharra aldatzen "
 "dute, emandako balio berria gehituz, kenduz edo biderkatuz"
 
-#: ../gap/gap_wr_opacity.c:353
+#: ../gap/gap_wr_opacity.c:357
 msgid "Reset all Parameters to Default Values"
 msgstr "Berrezarri parametro guztiak balio lehenetsietan"
 
-#: ../gap/gap_wr_opacity.c:355
+#: ../gap/gap_wr_opacity.c:359
 msgid "Set Layer Opacity"
 msgstr "Ezarri geruzaren opakutasuna"
+
+#: ../gap/gap_wr_resynth.c:159
+msgid "Smart selection eraser."
+msgstr "Hautapen borragoma azkarra."
+
+#: ../gap/gap_wr_resynth.c:175
+msgid "Smart selection eraser..."
+msgstr "Hautapen borragoma azkarra..."
+
+#. Menu names
+#: ../gap/gap_wr_resynth.c:183
+msgid "<Image>/Video/Layer/Enhance/"
+msgstr "<Image>/Bideoa/Geruza/Hobetu/"
+
+#: ../gap/gap_wr_resynth.c:314 ../gap/gap_wr_trans.c:447
+#, c-format
+msgid ""
+"The plug-in %s\n"
+"operates only on layers\n"
+"(but was called on mask or channel)"
+msgstr ""
+"%s pluginak\n"
+"geruzetan soilik funtzionatzen du\n"
+"(baina maskara edo kanal batek deitu du)"
+
+#: ../gap/gap_wr_resynth.c:418 ../gap/gap_wr_resynth.c:430
+msgid "Smart selection eraser"
+msgstr "Hautapen borragoma azkarra"
+
+#: ../gap/gap_wr_resynth.c:463
+msgid ""
+"The Resynthesizer plug-in is required for this operation\n"
+"But this 3rd party plug-in is not installed\n"
+"Resynthesizer is available at the gimp plug-in registry"
+msgstr ""
+"Resynthesizer plugina behar da eragiketa hau lantzeko\n"
+"Plugin hau ordea ez dago instalatuta\n"
+"Resynthesizer eskuragarri dago gimp-en pluginen erregistroan"
+
+#: ../gap/gap_wr_resynth.c:476
+msgid "Border Radius:"
+msgstr "Ertzaren erradioa:"
+
+#: ../gap/gap_wr_resynth.c:489
+msgid "Seed:"
+msgstr "Hazia:"
+
+#. layer combo_box (alt_selection)
+#: ../gap/gap_wr_resynth.c:501
+msgid "Set Selection:"
+msgstr "Ezarri hautapena:"
+
+#: ../gap/gap_wr_resynth.c:606
+#, c-format
+msgid ""
+"The call of plug-in %s\n"
+"failed.\n"
+"probably the 3rd party plug-in resynthesizer is not installed or is not "
+"compatible to version:%s"
+msgstr ""
+"Huts egin du %s pluginari deitzean\n"
+"Baliteke Resynthesizer plugina instalatu gabe egotea edo %s bertsioarekin "
+"bateragarria ez izatea."
 
 #: ../gap/gap_wr_trans.c:185
 msgid "Flip Horizontal"
@@ -8340,17 +8489,6 @@ msgstr "Biratu edozein angelu"
 msgid "<Image>/Video/Layer/Transform/"
 msgstr "<Image>/Bideoa/Geruza/Eraldatu/"
 
-#: ../gap/gap_wr_trans.c:447
-#, c-format
-msgid ""
-"The plug-in %s\n"
-"operates only on layers\n"
-"(but was called on mask or channel)"
-msgstr ""
-"%s pluginak\n"
-"geruzetan soilik funtzionatzen du\n"
-"(baina maskara edo kanal batek deitu du)"
-
 #: ../gap/gap_wr_trans.c:665
 msgid "Rotate angle:"
 msgstr "Biratzeko angelua:"
@@ -8366,7 +8504,7 @@ msgstr ""
 "aurkibide-fitxategia: '%s':\n"
 "%s"
 
-#: ../libgapvidapi/gap_vid_api_vidindex.c:627
+#: ../libgapvidapi/gap_vid_api_vidindex.c:633
 #, c-format
 msgid ""
 "ERROR: Failed to write videoindex file\n"
@@ -8403,19 +8541,15 @@ msgstr ""
 "2.) egiaztatu SOX (bertsioa>= 12.16) instalatua dagoela:\n"
 "  prog:  %s\n"
 
-#: ../vid_common/gap_cme_gui.c:167
-msgid "GAP Message"
-msgstr "GAP mezua"
-
-#: ../vid_common/gap_cme_gui.c:190
+#: ../vid_common/gap_cme_gui.c:192
 msgid "Encoder specific Parameter Window still open"
 msgstr "Kodetzailearen berariazko parametroen leihoa irekia dago oraindik"
 
-#: ../vid_common/gap_cme_gui.c:475
+#: ../vid_common/gap_cme_gui.c:477
 msgid "no description available"
 msgstr "azalpen erabilgarririk ez"
 
-#: ../vid_common/gap_cme_gui.c:806
+#: ../vid_common/gap_cme_gui.c:816
 msgid ""
 "Storyboardfiles are textfiles that are used to\n"
 "assemble a video from a list of single images,\n"
@@ -8438,54 +8572,54 @@ msgstr ""
 #. * valid_playlist_references holds the number of valid tracks
 #. * (where samplerate matches the desired samplerate and bits == 16)
 #.
-#: ../vid_common/gap_cme_gui.c:928
+#: ../vid_common/gap_cme_gui.c:978
 #, c-format
 msgid "List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d"
 msgstr "[%d] zerrendak [%d] baliozko pista ditu, Bitak:%d Kan:%d Emaria:%d"
 
-#: ../vid_common/gap_cme_gui.c:938
+#: ../vid_common/gap_cme_gui.c:988
 #, c-format
 msgid "%s, Bit:%d Chan:%d Rate:%d"
 msgstr "%s, Bitak:%d Kan:%d Emaria:%d"
 
-#: ../vid_common/gap_cme_gui.c:951
+#: ../vid_common/gap_cme_gui.c:1001
 #, c-format
 msgid "UNKNOWN (using sox)"
 msgstr "EZEZAGUNA (sox erabiliz)"
 
-#: ../vid_common/gap_cme_gui.c:1233
+#: ../vid_common/gap_cme_gui.c:1283
 msgid "Storyframe"
 msgstr "Gidoi-fotograma"
 
-#: ../vid_common/gap_cme_gui.c:1237
+#: ../vid_common/gap_cme_gui.c:1287
 msgid "Layer"
 msgstr "Geruza"
 
-#: ../vid_common/gap_cme_gui.c:1241
+#: ../vid_common/gap_cme_gui.c:1291
 msgid "Frame"
 msgstr "Fotograma"
 
-#: ../vid_common/gap_cme_gui.c:1249
+#: ../vid_common/gap_cme_gui.c:1299
 #, c-format
 msgid "From %s:"
 msgstr "%s(e)tik:"
 
-#: ../vid_common/gap_cme_gui.c:1256
+#: ../vid_common/gap_cme_gui.c:1306
 #, c-format
 msgid "To %s:"
 msgstr "%s(e)ra"
 
-#: ../vid_common/gap_cme_gui.c:1415
+#: ../vid_common/gap_cme_gui.c:1465
 #, c-format
 msgid "using master_framerate %2.2f found in file"
 msgstr "fitxategian aurkitutako %2.2f fotograma-tasa maisua erabiltzea"
 
-#: ../vid_common/gap_cme_gui.c:1424
+#: ../vid_common/gap_cme_gui.c:1474
 #, c-format
 msgid "file has no master_framerate setting"
 msgstr "fitxategiak ez du diapositiba-tasa maisuaren ezarpenik"
 
-#: ../vid_common/gap_cme_gui.c:1452
+#: ../vid_common/gap_cme_gui.c:1502
 #, c-format
 msgid ""
 "composite video track playtime %.3fsec (%d frames)\n"
@@ -8494,7 +8628,7 @@ msgstr ""
 "bideo-pista konposatuaren erreprodukzio-iraupena %.3f s (%d fotograma)\n"
 "audio-pista konposatuaren erreprodukzio-iraupena %.3f s"
 
-#: ../vid_common/gap_cme_gui.c:1460
+#: ../vid_common/gap_cme_gui.c:1510
 #, c-format
 msgid ""
 "composite video track playtime %.3fsec (%d frames)\n"
@@ -8503,17 +8637,17 @@ msgstr ""
 "bideo-pista konposatuaren erreprodukzio-iraupena %.3f s (%d fotograma)\n"
 "ez du audio-pistarik"
 
-#: ../vid_common/gap_cme_gui.c:1468
+#: ../vid_common/gap_cme_gui.c:1518
 #, c-format
 msgid "using master_size %d x %d found in file"
 msgstr "fitxategian aurkitutako %d x %d tamaina_maisua erabiltzea"
 
-#: ../vid_common/gap_cme_gui.c:1481
+#: ../vid_common/gap_cme_gui.c:1531
 #, c-format
 msgid "file has no master_size setting"
 msgstr "fitxategiak ez du tamaina maisuaren ezarpenik"
 
-#: ../vid_common/gap_cme_gui.c:1488
+#: ../vid_common/gap_cme_gui.c:1538
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -8540,7 +8674,7 @@ msgstr ""
 "%s\n"
 "[%d:] %s"
 
-#: ../vid_common/gap_cme_gui.c:1503 ../vid_common/gap_cme_gui.c:1518
+#: ../vid_common/gap_cme_gui.c:1553 ../vid_common/gap_cme_gui.c:1568
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -8561,7 +8695,7 @@ msgstr ""
 "%s\n"
 "[%d:] %s"
 
-#: ../vid_common/gap_cme_gui.c:1530
+#: ../vid_common/gap_cme_gui.c:1580
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -8580,7 +8714,7 @@ msgstr ""
 "\n"
 "ez da errorerik aurkitu, fitxategia egokia da"
 
-#: ../vid_common/gap_cme_gui.c:1543
+#: ../vid_common/gap_cme_gui.c:1593
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -8592,28 +8726,28 @@ msgstr ""
 "huts egin du sintaxia egiaztatzean (barne-errorea gertatu da)"
 
 #. g_message(_("Go for checking storyboard file"));
-#: ../vid_common/gap_cme_gui.c:1859
+#: ../vid_common/gap_cme_gui.c:1909
 msgid "Checking Storyboard File"
 msgstr "Gidoi grafikoaren fitxategia egiaztatzen"
 
-#: ../vid_common/gap_cme_gui.c:1862
+#: ../vid_common/gap_cme_gui.c:1912
 #, c-format
 msgid "Parsing Storyboardfile"
 msgstr "Gidoi grafikoaren fitxategia analizatzen"
 
-#: ../vid_common/gap_cme_gui.c:1905
+#: ../vid_common/gap_cme_gui.c:1955
 msgid "Go for checking storyboard file"
 msgstr "Hasi gidoi grafikoaren fitxategia egiaztatzen"
 
-#: ../vid_common/gap_cme_gui.c:1907 ../vid_common/gap_cme_gui.c:1908
+#: ../vid_common/gap_cme_gui.c:1957 ../vid_common/gap_cme_gui.c:1958
 msgid "Storyboardfile Check"
 msgstr "Gidoi grafikoaren fitxategia egiaztatzea"
 
-#: ../vid_common/gap_cme_gui.c:1961
+#: ../vid_common/gap_cme_gui.c:2011
 msgid "Encoder specific parameter window is still open"
 msgstr "Kodetzailearen berariazko parametroen leihoa irekia dago oraindik"
 
-#: ../vid_common/gap_cme_gui.c:1970
+#: ../vid_common/gap_cme_gui.c:2020
 msgid ""
 "ERROR: No valid storyboardfile was specified.\n"
 "(a storyboard file can be specified in the extras tab)"
@@ -8621,7 +8755,7 @@ msgstr ""
 "ERROREA: ez da zehaztu baliozko gidoi grafikoaren fitxategirik.\n"
 "(gidoi grafikoaren fitxategia gehigarrien fitxan zehaztu daiteke)"
 
-#: ../vid_common/gap_cme_gui.c:1982
+#: ../vid_common/gap_cme_gui.c:2032
 #, c-format
 msgid ""
 "Error:\n"
@@ -8634,7 +8768,7 @@ msgstr ""
 "ezarri zabalera: %d\n"
 "ezarri altuera: %d"
 
-#: ../vid_common/gap_cme_gui.c:2005
+#: ../vid_common/gap_cme_gui.c:2055
 #, c-format
 msgid ""
 "Error: Unsupported Bit per Sample %d\n"
@@ -8645,7 +8779,7 @@ msgstr ""
 "fitxategia: %s\n"
 "8 edo 16 bit onartzen dira"
 
-#: ../vid_common/gap_cme_gui.c:2026
+#: ../vid_common/gap_cme_gui.c:2076
 #, c-format
 msgid ""
 "Error: Audiofile not found\n"
@@ -8654,7 +8788,7 @@ msgstr ""
 "Errorea: ez da audio-fitxategia aurkitu\n"
 "fitxategia: %s\n"
 
-#: ../vid_common/gap_cme_gui.c:2049
+#: ../vid_common/gap_cme_gui.c:2099
 #, c-format
 msgid ""
 "Error: Unsupported Samplerate for MPEG1 Layer2 Audio Encoding\n"
@@ -8668,7 +8802,7 @@ msgstr ""
 "onartutako maiztasunak: \n"
 " 22050, 24000, 32000, 44100, 48000"
 
-#: ../vid_common/gap_cme_gui.c:2077
+#: ../vid_common/gap_cme_gui.c:2127
 #, c-format
 msgid ""
 "Error: Unsupported Samplerate for MPEG2 Layer3 Audio Encoding\n"
@@ -8682,7 +8816,7 @@ msgstr ""
 "onartutako maiztasunak: \n"
 " 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000"
 
-#: ../vid_common/gap_cme_gui.c:2100
+#: ../vid_common/gap_cme_gui.c:2150
 msgid ""
 "Can't process the audio input file. You should check audio options and audio "
 "tool configuration"
@@ -8690,57 +8824,57 @@ msgstr ""
 "Ezin da prozesatu audioaren sarrera-fitxategia. Begiratu audio-aukerak eta "
 "audio-tresnaren konfiguarioa"
 
-#: ../vid_common/gap_cme_gui.c:2121
+#: ../vid_common/gap_cme_gui.c:2171
 msgid "Select Storyboardfile"
 msgstr "Hautatu gidoi grafikoaren fitxategia"
 
-#: ../vid_common/gap_cme_gui.c:2157
+#: ../vid_common/gap_cme_gui.c:2207
 msgid "Select Videofile"
 msgstr "Hautatu bideo-fitxategia"
 
-#: ../vid_common/gap_cme_gui.c:2194
+#: ../vid_common/gap_cme_gui.c:2244
 msgid "Select Macrofile"
 msgstr "Hautatu makro-fitxategia"
 
-#: ../vid_common/gap_cme_gui.c:2278
+#: ../vid_common/gap_cme_gui.c:2328
 msgid "Overwrite warning"
 msgstr "Gainidazte-abisua"
 
-#: ../vid_common/gap_cme_gui.c:2297
+#: ../vid_common/gap_cme_gui.c:2347
 msgid "File already exists:"
 msgstr "Fitxategia badago lehendik ere:"
 
-#: ../vid_common/gap_cme_gui.c:2306
+#: ../vid_common/gap_cme_gui.c:2356
 msgid "filename"
 msgstr "fitxategi-izena"
 
-#: ../vid_common/gap_cme_gui.c:2319
+#: ../vid_common/gap_cme_gui.c:2369
 msgid "  "
 msgstr "  "
 
-#: ../vid_common/gap_cme_gui.c:2399
+#: ../vid_common/gap_cme_gui.c:2449
 msgid "Input Mode:"
 msgstr "Sarrera modua:"
 
 #. radio button Frames input_mode
-#: ../vid_common/gap_cme_gui.c:2409
+#: ../vid_common/gap_cme_gui.c:2459
 msgid "Frames"
 msgstr "Fotogramak"
 
-#: ../vid_common/gap_cme_gui.c:2419
+#: ../vid_common/gap_cme_gui.c:2469
 msgid "Input is a sequence of frame images"
 msgstr "Fotograma-irudien sekuentzia bat da sarrera"
 
 #. radio button Layers input_mode
-#: ../vid_common/gap_cme_gui.c:2433
+#: ../vid_common/gap_cme_gui.c:2483
 msgid "Layers"
 msgstr "Geruzak"
 
-#: ../vid_common/gap_cme_gui.c:2442
+#: ../vid_common/gap_cme_gui.c:2492
 msgid "Input is all the layers of one image"
 msgstr "Irudi baten geruza guztiak batera dira sarrera"
 
-#: ../vid_common/gap_cme_gui.c:2466
+#: ../vid_common/gap_cme_gui.c:2516
 msgid ""
 "Input is videoclips and frames, defined via storyboard file. (specify the "
 "storyboard filename in the extras tab)"
@@ -8749,114 +8883,114 @@ msgstr ""
 "fotogramak dira sarrera. (zehaztu gidoi grafikoaren fitxategi-izena "
 "gehigarrien fitxan)"
 
-#: ../vid_common/gap_cme_gui.c:2512 ../vid_common/gap_cme_main.c:160
+#: ../vid_common/gap_cme_gui.c:2562
 msgid "Master Videoencoder"
 msgstr "Bideo-kodetzaile maisua"
 
 #. the Audio Tool notebook tab
-#: ../vid_common/gap_cme_gui.c:2568
+#: ../vid_common/gap_cme_gui.c:2618
 msgid "Audio Tool Configuration"
 msgstr "Audio-tresnaren konfigurazioa"
 
 #. the Extras notebook tab
-#: ../vid_common/gap_cme_gui.c:2581
+#: ../vid_common/gap_cme_gui.c:2631
 msgid "Extras"
 msgstr "Gehigarriak"
 
 #. add the Encoding notebook tab
-#: ../vid_common/gap_cme_gui.c:2592
+#: ../vid_common/gap_cme_gui.c:2642
 msgid "Encoding"
 msgstr "Kodeketa"
 
 #. the (output) video label
-#: ../vid_common/gap_cme_gui.c:2618
+#: ../vid_common/gap_cme_gui.c:2668
 msgid "Video :"
 msgstr "Bideoa:"
 
-#: ../vid_common/gap_cme_gui.c:2627
+#: ../vid_common/gap_cme_gui.c:2677
 msgid "Name of output videofile"
 msgstr "Irteerako bideo-fitxategiaren izena"
 
-#: ../vid_common/gap_cme_gui.c:2639
+#: ../vid_common/gap_cme_gui.c:2689
 msgid "Select output videofile via browser"
 msgstr "Hautatu irteerako bideo-fitxategia arakatzailearen bidez"
 
 #. the Status label
-#: ../vid_common/gap_cme_gui.c:2657
+#: ../vid_common/gap_cme_gui.c:2707
 msgid "READY"
 msgstr "PREST"
 
-#: ../vid_common/gap_cme_gui.c:2732
+#: ../vid_common/gap_cme_gui.c:2782
 msgid "Video Encoder Status"
 msgstr "Bideo-kodeketaren egoera"
 
-#: ../vid_common/gap_cme_gui.c:2744
+#: ../vid_common/gap_cme_gui.c:2794
 msgid "Active Encoder:"
 msgstr "Kodetzaile aktiboa:"
 
-#: ../vid_common/gap_cme_gui.c:2770
+#: ../vid_common/gap_cme_gui.c:2820
 msgid "Total Frames:"
 msgstr "Fotogramak guztira:"
 
-#: ../vid_common/gap_cme_gui.c:2789
+#: ../vid_common/gap_cme_gui.c:2839
 msgid "Frames Done:"
 msgstr "Egindako fotogramak:"
 
-#: ../vid_common/gap_cme_gui.c:2808
+#: ../vid_common/gap_cme_gui.c:2858
 msgid "Frames Encoded:"
 msgstr "Kodetutako fotogramak:"
 
-#: ../vid_common/gap_cme_gui.c:2827
+#: ../vid_common/gap_cme_gui.c:2877
 msgid "Frames Copied (lossless):"
 msgstr "Kopiatutako fotogramak (galerarik gabe):"
 
-#: ../vid_common/gap_cme_gui.c:2846
+#: ../vid_common/gap_cme_gui.c:2896
 msgid "Encoding Time Elapsed:"
-msgstr ""
+msgstr "Kodeketan igarotako denbora:"
 
-#: ../vid_common/gap_cme_gui.c:2880
+#: ../vid_common/gap_cme_gui.c:2930
 msgid "Encoding Extras"
 msgstr "Kodetze-gehigarriak"
 
 #. the Macrofile label
-#: ../vid_common/gap_cme_gui.c:2890
+#: ../vid_common/gap_cme_gui.c:2940
 msgid "Macrofile:"
 msgstr "Makro-fitxategia"
 
-#: ../vid_common/gap_cme_gui.c:2905
+#: ../vid_common/gap_cme_gui.c:2955
 msgid "optional filtermacro file to be performed on each handled frame "
 msgstr ""
 "maneiatutako fotograma bakoitzean egikaritu beharreko hautazko iragazki-"
 "markoaren fitxategia "
 
-#: ../vid_common/gap_cme_gui.c:2918
+#: ../vid_common/gap_cme_gui.c:2968
 msgid "select macrofile via browser"
 msgstr "hautatu makro-fitxategia arakatzailearen bidez"
 
 #. the Storyboard label
-#: ../vid_common/gap_cme_gui.c:2927
+#: ../vid_common/gap_cme_gui.c:2977
 msgid "Storyboard File:"
 msgstr "Gidoi grafikoaren fitxategia:"
 
-#: ../vid_common/gap_cme_gui.c:2941
+#: ../vid_common/gap_cme_gui.c:2991
 msgid "optionally use a storyboard file to feed the encoder"
 msgstr "gidoi grafikoaren fitxategia erabil daiteke kodetzailea elikatzeko"
 
-#: ../vid_common/gap_cme_gui.c:2953
+#: ../vid_common/gap_cme_gui.c:3003
 msgid "select storyboard file via browser"
 msgstr "hautatu gidoi grafikoaren fitxategia arakatzailearen bidez"
 
 #. the Storyboard Audio
-#: ../vid_common/gap_cme_gui.c:2960
+#: ../vid_common/gap_cme_gui.c:3010
 msgid "Storyboard Audio:"
 msgstr "Gidoi grafikoaren audioa:"
 
 #. the Storyboard filebrowser button
-#: ../vid_common/gap_cme_gui.c:2968
+#: ../vid_common/gap_cme_gui.c:3018
 msgid "Create Composite Audiofile"
 msgstr "Sortu audio-fitxategi konposatua"
 
-#: ../vid_common/gap_cme_gui.c:2975
+#: ../vid_common/gap_cme_gui.c:3025
 msgid ""
 "create a composite audiofile as mixdown of all audio tracks in the "
 "storyboard file and use the created composite audiofile as input for encoding"
@@ -8866,7 +9000,7 @@ msgstr ""
 "du kodetzailearen sarrera gisa"
 
 #. the  storyboard helptext & parsing report label
-#: ../vid_common/gap_cme_gui.c:2987
+#: ../vid_common/gap_cme_gui.c:3037
 msgid ""
 "Storyboardfiles are textfiles that are used to\n"
 "assemble a video from a list of single images,\n"
@@ -8879,21 +9013,21 @@ msgstr ""
 "(xehetasunen berri, STORYBOARD_FILE_DOC.txt fitxategian)"
 
 #. the Monitor label
-#: ../vid_common/gap_cme_gui.c:3002
+#: ../vid_common/gap_cme_gui.c:3052
 msgid "Monitor"
 msgstr "Monitorizatu"
 
 #. the Monitor checkbutton
-#: ../vid_common/gap_cme_gui.c:3010
+#: ../vid_common/gap_cme_gui.c:3060
 msgid "Monitor Frames while Encoding"
 msgstr "Monitorizatu fotogramak kodetu bitartean"
 
-#: ../vid_common/gap_cme_gui.c:3015
+#: ../vid_common/gap_cme_gui.c:3065
 msgid "Show each frame before passed to encoder"
 msgstr "Bistaratu fotograma bakoitza kodetzailera pasatu baino lehen"
 
 #. the Debug Flat File label
-#: ../vid_common/gap_cme_gui.c:3024
+#: ../vid_common/gap_cme_gui.c:3074
 msgid ""
 "Debug\n"
 "Flat File:"
@@ -8901,7 +9035,7 @@ msgstr ""
 "Araztu\n"
 "Fitxategi berdindua:"
 
-#: ../vid_common/gap_cme_gui.c:3038
+#: ../vid_common/gap_cme_gui.c:3088
 msgid ""
 "optional Save each composite frame to JPEG file, before it is passed to the "
 "encoder"
@@ -8910,7 +9044,7 @@ msgstr ""
 "gordetzeko aukera"
 
 #. the Debug Multilayer File label
-#: ../vid_common/gap_cme_gui.c:3047
+#: ../vid_common/gap_cme_gui.c:3097
 msgid ""
 "Debug\n"
 "Multilayer File:"
@@ -8918,7 +9052,7 @@ msgstr ""
 "Araztu\n"
 "Geruza anitzeko fitxategia:"
 
-#: ../vid_common/gap_cme_gui.c:3061
+#: ../vid_common/gap_cme_gui.c:3111
 msgid ""
 "optional save each composite multilayer frame to XCF file, before flattening "
 "and executing macro"
@@ -8926,29 +9060,29 @@ msgstr ""
 "berdindu eta makroa exekutatu aurretik geruza anitzeko fotograma konposatu "
 "bakoitza XCF fitxategian gordetzeko aukera"
 
-#: ../vid_common/gap_cme_gui.c:3087
+#: ../vid_common/gap_cme_gui.c:3137
 msgid "Configuration of external audiotool program"
 msgstr "Audio-tresnen kanpoko programa konfiguratzea"
 
 #. the audiotool (sox) label
-#: ../vid_common/gap_cme_gui.c:3097
+#: ../vid_common/gap_cme_gui.c:3147
 msgid "Audiotool:"
 msgstr "Audio-tresna:"
 
-#: ../vid_common/gap_cme_gui.c:3111
+#: ../vid_common/gap_cme_gui.c:3161
 msgid "name of audiotool (something like sox with or without path)"
 msgstr "audio-tresnaren izena (sox moduko zerbait, bide-izenarekin edo gabe)"
 
 #. the audiotool options (sox options) label
-#: ../vid_common/gap_cme_gui.c:3121
+#: ../vid_common/gap_cme_gui.c:3171
 msgid "Options:"
 msgstr "Aukerak:"
 
-#: ../vid_common/gap_cme_gui.c:3136
+#: ../vid_common/gap_cme_gui.c:3186
 msgid "Options to call the audiotool ($IN, $OUT $RATE are replaced)"
 msgstr "Audio-tresna deitzeko aukerak($IN, $OUT $RATE ordeztu egiten dira)"
 
-#: ../vid_common/gap_cme_gui.c:3148
+#: ../vid_common/gap_cme_gui.c:3198
 msgid ""
 "Configuration of an audiotool (like sox on UNIX).\n"
 "\n"
@@ -8973,32 +9107,32 @@ msgstr ""
 "     wav fitxategiaren maiztasunarekin"
 
 #. the Save button
-#: ../vid_common/gap_cme_gui.c:3177
+#: ../vid_common/gap_cme_gui.c:3227
 msgid "Save"
 msgstr "Gorde"
 
-#: ../vid_common/gap_cme_gui.c:3180
+#: ../vid_common/gap_cme_gui.c:3230
 msgid "Save audiotool configuration to gimprc"
 msgstr "Gorde audio-tresnaren konfigurazioa gimprc-n"
 
 #. the Load button
-#: ../vid_common/gap_cme_gui.c:3186
+#: ../vid_common/gap_cme_gui.c:3236
 msgid "Load"
 msgstr "Kargatu"
 
-#: ../vid_common/gap_cme_gui.c:3189
+#: ../vid_common/gap_cme_gui.c:3239
 msgid "Load audiotool configuration from gimprc"
 msgstr "Kargatu audio-tresnaren konfigurazio gimprc-tik"
 
-#: ../vid_common/gap_cme_gui.c:3198
+#: ../vid_common/gap_cme_gui.c:3248
 msgid "Set default audiotool configuration "
 msgstr "Ezarri audio-tresnaren konfigurazio lehenetsia "
 
-#: ../vid_common/gap_cme_gui.c:3225
+#: ../vid_common/gap_cme_gui.c:3275
 msgid "Audio Input"
 msgstr "Audio-sarrera"
 
-#: ../vid_common/gap_cme_gui.c:3253
+#: ../vid_common/gap_cme_gui.c:3303
 msgid ""
 "Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optionally "
 "you may select a textfile that contains a list of file names referring to "
@@ -9010,85 +9144,91 @@ msgstr ""
 "izenen zerrenda daukan testu-fitxategia ere hauta dezakezu. Audio-fitxategi "
 "horietako bakoitza audio-pista bereizi batean kodetuko da."
 
-#: ../vid_common/gap_cme_gui.c:3270
+#: ../vid_common/gap_cme_gui.c:3320
 msgid "Select input audiofile via browser"
 msgstr "Hautatu sarrerako audio-fitxategia arakatzailearen bidez"
 
 #. the audiofile information label
 #. the Tmp audioinformation  label
-#: ../vid_common/gap_cme_gui.c:3279 ../vid_common/gap_cme_gui.c:3380
+#: ../vid_common/gap_cme_gui.c:3329 ../vid_common/gap_cme_gui.c:3432
 msgid "WAV, 16 Bit stereo, rate: 44100"
 msgstr "WAV, 16 bit-eko estereoa, maiztasuna: 44100"
 
 #. the audiofile total playtime information label
 #. the Tmp audio playtime information  label
 #. the timestamp of the last frame
-#: ../vid_common/gap_cme_gui.c:3288 ../vid_common/gap_cme_gui.c:3389
-#: ../vid_common/gap_cme_gui.c:3460 ../vid_common/gap_cme_gui.c:3475
+#: ../vid_common/gap_cme_gui.c:3338 ../vid_common/gap_cme_gui.c:3441
+#: ../vid_common/gap_cme_gui.c:3512 ../vid_common/gap_cme_gui.c:3527
 msgid "00:00:000"
 msgstr "00:00:000"
 
-#: ../vid_common/gap_cme_gui.c:3316
+#: ../vid_common/gap_cme_gui.c:3366
 msgid "Output samplerate in samples/sec"
 msgstr "Irteerako lagintze-maiztasuna (lagin/s)"
 
 #. the Samplerate combo
-#: ../vid_common/gap_cme_gui.c:3322
+#: ../vid_common/gap_cme_gui.c:3372
 msgid " 8k Phone"
 msgstr " 8 k telefonoa"
 
-#: ../vid_common/gap_cme_gui.c:3323
+#: ../vid_common/gap_cme_gui.c:3373
 msgid "11.025k"
 msgstr "11,025 k"
 
-#: ../vid_common/gap_cme_gui.c:3324
+#: ../vid_common/gap_cme_gui.c:3374
 msgid "12k Voice"
 msgstr "12 k ahotsa"
 
-#: ../vid_common/gap_cme_gui.c:3325
+#: ../vid_common/gap_cme_gui.c:3375
 msgid "16k FM"
 msgstr "16 k FM"
 
-#: ../vid_common/gap_cme_gui.c:3326
+#: ../vid_common/gap_cme_gui.c:3376
 msgid "22.05k"
 msgstr "22,05 k"
 
-#: ../vid_common/gap_cme_gui.c:3327
+#: ../vid_common/gap_cme_gui.c:3377
 msgid "24k Tape"
 msgstr "24 k kasetea"
 
-#: ../vid_common/gap_cme_gui.c:3328
+#: ../vid_common/gap_cme_gui.c:3378
 msgid "32k HiFi"
 msgstr "32 k HiFia"
 
-#: ../vid_common/gap_cme_gui.c:3329
+#: ../vid_common/gap_cme_gui.c:3379
 msgid "44.1k CD"
 msgstr "44,1 k CDa"
 
-#: ../vid_common/gap_cme_gui.c:3330
+#: ../vid_common/gap_cme_gui.c:3380
 msgid "48 k Studio"
 msgstr "48 k estudioa"
 
-#: ../vid_common/gap_cme_gui.c:3339
+#: ../vid_common/gap_cme_gui.c:3389
 msgid "Select a commonly-used samplerate"
 msgstr "Hautatu maiz erabiltzen den lagintze-maiztasun bat"
 
 #. the Tmp audiofile label
-#: ../vid_common/gap_cme_gui.c:3349
+#: ../vid_common/gap_cme_gui.c:3399
 msgid "Tmpfile:"
 msgstr "Aldi baterako fitxategia:"
 
 #. the convert Tmp audiofilefile button
-#: ../vid_common/gap_cme_gui.c:3366
+#: ../vid_common/gap_cme_gui.c:3416
 msgid "Audioconvert"
 msgstr "Adio-konbertsioa"
 
-#: ../vid_common/gap_cme_gui.c:3372
-msgid "Convert audiofile to tmpfile"
-msgstr "Bihurtu audio-fitxategia aldi baterako fitxategi"
+#: ../vid_common/gap_cme_gui.c:3422
+msgid ""
+"Convert audio input file to a temporary file\n"
+"and feed the temporary file to the selected encoder\n"
+"(the temporary file is deleted when encoding is done)"
+msgstr ""
+"Bihurtu audioko sarrerako fitxategia aldi baterako fitxategi\n"
+"eta hornitu hautatutako kodetzailea aldi baterako fitxategiarekin\n"
+"(aldi baterako fitxategia ezabatu egingo da kodeketa amaitutakoan)"
 
 #. the resample general information label
-#: ../vid_common/gap_cme_gui.c:3399
+#: ../vid_common/gap_cme_gui.c:3451
 msgid ""
 "\n"
 "Note:\n"
@@ -9104,144 +9244,148 @@ msgstr ""
 "baina lagintze-maiztasun handiagoek ez dute jatorrizko\n"
 "soinuaren kalitatea hobetzen."
 
-#: ../vid_common/gap_cme_gui.c:3505
+#: ../vid_common/gap_cme_gui.c:3557
 msgid "Video Encode Options"
 msgstr "Bideo-kodetzearen aukerak"
 
-#: ../vid_common/gap_cme_gui.c:3542
+#: ../vid_common/gap_cme_gui.c:3594
 msgid "Start encoding at this frame"
 msgstr "Hasi kodetzea fotograma honetan"
 
-#: ../vid_common/gap_cme_gui.c:3575
+#: ../vid_common/gap_cme_gui.c:3627
 msgid "Stop encoding at this frame"
 msgstr "Gelditu kodetzea fotograma honetan"
 
-#: ../vid_common/gap_cme_gui.c:3601
+#: ../vid_common/gap_cme_gui.c:3653
 msgid "Width of the output video (pixels)"
 msgstr "Irteera-bideoaren zabalera (pixelak)"
 
 #. the Frame width/height scale combo (for picking common used video sizes)
-#: ../vid_common/gap_cme_gui.c:3608
+#: ../vid_common/gap_cme_gui.c:3660
 msgid "Framesize (1:1)"
 msgstr "Fotograma-tamaina (1:1)"
 
-#: ../vid_common/gap_cme_gui.c:3609
+#: ../vid_common/gap_cme_gui.c:3661
 msgid "320x240 NTSC"
 msgstr "320x240 NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3610
+#: ../vid_common/gap_cme_gui.c:3662
 msgid "320x288 PAL"
 msgstr "320x288 PAL"
 
-#: ../vid_common/gap_cme_gui.c:3611
+#: ../vid_common/gap_cme_gui.c:3663
 msgid "640x480"
 msgstr "640x480"
 
-#: ../vid_common/gap_cme_gui.c:3612
+#: ../vid_common/gap_cme_gui.c:3664
 msgid "720x480 NTSC"
 msgstr "720x480 NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3613
+#: ../vid_common/gap_cme_gui.c:3665
 msgid "720x576 PAL"
 msgstr "720x576 PAL"
 
-#: ../vid_common/gap_cme_gui.c:3622
+#: ../vid_common/gap_cme_gui.c:3674
 msgid "Scale width/height to common size"
 msgstr "Eskalatu zabalera/altuera ohiko tamainara"
 
-#: ../vid_common/gap_cme_gui.c:3649
+#: ../vid_common/gap_cme_gui.c:3701
 msgid "Height of the output video (pixels)"
 msgstr "Irteera-bideoaren altuera (pixelak)"
 
-#: ../vid_common/gap_cme_gui.c:3676
+#: ../vid_common/gap_cme_gui.c:3728
 msgid "Framerate of the output video (frames/sec)"
 msgstr "Irteera bideoaren fotograma-tasa (fotograma/s)"
 
 #. the framerate combo (to select common used video framerates)
-#: ../vid_common/gap_cme_gui.c:3683
+#: ../vid_common/gap_cme_gui.c:3735
 msgid "unchanged"
 msgstr "aldatu gabea"
 
-#: ../vid_common/gap_cme_gui.c:3705
+#: ../vid_common/gap_cme_gui.c:3757
 msgid "Set framerate"
 msgstr "Ezarri fotograma-tasa"
 
 #. the Videonorm label
-#: ../vid_common/gap_cme_gui.c:3716
+#: ../vid_common/gap_cme_gui.c:3768
 msgid "Videonorm:"
 msgstr "Bideo-araua:"
 
 #. the Videonorm combo
-#: ../vid_common/gap_cme_gui.c:3724
+#: ../vid_common/gap_cme_gui.c:3776
 msgid "NTSC"
 msgstr "NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3725
+#: ../vid_common/gap_cme_gui.c:3777
 msgid "PAL"
 msgstr "PAL"
 
-#: ../vid_common/gap_cme_gui.c:3726
+#: ../vid_common/gap_cme_gui.c:3778
 msgid "SECAM"
 msgstr "SECAM"
 
-#: ../vid_common/gap_cme_gui.c:3727
+#: ../vid_common/gap_cme_gui.c:3779
 msgid "MAC"
 msgstr "MAC"
 
-#: ../vid_common/gap_cme_gui.c:3728
+#: ../vid_common/gap_cme_gui.c:3780
 msgid "COMP"
 msgstr "COMP"
 
-#: ../vid_common/gap_cme_gui.c:3729
+#: ../vid_common/gap_cme_gui.c:3781
 msgid "undefined"
 msgstr "definitu gabea"
 
-#: ../vid_common/gap_cme_gui.c:3738
+#: ../vid_common/gap_cme_gui.c:3790
 msgid "Select videonorm"
 msgstr "Hautatu bideo-araua"
 
 #. the videoencoder label
-#: ../vid_common/gap_cme_gui.c:3748
+#: ../vid_common/gap_cme_gui.c:3800
 msgid "Encoder:"
 msgstr "Kodetzailea:"
 
 #. the parameters button (invokes videoencoder specific GUI dialog)
-#: ../vid_common/gap_cme_gui.c:3756
+#: ../vid_common/gap_cme_gui.c:3808
 msgid "Parameters"
 msgstr "Parametroak"
 
-#: ../vid_common/gap_cme_gui.c:3762
+#: ../vid_common/gap_cme_gui.c:3814
 msgid "Edit encoder specific parameters"
 msgstr "Editatu kodetzailearen berariazko parametroak"
 
-#: ../vid_common/gap_cme_gui.c:3778
+#: ../vid_common/gap_cme_gui.c:3830
 msgid "Select video encoder plugin"
 msgstr "Hautatu bideo-kodetzailearen plugina"
 
-#: ../vid_common/gap_cme_gui.c:3877
+#: ../vid_common/gap_cme_gui.c:3929
 #, c-format
 msgid "Required Plugin %s not available"
 msgstr "Behar den %s plugina ez dago erabilgarri"
 
-#: ../vid_common/gap_cme_gui.c:3929
+#: ../vid_common/gap_cme_gui.c:3981
 #, c-format
 msgid "Call of Required Plugin %s failed"
 msgstr "Huts egin du behar den %s plugina deitzean"
 
-#: ../vid_common/gap_cme_gui.c:4033
+#: ../vid_common/gap_cme_gui.c:4066
 #, c-format
 msgid "Video encoding %d of %d frames done, PASS 1 of 2"
-msgstr ""
+msgstr "%d / %d fotogramen bideo-kodeketa burututa, 1 / 2 urratsa"
 
-#: ../vid_common/gap_cme_gui.c:4045
+#: ../vid_common/gap_cme_gui.c:4078
 #, c-format
 msgid "Video encoding %d of %d frames done, PASS 2 of 2"
-msgstr ""
+msgstr "%d / %d fotogramen bideo-kodeketa burututa, 2 / 2 urratsa"
 
-#: ../vid_common/gap_cme_gui.c:4058
+#: ../vid_common/gap_cme_gui.c:4091
 #, c-format
 msgid "Video encoding %d of %d frames done"
-msgstr ""
+msgstr "%d / %d fotogramen bideo-kodeketa burututa"
+
+#: ../vid_common/gap_cme_gui.c:4110
+msgid "ENCODER process has terminated"
+msgstr "Kodetzailearen prozesua amaitu da"
 
 #: ../vid_common/gap_cme_main.c:147
 msgid "This plugin is the master dialog for video + audio encoding"
@@ -9272,6 +9416,10 @@ msgstr ""
 "pluginari. Dei ez-interaktiboetan balio lehenetsiak erabiltzen dira "
 "(parametro ez-interaktiboak zehaztu nahi badituzu, erabili nahi duzun "
 "pluginari zuzenean deitzeko aukera duzu) "
+
+#: ../vid_common/gap_cme_main.c:160
+msgid "Master Videoencoder..."
+msgstr "Bideo-kodetzaile maisua..."
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:452
 msgid "AVI Video Encode Parameters"
@@ -9331,9 +9479,9 @@ msgid ""
 "Don't recode the input JPEG frames. WARNING: This option may produce an "
 "unusable video when refered JPEG frames are not YUV 4:2:2 encoded."
 msgstr ""
-"Ez kodetu berriz sarrerako JPEG fotogramak. ABISUA: "
-"ondoriozko bideoa irakurtezina izan daiteke erreferentziatutako JPEG "
-"fotogramak ez daudenean YUV 4:2:2 kodeketarekin."
+"Ez kodetu berriz sarrerako JPEG fotogramak. ABISUA: ondoriozko bideoa "
+"irakurtezina izan daiteke erreferentziatutako JPEG fotogramak ez daudenean "
+"YUV 4:2:2 kodeketarekin."
 
 #. the interlace label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:627 ../vid_enc_avi/gap_enc_avi_gui.c:764
@@ -9380,8 +9528,8 @@ msgid ""
 "Don't recode the input PNG frames when possible. WARNING: This option may "
 "produce an unusable video"
 msgstr ""
-"Ez kodetu berriz sarrerako PNG fotogramak. ABISUA: "
-"ondoriozko bideoa irakurtezina izan daiteke"
+"Ez kodetu berriz sarrerako PNG fotogramak. ABISUA: ondoriozko bideoa "
+"irakurtezina izan daiteke"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:785
 msgid "Generate interlaced PNGs"
@@ -9396,9 +9544,7 @@ msgstr "Konpresioa:"
 msgid ""
 "The compression setting of the encoded PNG frames (9=best "
 "compression0=fastest)"
-msgstr ""
-"PNG fotograma kodetuen konpresio-ezarpena (9=konpresio onena, "
-"0=azkarrena)"
+msgstr "PNG fotograma kodetuen konpresio-ezarpena (9=konpresio onena, 0=azkarrena)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:827
 msgid "RAW Codec Options"
@@ -9510,11 +9656,11 @@ msgstr ""
 "XVID kodekaren algoritmo-aurrezarpenak: 0==kalitate txikia (bizkorra), "
 "6==kalitate onena (motela)"
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:206
+#: ../vid_enc_avi/gap_enc_avi_main.c:207
 msgid "avi video encoding for anim frames. Menu: @AVI@"
 msgstr "fotograma animatuentzako avi bideo-kodetzea. Menua: @AVI@"
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:207
+#: ../vid_enc_avi/gap_enc_avi_main.c:208
 msgid ""
 "This plugin handles video encoding for the AVI videoformat. the (optional) "
 "audiodata must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav "
@@ -9527,25 +9673,25 @@ msgstr ""
 "daitezke .wav fitxategiak. Konprimitu gabeko audio-datuak 16 bit-ekoa izan "
 "behar du. GARRANTZITSUA:  aurretik honi deitu behar zaio: \""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:225
+#: ../vid_enc_avi/gap_enc_avi_main.c:226
 msgid "Set Parameters for GAP avi video encoder Plugins"
 msgstr "Ezarri GAP avi bideo-kodetzailearen pluginen parametroak"
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:226
+#: ../vid_enc_avi/gap_enc_avi_main.c:227
 msgid "This plugin sets avi specific video encoding parameters."
 msgstr "avi bideo-kodetzailearen berariazko parametroak ezartzen ditu plugin horrek."
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:239
+#: ../vid_enc_avi/gap_enc_avi_main.c:240
 msgid "Get GUI Parameters for GAP avi video encoder"
 msgstr ""
 "Eskuratu erabiltzaile-interfaze grafikoaren parametroak avi bideo-"
 "kodetzailearentzat"
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:240
+#: ../vid_enc_avi/gap_enc_avi_main.c:241
 msgid "This plugin returns avi encoder specific parameters."
 msgstr "Plugin horrek avi kodetzailearen berariazko parametroak itzultzen ditu."
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:322
+#: ../vid_enc_avi/gap_enc_avi_main.c:323
 msgid ""
 "AVI Encoder\n"
 "writes RIFF AVI encoded videos\n"
@@ -9558,7 +9704,7 @@ msgstr ""
 #. the CODEC delivered a NULL buffer
 #. * there is something essential wrong (TERMINATE)
 #.
-#: ../vid_enc_avi/gap_enc_avi_main.c:1019
+#: ../vid_enc_avi/gap_enc_avi_main.c:1059
 #, c-format
 msgid "ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d"
 msgstr ""
@@ -9826,19 +9972,19 @@ msgstr "6 x1"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1630
 msgid "7 hex (x264 specific)"
-msgstr ""
+msgstr "7 hex (x264 zehatza)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1631
 msgid "8 umh (x264 specific)"
-msgstr ""
+msgstr "8 umh (x264 zehatza)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1632
 msgid "9 iter (snow specific)"
-msgstr ""
+msgstr "9 iter (elur zehatza)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1633
 msgid "10 tesa (x264 specific)"
-msgstr ""
+msgstr "10 tesa (x264 zehatza)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1640
 msgid "Select algorithm for motion estimation"
@@ -10339,20 +10485,22 @@ msgstr "H264:"
 #. the Fast checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2544
 msgid "Fast Non-Compliant"
-msgstr ""
+msgstr "Ez-bateragarri bizkorra"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2550
 msgid "Allow non spec compliant speedup tricks"
-msgstr ""
+msgstr "Baimendu zehaztapenekin bateragarriak ez diren trikimailuak azeleratzea"
 
 #. the use_bpyramid checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2558
 msgid "Bpyramid"
-msgstr ""
+msgstr "B piramidea"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2564
 msgid "allow B-frames to be used as references for predicting.(for H264 codec)"
 msgstr ""
+"baimendu B fotogramak erreferentzi gisa erabiltzea iragarpenetan (H264 "
+"kodekean)"
 
 #. the use_local_header checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2575
@@ -10361,118 +10509,122 @@ msgstr "Goiburu lokala"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2581
 msgid "Place global headers at every keyframe instead of in extradata"
-msgstr ""
+msgstr "Jarri goiburu globalak gako-fotograma bakoitzean estradatuetan ordez"
 
 #. the use_wpred checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2588
 msgid "Weighted Biprediction"
-msgstr ""
+msgstr "Pisodun iragarpen bikoitza"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2594
 msgid "weighted biprediction for B-frames (for H264 codec)"
-msgstr ""
+msgstr "B fotogramen pisodun iragarpen bikoitza (H264 kodeka)"
 
 #. the use_brdo checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2606
 msgid "B Rate Distortion"
-msgstr ""
+msgstr "B tasaren distortsioa"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2612
 msgid "B-frame rate-distortion optimization"
-msgstr ""
+msgstr "B fotogramen tasen distortsioaren optimizazioa"
 
 #. the use_mixed_refs checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2622
 msgid "Mixed Refs"
-msgstr ""
+msgstr "Nahastutako erref"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2628
 msgid ""
 "one reference per partition, as opposed to one reference per macroblock (for "
 "H264 codec)"
 msgstr ""
+"erreferentzia bat partizioko, erreferentizia bat makroblokekoaren "
+"alderantziz (H264 kodeka)"
 
 #. the use_ivlc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2639
 msgid "Intra VLC"
-msgstr ""
+msgstr "Barneko VLC"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2645
 msgid "Use MPEG-2 intra VLC table."
-msgstr ""
+msgstr "Erabili MPEG-2 barneko VLC taula."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2659
 msgid "high profile 8x8 transform (for H264 codec)"
-msgstr ""
+msgstr "profila altuaren 8x8 eraldaketa (H264 kodeka)"
 
 #. the use_memc_only checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2669
 msgid "Only ME/MC"
-msgstr ""
+msgstr "ME/MC soilik"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2675
 msgid "Only do ME/MC (I frames -> ref, P frame -> ME+MC)"
-msgstr ""
+msgstr "ME/MC soilik egin (I fotograma -> erref, P fotograma -> ME+MC)"
 
 #. the use_fastpskip checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2683
 msgid "Fast Pskip"
-msgstr ""
+msgstr "Programa-saltatze azkarra (Pskip)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2689
 msgid "fast pskip (for H264 codec)"
-msgstr ""
+msgstr "Programa-saltatze azkarra (H264 kodeka)"
 
 #. the use_drop_frame_timecode checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2700
 msgid "DropFrame Timecode"
-msgstr ""
+msgstr "'Jaregin fotograma'ren denbora-kodea"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
 msgid "timecode is in drop frame format"
-msgstr ""
+msgstr "denbora-kodearen formatua 'jaregin fotograma'n dago"
 
 #. the use_aud checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2713
 msgid "AccessUnit"
-msgstr ""
+msgstr "AtzituUnitatea"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2719
 msgid "use access unit delimiters (for H264 codec)"
-msgstr ""
+msgstr "erabili unitatea atzitzeko mugatzaileak (H264 kodeka)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2735
 msgid "RD optimal MB level residual skipping"
-msgstr ""
+msgstr "MB maila optimoko RD hondakinak saltatzea"
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2744
 msgid "Use chunks"
-msgstr ""
+msgstr "Erabili pusketak"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2750
 msgid ""
 "Input bitstream might be truncated at a packet boundaries instead of only at "
 "frame boundaries"
 msgstr ""
+"Sarrerako bit-korrontea paketearen mugetara trunkatuta egon behar da "
+"fotogramen mugetara soilik trunkatu ordez"
 
 #. the use_non_linear_quant checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2760
 msgid "Nonlinear Quant"
-msgstr ""
+msgstr "Kuantizatzaile ez-lineala"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2766
 msgid "Use MPEG-2 nonlinear quantizer"
-msgstr ""
+msgstr "Erabili MPEG-2 kuanizatzaile ez-lineala"
 
 #. the use_bit_reservoir checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2775
 msgid "Bit Reservoir"
-msgstr ""
+msgstr "Bit biltegia"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2781
 msgid "Use a bit reservoir when encoding if possible"
-msgstr ""
+msgstr "Erabili bit biltegi bat kodetzean posible bada"
 
 #. the use_gmc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2792
@@ -10484,7 +10636,7 @@ msgstr "Erabili GMC"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2807
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2813
 msgid "Input Preserved"
-msgstr ""
+msgstr "Sarrera gordeta"
 
 #. the use_gray checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2822
@@ -10498,11 +10650,11 @@ msgstr "Kodetu soilik gris-eskala"
 #. the use_emu_edge checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2838
 msgid "Emu Edges"
-msgstr ""
+msgstr "Emu ertzak"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2844
 msgid "Dont draw edges"
-msgstr ""
+msgstr "Ez marraztu ertzak"
 
 #. the use_truncated checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2853
@@ -10514,6 +10666,8 @@ msgid ""
 "Input bitstream might be truncated at a random location instead of only at "
 "frame boundaries"
 msgstr ""
+"Sarrerako bit korrontea ausazko kokaleku batera trunkatu behar da fotogramen "
+"mugetara soilik trunkatu ordez"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2890
 msgid "FFMpeg Expert Encoder Options"
@@ -10529,6 +10683,8 @@ msgid ""
 "Video quantiser scale blur (VBR) amount of qscale smoothing over time (0.0-"
 "1.0)"
 msgstr ""
+"Qscale leuntzearen bideoaren kuantizatzailearen lausoaren eskala (VBR) "
+"kopurua denboraren zehar (0.0 - 1.0)"
 
 #. the qcomp label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2933
@@ -10540,6 +10696,8 @@ msgid ""
 "Video quantiser scale compression (VBR) amount of qscale change between easy "
 "& hard scenes (0.0-1.0)"
 msgstr ""
+"Qscala-ren bideoaren kuantizatzailearen eskalaren konpresioaren (VBR) "
+"aldaketa eszena errez eta zailen artean (0.0 - 1.0)"
 
 #. the rc-init-cplx label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2960
@@ -10834,11 +10992,11 @@ msgstr "2 fase/Mux"
 msgid "File Comment"
 msgstr "Fitxategiaren iruzkina"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:374
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:379
 msgid "ffmpeg video encoding for anim frames. Menu: @FFMPEG@"
 msgstr "fotograma animatuentzako ffmpeg bideo-kodetzea. Menua: @FFMPEG@"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:375
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:380
 msgid ""
 "This plugin does video encoding of animframes based on libavformat. (also "
 "known as FFMPEG encoder). The (optional) audiodata must be RIFF WAVEfmt (."
@@ -10853,11 +11011,11 @@ msgstr ""
 "eta 16 bit-eko konprimitu gabeak izan behar dute. GARRANTZITSUA: dei-egile "
 "ez-interaktiboek honi dei egin behar diote lehendabizi: \""
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:394
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:399
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
 msgstr "Ezarri GAP ffmpeg bideo-kodetzailearen pluginaren parametroak"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:395
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:400
 msgid ""
 "This plugin sets ffmpeg specific video encoding parameters. Non-interactive "
 "callers must provide a parameterfile, Interactive calls provide a dialog "
@@ -10868,17 +11026,17 @@ msgstr ""
 "dei-egile interaktiboek elkarrizketa-leiho bat bistaratzen dute parametroak "
 "zehazteko eta gordetzeko."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:410
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:415
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
 msgstr ""
 "Eskuratu erabiltzaile-interfaze grafikoaren parametroak ffmpeg bideo-"
 "kodetzailearentzat"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:411
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:416
 msgid "This plugin returns ffmpeg encoder specific parameters."
 msgstr "Plugin horrek ffmpeg kodetzailearen berariazko parametroak itzultzen ditu."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:500
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:505
 msgid ""
 "FFMPEG Encoder\n"
 "writes AVI/DivX or MPEG1, MPEG2 (DVD) or MPEG4 encoded videos\n"
@@ -10888,23 +11046,46 @@ msgstr ""
 "AVI/DivX edo MPEG1, MPEG2 (DVD) edo MPEG4 bideo kodetuak idazten ditu\n"
 "Fabrice Bellard-en FFMPEGan oinarrituta"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2210
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2220
 #, c-format
 msgid "Could not create pass logfile:'%s'%s"
 msgstr "Ezin izan da sortu fasearen egunkari-fitxategia: '%s'%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2233
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2243
 #, c-format
 msgid "Could not open pass logfile:'%s'%s"
 msgstr "Ezin izan da ireki fasearen egunkari-fitxategia: '%s'%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2374
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2378
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2304
+#, c-format
+msgid "Unknown Audio CODEC: %s"
+msgstr "Audio-kodeka ezezaguna: %s"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2311
+#, c-format
+msgid "CODEC: %s is no AUDIO CODEC!"
+msgstr "KODEKA: %s ez da audio-kodeka."
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2373
+#, c-format
+msgid ""
+"could not open audio codec: %s\n"
+"at audio_samplerate:%d channels:%d bits per channel:%d\n"
+"(try to convert to 48 KHz, 44.1KHz or 32 kHz samplerate\n"
+"that is supported by most codecs)"
+msgstr ""
+"ezin izan da audio-kodeka ireki: %s\n"
+"audioaren lagin-tasa: %d; kanalak: %d; bit kanaleko: %d\n"
+"(saiatu 48 KHz, 44.1 KHz edo 32 KHz lagin-tasara bihurtzen\n"
+"kodeka gehienek onartzen baitiuzte)"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2431
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2435
 #, c-format
 msgid "Frame width and height must be a multiple of 2\n"
 msgstr "Fotogramaren altuerak eta zabalerak 2ren multiploa izan behar dute\n"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2447
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2504
 #, c-format
 msgid "Could not create videofile:'%s'%s"
 msgstr "Ezin izan da `%s' bideo-fitxategia sortu: %s"
@@ -10916,19 +11097,19 @@ msgstr "Ezin izan da `%s' bideo-fitxategia sortu: %s"
 #. * in my tests this case did not happen yet....
 #. * .. but display a warning to find out in further test
 #.
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2679
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2737
 msgid "Black dummy frame was added"
 msgstr "Fotograma beltz faltsua gehitu da"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:692
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:704
 msgid "Save ffmpeg-encoder parameters"
 msgstr "Gorde ffmpeg kodetzailearen parametroak"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:696
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:708
 msgid "Load ffmpeg-encoder parameters"
 msgstr "Kargatu ffmpeg kodetzailearen parametroak"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:288
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:345
 #, c-format
 msgid ""
 "Could not read ffmpeg video encoder parameters from file:\n"
@@ -10938,10 +11119,102 @@ msgstr ""
 "honetan:\n"
 "%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:382
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:400
 #, c-format
 msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 msgstr "Ezin izan da gorde ffmpeg bideo-kodetzailearen parametro-fitxategia: '%s'%s"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:183
+msgid "rawframes video encoding for anim frames. Menu: @rawframeS@"
+msgstr ""
+"fotograma animatuentzako fotograma gordinen bideo-kodetzea. Menua: "
+"@rawframeS@"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:184
+msgid ""
+"This plugin has a video encoder API but writes a series of single raw frames "
+"instead of one videofile. the filetype of the output frames is derived from "
+"the extension. the extension is the suffix part of the parameter \"videofile"
+"\". the names of the output frame(s) are same as the parameter \"videofile\" "
+"but the framenumber part is replaced by the current framenumber (or added "
+"automatic if videofile has no number part) audiodata is ignored.WARNINGS: "
+"for proper operation, the handled frames shall refere to single video file "
+"without any transitions. this allows fetching frames as raw data chunks. The "
+"chunks are 1:1 written to disc as framefiles. The resulting raw data frames "
+"on disc may be unusable if the raw chunk data is not compatible to any image "
+"fileformat. MPEG I frames, and MJPG files may be extractable to the JPEG "
+"fileformat. A  call of\""
+msgstr ""
+"Plugin horrek API bideo-kodetzaile bat du, baina, bideo-fitxategi bat "
+"beharrean, fotograma gordin bakunen sorta bat idazten du. Irteera-fotogramen "
+"fitxategi mota luzapenaren ondorio da. \"bideo-fitxategia\" parametroaren "
+"atzizkia da luzapena. \"bideo-fitxategia\" parametroaren izenaren berdinak "
+"dira irteera-fotogramen izenak, baina uneko fotogramaren zenbakia jartzen du "
+"fotograma-zenbakia zatian (edo, bideo-fitxategiak zenbakiaren zatirik ez "
+"badu, automatikoki eransten zaio). Audio-datuei ezikusi egiten zaie. ABISUA: "
+"eragiketa egokiarentzako, kudeatutako fotogramak transiziorik gabeko bideo-"
+"fitxategi bakun bati erreferi dezakete. Honela, fotogramak datu gordinen "
+"pusketa gisa eskuratzea baimentzen da. Pusketak 1:1 fotograma-fitxategi gisa "
+"gordetzen dira diskoan. Diskoko emaitzeko datu gordinen fotogramak "
+"erabilkaitzak izango dira pusketa gordinaren datuak ez badira bateragarriak "
+"inolako irudien formatuekin. MPEG I fotogramak, eta MJPG fitxategiak erauzi "
+"daitezke JPEG fitxtaegi-formatura. Honakoaren deia \""
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:214
+msgid "Set Parameters for GAP rawframes video encoder Plugins"
+msgstr "Ezarri GAP fotograma gordinen bideo-kodetzailearen pluginen parametroak"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:215
+msgid "This plugin sets rawframes specific video encoding parameters."
+msgstr ""
+"Fotograma gordinen bideo-kodetzailearen berariazko parametroak ezartzen ditu "
+"plugin horrek."
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:228
+msgid "Get GUI Parameters for GAP rawframes video encoder"
+msgstr ""
+"Eskuratu erabiltzaile-interfaze grafikoaren parametroak fotograma gordinen "
+"bideo-kodetzailearentzat"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:229
+msgid "This plugin returns rawframes encoder specific parameters."
+msgstr ""
+"Plugin horrek fotograma gordinen kodetzailearen berariazko parametroak "
+"itzultzen ditu."
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:310
+msgid ""
+"The rawframes Encoder\n"
+"writes single frames instead of one videofile\n"
+"the fileformat of the frames is derived from the\n"
+"extension of the video name, frames are named\n"
+"video name plus 6-digit number + extension"
+msgstr ""
+"Fotograma gordinen kodetzailea\n"
+"Bideo-fitxategi bat idatzi beharrean fotograma bakunak idazten ditu\n"
+"Fotogramen fitxategi-formatua bideo-izenaren\n"
+"luzapenaren ondorio da. Fotogramen izena honela osatzen\n"
+"da: bideo-izena + 6 zifrako zenbakia + luzapena"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:527
+msgid "the rawframe Encoder has no encoder specific Parameters"
+msgstr "Fotograma gordinen kodetzaileak ez du berariazko parametrorik"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:893
+#: ../vid_enc_single/gap_enc_singleframes_main.c:732
+#, c-format
+msgid "SAVING: %s\n"
+msgstr "GORDETZEN: %s\n"
+
+#: ../vid_enc_rawframes/gap_enc_rawframes_main.c:912
+#: ../vid_enc_single/gap_enc_singleframes_main.c:753
+#, c-format
+msgid ""
+"** Save FAILED on file\n"
+"%s"
+msgstr ""
+"** HUTS EGIN DU fitxategi honetan gordetzean\n"
+"%s"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
@@ -11003,21 +11276,7 @@ msgstr ""
 "luzapenaren ondorio da. Fotogramen izena honela osatzen\n"
 "da: bideo-izena + 6 zifrako zenbakia + luzapena"
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:513
+#: ../vid_enc_single/gap_enc_singleframes_main.c:512
 msgid "the Singleframe Encoder has no encoder specific Parameters"
 msgstr "Fotograma bakunen kodetzaileak ez du berariazko parametrorik"
-
-#: ../vid_enc_single/gap_enc_singleframes_main.c:734
-#, c-format
-msgid "SAVING: %s\n"
-msgstr "GORDETZEN: %s\n"
-
-#: ../vid_enc_single/gap_enc_singleframes_main.c:755
-#, c-format
-msgid ""
-"** Save FAILED on file\n"
-"%s"
-msgstr ""
-"** HUTS EGIN DU fitxategi honetan gordetzean\n"
-"%s"
 
