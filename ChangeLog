@@ -1,3 +1,13 @@
+2009-11-19 Wolfgang Hofer <hof@gimp.org>   UNCOMMITED
+
+ - fixed a bug in the storyboard clip properties
+   that removed masks from video clips when the properties popup dialog was closed and opend again.
+   an active_index -1 in the combo box inidcates empty combo box (typic while widget creation)
+   and must NOT trigger removal of the mask (this is restricted to selection of the "None" entry with index 0
+   or in case entries are present but none is matching the list of valid mask names)
+
+  * gap/gap_story_properties.c
+
 2009-08-11 Wolfgang Hofer <hof@gimp.org>
 
 - detection of videofiles by extension now also accepts.mp4 videos.

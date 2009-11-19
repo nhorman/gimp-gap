@@ -2195,7 +2195,14 @@ p_pw_mask_name_combo_changed_cb( GtkWidget     *widget
     }
   }
 
-  p_pw_mask_name_reference_update(pw, selected_mask_name);
+  /* an active_index -1 indicates that the combo box has no entries
+   * (this can occur during the widget is built and shall not
+   * remove an existing mask_name)
+   */
+  if (active_index >= 0)
+  {
+    p_pw_mask_name_reference_update(pw, selected_mask_name);
+  }
 
 }  /* end p_pw_mask_name_combo_changed_cb */
 
