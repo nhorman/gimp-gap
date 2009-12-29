@@ -1,4 +1,19 @@
-2009-11-19 Wolfgang Hofer <hof@gimp.org>   UNCOMMITED
+2009-12-29 Wolfgang Hofer <hof@gimp.org>
+
+- fixed a bug in generating original audiotrack for storyboard
+  whre the generated audio track sometimes is shorter than orignal video playtime
+  when videoclips without audio are included in the storyboard.
+
+- fixed storyboard composite playback of selected frames.
+  The calculation of total selected frames did not work in
+  some special cases where clips with overlapping frames
+  are selected. In case the user selected a clip
+  that was fully overlapped by an unselected clip
+  a total number of 0 frames was the result.
+
+  * gap/gap_story_file.c
+
+2009-11-19 Wolfgang Hofer <hof@gimp.org>
 
  - fixed a bug in the storyboard clip properties
    that removed masks from video clips when the properties popup dialog was closed and opend again.

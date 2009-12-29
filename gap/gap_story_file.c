@@ -8434,6 +8434,39 @@ p_get_video_framerate(const char *videofile
   return(l_video_framerate);
 }  /* end p_get_video_framerate */
 
+
+/* --------------------------
+ * p_get_video_has_audiotrack
+ * --------------------------
+ */
+gboolean
+p_get_video_has_audiotrack(const char *videofile
+                     ,gint32 videotrack
+                     ,gint32 seltrack
+                     ,const char *preferred_decoder
+                     )
+{
+  gboolean l_video_has_audio = FALSE;
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+  t_GVA_Handle *gvahand= NULL;
+
+  gvahand = GVA_open_read_pref(videofile
+                              , videotrack
+                              , seltrack
+                              , preferred_decoder
+                              , FALSE  /* use MMX if available (disable_mmx == FALSE) */
+                              );
+ if (gvahand->atracks > 0)
+ {
+   l_video_has_audio = TRUE;
+ }
+ GVA_close(gvahand);
+
+#endif
+
+  return(l_video_has_audio);
+}  /* end p_get_video_framerate */
+
 /* --------------------------
  * gap_story_gen_otone_audio
  * --------------------------
@@ -8442,6 +8475,10 @@ p_get_video_framerate(const char *videofile
  *
  * all elements in the generated audio track will have the specified
  * aud_track number and are placed in the active_section of the storyboard.
+ *
+ * the generated result includes audio silence for all cliptypes other than movie
+ * movie clips without audio, or played backwards or with non-original speed
+ * also results in silence.
  *
  * IN: replace_existing_aud_track  TRUE ... replace audiotrack if already exists.
  *
@@ -8470,6 +8507,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   GapStoryElem *stb_elem_new;
   gdouble      l_std_framerate;
   gdouble      l_framerate;
+  gboolean     l_video_has_audio;
 
   gchar       *l_videoname = NULL;
   gdouble      l_video_framerate = 0.0;
@@ -8506,6 +8544,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   }
 
   l_overlapcount = 0;
+  l_video_has_audio = FALSE;
 
   /* generate the otone track (at the lists tail) */
   for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
@@ -8521,9 +8560,17 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
         case GAP_STBREC_ATT_TRANSITION:
           l_overlapcount += stb_elem->att_overlap;
           break;
+        case GAP_STBREC_VID_SILENCE:
+        case GAP_STBREC_VID_COLOR:
+        case GAP_STBREC_VID_IMAGE:
+        case GAP_STBREC_VID_ANIMIMAGE:
+        case GAP_STBREC_VID_FRAMES:
+        case GAP_STBREC_VID_SECTION:
+        case GAP_STBREC_VID_BLACKSECTION:
         case GAP_STBREC_VID_MOVIE:
-          /* add otne for the movie when playing normal forward */
-          if((stb_elem->playmode == GAP_STB_PM_NORMAL)
+          /* add otone for the movie when playing normal forward */
+          if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+          && (stb_elem->playmode == GAP_STB_PM_NORMAL)
           && (stb_elem->step_density == 1.0)
           && (stb_elem->from_frame <= stb_elem->to_frame)
           && (stb_elem->nframes > l_overlap_in_this_elem)
@@ -8555,6 +8602,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
                   g_free(l_videoname);
                   l_videoname = NULL;
                   l_video_framerate = l_std_framerate;
+                  l_video_has_audio = FALSE;
                 }
               }
               if (l_check_videorate)
@@ -8565,6 +8613,12 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
                                                    ,1
                                                    ,stb_elem->preferred_decoder
                                                    );
+                l_video_has_audio = p_get_video_has_audiotrack(l_videoname
+                                                   ,1
+                                                   ,1
+                                                   ,stb_elem->preferred_decoder
+                                                   );
+
                 if(l_framerate <= 0.0)
                 {
                   l_framerate = l_std_framerate;
@@ -8572,53 +8626,47 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
                 l_video_framerate = l_framerate;
               }
 
-
-              /* initialise the new AUDIO element */
-              if((*first_non_matching_framerate == 0.0)
-              && (l_framerate != stb->master_framerate))
+              if (l_video_has_audio == TRUE)
               {
-                *first_non_matching_framerate = l_framerate;
-              }
+                /* initialise the new AUDIO element */
+                if((*first_non_matching_framerate == 0.0)
+                && (l_framerate != stb->master_framerate))
+                {
+                  *first_non_matching_framerate = l_framerate;
+                }
 
-              stb_elem_new->aud_play_from_sec = 0.0;
-              stb_elem_new->track             = aud_track;
-              stb_elem_new->from_frame        = l_from_frame;
-              stb_elem_new->to_frame          = stb_elem->to_frame;
-              stb_elem_new->aud_filename      = g_strdup(stb_elem->aud_filename);
-              stb_elem_new->orig_filename     = g_strdup(stb_elem->orig_filename);
+                stb_elem_new->aud_play_from_sec = 0.0;
+                stb_elem_new->track             = aud_track;
+                stb_elem_new->from_frame        = l_from_frame;
+                stb_elem_new->to_frame          = stb_elem->to_frame;
+                stb_elem_new->aud_filename      = g_strdup(stb_elem->aud_filename);
+                stb_elem_new->orig_filename     = g_strdup(stb_elem->orig_filename);
 
-              stb_elem_new->aud_play_from_sec = (gdouble)l_from_frame / l_framerate;
-              stb_elem_new->aud_play_to_sec   = (gdouble)stb_elem->to_frame / l_framerate;
-              stb_elem_new->aud_wait_untiltime_sec = 0.0;
-              stb_elem_new->aud_volume             = 1.0;
-              stb_elem_new->aud_volume_start       = 1.0;
-              stb_elem_new->aud_fade_in_sec        = 0.0;
-              stb_elem_new->aud_volume_end         = 1.0;
-              stb_elem_new->aud_fade_out_sec       = 0.0;
-              stb_elem_new->nloop                  = stb_elem->nloop;
-              stb_elem_new->aud_seltrack           = aud_seltrack;
-              stb_elem_new->preferred_decoder      = g_strdup(stb_elem->preferred_decoder);
+                stb_elem_new->aud_play_from_sec = (gdouble)l_from_frame / l_framerate;
+                stb_elem_new->aud_play_to_sec   = (gdouble)stb_elem->to_frame / l_framerate;
+                stb_elem_new->aud_wait_untiltime_sec = 0.0;
+                stb_elem_new->aud_volume             = 1.0;
+                stb_elem_new->aud_volume_start       = 1.0;
+                stb_elem_new->aud_fade_in_sec        = 0.0;
+                stb_elem_new->aud_volume_end         = 1.0;
+                stb_elem_new->aud_fade_out_sec       = 0.0;
+                stb_elem_new->nloop                  = stb_elem->nloop;
+                stb_elem_new->aud_seltrack           = aud_seltrack;
+                stb_elem_new->preferred_decoder      = g_strdup(stb_elem->preferred_decoder);
 
-              stb_elem_new->aud_framerate          = l_framerate;
+                stb_elem_new->aud_framerate          = l_framerate;
 
-              gap_story_list_append_elem_at_section(stb
+                gap_story_list_append_elem_at_section(stb
                     , stb_elem_new
                     , stb->active_section
                     );
+              }
             }
-            break;
+            if (l_video_has_audio == TRUE)
+            {
+              break;
+            }
           }
-          /* no break at this point,
-           * same handling as all other vid record types is required
-           */
-        case GAP_STBREC_VID_SILENCE:
-        case GAP_STBREC_VID_COLOR:
-        case GAP_STBREC_VID_IMAGE:
-        case GAP_STBREC_VID_ANIMIMAGE:
-        case GAP_STBREC_VID_FRAMES:
-        case GAP_STBREC_VID_SECTION:
-        case GAP_STBREC_VID_BLACKSECTION:
-
           if(stb_elem->nframes > l_overlap_in_this_elem)
           {
             /* add silence for the duration of those elements */
@@ -8656,7 +8704,6 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   return(TRUE);
 
 }  /* end gap_story_gen_otone_audio */
-
 
 /* -------------------------------
  * gap_story_get_default_attribute
@@ -9055,7 +9102,7 @@ p_story_add_selection_mapping_elem(GapStoryFrameNumberMap *mapping,
 
 
 /* -------------------------------------------
- * gap_story_create_new_mapping_from_selection
+ * gap_story_create_new_mapping_from_selection_OLD
  * -------------------------------------------
  * create mapping for framenumbers of selected clips in the specified video track
  * of the specified active section.
@@ -9065,7 +9112,7 @@ p_story_add_selection_mapping_elem(GapStoryFrameNumberMap *mapping,
  * to free up allocated memory when the mapping is no longer in use)
  */
 GapStoryFrameNumberMap *
-gap_story_create_new_mapping_from_selection(GapStorySection *active_section
+gap_story_create_new_mapping_from_selection_OLD(GapStorySection *active_section
   , gint32 vtrack)
 {
   GapStoryFrameNumberMap *mapping;
@@ -9134,7 +9181,168 @@ gap_story_create_new_mapping_from_selection(GapStorySection *active_section
   mapping->total_frames_selected = mapped_frame_number + rest_frames -1;
 
   return (mapping);
+}  /* end gap_story_create_new_mapping_from_selection_OLD */
+
+
+
+
+
+
+
+/* -------------------------------------------
+ * gap_story_create_new_mapping_from_selection
+ * -------------------------------------------
+ * create mapping for framenumbers of selected clips in the specified video track
+ * of the specified active section.
+ * The mapping is typically used for composite video playback of selected
+ * clips.
+ * (the caller shall use gap_story_free_selection_mapping
+ * to free up allocated memory when the mapping is no longer in use)
+ *
+ * Example:
+ * Storyboard track witch videoclip sequence:  a,b,(overlap 6),c,d,e
+ * 
+ *  1 2     5 6   8    11
+ * +-+-+-+-+-+-+-+     +-+-+-+-+
+ * | a=4   |b=3  |     | e=4   |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ *   |c=2|     d=7     |
+ *   +-+-+-+-+-+-+-+-+-+
+ * 
+ * Selected: a,b,e     total_frames_selected = (4 + 3 + 4) - (0) = 11
+ * 
+ * Selected: a,b,c     total_frames_selected = (4 + 3 + 2) - (2) = 7
+ * 
+ * Selected: a,b,c,d   total_frames_selected = (4 + 3 + 2 + 7) - ( 2 + 4) = 10
+ * 
+ * Selected: a,b,d     total_frames_selected = (4 + 3 + 7) - (4) = 10
+ *                     in this case the 2 frames of clip 2 are not mapped (cause they are not selected)
+ *                     but due to overlapping those frames are involved at rendering of selected frames
+ *                     in clip a.
+ *                     for calculation of total frames the number of frames in clip c is not relevant,
+ *                     but it reduces the configured overlap amount (from 6 to 4 frames).
+ *                     the first 4 frames of clip d overlap frames of clip a and clip b,
+ *                     therefore 4 frames are subtracted from the total_frames_selected sum.
+ *                     
+ */
+GapStoryFrameNumberMap *
+gap_story_create_new_mapping_from_selection(GapStorySection *active_section
+  , gint32 vtrack)
+{
+  GapStoryFrameNumberMap *mapping;
+  GapStoryElem      *stb_elem;
+  gint32             mapped_frame_number;
+  gint32             orig_frame_number;
+  gint32             sum_all_selected;
+  gint32             sum_overlap_sel;
+  gint32             curr_overlap;
+  gint32             expect_next;
+  
+  gboolean           capture_maped_frame_number;
+
+  if (active_section == NULL)
+  {
+    return (NULL);
+  }
+
+
+  mapping = g_new(GapStoryFrameNumberMap, 1);
+  mapping->total_frames_selected = 0;
+  mapping->map_list = NULL;
+  mapped_frame_number = 1;
+  sum_all_selected = 0;
+  sum_overlap_sel = 0;
+  curr_overlap = 0;
+  expect_next = 1;
+  
+  orig_frame_number = 1;
+  capture_maped_frame_number = FALSE;
+
+  for(stb_elem = active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if((stb_elem->track == vtrack )
+    && (capture_maped_frame_number == TRUE)
+    && (gap_story_elem_is_video(stb_elem) == TRUE))
+    {
+      /* calculate mapping for the next selected element
+       * as differnence of the previous selected clip
+       * to its next video clip element in the same track.
+       * (if there is no further selected element, we have reached
+       * the total number of selected frames in the vtrack)
+       */
+      gint32 next_orig_frame_number;
+
+      next_orig_frame_number = gap_story_get_framenr_by_story_id(active_section
+                                                   ,stb_elem->story_id
+                                                   ,vtrack
+                                                   );
+      mapped_frame_number += (next_orig_frame_number - orig_frame_number);
+      capture_maped_frame_number = FALSE;
+
+      if (expect_next > next_orig_frame_number)
+      {
+        curr_overlap += expect_next - next_orig_frame_number;
+      }
+      
+      
+    }
+
+    if( (stb_elem->track == vtrack ) && (gap_story_elem_is_video(stb_elem) == TRUE))
+    {
+      gint32 overlap_for_this_frame;
+      
+      overlap_for_this_frame = MAX(0, MIN(curr_overlap, stb_elem->nframes));
+      curr_overlap -= overlap_for_this_frame;
+      
+      if (stb_elem->selected)
+      {
+        orig_frame_number = gap_story_get_framenr_by_story_id(active_section
+                                                   ,stb_elem->story_id
+                                                   ,vtrack
+                                                   );
+        p_story_add_selection_mapping_elem(mapping, orig_frame_number, mapped_frame_number);
+
+        /* trigger capture of mapped number for the
+         * video clip that follows this selected clip in the same track.
+         */
+        capture_maped_frame_number = TRUE;
+        sum_all_selected += stb_elem->nframes;
+        sum_overlap_sel += overlap_for_this_frame;
+        expect_next = orig_frame_number + stb_elem->nframes;  /* expected frame without overlapping */
+      }
+    }
+    
+  }
+
+  mapping->total_frames_selected = sum_all_selected - sum_overlap_sel;
+
+
+  /* debug code to verify new mathod for counting total_frames_selected
+   * versus the old implementation and log differences
+   * (diffs are expected in some special cases when overlapping clips are involved)
+   */
+  if(gap_debug)
+  {
+    GapStoryFrameNumberMap *old_mapping;
+    old_mapping = gap_story_create_new_mapping_from_selection_OLD(active_section, vtrack);
+    
+    if (old_mapping->total_frames_selected != mapping->total_frames_selected)
+    {
+      printf("\nOLD MAPPING\n");
+      gap_story_debug_print_mapping(old_mapping);
+      printf("\nNEW MAPPING\n");
+      gap_story_debug_print_mapping(mapping);
+      printf("\n-------\n");
+    }
+  }
+
+  return (mapping);
 }  /* end gap_story_create_new_mapping_from_selection */
+
+
+
+
+
 
 /* -------------------------------------------
  * gap_story_debug_print_mapping
