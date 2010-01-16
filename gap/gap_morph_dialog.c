@@ -3849,7 +3849,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   g_object_set_data( G_OBJECT(color_button), "mgup", mgup);
   g_signal_connect (color_button, "color_changed",
                     G_CALLBACK (on_pointcolor_button_changed),
-                    mgup);
+                    &mgup->curr_pointcolor);
 
 
 

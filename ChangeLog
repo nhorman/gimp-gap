@@ -1,3 +1,9 @@
+2010-01-16 Wolfgang Hofer <hof@gimp.org>
+- applied patch provided at #607040 that fixes the crash when selcting
+   controlpoint color.
+
+  * gap/gap_morph_dialog.c
+
 2009-12-29 Wolfgang Hofer <hof@gimp.org>
 
 - fixed a bug in generating original audiotrack for storyboard
