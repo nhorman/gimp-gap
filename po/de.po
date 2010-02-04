@@ -895,7 +895,7 @@ msgid ""
 "you can get mplayer exporting edition at:\n"
 msgstr ""
 "mplayer 1.0 muss in Ihrem PATH installiert sein\n"
-"Sie können die mplayer-Exportedition erhalten auf:"
+"Sie können die mplayer-Exportedition erhalten auf:\n"
 
 #: ../gap/gap_decode_mplayer.c:255
 msgid ""
@@ -3133,7 +3133,7 @@ msgid ""
 msgstr ""
 "FEHLER: Kontrollpunkte konnten nicht gelesen werden\n"
 "Dateiname: »%s«\n"
-"%s"
+"(Ist keine gültige Kontrollpunktdatei)"
 
 #: ../gap/gap_mov_dialog.c:2719
 #, c-format
@@ -6901,7 +6901,7 @@ msgstr "Ungültige Nummer: %s (gültiger Bereich ist von %d bis %d)\n"
 #: ../gap/gap_story_file.c:2702
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
-msgstr "Ungültige Nummer: %s (gültiger Bereich ist von %.3f bis %.3f)\n"
+msgstr "Ungültige Nummer: %s (gültiger Bereich ist von %.3f bis %.3f)"
 
 #: ../gap/gap_story_file.c:2744
 #, c-format
