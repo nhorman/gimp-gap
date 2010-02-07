@@ -34,6 +34,10 @@ noinst_LIBRARIES = $(LIBGIMPGAP) $(LIBGAPSTORY)
 
 BASE_SOURCES = \
 	gap-intl.h		\
+	gap_accel_char.c	\
+	gap_accel_char.h	\
+	gap_accel_da.c		\
+	gap_accel_da.h		\
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
 	gap_audio_util.c	\

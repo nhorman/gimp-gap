@@ -73,6 +73,7 @@
 #include "gap_mov_render.h"
 #include "gap_pdb_calls.h"
 #include "gap_arr_dialog.h"
+#include "gap_accel_char.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -83,6 +84,41 @@ static void p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals
 static long   p_mov_execute(GapMovData *mov_ptr);
 static gdouble  p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y);
 static gdouble  p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns);
+
+
+static gint     p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames);
+static gint     p_findEndOfSegmentIndex(GapMovValues *val_ptr, gint startOfSegmentIndex, gint points);
+static gdouble  p_calculate_LineLength(GapMovValues *val_ptr, gint idx);
+static gdouble  p_calculate_path_segment_length(GapMovValues  *val_ptr
+                    , gint startOfSegmentIndex, gint endOfSegmentIndex);
+static gint     p_pick_controlpoint_at_curr_length(GapMovValues  *val_ptr
+                    , gint startOfSegmentIndex, gint endOfSegmentIndex, gdouble pathSegmentLength
+                    , gint accelerationCharacteristic, gdouble lengthFactorLinear
+                    , gdouble *flt_posfactor
+                    );
+static gdouble  p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
+                   , gdouble currFrameTweenInSegment
+                   , gint accelerationCharacteristic
+                   );
+static gint     p_calculate_settings_for_current_FrameTween(
+                     GapMovValues  *val_ptr
+                   , GapMovCurrent *cur_ptr
+                   , gdouble framesPerLine
+                   , long     currFrameIndex    /* relative frame number where the first handled frame is 0
+                                                 * Note that the first fame is already processed outside the loop
+                                                 * therefore this procedure is typically called first time with
+                                                 * currFrameIndex value 1.
+                                                 */
+                   , long     currPtidx         /* current controlpoint index for processing without acceleration characteristic */
+                   , gdouble  flt_posfactor     /* current position factor within one line between controlpoints
+                                                 * (relevant for processing without acceleration characteristic)
+                                                 */
+                   , gdouble  affectedFrames        /* number of affected frames (in the whole Move patch operation) */
+                   , long     availableCtrlPoints   /* number of available controlpoints */
+                   , gint     startOfSegmentIndex
+                   , gint     endOfSegmentIndex
+                   );
+                    
 
 
 /* ============================================================================
@@ -638,6 +674,486 @@ p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
 }       /* end  p_advance_src_frame */
 
 
+
+
+
+
+/* -----------------------------------
+ * p_calculate_relframe_nr_at_index
+ * -----------------------------------
+ * IN points is the number of processing relevant controlpoints
+ * returns the index of the last controlpoint in the path segment that starts at specified index
+ * Note that path segment includes all controlpoints up to the next keyframe inclusive. If no keyframe
+ * present ther is only one big segment from first to last controlpoint.
+ */
+static gint
+p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames)
+{
+  if (index <= 0)
+  {
+    return (1);
+  }
+  
+  if(index  < val_ptr->point_idx_max )
+  {
+    if (val_ptr->point[index].keyframe > 0)
+    {
+      return (1 + val_ptr->point[index].keyframe);
+    }
+  }
+
+  return (frames);
+
+}  /* end p_calculate_relframe_nr_at_index */
+
+
+/* -----------------------------------
+ * p_findEndOfSegmentIndex
+ * -----------------------------------
+ * IN points is the number of processing relevant controlpoints
+ * returns the index of the last controlpoint in the segment that starts 
+ * at specified startOfSegmentIndex.
+ * the segment ends at next KEYFRAME or at the last controlpoint (that is an implicite keyframe)
+ */
+static gint
+p_findEndOfSegmentIndex(GapMovValues *val_ptr, gint startOfSegmentIndex, gint points)
+{
+  gint ii;
+  
+  for (ii= startOfSegmentIndex +1; ii < points; ii++)
+  {
+    if (val_ptr->point[ii].keyframe > 0)
+    {
+      /* checked controlpoint is a keyframe */
+      return (ii);
+    }
+  }
+  
+  return (points -1);
+}  /* end p_findEndOfSegmentIndex */
+
+
+/* -----------------------------------
+ * p_calculate_LineLength
+ * -----------------------------------
+ * returns the length (in pixels) between the controlpont at the specified index idx
+ * and the next controlpoint at idx +1
+ * returns 0 in case the specified index is out of valid range
+ */
+static gdouble
+p_calculate_LineLength(GapMovValues *val_ptr, gint idx)
+{
+  gdouble dx;
+  gdouble dy;
+  gdouble len;
+
+  if ((idx < 0) || (idx >= val_ptr->point_idx_max))
+  {
+    return (0.0);
+  }
+  
+  dx = abs (val_ptr->point[idx].p_x - val_ptr->point[idx +1].p_x);
+  dy = abs (val_ptr->point[idx].p_y - val_ptr->point[idx +1].p_y);
+  
+  len = sqrt((dx * dx) + (dy * dy));
+  
+  return (len);
+  
+}  /* end p_calculate_LineLength */
+
+
+/* -----------------------------------
+ * p_calculate_path_segment_length
+ * -----------------------------------
+ *
+ */
+static gdouble
+p_calculate_path_segment_length(GapMovValues  *val_ptr
+   , gint startOfSegmentIndex, gint endOfSegmentIndex)
+{
+  gint idx;
+  gdouble lenSum;
+  
+  lenSum = 0;
+  for(idx=startOfSegmentIndex; idx < endOfSegmentIndex; idx++)
+  {
+    lenSum += p_calculate_LineLength(val_ptr, idx);
+  }
+  return (lenSum);
+}  /* end p_calculate_path_segment_length */
+
+
+/* -----------------------------------
+ * p_pick_controlpoint_at_curr_length
+ * -----------------------------------
+ * returns the relevant controlpoint index 
+ * at specified currentLen in pixels (eg. current position length within the specified
+ * path segment that starts at controlpoint startOfSegmentIndex)
+ *
+ * IN:  startOfSegmentIndex
+ * IN:  endOfSegmentIndex
+ * IN:  pathSegmentLength length in pixels (0 at stastOfSegment, upto segment length)
+ * IN:  
+ * OUT: flt_posfactor
+ */
+static gint
+p_pick_controlpoint_at_curr_length(GapMovValues  *val_ptr
+   , gint startOfSegmentIndex, gint endOfSegmentIndex, gdouble pathSegmentLength
+   , gint accelerationCharacteristic, gdouble lengthFactorLinear
+   , gdouble *flt_posfactor
+   )
+{
+   gint idx;
+   gdouble lenSum;
+   gdouble lenSumPrev;
+   gdouble currentLen;
+   gdouble lengthFactorAcc;         /* 0.0 at begin of segment 1.0 at end of segment position */
+
+   /* calculate length factor (0.0 to 1.0) respecting position specific acceleartion characteristic */
+   lengthFactorAcc = gap_accelMixFactor(lengthFactorLinear, accelerationCharacteristic);
+   currentLen = pathSegmentLength * lengthFactorAcc;
+   
+   
+   
+   
+   lenSum = 0;
+   lenSumPrev = 0;
+   
+   for(idx = startOfSegmentIndex; idx <= endOfSegmentIndex; idx++)
+   {
+     gdouble lineLen;
+     
+     lineLen = p_calculate_LineLength(val_ptr, idx);
+     lenSum += lineLen;
+ 
+     if(lenSum >= currentLen)
+     {
+       gdouble l_flt_posfactor;
+       l_flt_posfactor = (currentLen - lenSumPrev) / MAX(1.0, lineLen);
+
+       if(gap_debug)
+       {
+         printf("  p_pick_controlpoint_at_curr_length[%d]  lenSum:%f currentLen:%f lengthFactorAcc:%f\n"
+            ,(int)idx
+            ,(float) lenSum
+            ,(float) currentLen
+            ,(float) lengthFactorAcc
+            );
+       }
+      
+       
+       *flt_posfactor =  CLAMP (l_flt_posfactor, 0.0, 1.0);
+       return (idx);
+     }
+    lenSumPrev = lenSum;
+  }
+   
+  *flt_posfactor = 0;
+  return (endOfSegmentIndex);
+
+}  /* end p_pick_controlpoint_at_curr_length */
+
+/* --------------------------------------
+ * p_calculate_posFactor_from_FrameTweens
+ * --------------------------------------
+ * returns the relevant positionFactor for the 
+ * specified currFrameTweenInSegment and frameTweensInSegment
+ * respecting the specified acceleration characteristic 
+ *
+ */
+static gdouble
+p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
+   , gdouble currFrameTweenInSegment
+   , gint accelerationCharacteristic
+   )
+{
+  gdouble factorLinear;         /* 0.0 at begin of segment 1.0 at end of segment */
+  gdouble posFactorAcc;         /* 0.0 at begin of segment 1.0 at end of segment */
+
+  factorLinear = currFrameTweenInSegment / (MAX (1.0, frameTweensInSegment));
+  factorLinear = CLAMP (factorLinear, 0.0, 1.0);
+  
+  /* calculate length factor (0.0 to 1.0) respecting position specific acceleartion characteristic */
+  posFactorAcc = gap_accelMixFactor(factorLinear, accelerationCharacteristic);
+   
+   
+  return (posFactorAcc);
+
+}  /* end p_calculate_posFactor_from_FrameTweens */
+
+
+/* -------------------------------------------
+ * p_calculate_settings_for_current_FrameTween
+ * -------------------------------------------
+ * calculate settings for the currently processed
+ * Frame (or tween) according to the controlpoints.
+ * supports older behavior of GIMP-GAP-2.6 and prior 
+ * and the extended variant with accerlaration characteristics
+ * per path segment.
+ * mode without acceleration characteristic (GIMP-GAP-2.6 behvior)
+ * ========================================
+ *   This mode is selected by acceleration characteristic value 0.
+ *   In this mode the flt_posfactor specifies the position within one line
+ *   between the controlpoints with index [l_ptidx -1] and [l_ptidx]
+ *  
+ * Mode with acceleration characteristic:
+ * ========================================
+ *   a Path segment includes all controlpoints between two keyframes
+ *   (e.g controlpoints where keyframe > 0) Note that first and last contolpoint
+ *   are implicite keyframes.
+ *   In case none of the contolpoints has keyframe > 0, all controlpoints
+ *   are in just one segment that starts at first and ends at last controlpoint.
+ *
+ *   The current movement position depends on the length of the current
+ *   path segment and on the specified acceleration characteristic for movement.
+ *   acc characteristic 1 is constant speed mode, 2 or more is acceleration, -2 or less deceleration
+ *   The line within the path segment is calculated by picking
+ *   the relevant ctrlPtidx.
+ *
+ *   in case acceleration characteristic values != 0 are used for any other settings than position,
+ *   then all controlpoints that are NON keyframes are ignored for other settings than position (x,y).
+ *   Those settings (opacity, size ...) are then calculated from the 
+ *   controlpoint at start and end of the path segment.
+ *   (note that first and last controlpoint are
+ *    implicite keyframes and therefore always relevant)
+ */
+static gint
+p_calculate_settings_for_current_FrameTween(
+     GapMovValues  *val_ptr
+   , GapMovCurrent *cur_ptr
+   , gdouble framesPerLine
+   , long     currFrameIndex    /* relative frame number where the first handled frame is 0
+                                 * Note that the first fame is already processed outside the loop
+                                 * therefore this procedure is typically called first time with
+                                 * currFrameIndex value 1.
+                                 */
+   , long     currPtidx         /* current controlpoint index for processing without acceleration characteristic */
+   , gdouble  flt_posfactor     /* current position factor within one line between controlpoints
+                                 * (relevant for processing without acceleration characteristic)
+                                 */
+   , gdouble  affectedFrames        /* number of affected frames (in the whole Move patch operation) */
+   , long     availableCtrlPoints   /* number of available controlpoints */
+   , gint     startOfSegmentIndex
+   , gint     endOfSegmentIndex
+  )
+{
+/* MIX_VALUE  0.0 <= factor <= 1.0
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            mix for factors inbetween
+ */
+#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
+
+  gdouble tweenMultiplicator;
+  gint frameNrAtEndOfSegment;
+  gdouble lengthFactorLinear;      /* 0.0 at begin of segment 1.0 at end of segment position */
+  gdouble frameTweensInSegment;
+  gdouble currFrameTweenInSegment; /* frame number relative to 0 at each starting point of a new segment 
+                                    * tweens can have non integer frame number like 1.5 or 1.3333 or 1.25 etc....
+                                    */
+  gdouble pathSegmentLength;
+  
+  gdouble  posFactor;
+
+  posFactor = 0.0;
+
+  tweenMultiplicator = 1.0;
+  if(val_ptr->tween_steps > 1.0)
+  {
+    tweenMultiplicator = val_ptr->tween_steps +1;
+  }
+
+  frameNrAtEndOfSegment = p_calculate_relframe_nr_at_index(val_ptr, endOfSegmentIndex, affectedFrames);
+  
+  frameTweensInSegment = abs ( frameNrAtEndOfSegment
+                             - p_calculate_relframe_nr_at_index(val_ptr, startOfSegmentIndex, affectedFrames)
+                             ) + 1;
+  frameTweensInSegment *= tweenMultiplicator;
+  
+  
+  
+  currFrameTweenInSegment = 
+     tweenMultiplicator * (abs (currFrameIndex - val_ptr->point[startOfSegmentIndex].keyframe)); /// TODO check for reverse order processing ???
+  currFrameTweenInSegment += (val_ptr->tween_steps - val_ptr->twix);
+  
+  /* calculate length factor respecting position in the path segment where 0 is at begin 1 at end */
+  lengthFactorLinear = currFrameTweenInSegment / MAX(frameTweensInSegment, 1);
+
+  pathSegmentLength = p_calculate_path_segment_length(val_ptr, startOfSegmentIndex, endOfSegmentIndex);
+
+  /* calculate Movement settings for the currently processed Frame (or tween)
+   * position dependent acceleration processing requires a path segment length > 0
+   * AND accPosition != 0
+   */
+  if ((val_ptr->point[startOfSegmentIndex].accPosition != 0)
+  && (pathSegmentLength > 0))
+  {
+    /* acceleration characteristic processing */
+    gint     segmPtidx;  /* calculated controlpoint index of relevant line begin with current segment */
+
+    segmPtidx = p_pick_controlpoint_at_curr_length(val_ptr
+         , startOfSegmentIndex, endOfSegmentIndex, pathSegmentLength
+         , val_ptr->point[startOfSegmentIndex].accPosition
+         , lengthFactorLinear
+         , &posFactor
+         );
+
+    cur_ptr->currX  =       MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_x,      (gdouble)val_ptr->point[segmPtidx +1].p_x);
+    cur_ptr->currY  =       MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_y,      (gdouble)val_ptr->point[segmPtidx +1].p_y);
+
+
+    if(gap_debug)
+    {
+       printf("p_mov_execute: currFrameIndex:%d Position, start/endOfSegmentIndex=%d/%d currFrameTweenInSegment=%d  frameTweensInSegment=%d\n"
+             , (int)currFrameIndex
+             , (int)startOfSegmentIndex
+             , (int)endOfSegmentIndex
+             , (int)currFrameTweenInSegment
+             , (int)frameTweensInSegment
+             );
+       printf("p_mov_execute: Position, frameNrAtEndOfSegment=%d\n", (int)frameNrAtEndOfSegment);
+       printf("p_mov_execute: Position, lengthFactorLinear=%f\n", (float)lengthFactorLinear);
+       printf("p_mov_execute: Position, pathSegmentLength=%f\n", (float)pathSegmentLength);
+       printf("p_mov_execute: Position, posFactor=%f  segmPtidx=%d\n"
+             , (float)posFactor
+             , (int)segmPtidx
+             );
+    }
+  }
+  else
+  {
+    /* No acceleration characteristic specified for movement (compatible to GAP 2.6.x release behavior) */
+    if(gap_debug) 
+    {
+      printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
+           , (float)framesPerLine
+           , (float)flt_posfactor
+           );
+    }
+
+
+    cur_ptr->currX  =       MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_x,      (gdouble)val_ptr->point[currPtidx].p_x);
+    cur_ptr->currY  =       MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_y,      (gdouble)val_ptr->point[currPtidx].p_y);
+  }
+
+
+  /* calculate Opacity settings for the currently processed Frame (or tween) */
+  if ((val_ptr->point[startOfSegmentIndex].accOpacity != 0)
+  && (frameTweensInSegment > 0))
+  {
+    /* acceleration characteristic processing for opacity */
+    posFactor = p_calculate_posFactor_from_FrameTweens(frameTweensInSegment
+                                                      , currFrameTweenInSegment
+                                                      , val_ptr->point[startOfSegmentIndex].accOpacity
+                                                      );
+    cur_ptr->currOpacity  = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].opacity,  (gdouble)val_ptr->point[endOfSegmentIndex].opacity);
+  }
+  else
+  {
+    /* No acceleration characteristic specified for opacity (compatible to GAP 2.6.x release behavior) */
+    cur_ptr->currOpacity  = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
+  }
+
+
+  /* calculate Zoom (e.g. Size) settings for the currently processed Frame (or tween) */
+  if ((val_ptr->point[startOfSegmentIndex].accSize != 0)
+  && (frameTweensInSegment > 0))
+  {
+    /* acceleration characteristic processing for opacity */
+    posFactor = p_calculate_posFactor_from_FrameTweens(frameTweensInSegment
+                                                      , currFrameTweenInSegment
+                                                      , val_ptr->point[startOfSegmentIndex].accSize
+                                                      );
+    cur_ptr->currWidth    = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].w_resize, (gdouble)val_ptr->point[endOfSegmentIndex].w_resize);
+    cur_ptr->currHeight   = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].h_resize, (gdouble)val_ptr->point[endOfSegmentIndex].h_resize);
+  }
+  else
+  {
+    cur_ptr->currWidth    = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
+    cur_ptr->currHeight   = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
+  }
+
+
+  /* calculate Rotation settings for the currently processed Frame (or tween) */
+  if ((val_ptr->point[startOfSegmentIndex].accRotation != 0)
+  && (frameTweensInSegment > 0))
+  {
+    /* acceleration characteristic processing for rotation */
+    posFactor = p_calculate_posFactor_from_FrameTweens(frameTweensInSegment
+                                                      , currFrameTweenInSegment
+                                                      , val_ptr->point[startOfSegmentIndex].accRotation
+                                                      );
+    cur_ptr->currRotation = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].rotation, (gdouble)val_ptr->point[endOfSegmentIndex].rotation);
+  }
+  else
+  {
+    cur_ptr->currRotation = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
+ 
+    if(gap_debug)
+    {
+      printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
+           , (float)framesPerLine
+           , (float)flt_posfactor
+           );
+      printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
+          , (int)currPtidx-1,  (float)val_ptr->point[currPtidx -1].rotation
+          , (int)currPtidx,    (float)val_ptr->point[currPtidx].rotation
+          , (float)cur_ptr->currRotation);
+    }
+
+  }
+
+  /* calculate Perspective settings for the currently processed Frame (or tween) */
+  if ((val_ptr->point[startOfSegmentIndex].accPerspective != 0)
+  && (frameTweensInSegment > 0))
+  {
+    /* acceleration characteristic processing for rotation */
+    posFactor = p_calculate_posFactor_from_FrameTweens(frameTweensInSegment
+                                                      , currFrameTweenInSegment
+                                                      , val_ptr->point[startOfSegmentIndex].accPerspective
+                                                      );
+    cur_ptr->currTTLX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttlx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttlx);
+    cur_ptr->currTTLY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttly,     (gdouble)val_ptr->point[endOfSegmentIndex].ttly);
+    cur_ptr->currTTRX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttrx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttrx);
+    cur_ptr->currTTRY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttry,     (gdouble)val_ptr->point[endOfSegmentIndex].ttry);
+    cur_ptr->currTBLX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tblx,     (gdouble)val_ptr->point[endOfSegmentIndex].tblx);
+    cur_ptr->currTBLY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbly,     (gdouble)val_ptr->point[endOfSegmentIndex].tbly);
+    cur_ptr->currTBRX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbrx,     (gdouble)val_ptr->point[endOfSegmentIndex].tbrx);
+    cur_ptr->currTBRY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbry,     (gdouble)val_ptr->point[endOfSegmentIndex].tbry);
+  }
+  else
+  {
+    cur_ptr->currTTLX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttlx,     (gdouble)val_ptr->point[currPtidx].ttlx);
+    cur_ptr->currTTLY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttly,     (gdouble)val_ptr->point[currPtidx].ttly);
+    cur_ptr->currTTRX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttrx,     (gdouble)val_ptr->point[currPtidx].ttrx);
+    cur_ptr->currTTRY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttry,     (gdouble)val_ptr->point[currPtidx].ttry);
+    cur_ptr->currTBLX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tblx,     (gdouble)val_ptr->point[currPtidx].tblx);
+    cur_ptr->currTBLY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbly,     (gdouble)val_ptr->point[currPtidx].tbly);
+    cur_ptr->currTBRX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbrx,     (gdouble)val_ptr->point[currPtidx].tbrx);
+    cur_ptr->currTBRY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbry,     (gdouble)val_ptr->point[currPtidx].tbry);
+  }
+
+  /* calculate Selection Feather Radius settings for the currently processed Frame (or tween) */
+  if ((val_ptr->point[startOfSegmentIndex].accSelFeatherRadius != 0)
+  && (frameTweensInSegment > 0))
+  {
+    /* acceleration characteristic processing for rotation */
+    posFactor = p_calculate_posFactor_from_FrameTweens(frameTweensInSegment
+                                                      , currFrameTweenInSegment
+                                                      , val_ptr->point[startOfSegmentIndex].accSelFeatherRadius
+                                                      );
+    cur_ptr->currSelFeatherRadius = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].sel_feather_radius,     (gdouble)val_ptr->point[endOfSegmentIndex].sel_feather_radius);
+  }
+  else
+  {
+    cur_ptr->currSelFeatherRadius = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].sel_feather_radius,     (gdouble)val_ptr->point[currPtidx].sel_feather_radius);
+  }
+
+  return(frameNrAtEndOfSegment);
+}  /* end p_calculate_settings_for_current_FrameTween */
+
+
+
 /* ============================================================================
  * p_mov_execute
  * Copy layer(s) from Sourceimage to given destination frame range,
@@ -652,20 +1168,13 @@ p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
 long
 p_mov_execute(GapMovData *mov_ptr)
 {
-/* MIX_VALUE  0.0 <= factor <= 1.0
- *  result is a  for factor 0.0
- *            b  for factor 1.0
- *            mix for factors inbetween
- */
-#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
-  gint l_idx;
+   gint l_idx;
    GapMovCurrent l_current_data;
    GapMovCurrent *cur_ptr;
    GapMovValues  *val_ptr;
 
    gdouble  l_percentage;
    gdouble  l_fpl;             /* frames_per_line */
-   gdouble  l_flt_posfactor;
    long     l_frame_step;
    gdouble  l_frames;
    long     l_cnt;
@@ -681,6 +1190,10 @@ p_mov_execute(GapMovData *mov_ptr)
    gint     l_apv_layerstack;
    gdouble  l_flt_timing[GAP_MOV_MAX_POINT];   /* timing table in relative frame numbers (0.0 == the first handled frame) */
 
+   gint startOfSegmentIndex;
+   gint endOfSegmentIndex;
+   gint frameNrAtEndOfSegment;
+
 
    if(mov_ptr->val_ptr->src_image_id < 0)
    {
@@ -690,6 +1203,7 @@ p_mov_execute(GapMovData *mov_ptr)
       return -1;
    }
 
+  frameNrAtEndOfSegment = 0;
   l_apv_layerstack = 0;
   l_percentage = 0.0;
   if(mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
@@ -744,6 +1258,13 @@ p_mov_execute(GapMovData *mov_ptr)
       printf("tbrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbrx);
       printf("tbry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbry);
 
+      printf("accPosition        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPosition);
+      printf("accOpacity         [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accOpacity);
+      printf("accSize            [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSize);
+      printf("accRotation        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accRotation);
+      printf("accPerspective     [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPerspective);
+      printf("accSelFeatherRadius[%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSelFeatherRadius);
+      
       printf("keyframe[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe);
       printf("keyframe_abs[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe_abs);
     }
@@ -792,7 +1313,7 @@ p_mov_execute(GapMovData *mov_ptr)
    {
       /* copy point[0] to point [1] because we need at least 2
        * points for the algorithms below to work.
-       * (simulates a line with lenght 0, to move along)
+       * (simulates a line with length 0, to move along)
        */
       if(gap_debug) printf("p_mov_execute: added a 2nd Point\n");
       val_ptr->point[1].p_x = val_ptr->point[0].p_x;
@@ -811,9 +1332,18 @@ p_mov_execute(GapMovData *mov_ptr)
       val_ptr->point[1].tbry = val_ptr->point[0].tbry;
       val_ptr->point[1].sel_feather_radius = val_ptr->point[0].sel_feather_radius;
 
+      val_ptr->point[1].accPosition         = val_ptr->point[0].accPosition;
+      val_ptr->point[1].accOpacity          = val_ptr->point[0].accOpacity;
+      val_ptr->point[1].accSize             = val_ptr->point[0].accSize;
+      val_ptr->point[1].accRotation         = val_ptr->point[0].accRotation;
+      val_ptr->point[1].accPerspective      = val_ptr->point[0].accPerspective;
+      val_ptr->point[1].accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
+
       l_points = 2;
    }
 
+   startOfSegmentIndex = 0;
+   endOfSegmentIndex = l_points -1;  /* initial value in case all points are in only 1 segment */
 
    cur_ptr->dst_frame_nr = val_ptr->dst_range_start;
    cur_ptr->src_layers = NULL;
@@ -859,7 +1389,7 @@ p_mov_execute(GapMovData *mov_ptr)
         }
      }
      cur_ptr->src_last_layer = l_nlayers -1;   /* index of last layer */
-     }
+   }
    else
    {
      /* for FRAME stepmodes we use flattened Sorce frames
@@ -894,6 +1424,15 @@ p_mov_execute(GapMovData *mov_ptr)
    cur_ptr->currTBRX = (gdouble)val_ptr->point[0].tbrx;
    cur_ptr->currTBRY = (gdouble)val_ptr->point[0].tbry;
    cur_ptr->currSelFeatherRadius = (gdouble)val_ptr->point[0].sel_feather_radius;
+
+   cur_ptr->accPosition         = val_ptr->point[0].accPosition;
+   cur_ptr->accOpacity          = val_ptr->point[0].accOpacity;
+   cur_ptr->accSize             = val_ptr->point[0].accSize;
+   cur_ptr->accRotation         = val_ptr->point[0].accRotation;
+   cur_ptr->accPerspective      = val_ptr->point[0].accPerspective;
+   cur_ptr->accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
+
+
 
    val_ptr->tween_image_id = -1;
    val_ptr->tween_layer_id = -1;
@@ -1006,7 +1545,7 @@ p_mov_execute(GapMovData *mov_ptr)
      }
    }
 
-
+  
   /* loop for each frame within the range (may step up or down) */
   l_ptidx = 1;
   cur_ptr->dst_frame_nr = val_ptr->dst_range_start;
@@ -1052,47 +1591,36 @@ p_mov_execute(GapMovData *mov_ptr)
        */
       for (val_ptr->twix = val_ptr->tween_steps; val_ptr->twix >= 0; val_ptr->twix--)
       {
+        gdouble l_flt_posfactor;
+        
         if(l_fpl != 0.0)
         {
-          l_flt_posfactor  = (   (((gdouble)l_fridx * l_tw_cnt) - (gdouble)val_ptr->twix)
+            l_flt_posfactor  = (   (((gdouble)l_fridx * l_tw_cnt) - (gdouble)val_ptr->twix)
                                - (l_flt_timing[l_ptidx -1] * l_tw_cnt)
                              ) / (l_fpl * l_tw_cnt);
         }
         else
         {
-           l_flt_posfactor = 1.0;
-           if(gap_debug) printf("p_mov_execute: ** ERROR l_fpl is 0.0 frames per line\n");
+            l_flt_posfactor = 1.0;
+            if(gap_debug) printf("p_mov_execute: ** ERROR l_fpl is 0.0 frames per line\n");
         }
-
-
-        if(gap_debug) printf("p_mov_execute: l_fpl=%f, l_flt_posfactor=%f\n", (float)l_fpl, (float)l_flt_posfactor);
-
+        
         l_flt_posfactor = CLAMP (l_flt_posfactor, 0.0, 1.0);
-
-        cur_ptr->currX  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_x,      (gdouble)val_ptr->point[l_ptidx].p_x);
-        cur_ptr->currY  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_y,      (gdouble)val_ptr->point[l_ptidx].p_y);
-        cur_ptr->currOpacity  = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].opacity,  (gdouble)val_ptr->point[l_ptidx].opacity);
-        cur_ptr->currWidth    = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].w_resize, (gdouble)val_ptr->point[l_ptidx].w_resize);
-        cur_ptr->currHeight   = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].h_resize, (gdouble)val_ptr->point[l_ptidx].h_resize);
-        cur_ptr->currRotation = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].rotation, (gdouble)val_ptr->point[l_ptidx].rotation);
-        cur_ptr->currTTLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttlx,     (gdouble)val_ptr->point[l_ptidx].ttlx);
-        cur_ptr->currTTLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttly,     (gdouble)val_ptr->point[l_ptidx].ttly);
-        cur_ptr->currTTRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttrx,     (gdouble)val_ptr->point[l_ptidx].ttrx);
-        cur_ptr->currTTRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttry,     (gdouble)val_ptr->point[l_ptidx].ttry);
-        cur_ptr->currTBLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tblx,     (gdouble)val_ptr->point[l_ptidx].tblx);
-        cur_ptr->currTBLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbly,     (gdouble)val_ptr->point[l_ptidx].tbly);
-        cur_ptr->currTBRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbrx,     (gdouble)val_ptr->point[l_ptidx].tbrx);
-        cur_ptr->currTBRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbry,     (gdouble)val_ptr->point[l_ptidx].tbry);
-        cur_ptr->currSelFeatherRadius = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].sel_feather_radius,     (gdouble)val_ptr->point[l_ptidx].sel_feather_radius);
+      
+        endOfSegmentIndex = p_findEndOfSegmentIndex(val_ptr, startOfSegmentIndex, l_points);
+      
+        frameNrAtEndOfSegment = p_calculate_settings_for_current_FrameTween(val_ptr, cur_ptr
+             , l_fpl
+             , l_fridx
+             , l_ptidx
+             , l_flt_posfactor
+             , l_frames
+             , l_points
+             , startOfSegmentIndex
+             , endOfSegmentIndex
+             );
 
 
-        if(gap_debug)
-        {
-          printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
-          , (int)l_ptidx-1,  (float)val_ptr->point[l_ptidx -1].rotation
-          , (int)l_ptidx,    (float)val_ptr->point[l_ptidx].rotation
-          , (float)cur_ptr->currRotation);
-        }
 
         if(val_ptr->src_stepmode < GAP_STEP_FRAME )
         {
@@ -1119,6 +1647,12 @@ p_mov_execute(GapMovData *mov_ptr)
         l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
 
       }  /* end tweenindex subloop */
+      
+      /* advance to next path segment */
+      if(l_fridx >= frameNrAtEndOfSegment)
+      {
+         startOfSegmentIndex = endOfSegmentIndex;
+      }
 
       /* show progress */
       if(mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
@@ -1414,9 +1948,10 @@ gap_mov_exec_conv_keyframe_to_abs(gint rel_keyframe, GapMovValues *pvals)
 }
 
 
-/* ============================================================================
+
+/* ----------------------------------
  * gap_mov_exec_gap_save_pointfile
- * ============================================================================
+ * ----------------------------------
  */
 gint
 gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
@@ -1436,7 +1971,14 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
     fprintf(l_fp, "# x  y   width height opacity rotation feather_radius number_of_optional_params [8 perspective transform factors] [rel_keyframe]\n");
     for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
     {
-      gint num_optional_params;
+      gint optional_params_indicator;
+      gboolean writePerspective;
+      gboolean writeAccelerationCharacteristics;
+      gboolean writeKeyframe;
+
+      writePerspective = FALSE;
+      writeAccelerationCharacteristics = FALSE;
+      writeKeyframe = FALSE;
 
       fprintf(l_fp, "%04d %04d "
                     , (int)pvals->point[l_idx].p_x
@@ -1448,7 +1990,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
       gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
 
-      num_optional_params = 0;
+      optional_params_indicator = 0;
 
       /* conditional write transformation (only if there is any) */
       if(pvals->point[l_idx].ttlx != 1.0
@@ -1461,18 +2003,49 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       || pvals->point[l_idx].tbry != 1.0
       )
       {
-        num_optional_params = 8;
+        optional_params_indicator += 8;
+        writePerspective = TRUE;
       }
+
+      /* conditional write acceleration characteristics
+       * relevant information can occur at first controlpoint
+       * or on keyframes but never for the last controlpoint)
+       */
+      if (pvals->point[l_idx].accPosition != 0)
+      {
+        if (l_idx == 0) 
+        {
+          writeAccelerationCharacteristics = TRUE;
+        }
+        else
+        {
+          if ((l_idx < pvals->point_idx_max)
+          && ((int)pvals->point[l_idx].keyframe > 0))
+          {
+            writeAccelerationCharacteristics = TRUE;
+          }
+        }
+        
+        if (writeAccelerationCharacteristics == TRUE)
+        {
+          optional_params_indicator += 6;
+        }
+      }
+
+      /* check for writing keyframe
+       * (the implicite keyframes at first and last controlpoints are not written to file)
+       */
       if((l_idx > 0)
       && (l_idx < pvals->point_idx_max)
       && ((int)pvals->point[l_idx].keyframe > 0))
       {
-        num_optional_params++;
+        optional_params_indicator++;
+        writeKeyframe = TRUE;
       }
 
-      fprintf(l_fp, "   %02d ", (int)num_optional_params);
+      fprintf(l_fp, "   %02d ", (int)optional_params_indicator);
 
-      if(num_optional_params >= 8)
+      if(writePerspective == TRUE)
       {
         fprintf(l_fp, " ");
         gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
@@ -1488,10 +2061,21 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
         gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
       }
 
+
+      if(writeAccelerationCharacteristics == TRUE)
+      {
+        fprintf(l_fp, " %02d %02d %02d %02d %02d %02d"
+           , (int)pvals->point[l_idx].accPosition 
+           , (int)pvals->point[l_idx].accOpacity
+           , (int)pvals->point[l_idx].accSize
+           , (int)pvals->point[l_idx].accRotation
+           , (int)pvals->point[l_idx].accPerspective
+           , (int)pvals->point[l_idx].accSelFeatherRadius
+           );
+      }
+
       /* conditional write keyframe */
-      if((l_idx > 0)
-      && (l_idx < pvals->point_idx_max)
-      && ((int)pvals->point[l_idx].keyframe > 0))
+      if(writeKeyframe == TRUE)
       {
         fprintf(l_fp, " %d"
                      , (int)gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
@@ -1508,9 +2092,9 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
 
 
 
-/* ============================================================================
+/* ----------------------------------
  * gap_mov_exec_gap_load_pointfile
- * ============================================================================
+ * ----------------------------------
  * return 0 if Load was OK,
  * return -2 when load has read inconsistent pointfile
  *           and the pointtable needs to be reset (dialog has to call p_reset_points)
@@ -1519,7 +2103,7 @@ gint
 gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
 {
 #define POINT_REC_MAX 512
-#define MAX_NUMVALUES_PER_LINE 17
+#define MAX_NUMVALUES_PER_LINE 23
   FILE   *l_fp;
   gint    l_idx;
   char    l_buff[POINT_REC_MAX +1 ];
@@ -1549,38 +2133,34 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
          l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
          l_i1 = (gint)l_farr[0];
          l_i2 = (gint)l_farr[1];
+         
+         if(gap_debug)
+         {
+            gint ii;
+            
+            printf("scanned %d numbers\n", l_cnt);
+            for(ii=0; ii < l_cnt; ii++)
+            {
+              printf("  value[%02d] : %f\n", (int)ii, (float)l_farr[ii]);
+            }
+         }
          if(l_idx == -1)
          {
            if((l_cnt < 2) || (l_i2 > GAP_MOV_MAX_POINT) || (l_i1 > l_i2))
            {
              break;
-            }
+           }
            pvals->point_idx     = l_i1;
            pvals->point_idx_max = l_i2 -1;
            l_idx = 0;
          }
          else
          {
-           gdouble num_optional_params;
+           gint    optional_params_indicator;
            gint    key_idx;
-           /* the older format used in GAP.1.2 has 6 or 7 integer numbers per line
-            * and should be compatible and readable by this code.
-            *
-            * the new format has 2 integer values (p_x, p_y)
-            * and 5 float values (w_resize, h_resize, opacity, rotation, feather_radius)
-            * and 1 int value num_optional_params (telling how much will follow)
-            * the rest of the line is optional
-            *  8  additional float values (transformation factors) 7th upto 14th parameter
-            *  1  integer values (keyframe) as 7th parameter
-            *         or as 15th parameter (if transformation factors are present too)
-            */
-           if((l_cnt != 6) && (l_cnt != 7)   /* for compatibility to old format */
-           && (l_cnt != 8) && (l_cnt != 9) && (l_cnt != 16) && (l_cnt != 17))
-           {
-             /* invalid pointline format detected */
-             l_rc = -2;  /* have to call p_reset_points() when called from dialog window */
-             break;
-           }
+           gint    acc_idx;
+           gint    perspective_idx;
+
            pvals->point[l_idx].keyframe_abs = 0;
            pvals->point[l_idx].keyframe = 0;
            pvals->point[l_idx].p_x      = l_i1;
@@ -1598,23 +2178,104 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
            pvals->point[l_idx].opacity  = l_farr[4];
            pvals->point[l_idx].rotation = l_farr[5];
            pvals->point[l_idx].sel_feather_radius = 0.0;
+
+           pvals->point[l_idx].accPosition         = 0;
+           pvals->point[l_idx].accOpacity          = 0;
+           pvals->point[l_idx].accSize             = 0;
+           pvals->point[l_idx].accRotation         = 0;
+           pvals->point[l_idx].accPerspective      = 0;
+           pvals->point[l_idx].accSelFeatherRadius = 0;
+
+          /* the older format used in GAP.1.2 has 6 or 7 integer numbers per line
+            * and is still readable by this code.
+            *
+            * the new format has 2 integer values (p_x, p_y)
+            * and 5 float values (w_resize, h_resize, opacity, rotation, feather_radius)
+            * and 1 int value optional_params_indicator (telling how much and what kind of parameter will follow)
+            * possible optional parameter(s) are:
+            * (if all of them are present, then in the order as listed below)
+            *
+            *     8  float values for the transformation factors
+            *     6  int values for acceleration characteristics (since GIMP_GAP 2.7.x)
+            *     1  int value for keyframe information (not present at first and last controlpoint)
+            */
+           if((l_cnt != 6) && (l_cnt != 7)   /* for compatibility to old format */
+           && (l_cnt != 8) && (l_cnt != 9)   && (l_cnt != 16) && (l_cnt != 17)  /* for GAP 2.6.x format */
+           && (l_cnt != 14) && (l_cnt != 15) && (l_cnt != 22) && (l_cnt != 23) )
+           {
+             /* invalid pointline format detected */
+             l_rc = -2;  /* have to call p_reset_points() when called from dialog window */
+
+             printf("invalid move path pointfile %d numbers per line are not supported\n", (int)l_cnt);
+             break;
+           }
+
+           optional_params_indicator = 0;
+           key_idx = -1;
+           acc_idx = -1;
+           perspective_idx = -1;
+
            if(l_cnt >= 8)
            {
              pvals->point[l_idx].sel_feather_radius = l_farr[6];
-             num_optional_params = l_farr[7];
+             optional_params_indicator = l_farr[7];
            }
-           if(l_cnt >= 16)
+
+
+           if(gap_debug)
            {
-             pvals->point[l_idx].ttlx = l_farr[8];
-             pvals->point[l_idx].ttly = l_farr[9];
-             pvals->point[l_idx].ttrx = l_farr[10];
-             pvals->point[l_idx].ttry = l_farr[11];
-             pvals->point[l_idx].tblx = l_farr[12];
-             pvals->point[l_idx].tbly = l_farr[13];
-             pvals->point[l_idx].tbrx = l_farr[14];
-             pvals->point[l_idx].tbry = l_farr[15];
+             printf("gap_mov_exec_gap_load_pointfile  optional_params_indicator:%d\n", optional_params_indicator);
            }
-           key_idx = -1;
+
+
+           switch (optional_params_indicator)
+           {
+               case 0:
+                   break;
+               case 1:
+                   /* have one keyframe value */
+                   key_idx = 8;
+                   break;
+               case 6:
+                   /* have six accelerate characteristic values */
+                   acc_idx = 8;
+                   break;
+               case 7:
+                   /* have six accelerate characteristic values 
+                    * and one keyframe value
+                    */
+                   acc_idx = 8;
+                   key_idx = 8 + 6;
+                   break;
+               case 8:
+                   /* have eight perspective values */
+                   perspective_idx = 8;
+                   break;
+               case 9:
+                   /* have eight perspective values
+                    * and one keyframe value
+                    */
+                   perspective_idx = 8;
+                   key_idx         = 8 + 8;
+                   break;
+               case 14:
+                   /* have eight perspective values
+                    * and six accelerate characteristic values
+                    */
+                   perspective_idx = 8;
+                   acc_idx         = 8 + 8;
+                   break;
+               case 15:
+                   /* have eight perspective values
+                    * and six accelerate characteristic values
+                    * and one keyframe value
+                    */
+                   perspective_idx = 8;
+                   acc_idx         = 8 + 8;
+                   key_idx         = 8 + 8 + 6;
+                   break;
+           }
+
            if(l_idx > 0)
            {
              switch(l_cnt)
@@ -1622,14 +2283,30 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
                case 7:
                    key_idx = 6; /* for compatibilty with old format */
                    break;
-               case 9:
-                   key_idx = 8;
-                   break;
-               case 17:
-                   key_idx = 16;
-                   break;
              }
            }
+
+           if(perspective_idx >= 0)
+           {
+             pvals->point[l_idx].ttlx = l_farr[perspective_idx];
+             pvals->point[l_idx].ttly = l_farr[perspective_idx +1];
+             pvals->point[l_idx].ttrx = l_farr[perspective_idx +2];
+             pvals->point[l_idx].ttry = l_farr[perspective_idx +3];
+             pvals->point[l_idx].tblx = l_farr[perspective_idx +4];
+             pvals->point[l_idx].tbly = l_farr[perspective_idx +5];
+             pvals->point[l_idx].tbrx = l_farr[perspective_idx +6];
+             pvals->point[l_idx].tbry = l_farr[perspective_idx +7];
+           }
+           if(acc_idx >= 0)
+           {
+             pvals->point[l_idx].accPosition         = l_farr[acc_idx];
+             pvals->point[l_idx].accOpacity          = l_farr[acc_idx +1];
+             pvals->point[l_idx].accSize             = l_farr[acc_idx +2];
+             pvals->point[l_idx].accRotation         = l_farr[acc_idx +3];
+             pvals->point[l_idx].accPerspective      = l_farr[acc_idx +4];
+             pvals->point[l_idx].accSelFeatherRadius = l_farr[acc_idx +5];
+           }
+
            if(key_idx > 0)
            {
              pvals->point[l_idx].keyframe = l_farr[key_idx];

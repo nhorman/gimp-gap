@@ -111,6 +111,15 @@ typedef struct {
         gdouble currTBRY;     /*  transform y bot right */
         
         gdouble currSelFeatherRadius;
+
+        /* acceleration characteristics */
+        gint accPosition;
+        gint accOpacity;
+        gint accSize;
+        gint accRotation;
+        gint accPerspective;
+        gint accSelFeatherRadius;
+
 } GapMovCurrent;
 
 
@@ -134,8 +143,17 @@ typedef struct {
         gdouble tbrx;     /* 0.0 upto 10.0 transform x bot right */
         gdouble tbry;     /* 0.0 upto 10.0 transform y bot right */
 
-        /* 4-point transform distortion (perspective) */
+        /* feather radius for selection handling */
         gdouble sel_feather_radius;
+        
+        /* acceleration characteristics */
+	gint accPosition;
+	gint accOpacity;
+	gint accSize;
+	gint accRotation;
+	gint accPerspective;
+	gint accSelFeatherRadius;
+
 } GapMovPoint;
 
 #define GAP_MOV_MAX_POINT 1024

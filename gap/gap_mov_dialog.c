@@ -125,6 +125,7 @@
 #include "gap_arr_dialog.h"
 
 #include "gap_pview_da.h"
+#include "gap_accel_da.h"
 #include "gap_stock.h"
 
 
@@ -220,6 +221,14 @@ typedef struct
   GtkAdjustment *trace_opacity_initial_adj;
   GtkAdjustment *trace_opacity_desc_adj;
   GtkAdjustment *tween_steps_adj;
+  
+  GtkAdjustment *accPosition_adj;
+  GtkAdjustment *accOpacity_adj;
+  GtkAdjustment *accSize_adj;
+  GtkAdjustment *accRotation_adj;
+  GtkAdjustment *accPerspective_adj;
+  GtkAdjustment *accSelFeatherRadius_adj;
+
 
   gchar          point_index_text[POINT_INDEX_LABEL_LENGTH];
   GtkWidget     *point_index_frame;
@@ -237,6 +246,14 @@ typedef struct
   gdouble        tbrx;     /* 0.0 upto 10.0 transform x bot right */
   gdouble        tbry;     /* 0.0 upto 10.0 transform y bot right */
   gdouble        sel_feather_radius;
+
+  /* acceleration characteristics */
+  gint           accPosition;
+  gint           accOpacity;
+  gint           accSize;
+  gint           accRotation;
+  gint           accPerspective;
+  gint           accSelFeatherRadius;
 
   gint           keyframe_abs;
   gint           max_frame;
@@ -266,6 +283,8 @@ typedef struct
 
        long        gap_mov_dlg_move_dialog             (GapMovData *mov_ptr);
 static void        p_update_point_index_text (t_mov_gui_stuff *mgp);
+static void        p_set_sensitivity_by_adjustment(GtkAdjustment *adj, gboolean sensitive);
+static void        p_accel_widget_sensitivity(t_mov_gui_stuff *mgp);
 static void        p_points_from_tab         (t_mov_gui_stuff *mgp);
 static void        p_points_to_tab           (t_mov_gui_stuff *mgp);
 static void        p_point_refresh           (t_mov_gui_stuff *mgp);
@@ -283,6 +302,7 @@ static gint        mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                                 gint min, gint max);
 static GtkWidget * mov_modify_tab_create (t_mov_gui_stuff *mgp);
 static GtkWidget * mov_trans_tab_create  (t_mov_gui_stuff *mgp);
+static GtkWidget * mov_acc_tab_create  (t_mov_gui_stuff *mgp);
 static GtkWidget * mov_selection_handling_tab_create (t_mov_gui_stuff *mgp);
 
 static void        mov_path_prevw_create ( GimpDrawable *drawable,
@@ -302,9 +322,11 @@ static void        mov_instant_double_adjustment_update (GtkObject *obj, gpointe
 static void        mov_path_colorbutton_update ( GimpColorButton *widget, t_mov_gui_stuff *mgp);
 static void        mov_path_keycolorbutton_clicked ( GimpColorButton *widget, t_mov_gui_stuff *mgp);
 static void        mov_path_keycolorbutton_changed ( GimpColorButton *widget, t_mov_gui_stuff *mgp);
+static void        mov_path_keyframe_update ( GtkWidget *widget, t_mov_gui_stuff *mgp );
 static void        mov_path_x_adjustment_update ( GtkWidget *widget, gpointer data );
 static void        mov_path_y_adjustment_update ( GtkWidget *widget, gpointer data );
 static void        mov_path_tfactor_adjustment_update( GtkWidget *widget, gdouble *val);
+static void        mov_path_acceleration_adjustment_update( GtkWidget *widget, gint *val);
 static void        mov_path_feather_adjustment_update( GtkWidget *widget, gdouble *val );
 static void        mov_selmode_menu_callback (GtkWidget *widget, t_mov_gui_stuff *mgp);
 
@@ -378,6 +400,25 @@ static void mov_set_active_cursor        (t_mov_gui_stuff *mgp);
 
 GtkObject *
 p_mov_spinbutton_new(GtkTable *table
+                    ,gint      col
+                    ,gint      row
+                    ,gchar    *label_text
+                    ,gint      scale_width      /* dummy, not used */
+                    ,gint      spinbutton_width
+                    ,gdouble   initial_val
+                    ,gdouble   lower            /* dummy, not used */
+                    ,gdouble   upper            /* dummy, not used */
+                    ,gdouble   sstep
+                    ,gdouble   pagestep
+                    ,gint      digits
+                    ,gboolean  constrain
+                    ,gdouble   umin
+                    ,gdouble   umax
+                    ,gchar    *tooltip_text
+                    ,gchar    *privatetip
+                    );
+GtkObject *
+p_mov_acc_spinbutton_new(GtkTable *table
                     ,gint      col
                     ,gint      row
                     ,gchar    *label_text
@@ -1171,6 +1212,13 @@ p_copy_point(gint to_idx, gint from_idx)
     pvals->point[to_idx].tbrx = pvals->point[from_idx].tbrx;
     pvals->point[to_idx].tbry = pvals->point[from_idx].tbry;
     pvals->point[to_idx].sel_feather_radius = pvals->point[from_idx].sel_feather_radius;
+
+    pvals->point[to_idx].accPosition = pvals->point[from_idx].accPosition;
+    pvals->point[to_idx].accOpacity = pvals->point[from_idx].accOpacity;
+    pvals->point[to_idx].accSize = pvals->point[from_idx].accSize;
+    pvals->point[to_idx].accRotation = pvals->point[from_idx].accRotation;
+    pvals->point[to_idx].accPerspective = pvals->point[from_idx].accPerspective;
+    pvals->point[to_idx].accSelFeatherRadius = pvals->point[from_idx].accSelFeatherRadius;
 
     /* do not copy keyframe */
     pvals->point[to_idx].keyframe_abs = 0;
@@ -2026,6 +2074,20 @@ p_point_refresh(t_mov_gui_stuff *mgp)
   gtk_adjustment_set_value (mgp->sel_feather_radius_adj,
                             (gdouble)mgp->sel_feather_radius);
 
+
+  gtk_adjustment_set_value (mgp->accPosition_adj,
+                            (gdouble)mgp->accPosition);
+  gtk_adjustment_set_value (mgp->accOpacity_adj,
+                            (gdouble)mgp->accOpacity);
+  gtk_adjustment_set_value (mgp->accSize_adj,
+                            (gdouble)mgp->accSize);
+  gtk_adjustment_set_value (mgp->accRotation_adj,
+                            (gdouble)mgp->accRotation);
+  gtk_adjustment_set_value (mgp->accPerspective_adj,
+                            (gdouble)mgp->accPerspective);
+  gtk_adjustment_set_value (mgp->accSelFeatherRadius_adj,
+                            (gdouble)mgp->accSelFeatherRadius);
+
   mgp->in_call = FALSE;
 }       /* end p_point_refresh */
 
@@ -2459,6 +2521,72 @@ mov_instant_apply_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
 }  /* end mov_instant_apply_callback */
 
 
+
+/* ------------------------------------------
+ * p_set_sensitivity_by_adjustment
+ * ------------------------------------------
+ * get the optional attached spinbutton and scale
+ * and set the specified sensitivity when attached widget is present.
+ */
+static void
+p_set_sensitivity_by_adjustment(GtkAdjustment *adj, gboolean sensitive)
+{
+  if(adj != NULL)
+  {
+    GtkWidget *spinbutton;
+    GtkWidget *scale;
+    
+    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (adj), "spinbutton"));
+    if(spinbutton)
+    {
+      gtk_widget_set_sensitive(spinbutton, sensitive);
+    }
+    scale = GTK_WIDGET(g_object_get_data (G_OBJECT (adj), "scale"));
+    if(scale)
+    {
+      gtk_widget_set_sensitive(scale, sensitive);
+    }
+  }
+}  /* end p_set_sensitivity_by_adjustment */
+
+
+/* ----------------------------------
+ * p_accel_widget_sensitivity
+ * ----------------------------------
+ * set sensitivity for all acceleration characteristic widgets 
+ * Those widgets are sensitive for the first conrolpoint
+ * and for keframes that are NOT the last controlpoint.
+ */
+static void
+p_accel_widget_sensitivity(t_mov_gui_stuff *mgp)
+{
+  gboolean sensitive;
+    
+  sensitive = FALSE;
+  if(pvals->point_idx == 0) 
+  {
+    sensitive = TRUE;
+  }
+  else
+  {
+    if ((pvals->point_idx != pvals->point_idx_max) 
+    && ((pvals->point[pvals->point_idx].keyframe > 0) || (mgp->keyframe_abs > 0)))
+    {
+      sensitive = TRUE;
+    }
+  }
+
+  p_set_sensitivity_by_adjustment(mgp->accPosition_adj, sensitive);
+  p_set_sensitivity_by_adjustment(mgp->accOpacity_adj, sensitive);
+  p_set_sensitivity_by_adjustment(mgp->accSize_adj, sensitive);
+  p_set_sensitivity_by_adjustment(mgp->accRotation_adj, sensitive);
+  p_set_sensitivity_by_adjustment(mgp->accPerspective_adj, sensitive);
+  p_set_sensitivity_by_adjustment(mgp->accSelFeatherRadius_adj, sensitive);
+
+
+}  /* end p_accel_widget_sensitivity */
+
+
 /* ============================================================================
  * procedures to handle POINTS - TABLE
  * ============================================================================
@@ -2468,9 +2596,6 @@ mov_instant_apply_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
 static void
 p_points_from_tab(t_mov_gui_stuff *mgp)
 {
-  GtkWidget *scale;
-  GtkWidget *spinbutton;
-
   mgp->p_x      = pvals->point[pvals->point_idx].p_x;
   mgp->p_y      = pvals->point[pvals->point_idx].p_y;
   mgp->opacity  = pvals->point[pvals->point_idx].opacity;
@@ -2488,36 +2613,27 @@ p_points_from_tab(t_mov_gui_stuff *mgp)
   mgp->sel_feather_radius  = pvals->point[pvals->point_idx].sel_feather_radius;
   mgp->keyframe_abs = pvals->point[pvals->point_idx].keyframe_abs;
 
+  mgp->accPosition         = pvals->point[pvals->point_idx].accPosition;
+  mgp->accOpacity          = pvals->point[pvals->point_idx].accOpacity;
+  mgp->accSize             = pvals->point[pvals->point_idx].accSize;
+  mgp->accRotation         = pvals->point[pvals->point_idx].accRotation;
+  mgp->accPerspective      = pvals->point[pvals->point_idx].accPerspective;
+  mgp->accSelFeatherRadius = pvals->point[pvals->point_idx].accSelFeatherRadius;
+
+
   if(( mgp->keyframe_adj != NULL) && (mgp->startup != TRUE))
   {
-   /*   findout the gtk_widgets (scale and spinbutton) connected
-    *   to mgp->keyframe_adj
-    *   and set_sensitive to TRUE or FALSE
-    */
-    scale = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->keyframe_adj), "scale"));
-    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->keyframe_adj), "spinbutton"));
-
-    if(spinbutton == NULL)
-    {
-      return;
-    }
-    if(gap_debug)
-    {
-      printf("p_points_from_tab: scale %x spinbutton %x\n",
-              (int)scale, (int)spinbutton);
-    }
+    gboolean sensitive;
+    
+    sensitive = TRUE;
     if((pvals->point_idx == 0) || (pvals->point_idx == pvals->point_idx_max))
     {
-      gtk_widget_set_sensitive(spinbutton, FALSE);
-      if(scale)
-        gtk_widget_set_sensitive(scale, FALSE);
+      sensitive = FALSE;
     }
-    else
-    {
-      gtk_widget_set_sensitive(spinbutton, TRUE);
-      if(scale)
-        gtk_widget_set_sensitive(scale, TRUE);
-    }
+    p_set_sensitivity_by_adjustment(mgp->keyframe_adj, sensitive);
+    
+    p_accel_widget_sensitivity(mgp);
+    
   }
 }
 
@@ -2542,6 +2658,14 @@ p_points_to_tab(t_mov_gui_stuff *mgp)
   pvals->point[pvals->point_idx].tbry      = mgp->tbry;
   pvals->point[pvals->point_idx].sel_feather_radius  = mgp->sel_feather_radius;
   pvals->point[pvals->point_idx].keyframe_abs  = mgp->keyframe_abs;
+  
+  pvals->point[pvals->point_idx].accPosition         = mgp->accPosition;
+  pvals->point[pvals->point_idx].accOpacity          = mgp->accOpacity;
+  pvals->point[pvals->point_idx].accSize             = mgp->accSize;
+  pvals->point[pvals->point_idx].accRotation         = mgp->accRotation;
+  pvals->point[pvals->point_idx].accPerspective      = mgp->accPerspective;
+  pvals->point[pvals->point_idx].accSelFeatherRadius = mgp->accSelFeatherRadius;
+
   if((mgp->keyframe_abs > 0)
   && (pvals->point_idx != 0)
   && (pvals->point_idx != pvals->point_idx_max))
@@ -2571,7 +2695,7 @@ p_update_point_index_text(t_mov_gui_stuff *mgp)
 
 /* ============================================================================
  * p_clear_one_point
- *   Init point table with identical 2 Points
+ *   clear one controlpoint to default values.
  * ============================================================================
  */
 void
@@ -2595,6 +2719,14 @@ p_clear_one_point(gint idx)
     pvals->point[idx].sel_feather_radius = 0.0;
     pvals->point[idx].keyframe = 0;   /* 0: controlpoint is not fixed to keyframe */
     pvals->point[idx].keyframe_abs = 0;   /* 0: controlpoint is not fixed to keyframe */
+    
+    pvals->point[idx].accPosition = 0;           /* 0: linear (e.g NO acceleration) is default */
+    pvals->point[idx].accOpacity = 0;            /* 0: linear (e.g NO acceleration) is default */
+    pvals->point[idx].accSize = 0;               /* 0: linear (e.g NO acceleration) is default */
+    pvals->point[idx].accRotation = 0;           /* 0: linear (e.g NO acceleration) is default */
+    pvals->point[idx].accPerspective = 0;        /* 0: linear (e.g NO acceleration) is default */
+    pvals->point[idx].accSelFeatherRadius = 0;   /* 0: linear (e.g NO acceleration) is default */
+
   }
 }       /* end p_clear_one_point */
 
@@ -2634,6 +2766,16 @@ p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor)
     pvals->point[idx].tbry      = MIX_VALUE(mix_factor, pvals->point[ref1].tbry,  pvals->point[ref2].tbry);
 
     pvals->point[idx].sel_feather_radius = MIX_VALUE(mix_factor, pvals->point[ref1].sel_feather_radius,  pvals->point[ref2].sel_feather_radius);
+
+
+    pvals->point[idx].accPosition         = MIX_VALUE(mix_factor, pvals->point[ref1].accPosition,          pvals->point[ref2].accPosition);
+    pvals->point[idx].accOpacity          = MIX_VALUE(mix_factor, pvals->point[ref1].accOpacity,           pvals->point[ref2].accOpacity);
+    pvals->point[idx].accSize             = MIX_VALUE(mix_factor, pvals->point[ref1].accSize,              pvals->point[ref2].accSize);
+    pvals->point[idx].accRotation         = MIX_VALUE(mix_factor, pvals->point[ref1].accRotation,          pvals->point[ref2].accRotation);
+    pvals->point[idx].accPerspective      = MIX_VALUE(mix_factor, pvals->point[ref1].accPerspective,       pvals->point[ref2].accPerspective);
+    pvals->point[idx].accSelFeatherRadius = MIX_VALUE(mix_factor, pvals->point[ref1].accSelFeatherRadius,  pvals->point[ref2].accSelFeatherRadius);
+
+
 
     pvals->point[idx].keyframe = 0;   /* 0: controlpoint is not fixed to keyframe */
     pvals->point[idx].keyframe_abs = 0;   /* 0: controlpoint is not fixed to keyframe */
@@ -3874,6 +4016,159 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
 }  /* end mov_trans_tab_create */
 
 
+
+/* -----------------------------------------
+ * mov_acc_tab_create
+ * ----------------------------------------
+ * Create  VBox with the acceleration characteristics and return it.
+ *   The VBox contains
+ *   - Transform 8x spinbutton   (0.01 upto 10.0) 4-point perspective transformation
+ */
+static GtkWidget *
+mov_acc_tab_create (t_mov_gui_stuff *mgp)
+{
+  GtkWidget      *vbox;
+  GtkWidget      *table;
+  GtkObject      *adj;
+
+#define ACC_MIN -100
+#define ACC_MAX  100
+
+  /* the vbox */
+  vbox = gtk_vbox_new (FALSE, 3);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+
+  /* the table (2 rows) */
+  table = gtk_table_new ( 2, 9, FALSE );
+  gtk_container_set_border_width (GTK_CONTAINER (table), 2 );
+  gtk_table_set_row_spacings (GTK_TABLE (table), 2);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+  gtk_box_pack_start (GTK_BOX (vbox), table, TRUE, TRUE, 0);
+
+
+  /*  accelaration characteristic for Position (e.g. movement) */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 0, 0,        /* table col, row */
+                          _("Movement:"),                     /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accPosition,          /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for movement (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accPosition);
+  mgp->accPosition_adj = GTK_ADJUSTMENT(adj);
+
+
+
+  /*  accelaration characteristic */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 0, 1,        /* table col, row */
+                          _("Opacity:"),                      /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accOpacity,           /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for opacity (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accOpacity);
+  mgp->accOpacity_adj = GTK_ADJUSTMENT(adj);
+
+
+
+
+  /*  accelaration characteristic for Size (e.g. Zoom) */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 3, 0,        /* table col, row */
+                          _("Scale:"),                        /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accSize,              /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for zoom (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accSize);
+  mgp->accSize_adj = GTK_ADJUSTMENT(adj);
+
+
+  /*  accelaration characteristic for Rotation */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 3, 1,        /* table col, row */
+                          _("Rotation:"),                     /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accRotation,          /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for rotation (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accRotation);
+  mgp->accRotation_adj = GTK_ADJUSTMENT(adj);
+
+  /*  accelaration characteristic for Perspective */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 6, 0,        /* table col, row */
+                          _("Perspective:"),                  /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accPerspective,       /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for perspective (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accPerspective);
+  mgp->accPerspective_adj = GTK_ADJUSTMENT(adj);
+
+
+  /*  accelaration characteristic for feather radius */
+  adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 6, 1,        /* table col, row */
+                          _("FeatherRadius:"),                /* label text */
+                          SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+                          (gdouble)mgp->accSelFeatherRadius,  /* initial value */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
+                          1, 10,                              /* step, page */
+                          0,                                  /* digits */
+                          FALSE,                              /* constrain */
+                          (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper (unconstrained) */
+                          _("acceleration characteristic for feather radius (1 for constant speed, positive: acceleration, negative: deceleration)"),
+                          NULL);    /* tooltip privatetip */
+  g_object_set_data(G_OBJECT(adj), "mgp", mgp);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+                    G_CALLBACK (mov_path_acceleration_adjustment_update),
+                    &mgp->accSelFeatherRadius);
+  mgp->accSelFeatherRadius_adj = GTK_ADJUSTMENT(adj);
+
+
+  gtk_widget_show(table);
+  gtk_widget_show(vbox);
+
+  return vbox;
+}  /* end mov_acc_tab_create */
+
+
 /* ============================================================================
  * Create  VBox with the selection handling widgets and return it.
  * ============================================================================
@@ -3913,7 +4208,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
                        , NULL);
   gtk_widget_show(combo);
 
-  /* ttlx transformfactor */
+  /* Feather Radius */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 1,        /* table col, row */
                           _("Selection Feather Radius:"),     /* label text */
                           SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
@@ -4064,8 +4359,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                           _("Fix controlpoint to keyframe number where 0 == no keyframe"),
                           NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &mgp->keyframe_abs);
+                    G_CALLBACK (mov_path_keyframe_update),
+                    mgp);
   mgp->keyframe_adj = GTK_ADJUSTMENT(adj);
 
 
@@ -4075,6 +4370,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   {
     GtkWidget *modify_table;
     GtkWidget *transform_table;
+    GtkWidget *acceleration_table;
     GtkWidget *selhandling_table;
 
     /* set of modifier widgets for the current controlpoint */
@@ -4082,6 +4378,9 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 
     /* set of perspective transformation widgets for the current controlpoint */
     transform_table = mov_trans_tab_create(mgp);
+    
+    /* set of acceleration characteristic widgets for the current controlpoint */
+    acceleration_table = mov_acc_tab_create(mgp);
 
     /* set of perspective transformation widgets for the current controlpoint */
     selhandling_table = mov_selection_handling_tab_create(mgp);
@@ -4098,13 +4397,19 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1)
                              , label
                              );
-
     gtk_container_add (GTK_CONTAINER (notebook), selhandling_table);
     label = gtk_label_new(_("Selection Handling"));
     gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2)
                              , label
                              );
+    gtk_container_add (GTK_CONTAINER (notebook), acceleration_table);
+    label = gtk_label_new(_("Acceleration"));
+    gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3)
+                             , label
+                             );
+
   }
   gtk_table_attach(GTK_TABLE(table), notebook, 3, 4          /* column */
                                              , 0, 3          /* all rows */
@@ -4684,6 +4989,15 @@ mov_path_keycolorbutton_changed( GimpColorButton *widget,
   }
 }  /* end mov_path_keycolorbutton_changed */
 
+
+static void
+mov_path_keyframe_update ( GtkWidget *widget, t_mov_gui_stuff *mgp)
+{
+  gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), &mgp->keyframe_abs);
+  p_accel_widget_sensitivity(mgp);
+}
+
+
 /*
  *  mov_path_xy_adjustment_update
  */
@@ -4734,6 +5048,11 @@ mov_path_y_adjustment_update( GtkWidget *widget,
   }
 }
 
+/* -----------------------------------------
+ * mov_path_tfactor_adjustment_update
+ * ----------------------------------------
+ * update value for one of the perspective transformation factors
+ */
 static void
 mov_path_tfactor_adjustment_update( GtkWidget *widget,
                             gdouble *val )
@@ -4757,6 +5076,43 @@ mov_path_tfactor_adjustment_update( GtkWidget *widget,
       }
   }
 }  /* end mov_path_tfactor_adjustment_update */
+
+/* -----------------------------------------
+ * mov_path_acceleration_adjustment_update
+ * ----------------------------------------
+ * update value for one of the acceleration characteristic values
+ */
+static void
+mov_path_acceleration_adjustment_update(GtkWidget *widget,
+                            gint *val )
+{
+  gint old_val;
+  t_mov_gui_stuff *mgp;
+  GapAccelWidget  *accel_ptr;
+
+  mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
+
+  if(mgp == NULL) return;
+  old_val = *val;
+  gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), (gpointer)val);
+
+  accel_ptr = g_object_get_data ( G_OBJECT(widget), "accel_ptr" );
+
+  if(accel_ptr == NULL)
+  {
+    if(gap_debug)
+    {
+      printf("accel_ptr is NULL\n");
+    }
+  }
+  
+  gap_accel_render (accel_ptr, *val);
+
+  return;
+
+}  /* end mov_path_acceleration_adjustment_update */
+
+
 
 static void
 mov_path_feather_adjustment_update( GtkWidget *widget,
@@ -5097,6 +5453,14 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
     l_curr.currTBRY      = (gdouble)mgp->tbry;
     l_curr.currSelFeatherRadius = (gdouble)mgp->sel_feather_radius;
 
+    l_curr.accPosition         = (gdouble)mgp->accPosition;
+    l_curr.accOpacity          = (gdouble)mgp->accOpacity;
+    l_curr.accSize             = (gdouble)mgp->accSize;
+    l_curr.accRotation         = (gdouble)mgp->accRotation;
+    l_curr.accPerspective      = (gdouble)mgp->accPerspective;
+    l_curr.accSelFeatherRadius = (gdouble)mgp->accSelFeatherRadius;
+
+
     l_curr.src_layer_idx   = 0;
     l_curr.src_layers      = gimp_image_get_layers (pvals->src_image_id, &l_nlayers);
 
@@ -5259,6 +5623,73 @@ p_mov_spinbutton_new(GtkTable *table
 
   return(adj);
 }  /* end p_mov_spinbutton_new */
+
+/* ----------------------------------
+ * p_mov_acc_spinbutton_new
+ * ----------------------------------
+ * create label and spinbutton and add to table
+ * return the adjustment of the spinbutton
+ * (for compatible parameters to gimp_scale_entry_new
+ *  there are some unused dummy parameters)
+ */
+GtkObject *
+p_mov_acc_spinbutton_new(GtkTable *table
+                    ,gint      col
+                    ,gint      row
+                    ,gchar    *label_text
+                    ,gint      scale_width      /* dummy, not used */
+                    ,gint      spinbutton_width
+                    ,gdouble   initial_val
+                    ,gdouble   lower            /* dummy, not used */
+                    ,gdouble   upper            /* dummy, not used */
+                    ,gdouble   sstep
+                    ,gdouble   pagestep
+                    ,gint      digits
+                    ,gboolean  constrain
+                    ,gdouble   umin
+                    ,gdouble   umax
+                    ,gchar    *tooltip_text
+                    ,gchar    *privatetip
+                    )
+{
+  GtkObject       *adj;
+  GapAccelWidget  *accel_ptr;
+  gint accelerationCharacteristic;
+  
+#define ACC_WGT_WIDTH 28
+#define ACC_WGT_HEIGHT 26
+
+  adj = p_mov_spinbutton_new(table
+                    ,col
+                    ,row
+                    ,label_text
+                    ,scale_width
+                    ,spinbutton_width
+                    ,initial_val
+                    ,lower
+                    ,upper
+                    ,sstep
+                    ,pagestep
+                    ,digits
+                    ,constrain
+                    ,umin
+                    ,umax
+                    ,tooltip_text
+                    ,privatetip
+                    );
+
+  accelerationCharacteristic = (int)initial_val;
+  accel_ptr = gap_accel_new(ACC_WGT_WIDTH, ACC_WGT_HEIGHT, accelerationCharacteristic);
+
+
+  gtk_table_attach( GTK_TABLE(table), accel_ptr->da_widget, col+2, col+3, row, row+1,
+                    GTK_FILL, 0, 4, 0 );
+  gtk_widget_show (accel_ptr->da_widget);
+
+  g_object_set_data (G_OBJECT (adj), "accel_ptr", accel_ptr);
+
+  return(adj);
+}  /* end p_mov_acc_spinbutton_new */
 
 
 /* --------------------------

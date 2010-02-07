@@ -1,3 +1,16 @@
+2010-02-07 Wolfgang Hofer <hof@gimp.org>
+
+- implementation for acceleration characteristic support im MovePath
+  (as suggested in #607927)
+  
+  * gap/gap_accel_char.c [.h]  # NEW files
+  * gap/gap_accel_da.c [.h]    # NEW files
+  * gap/Makefile.am
+
+  * gap/gap_mov_exec.c
+  * gap/gap_mov_dialog.c [.h]
+
+
 2010-01-16 Wolfgang Hofer <hof@gimp.org>
 - applied patch provided at #607040 that fixes the crash when selcting
    controlpoint color.
