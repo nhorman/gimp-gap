@@ -277,7 +277,7 @@ static t_ffmpeg_handle * p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                       );
 static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track);
 static uint8_t * p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track);
-static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track);
+static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track, gboolean useYUV420P);
 static int    p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes, gint aud_track);
 static void   p_ffmpeg_close(t_ffmpeg_handle *ffh);
 static gint   p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp);
@@ -747,7 +747,7 @@ p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
   printf("(misc_bits                    %d)\n", (int)    codecContext->misc_bits);
   printf("(frame_bits                   %d)\n", (int)    codecContext->frame_bits);
   printf("(opaque (void *)              %d)\n", (int)    codecContext->opaque);
-  printf("(codec_name                   %s)\n", (int)    &codecContext->codec_name[0]);
+  printf("(codec_name                   %s)\n",         &codecContext->codec_name[0]);
   printf("(codec_type                   %d)\n", (int)    codecContext->codec_type);
   printf("(codec_id                     %d)\n", (int)    codecContext->codec_id);
   printf("(codec_tag (fourcc)           %d)\n", (int)    codecContext->codec_tag);
@@ -2874,7 +2874,7 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
  * the encoded frame to the mediafile as packet.
  */
 static int
-p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track)
+p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track, gboolean useYUV420P)
 {
   AVPicture *picture_codec;
   int encoded_size;
@@ -2914,7 +2914,7 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
   picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
 
 
-  if(ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P)
+  if ((useYUV420P == TRUE) && (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P))
   {
     if(gap_debug)
     {
@@ -3499,6 +3499,7 @@ p_setup_check_flags(GapGveFFMpegValues *epp
 static gint
 p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveMasterEncoderStatus *encStatusPtr)
 {
+#define GAP_FFENC_USE_YUV420P "GAP_FFENC_USE_YUV420P"
   GapGveFFMpegValues   *epp = NULL;
   t_ffmpeg_handle     *ffh = NULL;
   GapGveStoryVidHandle        *l_vidhand = NULL;
@@ -3516,10 +3517,25 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
   t_awk_array   l_awk_arr;
   t_awk_array   *awp;
   GapCodecNameElem    *l_vcodec_list;
-
+  const char          *l_env;
+  gboolean             l_useYUV420P;
 
   epp = &gpp->evl;
   awp = &l_awk_arr;
+
+  l_useYUV420P = FALSE;
+  l_env = g_getenv(GAP_FFENC_USE_YUV420P);
+  if(l_env != NULL)
+  {
+    if((*l_env != 'n') && (*l_env != 'N'))
+    {
+      printf("** Warning: environment variable %s turns on YUV420P pre-convert feature\n"
+             "  this may run a bit faster but typically reduces the quality of the resulting video\n"
+             , GAP_FFENC_USE_YUV420P
+             );
+      l_useYUV420P = TRUE;
+    }
+  }
 
   encStatusPtr->current_pass = current_pass;
   encStatusPtr->frames_processed = 0;
@@ -3694,7 +3710,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
         /* store the compressed video frame */
         if (gap_debug) printf("GAP_FFMPEG: Writing frame nr. %d\n", (int)l_cur_frame_nr);
 
-        p_ffmpeg_write_frame(ffh, l_drawable, l_force_keyframe, 0 /* vid_track */);
+        p_ffmpeg_write_frame(ffh, l_drawable, l_force_keyframe, 0, /* vid_track */  l_useYUV420P);
         gimp_drawable_detach (l_drawable);
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);

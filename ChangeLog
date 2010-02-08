@@ -1,3 +1,18 @@
+2010-02-08 Wolfgang Hofer <hof@gimp.org>
+
+- the GIMP-GAP libavformat(libavcodec based video encoder
+  now disables pre convert to YUV420P colormodel before feeding frame data to the encoding
+  engine. This GIMP_GAP internal pre convrsion seems to fail on 64bit OS
+  (see also #607924)
+  furthermore YUV420P input typically reduces quality of the resulting output video.
+  
+  (pre convert to YUV420P colormodel is still available for test purpose
+   and can be enabled by environment variable
+     export GAP_FFENC_USE_YUV420P=y
+  )
+
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
 2010-02-07 Wolfgang Hofer <hof@gimp.org>
 
 - implementation for acceleration characteristic support im MovePath
