@@ -31,18 +31,30 @@
 #include <libgimp/gimp.h>
 
 
+#define GAP_ACCEL_CHAR_NONE     0
+#define GAP_ACCEL_CHAR_LINEAR   1
+#define GAP_ACCEL_CHAR_MIN     -100
+#define GAP_ACCEL_CHAR_MAX      100
+
+
 /* ---------------------------------------
  * gap_accelMixFactor
  * ---------------------------------------
  * this proecdure implements hardcoded acceleration characteristics.
- *     
+ *
  * accelCharacteristic: 0 and 1 for linear, positive values for acceleration, negative values for deceleration
  *
  * orig_factor: a positive gdouble in the range 0.0 to 1.0
  * returns modified mix_factor in the range 0.0 to 1.0 according to specified accelCharacteristic
  */
-gdouble 
-gap_accelMixFactor(gdouble orig_factor, gint accelCharacteristic);
+gdouble   gap_accelMixFactor(gdouble orig_factor, gint accelCharacteristic);
+
+/* ---------------------------------------
+ * gap_accel_calculate_current_step
+ * ---------------------------------------
+ * calculate current step respecting the specified accelration characteristic
+ */
+gdouble   gap_calculate_current_step_with_acceleration(gdouble current_step, gint32 total_steps, gint accelCharacteristic);
 
 
 #endif

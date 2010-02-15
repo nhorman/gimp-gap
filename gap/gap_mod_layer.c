@@ -77,6 +77,7 @@
 #include "gap_range_ops.h"
 #include "gap_mod_layer.h"
 #include "gap_mod_layer_dialog.h"
+#include "gap_accel_char.h"
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
@@ -990,7 +991,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
                     GapModLayliElem * layli_ptr, gint nlayers ,
                     char *filter_procname, int filt_len,
                     gint *plugin_data_len,
-                    GapFiltPdbApplyMode *apply_mode,
+                    gint32 *accelCharacteristic,
                     gboolean operate_on_layermask
                     )
 {
@@ -1001,11 +1002,13 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
   static char l_key_from[512];
   static char *canonical_proc_name;
 
+  l_browser_result.accelCharacteristic = GAP_ACCEL_CHAR_LINEAR;
+  
   /* GAP-PDB-Browser Dialog */
   /* ---------------------- */
   if(gap_db_browser_dialog( _("Select Filter for Animated Apply on Frames"),
-                            _("Apply Constant"),
-                            _("Apply Varying"),
+                            _("Apply"),
+                            TRUE, /* showAccelerationCharacteristic */
                             gap_filt_pdb_constraint_proc,
                             gap_filt_pdb_constraint_proc_sel1,
                             gap_filt_pdb_constraint_proc_sel2,
@@ -1023,8 +1026,10 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
   filter_procname[filt_len-1] = '\0';
   g_free(canonical_proc_name);
   
-  if(l_browser_result.button_nr == 1) *apply_mode = GAP_PAPP_VARYING_LINEAR;
-  else                                *apply_mode = GAP_PAPP_CONSTANT;
+  /* invert acceleration to deceleration and vice versa
+   * (because processing runs backwards from total_frames down to 0) 
+   */
+  *accelCharacteristic = (-1 * l_browser_result.accelCharacteristic);
 
   /* 1.st INTERACTIV Filtercall dialog */
   /* --------------------------------- */
@@ -1080,7 +1085,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
     return (-1);
   }
 
-  if(*apply_mode != GAP_PAPP_VARYING_LINEAR)
+  if(*accelCharacteristic == GAP_ACCEL_CHAR_NONE)
   {
     return (p_pitstop_dialog(1, filter_procname));
   }
@@ -1104,7 +1109,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
  */
 static gint
 p_do_2nd_filter_dialogs(char *filter_procname,
-                        GapFiltPdbApplyMode  l_apply_mode,
+                        gint32  accelCharacteristic,
                         char *last_frame_filename,
                         gint32 sel_mode, gint32 sel_case,
                         gint32 sel_invert, char *sel_pattern,
@@ -1248,7 +1253,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   char      *l_plugin_iterator;
   gdouble    l_cur_step;
   gint       l_total_steps;
-  GapFiltPdbApplyMode  l_apply_mode;
+  gint32        accelCharacteristic;
   char         *l_last_frame_filename;
   gint          l_count;
   gboolean      l_operating_on_current_image;
@@ -1257,9 +1262,12 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
 
 
-  if(gap_debug) printf("gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
+  if(gap_debug)
+  { 
+    printf("gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
         (int)action_mode, (int)sel_mode, (int)sel_case, (int)sel_invert, sel_pattern);
-
+  }
+  
   l_operate_on_layermask = FALSE;
   l_percentage = 0.0;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
@@ -1275,7 +1283,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   l_rc = 0;
   l_plugin_iterator = NULL;
   l_plugin_data_len = 0;
-  l_apply_mode = GAP_PAPP_CONSTANT;
+  accelCharacteristic = GAP_ACCEL_CHAR_NONE;
   l_dpy_id = -1;
   l_last_frame_filename = NULL;
 
@@ -1314,7 +1322,10 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   l_cur_frame_nr = l_begin;
   while(1)              /* loop foreach frame in range */
   {
-    if(gap_debug) printf("p_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
+    if(gap_debug)
+    {
+      printf("p_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
+    }
 
     /* build the frame name */
     if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
@@ -1394,16 +1405,16 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
                                  l_layli_ptr, l_nlayers,
                                 &l_filter_procname[0], sizeof(l_filter_procname),
                                 &l_plugin_data_len,
-                                &l_apply_mode,
+                                &accelCharacteristic,
                                  l_operate_on_layermask
                                  );
 
       if(l_last_frame_filename != NULL)
       {
-        if((l_rc == 0) && (l_apply_mode == GAP_PAPP_VARYING_LINEAR))
+        if((l_rc == 0) && (accelCharacteristic != GAP_ACCEL_CHAR_NONE))
         {
           l_rc = p_do_2nd_filter_dialogs(&l_filter_procname[0],
-                                   l_apply_mode,
+                                   accelCharacteristic,
                                    l_last_frame_filename,
                                    sel_mode, sel_case, sel_invert, sel_pattern,
                                    l_operate_on_layermask
@@ -1427,7 +1438,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
       }
 
       /* check for matching Iterator PluginProcedures */
-      if(l_apply_mode == GAP_PAPP_VARYING_LINEAR )
+      if(accelCharacteristic != GAP_ACCEL_CHAR_NONE )
       {
         l_plugin_iterator =  gap_filt_pdb_get_iterator_proc(&l_filter_procname[0], &l_count);
       }
@@ -1474,22 +1485,34 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
     /* iterator call (for filter apply with varying values) */
     if((action_mode == GAP_MOD_ACM_APPLY_FILTER)
-    && (l_plugin_iterator != NULL) && (l_apply_mode == GAP_PAPP_VARYING_LINEAR ))
+    && (l_plugin_iterator != NULL) && (accelCharacteristic != GAP_ACCEL_CHAR_NONE ))
     {
+       gdouble accelStep;
+       
        l_cur_step -= 1.0;
+       
+       accelStep = gap_calculate_current_step_with_acceleration(l_cur_step, l_total_steps, accelCharacteristic);
+       if(gap_debug) 
+       {
+         printf("DEBUG: calling iterator %s  current frame:%d  accelStep:%f\n"
+                               ,l_plugin_iterator
+                               , (int)l_cur_frame_nr
+                               , (float)accelStep
+                               );
+       }
+
         /* call plugin-specific iterator, to modify
          * the plugin's last_values
          */
-       if(gap_debug) printf("DEBUG: calling iterator %s  current frame:%d\n",
-                               l_plugin_iterator, (int)l_cur_frame_nr);
+
        if(strcmp(l_plugin_iterator, GIMP_PLUGIN_GAP_COMMON_ITER) == 0)
        {
          l_params = gimp_run_procedure (l_plugin_iterator,
                            &l_retvals,
                            GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
                            GIMP_PDB_INT32,   l_total_steps,      /* total steps  */
-                           GIMP_PDB_FLOAT,   (gdouble)l_cur_step,    /* current step */
-                           GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
+                           GIMP_PDB_FLOAT,   accelStep,          /* current step respecting acceleration characteristic */
+                           GIMP_PDB_INT32,   l_plugin_data_len,  /* length of stored data struct */
                            GIMP_PDB_STRING,  &l_filter_procname[0],       /* the common iterator needs the plugin name as additional param */
                            GIMP_PDB_END);
        }
@@ -1498,9 +1521,9 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
          l_params = gimp_run_procedure (l_plugin_iterator,
                              &l_retvals,
                              GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
-                             GIMP_PDB_INT32,   l_total_steps,          /* total steps  */
-                             GIMP_PDB_FLOAT,   (gdouble)l_cur_step,    /* current step */
-                             GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
+                             GIMP_PDB_INT32,   l_total_steps,       /* total steps  */
+                             GIMP_PDB_FLOAT,   accelStep,           /* current step respecting acceleration characteristic */
+                             GIMP_PDB_INT32,   l_plugin_data_len,   /* length of stored data struct */
                              GIMP_PDB_END);
        }
        if (l_params[0].data.d_status != GIMP_PDB_SUCCESS)

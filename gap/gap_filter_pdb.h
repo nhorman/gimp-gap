@@ -33,11 +33,6 @@ typedef enum
 } GapFiltPdbProcType;
 
 
-typedef enum
-{  GAP_PAPP_CONSTANT                = 0,
-   GAP_PAPP_VARYING_LINEAR          = 1
-} GapFiltPdbApplyMode;
-
 
 /* ------------------------
  * gap_filter_pdb.h

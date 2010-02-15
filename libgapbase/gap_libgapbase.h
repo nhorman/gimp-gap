@@ -37,4 +37,13 @@
 #include "gap_file_util.h"
 #include "gap_base.h"
 
+
+/* GAP_BASE_MIX_VALUE  0.0 <= factor <= 1.0
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            mix for factors inbetween
+ */
+#define GAP_BASE_MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
+
+
 #endif

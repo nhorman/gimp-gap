@@ -1,3 +1,64 @@
+2010-02-15 Wolfgang Hofer <hof@gimp.org>
+
+- acceleration graph widget changed. Now the widget knows the connected adjustment
+  and can handle refresh on changed value internally.
+  further provides setting the value with the mouse by click on the graph
+    Button 1 (LEFT):   sets value dependent from y position
+    Button 2 (MIDDLE): sets value 0 (acceleration OFF)
+    Button 3 (RIGHT):  sets value 1 (constant speed)
+
+- implementation for acceleration characteristic support im
+  storyboard transitions.
+
+- refactoring: moved multiple local definitions of the same macro MIX_VALUE
+  to one central module libgapbase/gap_libgapbase.h
+  (and renamed as GAP_BASE_MIX_VALUE)
+
+
+- alternative Rendering algorithm for STORYBOARD processing
+  scale, move operations where the result is larger than the frame in the composite image
+  are now handled by computing the affected (clipped) rectangle that will be visible on frame
+  after scale/move. Only this smaller part is copied, scaled and moved.
+  This shall use less resources and speeds up processing when scrolling or zooming images
+  that are larger than the resulting video frame size.
+
+   a first test, a zoom into a 1200 x 900 imgae rendered
+   to 110 frames of size 640 x 480 showed that render time of 1 min 30 sec
+   was nearly the same with or without that optimize feature .....
+   TODO ... further testing
+
+  * NEWS
+  * docs/reference/txt/gap-filterall-db-browser.txt
+  * docs/reference/txt/plug-in-gap-move-path.txt
+  * docs/reference/txt/plug-in-gap-storyboard-attr-prop.txt
+  * docs/reference/txt/plug-in-gap-storyboard-clip-prop.txt
+  * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+
+  * libgapbase/gap_libgapbase.h
+
+  * gap/gap_accel_char.c [.h]
+  * gap/gap_accel_da.c [.h]
+  * gap/gap_dbbrowser_utils.c [.h]
+  * gap/gap_filter_foreach.c
+  * gap/gap_filter.h
+  * gap/gap_filter_main.c
+  * gap/gap_filter_pdb.h
+  * gap/gap_fmac_main.c
+  * gap/gap_mod_layer.c
+  * gap/gap_morph_exec.c
+  * gap/gap_mov_dialog.c
+  * gap/gap_mov_exec.c
+
+  * gap/gap_story_att_trans_dlg.c
+  * gap/gap_story_file.c [.h]
+  * gap/gap_story_main.h
+  * gap/gap_story_properties.c
+  * gap/gap_story_render_processor.c
+  * gap/gap_story_render_types.h.
+  * gap/gap_story_syntax.c
+
+
+
 2010-02-08 Wolfgang Hofer <hof@gimp.org>
 
 - the GIMP-GAP libavformat(libavcodec based video encoder

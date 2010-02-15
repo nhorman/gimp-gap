@@ -59,6 +59,7 @@
 #include "gap_dbbrowser_utils.h"
 #include "gap_lastvaldesc.h"
 #include "gap_fmac_context.h"
+#include "gap_accel_char.h"
 
 /* revision history:
  * gimp   1.3.26b;  2004/02/29  hof: bugfix NONINTERACTIVE call did crash
@@ -626,10 +627,11 @@ static gint
 p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
 {
   GapDbBrowserResult   l_browser_result;
+  l_browser_result.accelCharacteristic = GAP_ACCEL_CHAR_NONE;
 
   if(gap_db_browser_dialog( _("Select Filtercalls of Current GIMP Session")
-                          , NULL            /* dont use the 1.st action button at all */
                           , _("Add Filter")
+                          , FALSE                                /* FALSE disables acceleration characteristic */
                           , p_fmac_pdb_constraint_proc
                           , p_fmac_pdb_constraint_proc_sel1
                           , p_fmac_pdb_constraint_proc_sel2

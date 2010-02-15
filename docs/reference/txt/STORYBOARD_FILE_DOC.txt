@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2007.09.05:
+STORYBOARD_FILES           2010.02.15:
 
 
 General
@@ -59,6 +59,8 @@ in the style:
 if no parametername key prefix is specified the fixed order of items
 is assumed. items must not contain blanks. (except blanks in "quoted strings")
 
+Note: you should not use this style without key that is just supported
+for backwards compatibility with old GIMP-GAP versions)
 
 
 Overview of supported RECORD TYPES:
@@ -90,7 +92,8 @@ VID_PLAY_MOVIE     track:1  file:"movie_filename"     from:0001  to:0099 \
 			     mask_anchor:clip \
 			     mask_stepsize:1.0 \
 			     mask_disable:n \
-			     macsteps:1
+			     macsteps:1 \
+			     macaccel
 
 VID_PLAY_ANIMIMAGE track:1  file:"image_filename"     from:0001 to:0099  \
                              mode:{pingpong|normal} \
@@ -102,7 +105,8 @@ VID_PLAY_ANIMIMAGE track:1  file:"image_filename"     from:0001 to:0099  \
 			     mask_anchor:clip \
 			     mask_stepsize:1.0 \
 			     mask_disable:n \
-			     macsteps:1
+			     macsteps:1 \
+			     macaccel
 
 VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  \
                              mode:{pingpong|normal} \
@@ -114,7 +118,8 @@ VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  \
 			     mask_anchor:clip \
 			     mask_stepsize:1.0 \
 			     mask_disable:n \
-			     macsteps:1
+			     macsteps:1 \
+			     macaccel
 
 VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 \
                              macro:"macro_filename"
@@ -123,7 +128,8 @@ VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 \
 			     mask_anchor:clip \
 			     mask_stepsize:1.0 \
 			     mask_disable:n \
-			     macsteps:1
+			     macsteps:1 \
+			     macaccel
 
 VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1 \
                              flip:n \
@@ -131,7 +137,8 @@ VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1 \
 			     mask_anchor:clip \
 			     mask_stepsize:1.0 \
 			     mask_disable:n \
-			     macsteps:1
+			     macsteps:1 \
+			     macaccel
 
 VID_SILENCE        track:1                                         nloops:1  wait_until_sec:0.0
 
@@ -322,7 +329,11 @@ VID_PLAY_MOVIE
  [19] macsteps:         ... an integer value greater or equal than 1.
                             Defines the (maximal) duration in number of frames
                             for applying filtermacros with varying values.
-                            Default: 1
+ [20] macaccel:         ... an integer value specifiying acceleration characteristic
+                            for applying filtermacros with varying values.
+                            where 1 changes filtersettings with constant speed.
+                            other positive values result in increasing speed, negative values
+                            result in decreasing speed.
 
 
 
@@ -355,6 +366,7 @@ VID_PLAY_ANIMIMAGE
  [13] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
  [14] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
  [15] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+ [16] macaccel:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 
 
@@ -390,6 +402,7 @@ VID_PLAY_FRAMES
  [14] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
  [15] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
  [16] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+ [17] macaccel:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 VID_PLAY_IMAGE
   fetch frame from a single imagefile. (Multilayer Images are handled as
@@ -408,6 +421,7 @@ VID_PLAY_IMAGE
   [9] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
  [10] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
  [11] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+ [12] macaccel:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 
 
@@ -430,6 +444,7 @@ VID_PLAY_COLOR
  [10] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
  [11] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
  [12] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+ [13] macaccel:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 VID_SILENCE
   This record is used to define Pauses in a videotrack. 
@@ -459,6 +474,13 @@ VID_OPACITY
                             in number of frames (integer) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
                             DEFAULT: 0
+  [6] accel             ... an integer value specifiying acceleration characteristic
+                            for speed behavior of opacity changes.
+                            where 1 (and 0) changes opacity with constant speed.
+                            other positive values result in increasing speed, negative values
+                            result in decreasing speed.
+                            DEFAULT: 0
+
 
 VID_ZOOM_X and VID_ZOOM_Y
   These records are used to define Zooming Effects
@@ -475,6 +497,12 @@ VID_ZOOM_X and VID_ZOOM_Y
   [5] nframes           ... optional duration of the effect 
                             in number of frames (integer 10) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
+                            DEFAULT: 0
+  [6] accel             ... an integer value specifiying acceleration characteristic
+                            for speed behavior of zoom changes.
+                            where 1 (and 0) changes size with constant speed.
+                            other positive values result in increasing speed, negative values
+                            result in decreasing speed.
                             DEFAULT: 0
 
 
@@ -495,6 +523,12 @@ VID_MOVE_X and VID_MOVE_Y
   [5] nframes           ... optional duration time of the effect 
                             in number of frames (integer 10) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
+                            DEFAULT: 0
+  [6] accel             ... an integer value specifiying acceleration characteristic
+                            for speed behavior of movents.
+                            where 1 (and 0) changes positions with constant speed.
+                            other positive values result in increasing speed, negative values
+                            result in decreasing speed.
                             DEFAULT: 0
 
   Example:
@@ -888,7 +922,7 @@ Audiorange:
 Macrofiles:
 ------------
   Macros can be used to perform a user defineable set of
-  one or more gimp procedures, such as 
+  one or more gimp procedures (plug-ins), such as 
     - color correction
     - sharpen / blur
     - transformations
@@ -917,7 +951,8 @@ Macrofiles:
   example:
   VID_PLAY_MOVIE track:1 file:"/vol1/videos/A.mpg" from:000001 to:000500 \
               macro:"/vol1/fmac/my_blur_macro.fmac" \
-              macsteps:200
+              macsteps:200 \
+              macaccel:10
               
   This example implicite referes to a second macrofile:
   
@@ -932,10 +967,14 @@ Macrofiles:
   Procesing for frame 000001 of the input video clip A.mpg 
   will apply the parameter values of the 1st macrofile.
   As processing continues, the influence of
-  the values defined in the 2nd macrofile grows. At fame 000200
-  (macsteps:200) the final value as defined in the 2nd macrofile
+  the values defined in the 2nd macrofile grows.
+  At fame 000200 (macsteps:200) the final value, as defined in the 2nd macrofile
   is reached, and will be used for all further frames of this video clip too
   (201 upto 500).
+  The speed of the change from settings in the 1st and the 2nd
+  macrofile depends on the specified acceleration characteristic
+  (macaccel:10) where 10 defines increasing speed.
+  Use value 1 for constant speed (e.g linear changing settings)
   
   Filtercalls in the 2nd macrofile that have no correlating pendent
   in the 1st macrofile are ignored. Filtercalls of the 1st
@@ -964,9 +1003,14 @@ Macrofiles:
    *   macrofile2:line 3.) correlates with macrofile1:line 4.)
 
   RESTRICTION:
-   - Applying filters with varying values is restricted
-     to filters that provide an iterator procedure
-     that handles the mix of filter specific prameter values.
+   - Applying filters (e.g plug-ins) with varying values is restricted
+     to filters that provide the capability to access
+     the filter specific prameter settings (typically stored as last values buffer in memory)
+     by either implementing an iterator procedure or registering
+     the structure of this last values buffer in the
+     configuration file lastval_descriptions.txt
+     
+     This allows GIMP-GAP to handles the mix of filter specific prameter values.
      (see also Filter->Filter all Layers)
      
   

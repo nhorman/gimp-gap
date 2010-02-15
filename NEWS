@@ -1,4 +1,28 @@
-Here is a short overview whats new in GIMP-GAP-2.5.0:
+Here is a short overview whats new in GIMP-GAP-2.7.0:
+-----------------------------------------------------
+(compared to gimp-gap release 2.6.0)
+
+- fixed a bug in the GAP ffmpeg encoder that resulted in lower quality
+  of the encoded video.
+  (disabled buggy pre conversion to yuv420P colormodel for the ffmpeg encoder.
+  now feeding RGB to the codec or convert with functions of the encoding engine)
+
+- GIMP-GAP now supports speed control of movements and other transitions
+  via Acceleation characteristic presets. Those presets are available
+  - in the MovePath tool
+  - in Storyboard transitions
+    and Storyboard filtemacro pair calls when applied with varying values.
+  - in animated filter calls with varying values.
+    relevant in Filter All Layers
+    and Modify Drames feature when applying a filter
+    
+    Th GAP dbbrowser now supports acceleration characteristic graph and spinbutton
+    (that replaces the "Apply Varying" button of older GIMP_GAP releases)
+
+- some other bugfixes (See ChangeLog for details)
+
+
+Here is a short overview whats new in GIMP-GAP-2.6.0:
 -----------------------------------------------------
 (compared to gimp-gap release 2.4.0)
 
@@ -52,7 +76,7 @@ Here is a short overview whats new in GIMP-GAP-2.5.0:
 - added wrapper for the resynthesizer
   (provides support for animated apply of the 3rd party plug-in resynthesizer)
 
-- external libs for vidoe read and write access
+- external libs for video read and write access
   were updated to ffmpeg-0.5 and libmpeg3-1.8
 
 - bugfixes and updates for the use with GIMP-2.6.x releases.(see ChangeLog for details)

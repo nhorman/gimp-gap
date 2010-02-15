@@ -77,7 +77,6 @@
 #define GAP_MORPH_MIN_TOL_FAKTOR 4.5
 #define GAP_MORPH_XY_REL_FAKTOR 5
 
-#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
 
 typedef struct GapMorphExeLayerstack
 {
@@ -2163,7 +2162,7 @@ p_mix_layers (gint32  curr_image_id
         {
            gdouble val;
            
-           val = MIX_VALUE(curr_mix_factor, (gdouble)(*bg_ptr), (gdouble)(*top_ptr));
+           val = GAP_BASE_MIX_VALUE(curr_mix_factor, (gdouble)(*bg_ptr), (gdouble)(*top_ptr));
            *pixel_ptr = (guchar)val;
            
            pixel_ptr++;

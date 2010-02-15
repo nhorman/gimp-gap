@@ -45,7 +45,7 @@
  *  1 specified constant speed
  *
  * positive values > 1 represent acceleration, 
- + negative values < -1  for deceleration
+ * negative values < -1  for deceleration
  *
  * orig_factor: a positive gdouble in the range 0.0 to 1.0
  * returns modified mix_factor in the range 0.0 to 1.0 according to specified accelCharacteristic
@@ -80,3 +80,40 @@ gap_accelMixFactor(gdouble orig_factor, gint accelCharacteristic)
 
   return (mix);  
 }  /* end gap_accelMixFactor */
+
+
+/* ---------------------------------------
+ * gap_accel_calculate_current_step
+ * ---------------------------------------
+ * calculate current step respecting the specified accelration characteristic
+ */
+gdouble
+gap_calculate_current_step_with_acceleration(gdouble current_step, gint32 total_steps, gint accelCharacteristic)
+{
+  gdouble currentStepClamped;
+  gdouble accelStep;
+
+  if (total_steps <= 0)
+  {
+    return (current_step);
+  }
+  currentStepClamped = CLAMP(current_step, 0.0, (gdouble)total_steps);
+  
+  switch (accelCharacteristic)
+  {
+    case 0:
+    case 1:
+    case -1:
+      return (currentStepClamped);
+      break;
+    default:
+      accelStep = gap_accelMixFactor(currentStepClamped / (gdouble)total_steps, accelCharacteristic);
+      break;
+  }
+
+  return (accelStep * (gdouble)total_steps);
+
+}  /* end gap_calculate_current_step_with_acceleration */
+
+
+

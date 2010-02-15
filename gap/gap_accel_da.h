@@ -34,17 +34,19 @@
 
 typedef struct GapAccelWidget
 {
+  GtkObject *adj;
   GtkWidget *da_widget;                    /* the graph drawing_area */
-  gint       accelerationCharacteristic;
+  gint32     accelerationCharacteristic;
   gint       width;
   gint       height;
   gint       pixWidth;
   gint       pixHeight;
+  gboolean   isButton1Pressed;
   
 } GapAccelWidget;
 
-GapAccelWidget   *gap_accel_new(gint width, gint height, gint accelerationCharacteristic);
-
-void       gap_accel_render (GapAccelWidget *accel_ptr, gint accelerationCharacteristic);
+GapAccelWidget   *gap_accel_new(gint width, gint height, gint32 accelerationCharacteristic);
+GapAccelWidget   *gap_accel_new_with_adj(gint width, gint height, gint32 accelerationCharacteristic, GtkObject *adj);
+void              gap_accel_render (GapAccelWidget *accel_wgt, gint32 accelerationCharacteristic);
 
 #endif

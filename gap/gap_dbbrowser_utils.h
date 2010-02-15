@@ -36,8 +36,9 @@
 #include "libgimp/gimp.h"
 
 typedef struct {
-   char selected_proc_name[256];
-   int  button_nr;               /* -1 on cancel, 0 .. n */
+   char   selected_proc_name[256];
+   int    button_nr;               /* -1 on cancel, 0 .. n */
+   gint32 accelCharacteristic;
 } GapDbBrowserResult;
 
 /* proc to check if to add or not to add the procedure to the browsers listbox
@@ -50,7 +51,7 @@ typedef int (*t_constraint_func) (gchar *proc_name, gint32 image_id);
 int
 gap_db_browser_dialog (char *title_txt,
                        char *button_1_txt,
-                       char *button_2_txt,
+                       gboolean                 showAccelerationCharacteristic,
                        t_constraint_func        constraint_func,
                        t_constraint_func        constraint_func_sel1,
                        t_constraint_func        constraint_func_sel2,

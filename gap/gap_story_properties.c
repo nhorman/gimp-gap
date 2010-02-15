@@ -57,6 +57,8 @@
 #include "gap_fmac_base.h"
 #include "gap_fmac_name.h"
 #include "gap_story_vthumb.h"
+#include "gap_accel_char.h"
+#include "gap_accel_da.h"
 
 
 #include "gap-intl.h"
@@ -177,6 +179,7 @@ static void     p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_maskstep_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_fmac_steps_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
+static void     p_fmac_accel_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 
 static void     p_radio_flip_update(GapStbPropWidget *pw, gint32 flip_request);
 static void     p_radio_flip_none_callback(GtkWidget *widget, GapStbPropWidget *pw);
@@ -3039,6 +3042,30 @@ p_fmac_steps_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
   }
 }  /* end p_fmac_steps_spinbutton_cb */
 
+/* -------------------------------
+ * p_fmac_accel_spinbutton_cb
+ * -------------------------------
+ */
+static void
+p_fmac_accel_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
+{
+  gint32 l_val;
+
+  if(pw)
+  {
+    l_val = (GTK_ADJUSTMENT(pw->pw_spinbutton_fmac_accel_adj)->value);
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->fmac_accel != l_val)
+      {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
+        pw->stb_elem_refptr->fmac_accel = l_val;
+
+      }
+    }
+  }
+}  /* end p_fmac_accel_spinbutton_cb */
+
 
 /* ---------------------------------
  * p_radio_flip_update
@@ -3333,10 +3360,11 @@ static void
 p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
 {
   gboolean sensitive;
+  gboolean accelSensitive;
   char *alt_fmac_name;
   char *lbl_text;
   
-    
+  accelSensitive = FALSE;
   sensitive = FALSE;
   lbl_text = NULL;
   if(pw->stb_elem_refptr)
@@ -3353,18 +3381,19 @@ p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
              sensitive = TRUE;
              if(pw->stb_elem_refptr->fmac_total_steps > 1)
              {
-               lbl_text = gap_base_shorten_filename(_("Filtermacro2: ")   /* prefix */
-                                     ,alt_fmac_name   /* filenamepart */
-                                     ,_(" (ON)")      /* suffix */
-                                     ,90              /* max_chars */
+               lbl_text = gap_base_shorten_filename(_("ON:") /* prefix */
+                                     ,alt_fmac_name            /* filenamepart */
+                                     ,""                       /* suffix */
+                                     ,52                       /* max_chars */
                                      );
+                accelSensitive = TRUE;
              }
              else
              {
-               lbl_text = gap_base_shorten_filename(_("Filtermacro2: ")   /* prefix */
-                                     ,alt_fmac_name   /* filenamepart */
-                                     ,_(" (OFF)")     /* suffix */
-                                     ,90              /* max_chars */
+               lbl_text = gap_base_shorten_filename(_("OFF:") /* prefix */
+                                     ,alt_fmac_name             /* filenamepart */
+                                     ,""                        /* suffix */
+                                     ,52                        /* max_chars */
                                      );
              }
                         
@@ -3377,10 +3406,20 @@ p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
   if (lbl_text == NULL)
   {
     lbl_text = g_strdup(" ");
+    gtk_label_set_text ( GTK_LABEL(pw->pw_label_alternate_fmac2), "" );
+    gtk_widget_hide (pw->pw_hbox_fmac2);
+    gtk_widget_hide (pw->pw_spinbutton_fmac_accel);
+  }
+  else
+  {
+    gtk_widget_show (pw->pw_hbox_fmac2);
+    gtk_widget_show (pw->pw_spinbutton_fmac_accel);
+    gtk_label_set_text ( GTK_LABEL(pw->pw_label_alternate_fmac2), _("Filtermacro2: ") );
   }
   
   gtk_label_set_text ( GTK_LABEL(pw->pw_label_alternate_fmac_file), lbl_text );
   gtk_widget_set_sensitive(pw->pw_spinbutton_fmac_steps, sensitive);
+  gtk_widget_set_sensitive(pw->pw_spinbutton_fmac_accel, accelSensitive);
   p_pw_update_properties(pw);
 
   g_free(lbl_text);
@@ -3630,7 +3669,7 @@ p_pw_clear_widgets(GapStbPropWidget *pw)
   pw->mask_pv_container = NULL;
   pw->typ_icon_pv_ptr = NULL;
 
-  pw->pw_prop_dialog;
+  pw->pw_prop_dialog = NULL;
   pw->pw_filesel = NULL;
   pw->pw_filename_entry = NULL;
   pw->master_table = NULL;
@@ -3899,6 +3938,18 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
       case GAP_STBREC_VID_BLACKSECTION:
         /* movies and section always start at frame 1 */
         l_lower_limit = 1.0;
+        break;
+      case GAP_STBREC_VID_SILENCE:
+      case GAP_STBREC_VID_COLOR:
+      case GAP_STBREC_VID_IMAGE:
+      case GAP_STBREC_VID_ANIMIMAGE:
+      case GAP_STBREC_VID_FRAMES:
+      case GAP_STBREC_VID_COMMENT:
+      case GAP_STBREC_VID_UNKNOWN:
+      case GAP_STBREC_AUD_SILENCE:
+      case GAP_STBREC_AUD_SOUND:
+      case GAP_STBREC_AUD_MOVIE:
+      case GAP_STBREC_ATT_TRANSITION:
         break;
     }
   }
@@ -4616,14 +4667,80 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                       pw);
   }
 
+
   row++;
 
-  /* the alternate filtermacro_file label */
-  label = gtk_label_new ("");
-  pw->pw_label_alternate_fmac_file = label;
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 4, row, row+1);
-  gtk_widget_show (label);
+
+
+
+  /* 2nd row alternative filtermacro (VARYING) */
+  {
+    GtkWidget       *hbox_fmac;
+    GtkWidget       *spinbutton;
+    GapAccelWidget  *accel_wgt;
+    gint32           accelerationCharacteristic;
+
+#define ACC_WGT_WIDTH 32
+#define ACC_WGT_HEIGHT 22
+
+    hbox_fmac = gtk_hbox_new (FALSE, 1);
+    gtk_widget_show (hbox_fmac);
+    gtk_table_attach_defaults (GTK_TABLE(table), hbox_fmac, 1, 2, row, row+1);
+
+    pw->pw_hbox_fmac2 = hbox_fmac;
+
+    /* the alternate filtermacro 2 label (prefix) */
+    label = gtk_label_new ("");
+    pw->pw_label_alternate_fmac2 = label;
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
+    gtk_widget_show (label);
+
+
+
+    /* the alternate filtermacro_file label */
+    label = gtk_label_new ("");
+    pw->pw_label_alternate_fmac_file = label;
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_set_size_request(label, PW_ENTRY_WIDTH, -1);
+    gtk_widget_show (label);
+    gtk_box_pack_start (GTK_BOX (hbox_fmac), label, TRUE, TRUE, 1);
+
+    
+    /* the Acceleration characteristic value spinbutton */
+    accelerationCharacteristic = 0;
+    if(pw->stb_elem_refptr)
+    {
+      accelerationCharacteristic = pw->stb_elem_refptr->fmac_accel;
+    }
+
+    /* the acceleration characteristic graph display widget */
+    accel_wgt = gap_accel_new(ACC_WGT_WIDTH, ACC_WGT_HEIGHT, accelerationCharacteristic);
+    
+    adj = accel_wgt->adj;
+    spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+    pw->pw_spinbutton_fmac_accel_adj = adj;
+    pw->pw_spinbutton_fmac_accel = spinbutton;
+
+    gtk_widget_show (spinbutton);
+    gtk_table_attach (GTK_TABLE (table), spinbutton, 2, 3, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+    gtk_widget_set_size_request (spinbutton, PW_SPIN_BUTTON_WIDTH, -1);
+    gimp_help_set_help_data (spinbutton, _("acceleration characteristic for filtermacro 0=off positive accelerate, negative decelerate"), NULL);
+
+    g_object_set_data(G_OBJECT(adj), "pw", pw);
+    
+    
+    gtk_box_pack_start (GTK_BOX (hbox_fmac), accel_wgt->da_widget, FALSE, FALSE, 1);
+    gtk_widget_show (accel_wgt->da_widget);
+  
+    g_signal_connect (G_OBJECT (pw->pw_spinbutton_fmac_accel_adj), "value_changed",
+                      G_CALLBACK (p_fmac_accel_spinbutton_cb),
+                      pw);
+
+  }
+
   
   p_pw_check_fmac_sensitivity(pw);
   

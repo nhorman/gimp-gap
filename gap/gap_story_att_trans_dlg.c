@@ -50,6 +50,7 @@
 #include "gap_vin.h"
 #include "gap_timeconv.h"
 #include "gap_layer_copy.h"
+#include "gap_accel_da.h"
 
 
 #include "gap-intl.h"
@@ -117,6 +118,7 @@ static void     p_attw_dur_button_clicked_callback(GtkWidget *widget
 static void     p_attw_gdouble_adjustment_callback(GtkObject *obj, gdouble *val);
 static void     p_duration_dependent_refresh(GapStbAttrWidget *attw);
 static void     p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val);
+static void     p_attw_accel_adjustment_callback(GtkObject *obj, gint32 *val);
 static void     p_attw_enable_toggle_update_callback(GtkWidget *widget, gboolean *val);
 
 static void     p_attw_auto_update_toggle_update_callback(GtkWidget *widget, gboolean *val);
@@ -226,6 +228,8 @@ static void     p_create_and_attach_att_arr_widgets(const char *row_title
                  , gdouble    *att_arr_value_to_ptr
                  , const char *dur_tooltip
                  , gint32     *att_arr_value_dur_ptr
+                 , const char *accel_tooltip
+                 , gint32     *att_arr_value_accel_ptr
                  );
 
 /* ---------------------------------
@@ -349,6 +353,8 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
         gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_dur_adj)
                                 , attw->stb_elem_refptr->att_arr_value_dur[ii]);
 
+        gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_accel_adj)
+                                , attw->stb_elem_refptr->att_arr_value_accel[ii]);
       }
       gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->spinbutton_overlap_dur_adj)
                                 , attw->stb_elem_refptr->att_overlap);
@@ -491,6 +497,7 @@ p_attw_update_sensitivity(GapStbAttrWidget *attw)
     gtk_widget_set_sensitive(attw->att_rows[ii].button_from, sensitive);
     gtk_widget_set_sensitive(attw->att_rows[ii].button_to, sensitive);
     gtk_widget_set_sensitive(attw->att_rows[ii].button_dur, sensitive);
+    gtk_widget_set_sensitive(attw->att_rows[ii].spinbutton_accel, sensitive);
 
   }
 
@@ -799,6 +806,42 @@ p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val)
 
 }  /* end p_attw_duration_adjustment_callback */
 
+
+/* -----------------------------------
+ * p_attw_accel_adjustment_callback
+ * -----------------------------------
+ */
+static void
+p_attw_accel_adjustment_callback(GtkObject *obj, gint32 *val)
+{
+  GapStbAttrWidget *attw;
+  gint32 l_val;
+
+
+  attw = g_object_get_data( G_OBJECT(obj), OBJ_DATA_KEY_ATTW );
+  if(attw)
+  {
+    if(attw->stb_elem_refptr)
+    {
+      l_val = RINT (GTK_ADJUSTMENT(obj)->value);
+      if(gap_debug)
+      {
+        printf("accel gint32_adjustment_callback: obj:%d old_val:%d val:%d\n"
+             ,(int)obj
+             ,(int)*val
+             ,(int)l_val
+             );
+      }
+      if(l_val != *val)
+      {
+        p_attw_push_undo_and_set_unsaved_changes(attw);
+        *val = l_val;
+        
+      }
+    }
+  }
+
+}  /* end p_attw_accel_adjustment_callback */
 
 /* ------------------------------------
  * p_attw_enable_toggle_update_callback
@@ -2357,6 +2400,8 @@ p_create_and_attach_att_arr_widgets(const char *row_title
    , gdouble    *att_arr_value_to_ptr
    , const char *dur_tooltip
    , gint32     *att_arr_value_dur_ptr
+   , const char *accel_tooltip
+   , gint32     *att_arr_value_accel_ptr
   )
 {
   GtkWidget *label;
@@ -2511,7 +2556,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   gtk_table_attach (GTK_TABLE (table), spinbutton, col, col+1, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (spinbutton, 80, -1);
+  gtk_widget_set_size_request (spinbutton, 60, -1);
   gimp_help_set_help_data (spinbutton, _("Number of frames (duration of transition from start to end value)"), NULL);
 
   g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
@@ -2527,6 +2572,51 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   gtk_table_attach_defaults (GTK_TABLE(table), label, col, col+1, row, row+1);
   gtk_widget_show (label);
   attw->att_rows[att_type_idx].dur_time_label = label;
+
+  col++;
+
+
+  /* the acceleration characteristic graph display widget */
+  {
+#define ACC_WGT_WIDTH 32
+#define ACC_WGT_HEIGHT 22
+
+    gint32           accelerationCharacteristic;
+    GapAccelWidget  *accel_wgt;
+
+    accelerationCharacteristic = *att_arr_value_accel_ptr;
+    accel_wgt = gap_accel_new(ACC_WGT_WIDTH, ACC_WGT_HEIGHT, accelerationCharacteristic);
+    
+    /* the Acceleration characteristic value spinbutton */
+    adj = accel_wgt->adj;
+    
+    spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+    attw->att_rows[att_type_idx].spinbutton_accel_adj = adj;
+    attw->att_rows[att_type_idx].spinbutton_accel = spinbutton;
+
+    gtk_widget_show (spinbutton);
+    gtk_table_attach (GTK_TABLE (table), spinbutton, col+1, col+2, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+    gtk_widget_set_size_request (spinbutton, 50, -1);
+    gimp_help_set_help_data (spinbutton, accel_tooltip, NULL);
+
+    g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
+    
+    gtk_table_attach( GTK_TABLE(table), accel_wgt->da_widget, col, col+1, row, row+1,
+                        GTK_FILL, 0, 4, 0 );
+    gtk_widget_show (accel_wgt->da_widget);
+    
+    
+    
+    g_signal_connect (G_OBJECT (adj), "value_changed",
+                      G_CALLBACK (p_attw_accel_adjustment_callback),
+                      att_arr_value_accel_ptr);
+ 
+  }
+
+
+
 
 }  /* end p_create_and_attach_att_arr_widgets */
 
@@ -2709,7 +2799,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     gtk_table_attach (GTK_TABLE (table), spinbutton, 7, 8, row, row+1,
                       (GtkAttachOptions) (0),
                       (GtkAttachOptions) (0), 0, 0);
-    gtk_widget_set_size_request (spinbutton, 80, -1);
+    gtk_widget_set_size_request (spinbutton, 60, -1);
     gimp_help_set_help_data (spinbutton, _("Number of overlapping frames within this track"), NULL);
 
     g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
@@ -2747,6 +2837,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for opacity (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
     row++;
@@ -2773,6 +2865,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for horizontal move (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
 
@@ -2800,6 +2894,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for vertical move (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
     row++;
@@ -2826,6 +2922,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for scale width (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
     row++;
@@ -2852,6 +2950,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for scale height (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
   }

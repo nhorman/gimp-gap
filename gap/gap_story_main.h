@@ -199,9 +199,14 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkWidget  *pw_mask_anchor_radio_button_arr[2];
   GtkObject  *pw_spinbutton_mask_stepsize_adj;
   
+  /* for filermacro handling */
+  GtkObject  *pw_spinbutton_fmac_accel_adj;
+  GtkWidget  *pw_spinbutton_fmac_accel;
   GtkWidget  *pw_spinbutton_fmac_steps;
   GtkObject  *pw_spinbutton_fmac_steps_adj;
+  GtkWidget  *pw_label_alternate_fmac2;
   GtkWidget  *pw_label_alternate_fmac_file;
+  GtkWidget  *pw_hbox_fmac2;
   
 
   struct GapStbPropWidget *next;
@@ -272,15 +277,18 @@ typedef struct GapStbAttRow
   GtkObject  *spinbutton_from_adj;
   GtkObject  *spinbutton_to_adj;
   GtkObject  *spinbutton_dur_adj;
+  GtkObject  *spinbutton_accel_adj;
   GtkWidget  *dur_time_label;
 
   GtkWidget  *spinbutton_from;
   GtkWidget  *spinbutton_to;
   GtkWidget  *spinbutton_dur;
+  GtkWidget  *spinbutton_accel;
 
   GtkWidget  *button_from;
   GtkWidget  *button_to;
   GtkWidget  *button_dur;
+
 } GapStbAttRow;
 
 typedef struct GapStbAttrWidget  /* nickname: attw */

@@ -59,7 +59,7 @@
  */
 
 gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *l_plugin_name
-    , GapFiltPdbApplyMode apply_mode);
+    , gint32 accelCharacteristic);
 
 
 /* ------------------------

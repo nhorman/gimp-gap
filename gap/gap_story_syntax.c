@@ -272,7 +272,7 @@ p_create_syntax_list(void)
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MASTER_FRAME_ASPECT
-           ,"width"
+               ,"width"
                ,"height"
                ,NULL
                );
@@ -306,6 +306,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_BLACKSECTION
@@ -323,6 +324,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_MOVIE
@@ -344,6 +346,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_FRAMES
@@ -362,6 +365,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_ANIMIMAGE
@@ -379,6 +383,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
 
@@ -393,6 +398,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_COLOR
@@ -409,6 +415,7 @@ p_create_syntax_list(void)
                ,"mask_stepsize"
                ,"mask_disable"
                ,"macsteps"
+               ,"macaccel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_SILENCE
@@ -422,6 +429,7 @@ p_create_syntax_list(void)
                ,"opacity_from"
                ,"opacity_to"
                ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_ZOOM_X
@@ -429,6 +437,7 @@ p_create_syntax_list(void)
                ,"zoom_x_from"
                ,"zoom_x_to"
                ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_ZOOM_Y
@@ -436,6 +445,7 @@ p_create_syntax_list(void)
                ,"zoom_y_from"
                ,"zoom_y_to"
                ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MOVE_X
@@ -443,6 +453,7 @@ p_create_syntax_list(void)
                ,"move_x_from"
                ,"move_x_to"
                ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MOVE_Y
@@ -450,6 +461,7 @@ p_create_syntax_list(void)
                ,"move_y_from"
                ,"move_y_to"
                ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_FIT_SIZE

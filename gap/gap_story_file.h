@@ -137,6 +137,7 @@
     gchar *preferred_decoder;
     gchar *filtermacro_file;
     gint32 fmac_total_steps;
+    gint32 fmac_accel;
     
     gint32 from_frame;
     gint32 to_frame;
@@ -170,6 +171,7 @@
     gdouble  att_arr_value_from[GAP_STB_ATT_TYPES_ARRAY_MAX];
     gdouble  att_arr_value_to[GAP_STB_ATT_TYPES_ARRAY_MAX];
     gint32   att_arr_value_dur[GAP_STB_ATT_TYPES_ARRAY_MAX];        /* number of frames to change from -> to value */
+    gint32   att_arr_value_accel[GAP_STB_ATT_TYPES_ARRAY_MAX];      /* acceleration characteristics */
     gint32   att_overlap;  /* number of overlapping frames (value > 0 will generate a shadow track) */
 
     /* new members for Audio Record types */
@@ -294,6 +296,9 @@
     gint32  x_offs;
     gint32  y_offs;
     gdouble opacity;
+    
+    gint32  visible_width;
+    gint32  visible_height;
   } GapStoryCalcAttr;
 
   typedef struct GapStoryVideoFileRef

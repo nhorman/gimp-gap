@@ -136,7 +136,7 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    char   *filtermacro_file;
    char   *filtermacro_file_to;  /* additional macro with 2nd parameterset(s) for varying apply */
    gint32  fmac_total_steps;     /* total steps for varying filtermacro apply */
-
+   gint32  fmac_accel;           /* acceleration characteristic for filtermacro apply with varying values */
    
    gdouble  frame_from;       /* internal frame number that is 1.st of range (float due to internal clip splitting) */
    gdouble  frame_to;         /* internal frame number that is the last handled frame of the range */
@@ -181,6 +181,18 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    gdouble move_y_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
    gdouble move_y_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
    gint32  move_y_dur;         /* number of frames to change from -> to value */
+
+   gint    opacity_accel;        /* acceleration characteristic for opacity transformation */
+   gint32  opacity_frames_done;  /* already processed frames since begin of transition */ 
+   gint    move_x_accel;
+   gint32  move_x_frames_done;
+   gint    move_y_accel;
+   gint32  move_y_frames_done;
+   gint    scale_x_accel;
+   gint32  scale_x_frames_done;
+   gint    scale_y_accel;
+   gint32  scale_y_frames_done;
+
 
    void   *next;
 } GapStoryRenderFrameRangeElem;  /* used for storyboard processing */
@@ -258,6 +270,17 @@ typedef struct GapStoryRenderVTrackAttrElem
    gdouble move_y_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
    gdouble move_y_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
    gint32  move_y_dur;         /* number of frames to change from -> to value */
+
+   gint    opacity_accel;        /* acceleration characteristic for opacity transformation */
+   gint32  opacity_frames_done;  /* already processed frames since begin of transition */ 
+   gint    move_x_accel;
+   gint32  move_x_frames_done;
+   gint    move_y_accel;
+   gint32  move_y_frames_done;
+   gint    scale_x_accel;
+   gint32  scale_x_frames_done;
+   gint    scale_y_accel;
+   gint32  scale_y_frames_done;
 
 } GapStoryRenderVTrackAttrElem;  /* Video track attributes used for storyboard processing */
 

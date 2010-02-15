@@ -937,12 +937,6 @@ p_calculate_settings_for_current_FrameTween(
    , gint     endOfSegmentIndex
   )
 {
-/* MIX_VALUE  0.0 <= factor <= 1.0
- *  result is a  for factor 0.0
- *            b  for factor 1.0
- *            mix for factors inbetween
- */
-#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
 
   gdouble tweenMultiplicator;
   gint frameNrAtEndOfSegment;
@@ -998,8 +992,8 @@ p_calculate_settings_for_current_FrameTween(
          , &posFactor
          );
 
-    cur_ptr->currX  =       MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_x,      (gdouble)val_ptr->point[segmPtidx +1].p_x);
-    cur_ptr->currY  =       MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_y,      (gdouble)val_ptr->point[segmPtidx +1].p_y);
+    cur_ptr->currX  =       GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_x,      (gdouble)val_ptr->point[segmPtidx +1].p_x);
+    cur_ptr->currY  =       GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_y,      (gdouble)val_ptr->point[segmPtidx +1].p_y);
 
 
     if(gap_debug)
@@ -1032,8 +1026,8 @@ p_calculate_settings_for_current_FrameTween(
     }
 
 
-    cur_ptr->currX  =       MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_x,      (gdouble)val_ptr->point[currPtidx].p_x);
-    cur_ptr->currY  =       MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_y,      (gdouble)val_ptr->point[currPtidx].p_y);
+    cur_ptr->currX  =       GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_x,      (gdouble)val_ptr->point[currPtidx].p_x);
+    cur_ptr->currY  =       GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].p_y,      (gdouble)val_ptr->point[currPtidx].p_y);
   }
 
 
@@ -1046,12 +1040,12 @@ p_calculate_settings_for_current_FrameTween(
                                                       , currFrameTweenInSegment
                                                       , val_ptr->point[startOfSegmentIndex].accOpacity
                                                       );
-    cur_ptr->currOpacity  = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].opacity,  (gdouble)val_ptr->point[endOfSegmentIndex].opacity);
+    cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].opacity,  (gdouble)val_ptr->point[endOfSegmentIndex].opacity);
   }
   else
   {
     /* No acceleration characteristic specified for opacity (compatible to GAP 2.6.x release behavior) */
-    cur_ptr->currOpacity  = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
+    cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
   }
 
 
@@ -1064,13 +1058,13 @@ p_calculate_settings_for_current_FrameTween(
                                                       , currFrameTweenInSegment
                                                       , val_ptr->point[startOfSegmentIndex].accSize
                                                       );
-    cur_ptr->currWidth    = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].w_resize, (gdouble)val_ptr->point[endOfSegmentIndex].w_resize);
-    cur_ptr->currHeight   = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].h_resize, (gdouble)val_ptr->point[endOfSegmentIndex].h_resize);
+    cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].w_resize, (gdouble)val_ptr->point[endOfSegmentIndex].w_resize);
+    cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].h_resize, (gdouble)val_ptr->point[endOfSegmentIndex].h_resize);
   }
   else
   {
-    cur_ptr->currWidth    = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
-    cur_ptr->currHeight   = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
+    cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
+    cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
   }
 
 
@@ -1083,11 +1077,11 @@ p_calculate_settings_for_current_FrameTween(
                                                       , currFrameTweenInSegment
                                                       , val_ptr->point[startOfSegmentIndex].accRotation
                                                       );
-    cur_ptr->currRotation = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].rotation, (gdouble)val_ptr->point[endOfSegmentIndex].rotation);
+    cur_ptr->currRotation = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].rotation, (gdouble)val_ptr->point[endOfSegmentIndex].rotation);
   }
   else
   {
-    cur_ptr->currRotation = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
+    cur_ptr->currRotation = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
  
     if(gap_debug)
     {
@@ -1112,25 +1106,25 @@ p_calculate_settings_for_current_FrameTween(
                                                       , currFrameTweenInSegment
                                                       , val_ptr->point[startOfSegmentIndex].accPerspective
                                                       );
-    cur_ptr->currTTLX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttlx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttlx);
-    cur_ptr->currTTLY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttly,     (gdouble)val_ptr->point[endOfSegmentIndex].ttly);
-    cur_ptr->currTTRX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttrx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttrx);
-    cur_ptr->currTTRY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttry,     (gdouble)val_ptr->point[endOfSegmentIndex].ttry);
-    cur_ptr->currTBLX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tblx,     (gdouble)val_ptr->point[endOfSegmentIndex].tblx);
-    cur_ptr->currTBLY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbly,     (gdouble)val_ptr->point[endOfSegmentIndex].tbly);
-    cur_ptr->currTBRX     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbrx,     (gdouble)val_ptr->point[endOfSegmentIndex].tbrx);
-    cur_ptr->currTBRY     = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbry,     (gdouble)val_ptr->point[endOfSegmentIndex].tbry);
+    cur_ptr->currTTLX     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttlx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttlx);
+    cur_ptr->currTTLY     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttly,     (gdouble)val_ptr->point[endOfSegmentIndex].ttly);
+    cur_ptr->currTTRX     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttrx,     (gdouble)val_ptr->point[endOfSegmentIndex].ttrx);
+    cur_ptr->currTTRY     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].ttry,     (gdouble)val_ptr->point[endOfSegmentIndex].ttry);
+    cur_ptr->currTBLX     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tblx,     (gdouble)val_ptr->point[endOfSegmentIndex].tblx);
+    cur_ptr->currTBLY     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbly,     (gdouble)val_ptr->point[endOfSegmentIndex].tbly);
+    cur_ptr->currTBRX     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbrx,     (gdouble)val_ptr->point[endOfSegmentIndex].tbrx);
+    cur_ptr->currTBRY     = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].tbry,     (gdouble)val_ptr->point[endOfSegmentIndex].tbry);
   }
   else
   {
-    cur_ptr->currTTLX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttlx,     (gdouble)val_ptr->point[currPtidx].ttlx);
-    cur_ptr->currTTLY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttly,     (gdouble)val_ptr->point[currPtidx].ttly);
-    cur_ptr->currTTRX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttrx,     (gdouble)val_ptr->point[currPtidx].ttrx);
-    cur_ptr->currTTRY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttry,     (gdouble)val_ptr->point[currPtidx].ttry);
-    cur_ptr->currTBLX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tblx,     (gdouble)val_ptr->point[currPtidx].tblx);
-    cur_ptr->currTBLY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbly,     (gdouble)val_ptr->point[currPtidx].tbly);
-    cur_ptr->currTBRX     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbrx,     (gdouble)val_ptr->point[currPtidx].tbrx);
-    cur_ptr->currTBRY     = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbry,     (gdouble)val_ptr->point[currPtidx].tbry);
+    cur_ptr->currTTLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttlx,     (gdouble)val_ptr->point[currPtidx].ttlx);
+    cur_ptr->currTTLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttly,     (gdouble)val_ptr->point[currPtidx].ttly);
+    cur_ptr->currTTRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttrx,     (gdouble)val_ptr->point[currPtidx].ttrx);
+    cur_ptr->currTTRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttry,     (gdouble)val_ptr->point[currPtidx].ttry);
+    cur_ptr->currTBLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tblx,     (gdouble)val_ptr->point[currPtidx].tblx);
+    cur_ptr->currTBLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbly,     (gdouble)val_ptr->point[currPtidx].tbly);
+    cur_ptr->currTBRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbrx,     (gdouble)val_ptr->point[currPtidx].tbrx);
+    cur_ptr->currTBRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbry,     (gdouble)val_ptr->point[currPtidx].tbry);
   }
 
   /* calculate Selection Feather Radius settings for the currently processed Frame (or tween) */
@@ -1142,11 +1136,11 @@ p_calculate_settings_for_current_FrameTween(
                                                       , currFrameTweenInSegment
                                                       , val_ptr->point[startOfSegmentIndex].accSelFeatherRadius
                                                       );
-    cur_ptr->currSelFeatherRadius = MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].sel_feather_radius,     (gdouble)val_ptr->point[endOfSegmentIndex].sel_feather_radius);
+    cur_ptr->currSelFeatherRadius = GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[startOfSegmentIndex].sel_feather_radius,     (gdouble)val_ptr->point[endOfSegmentIndex].sel_feather_radius);
   }
   else
   {
-    cur_ptr->currSelFeatherRadius = MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].sel_feather_radius,     (gdouble)val_ptr->point[currPtidx].sel_feather_radius);
+    cur_ptr->currSelFeatherRadius = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].sel_feather_radius,     (gdouble)val_ptr->point[currPtidx].sel_feather_radius);
   }
 
   return(frameNrAtEndOfSegment);

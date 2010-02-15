@@ -126,6 +126,7 @@
 
 #include "gap_pview_da.h"
 #include "gap_accel_da.h"
+#include "gap_accel_char.h"
 #include "gap_stock.h"
 
 
@@ -652,7 +653,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 #endif
   /* dialog */
   dlg = gtk_dialog_new ();
-  gtk_window_set_type_hint (dlg, GDK_WINDOW_TYPE_HINT_NORMAL);
+  gtk_window_set_type_hint (GTK_WINDOW (dlg), GDK_WINDOW_TYPE_HINT_NORMAL);
   mgp->shell = dlg;
   mgp->first_nr = first_nr;
   mgp->last_nr = last_nr;
@@ -2741,7 +2742,6 @@ p_clear_one_point(gint idx)
 void
 p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor)
 {
-#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
 
   if((idx >= 0)
   && (idx <= pvals->point_idx_max)
@@ -2751,29 +2751,29 @@ p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor)
   && (ref2 <= pvals->point_idx_max)
   )
   {
-    pvals->point[idx].opacity  = MIX_VALUE(mix_factor, pvals->point[ref1].opacity,   pvals->point[ref2].opacity);
-    pvals->point[idx].w_resize = MIX_VALUE(mix_factor, pvals->point[ref1].w_resize,  pvals->point[ref2].w_resize);
-    pvals->point[idx].h_resize = MIX_VALUE(mix_factor, pvals->point[ref1].h_resize,  pvals->point[ref2].h_resize);
-    pvals->point[idx].rotation = MIX_VALUE(mix_factor, pvals->point[ref1].rotation,  pvals->point[ref2].rotation);
+    pvals->point[idx].opacity  = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].opacity,   pvals->point[ref2].opacity);
+    pvals->point[idx].w_resize = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].w_resize,  pvals->point[ref2].w_resize);
+    pvals->point[idx].h_resize = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].h_resize,  pvals->point[ref2].h_resize);
+    pvals->point[idx].rotation = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].rotation,  pvals->point[ref2].rotation);
 
-    pvals->point[idx].ttlx      = MIX_VALUE(mix_factor, pvals->point[ref1].ttlx,  pvals->point[ref2].ttlx);
-    pvals->point[idx].ttly      = MIX_VALUE(mix_factor, pvals->point[ref1].ttly,  pvals->point[ref2].ttly);
-    pvals->point[idx].ttrx      = MIX_VALUE(mix_factor, pvals->point[ref1].ttrx,  pvals->point[ref2].ttrx);
-    pvals->point[idx].ttry      = MIX_VALUE(mix_factor, pvals->point[ref1].ttry,  pvals->point[ref2].ttry);
-    pvals->point[idx].tblx      = MIX_VALUE(mix_factor, pvals->point[ref1].tblx,  pvals->point[ref2].tblx);
-    pvals->point[idx].tbly      = MIX_VALUE(mix_factor, pvals->point[ref1].tbly,  pvals->point[ref2].tbly);
-    pvals->point[idx].tbrx      = MIX_VALUE(mix_factor, pvals->point[ref1].tbrx,  pvals->point[ref2].tbrx);
-    pvals->point[idx].tbry      = MIX_VALUE(mix_factor, pvals->point[ref1].tbry,  pvals->point[ref2].tbry);
+    pvals->point[idx].ttlx      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].ttlx,  pvals->point[ref2].ttlx);
+    pvals->point[idx].ttly      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].ttly,  pvals->point[ref2].ttly);
+    pvals->point[idx].ttrx      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].ttrx,  pvals->point[ref2].ttrx);
+    pvals->point[idx].ttry      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].ttry,  pvals->point[ref2].ttry);
+    pvals->point[idx].tblx      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].tblx,  pvals->point[ref2].tblx);
+    pvals->point[idx].tbly      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].tbly,  pvals->point[ref2].tbly);
+    pvals->point[idx].tbrx      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].tbrx,  pvals->point[ref2].tbrx);
+    pvals->point[idx].tbry      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].tbry,  pvals->point[ref2].tbry);
 
-    pvals->point[idx].sel_feather_radius = MIX_VALUE(mix_factor, pvals->point[ref1].sel_feather_radius,  pvals->point[ref2].sel_feather_radius);
+    pvals->point[idx].sel_feather_radius = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].sel_feather_radius,  pvals->point[ref2].sel_feather_radius);
 
 
-    pvals->point[idx].accPosition         = MIX_VALUE(mix_factor, pvals->point[ref1].accPosition,          pvals->point[ref2].accPosition);
-    pvals->point[idx].accOpacity          = MIX_VALUE(mix_factor, pvals->point[ref1].accOpacity,           pvals->point[ref2].accOpacity);
-    pvals->point[idx].accSize             = MIX_VALUE(mix_factor, pvals->point[ref1].accSize,              pvals->point[ref2].accSize);
-    pvals->point[idx].accRotation         = MIX_VALUE(mix_factor, pvals->point[ref1].accRotation,          pvals->point[ref2].accRotation);
-    pvals->point[idx].accPerspective      = MIX_VALUE(mix_factor, pvals->point[ref1].accPerspective,       pvals->point[ref2].accPerspective);
-    pvals->point[idx].accSelFeatherRadius = MIX_VALUE(mix_factor, pvals->point[ref1].accSelFeatherRadius,  pvals->point[ref2].accSelFeatherRadius);
+    pvals->point[idx].accPosition         = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accPosition,          pvals->point[ref2].accPosition);
+    pvals->point[idx].accOpacity          = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accOpacity,           pvals->point[ref2].accOpacity);
+    pvals->point[idx].accSize             = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accSize,              pvals->point[ref2].accSize);
+    pvals->point[idx].accRotation         = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accRotation,          pvals->point[ref2].accRotation);
+    pvals->point[idx].accPerspective      = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accPerspective,       pvals->point[ref2].accPerspective);
+    pvals->point[idx].accSelFeatherRadius = GAP_BASE_MIX_VALUE(mix_factor, pvals->point[ref1].accSelFeatherRadius,  pvals->point[ref2].accSelFeatherRadius);
 
 
 
@@ -4031,8 +4031,8 @@ mov_acc_tab_create (t_mov_gui_stuff *mgp)
   GtkWidget      *table;
   GtkObject      *adj;
 
-#define ACC_MIN -100
-#define ACC_MAX  100
+#define ACC_MIN  GAP_ACCEL_CHAR_MIN
+#define ACC_MAX  GAP_ACCEL_CHAR_MAX
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -5088,25 +5088,12 @@ mov_path_acceleration_adjustment_update(GtkWidget *widget,
 {
   gint old_val;
   t_mov_gui_stuff *mgp;
-  GapAccelWidget  *accel_ptr;
 
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
 
   if(mgp == NULL) return;
   old_val = *val;
   gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), (gpointer)val);
-
-  accel_ptr = g_object_get_data ( G_OBJECT(widget), "accel_ptr" );
-
-  if(accel_ptr == NULL)
-  {
-    if(gap_debug)
-    {
-      printf("accel_ptr is NULL\n");
-    }
-  }
-  
-  gap_accel_render (accel_ptr, *val);
 
   return;
 
@@ -5653,8 +5640,8 @@ p_mov_acc_spinbutton_new(GtkTable *table
                     )
 {
   GtkObject       *adj;
-  GapAccelWidget  *accel_ptr;
-  gint accelerationCharacteristic;
+  GapAccelWidget  *accel_wgt;
+  gint32           accelerationCharacteristic;
   
 #define ACC_WGT_WIDTH 28
 #define ACC_WGT_HEIGHT 26
@@ -5678,15 +5665,13 @@ p_mov_acc_spinbutton_new(GtkTable *table
                     ,privatetip
                     );
 
-  accelerationCharacteristic = (int)initial_val;
-  accel_ptr = gap_accel_new(ACC_WGT_WIDTH, ACC_WGT_HEIGHT, accelerationCharacteristic);
+  accelerationCharacteristic = (gint32)initial_val;
+  accel_wgt = gap_accel_new_with_adj(ACC_WGT_WIDTH, ACC_WGT_HEIGHT, accelerationCharacteristic, adj);
 
 
-  gtk_table_attach( GTK_TABLE(table), accel_ptr->da_widget, col+2, col+3, row, row+1,
+  gtk_table_attach( GTK_TABLE(table), accel_wgt->da_widget, col+2, col+3, row, row+1,
                     GTK_FILL, 0, 4, 0 );
-  gtk_widget_show (accel_ptr->da_widget);
-
-  g_object_set_data (G_OBJECT (adj), "accel_ptr", accel_ptr);
+  gtk_widget_show (accel_wgt->da_widget);
 
   return(adj);
 }  /* end p_mov_acc_spinbutton_new */
