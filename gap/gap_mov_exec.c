@@ -946,10 +946,13 @@ p_calculate_settings_for_current_FrameTween(
                                     * tweens can have non integer frame number like 1.5 or 1.3333 or 1.25 etc....
                                     */
   gdouble pathSegmentLength;
-  
   gdouble  posFactor;
+  gdouble  posFactorMovement;
+  gint     segmPtidx;              /* calculated controlpoint index of relevant line begin with current segment */
 
   posFactor = 0.0;
+  posFactorMovement = 0.0;
+  segmPtidx = -1;                  /* inital value -1 indicates that movement does NOT use acceleration characteristic */
 
   tweenMultiplicator = 1.0;
   if(val_ptr->tween_steps > 1.0)
@@ -983,17 +986,16 @@ p_calculate_settings_for_current_FrameTween(
   && (pathSegmentLength > 0))
   {
     /* acceleration characteristic processing */
-    gint     segmPtidx;  /* calculated controlpoint index of relevant line begin with current segment */
 
     segmPtidx = p_pick_controlpoint_at_curr_length(val_ptr
          , startOfSegmentIndex, endOfSegmentIndex, pathSegmentLength
          , val_ptr->point[startOfSegmentIndex].accPosition
          , lengthFactorLinear
-         , &posFactor
+         , &posFactorMovement
          );
 
-    cur_ptr->currX  =       GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_x,      (gdouble)val_ptr->point[segmPtidx +1].p_x);
-    cur_ptr->currY  =       GAP_BASE_MIX_VALUE(posFactor, (gdouble)val_ptr->point[segmPtidx].p_y,      (gdouble)val_ptr->point[segmPtidx +1].p_y);
+    cur_ptr->currX  =       GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].p_x,      (gdouble)val_ptr->point[segmPtidx +1].p_x);
+    cur_ptr->currY  =       GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].p_y,      (gdouble)val_ptr->point[segmPtidx +1].p_y);
 
 
     if(gap_debug)
@@ -1008,8 +1010,8 @@ p_calculate_settings_for_current_FrameTween(
        printf("p_mov_execute: Position, frameNrAtEndOfSegment=%d\n", (int)frameNrAtEndOfSegment);
        printf("p_mov_execute: Position, lengthFactorLinear=%f\n", (float)lengthFactorLinear);
        printf("p_mov_execute: Position, pathSegmentLength=%f\n", (float)pathSegmentLength);
-       printf("p_mov_execute: Position, posFactor=%f  segmPtidx=%d\n"
-             , (float)posFactor
+       printf("p_mov_execute: Position, posFactorMovement=%f  segmPtidx=%d\n"
+             , (float)posFactorMovement
              , (int)segmPtidx
              );
     }
@@ -1044,8 +1046,18 @@ p_calculate_settings_for_current_FrameTween(
   }
   else
   {
-    /* No acceleration characteristic specified for opacity (compatible to GAP 2.6.x release behavior) */
-    cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
+    if(segmPtidx >= 0)
+    {
+      /* No acceleration characteristic specified for opacity, but movement uses accelertion characteristic
+       * (in this case force frametiming synchronized to movement)
+       */
+      cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].opacity,  (gdouble)val_ptr->point[segmPtidx +1].opacity);
+    }
+    else
+    {
+      /* No acceleration characteristic specified for opacity (compatible to GAP 2.6.x release behavior) */
+      cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
+    }
   }
 
 
@@ -1063,8 +1075,19 @@ p_calculate_settings_for_current_FrameTween(
   }
   else
   {
-    cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
-    cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
+    if(segmPtidx >= 0)
+    {
+      /* No acceleration characteristic specified for zoom, but movement uses accelertion characteristic
+       * (in this case force frametiming synchronized to movement)
+       */
+      cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].w_resize, (gdouble)val_ptr->point[segmPtidx +1].w_resize);
+      cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].h_resize, (gdouble)val_ptr->point[segmPtidx +1].h_resize);
+    }
+    else
+    {
+      cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
+      cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
+    }
   }
 
 
@@ -1081,18 +1104,37 @@ p_calculate_settings_for_current_FrameTween(
   }
   else
   {
-    cur_ptr->currRotation = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
- 
-    if(gap_debug)
+    if(segmPtidx >= 0)
     {
-      printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
+      /* No acceleration characteristic specified for rotation, but movement uses accelertion characteristic
+       * (in this case force frametiming synchronized to movement)
+       */
+      cur_ptr->currRotation = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].rotation, (gdouble)val_ptr->point[segmPtidx +1].rotation);
+      if(gap_debug)
+      {
+        printf("ROTATE [%02d] %f    [%02d] %f       MixFctor: %f  MixValue: %f\n"
+          , (int)segmPtidx,      (float)val_ptr->point[currPtidx -1].rotation
+          , (int)segmPtidx+1,    (float)val_ptr->point[currPtidx].rotation
+          , (float)posFactorMovement
+          , (float)cur_ptr->currRotation
+          );
+      }
+    }
+    else
+    {
+      cur_ptr->currRotation = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
+ 
+      if(gap_debug)
+      {
+        printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
            , (float)framesPerLine
            , (float)flt_posfactor
            );
-      printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
+        printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
           , (int)currPtidx-1,  (float)val_ptr->point[currPtidx -1].rotation
           , (int)currPtidx,    (float)val_ptr->point[currPtidx].rotation
           , (float)cur_ptr->currRotation);
+      }
     }
 
   }
@@ -1117,14 +1159,31 @@ p_calculate_settings_for_current_FrameTween(
   }
   else
   {
-    cur_ptr->currTTLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttlx,     (gdouble)val_ptr->point[currPtidx].ttlx);
-    cur_ptr->currTTLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttly,     (gdouble)val_ptr->point[currPtidx].ttly);
-    cur_ptr->currTTRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttrx,     (gdouble)val_ptr->point[currPtidx].ttrx);
-    cur_ptr->currTTRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttry,     (gdouble)val_ptr->point[currPtidx].ttry);
-    cur_ptr->currTBLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tblx,     (gdouble)val_ptr->point[currPtidx].tblx);
-    cur_ptr->currTBLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbly,     (gdouble)val_ptr->point[currPtidx].tbly);
-    cur_ptr->currTBRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbrx,     (gdouble)val_ptr->point[currPtidx].tbrx);
-    cur_ptr->currTBRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbry,     (gdouble)val_ptr->point[currPtidx].tbry);
+    if(segmPtidx >= 0)
+    {
+      /* No acceleration characteristic specified for rotation, but movement uses accelertion characteristic
+       * (in this case force frametiming synchronized to movement)
+       */
+      cur_ptr->currTTLX     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].ttlx,     (gdouble)val_ptr->point[segmPtidx +1].ttlx);
+      cur_ptr->currTTLY     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].ttly,     (gdouble)val_ptr->point[segmPtidx +1].ttly);
+      cur_ptr->currTTRX     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].ttrx,     (gdouble)val_ptr->point[segmPtidx +1].ttrx);
+      cur_ptr->currTTRY     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].ttry,     (gdouble)val_ptr->point[segmPtidx +1].ttry);
+      cur_ptr->currTBLX     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].tblx,     (gdouble)val_ptr->point[segmPtidx +1].tblx);
+      cur_ptr->currTBLY     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].tbly,     (gdouble)val_ptr->point[segmPtidx +1].tbly);
+      cur_ptr->currTBRX     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].tbrx,     (gdouble)val_ptr->point[segmPtidx +1].tbrx);
+      cur_ptr->currTBRY     = GAP_BASE_MIX_VALUE(posFactorMovement, (gdouble)val_ptr->point[segmPtidx].tbry,     (gdouble)val_ptr->point[segmPtidx +1].tbry);
+    }
+    else
+    {
+      cur_ptr->currTTLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttlx,     (gdouble)val_ptr->point[currPtidx].ttlx);
+      cur_ptr->currTTLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttly,     (gdouble)val_ptr->point[currPtidx].ttly);
+      cur_ptr->currTTRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttrx,     (gdouble)val_ptr->point[currPtidx].ttrx);
+      cur_ptr->currTTRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].ttry,     (gdouble)val_ptr->point[currPtidx].ttry);
+      cur_ptr->currTBLX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tblx,     (gdouble)val_ptr->point[currPtidx].tblx);
+      cur_ptr->currTBLY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbly,     (gdouble)val_ptr->point[currPtidx].tbly);
+      cur_ptr->currTBRX     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbrx,     (gdouble)val_ptr->point[currPtidx].tbrx);
+      cur_ptr->currTBRY     = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].tbry,     (gdouble)val_ptr->point[currPtidx].tbry);
+    }
   }
 
   /* calculate Selection Feather Radius settings for the currently processed Frame (or tween) */

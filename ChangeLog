@@ -1,3 +1,20 @@
+2010-02-16 Wolfgang Hofer <hof@gimp.org>
+
+- acceleration characteristic behavior was changed for MovePath.
+  In case movement uses acceleration characteristic other than 0
+  and other transitions (rotate, zoom, perspective, opacity)
+  do not use their own (e.g have acceleration characteristic value == 0)
+  the frametiming of those other transitions is now syncronized
+  to the frametiming of the movement.
+
+  This new behavior allows rotation following the path in case
+  the object move shall use acceleration, deceleration or constant speed
+  via acceleration characteristic setting.
+  (see also discussion at #607927)
+
+  * gap/gap_mov_exec.c
+  * docs/reference/txt/plug-in-gap-move-path.txt
+
 2010-02-15 Wolfgang Hofer <hof@gimp.org>
 
 - acceleration graph widget changed. Now the widget knows the connected adjustment

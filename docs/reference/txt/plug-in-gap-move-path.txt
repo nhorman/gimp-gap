@@ -330,8 +330,7 @@ Move Path (make things move)
 	      Each line between 2 contolpoints gets an equal time slot (e.g number of frames)
 	      The speed between 2 controlpoints is constant, but depends on the length of the line,
 	      where short lines result in low speed and long lines result in high speed.
-
-
+              
         For all other Acceleration characteristic values than 0
         the line length between controlpoints does not affect
         the speed of the moving object.
@@ -386,19 +385,36 @@ Move Path (make things move)
          
         Example:
            have a path with 10 controlpoints, none of them marked as keyframe
-           specifiy rotation 0 for first controlpoint, rotation 180 for the last
+           specifiy rotation 0 for first controlpoint, rotation 360 for the last
            controlpoint and select both Acceleration characteristic for Movement
            and Rotation value 1 (for constant speed)
            
            This settings move the object along the path of 10 points and rotate it
-           with constant speed from 0 to 180 degree, regardless what rotation settings
+           with constant speed from 0 to 360 degree, regardless what rotation settings
            are define in controlpoints 2,3,4,5,6,7,8,9.
 
         
         Speed of the moving object can be controled for each segment of the path,
         where a segment is the distance to the next KEYFRAME. In case there are no
         explicite Keyframes the path has only one segment with full length
-        from the firtst to the last controlpoint.
+        from the first to the last controlpoint.
+
+
+        When acceleration characteristic other than 0 is used for movement, 
+        but not for other transitions (rotation, opacity ...), then the move path
+        tool automatically syncronizes frame timing for those other transitions
+        with the frametiming of the movement. 
+        
+        Example:
+          Have a path with 5 controlpoints and no explicite keyframe set.
+          At the first controlpoint secify acceleration caracteristic 12
+          for movement to start slow and increase speed of the moving
+          object while moving along the path.
+          Further let rotation of the object follow the path
+          (generate the rotation settings by pressing the "Rotate Follow" button)
+          
+          In this example the rotation follows the current postion of the
+          moving object with the same acceleration as the movement.
 
            
     - Keyframes
