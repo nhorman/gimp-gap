@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Gimp-gap\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
 "POT-Creation-Date: 2009-05-22 19:51+0000\n"
-"PO-Revision-Date: 2010-03-15 12:26+0100\n"
+"PO-Revision-Date: 2010-03-15 12:37+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -2912,10 +2912,9 @@ msgstr "Vnos datoteke delovne točke preoblikovanja"
 
 #. morph workpoint entry
 #: ../gap/gap_morph_tween_dialog.c:224
-#, fuzzy
 #| msgid "Save Morph Workpointfile"
 msgid "Morph Workpoint file:"
-msgstr "Odpri dnevniško datoteko"
+msgstr "Datoteka delovne točke preoblikovanja:"
 
 #: ../gap/gap_morph_tween_dialog.c:238
 msgid ""
@@ -2926,10 +2925,9 @@ msgstr ""
 "(opomba: vmesne plasti so ustvarjene preko enostavnih prelivanj, kadar delovne točke niso razpoložljive))"
 
 #: ../gap/gap_morph_tween_dialog.c:284
-#, fuzzy
 #| msgid "Create or Replace"
 msgid "Create one tween"
-msgstr "Izberite imenik"
+msgstr "Ustvari eno vmesno sličico"
 
 #: ../gap/gap_morph_tween_dialog.c:317
 msgid "tween mix:"
@@ -2948,10 +2946,9 @@ msgid "Destination Layer:"
 msgstr "Ciljna plast:"
 
 #: ../gap/gap_morph_tween_dialog.c:428
-#, fuzzy
 #| msgid "Flatten Frames"
 msgid "Create Tween Frames"
-msgstr "Okvirji (1 sekunda = 75 okvirjev)"
+msgstr "Ustvari vmesne sličice"
 
 #. morph workpoint entry
 #: ../gap/gap_morph_tween_dialog.c:460
@@ -2965,11 +2962,10 @@ msgid "this operation creates %d mising frames between frame %d and %d"
 msgstr "možnost ustvari %d manjkajočih sličic med sličico %d in %d"
 
 #: ../gap/gap_morph_tween_dialog.c:480
-#, fuzzy
 #| msgid ""
 #| "Remove all onionskin layers in all frames of the the selected frame range"
 msgid "WARNING this operation will overwrite all frames between the specified frame range"
-msgstr "Odstrani vse folije iz vseh sličic v izbranem obsegu sličic"
+msgstr "OPOZORILO: dejanje prepiše vse sličice znotraj določenega območja sličic"
 
 #: ../gap/gap_morph_tween_dialog.c:491
 #: ../gap/gap_story_properties.c:3900
@@ -6761,16 +6757,15 @@ msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Glavna zvočna jakost, kjer 1,0 pomeni izvorno jakost"
 
 #: ../gap/gap_story_dialog.c:8944
-#, fuzzy
 #| msgid "Format:"
 msgid "AreaFormat:"
-msgstr "Zapis:"
+msgstr "Zapis območja:"
 
 #. pixel
 #: ../gap/gap_story_dialog.c:8946
 #, c-format
 msgid "Format string for area replacement in movie clips. (e.g automatic logo insert)this string shall contain \\%s as placeholder for the basename of a videoclip and optional \\%06d as placeholder for the framenumber."
-msgstr ""
+msgstr "Format string for area replacement in movie clips. (e.g automatic logo insert)this string shall contain \\%s as placeholder for the basename of a videoclip and optional \\%06d as placeholder for the framenumber."
 
 #. should use GIMP_STOCK_RESET if possible
 #: ../gap/gap_story_dialog.c:8957
@@ -6896,10 +6891,9 @@ msgid "Set Image or Frame Filename"
 msgstr "Določite ime datoteke slike ali sličice"
 
 #: ../gap/gap_story_properties.c:2446
-#, fuzzy
 #| msgid "Select Filtermacro Scriptfile"
 msgid "Set Filtermacro Filename"
-msgstr "Določi drugo ime datoteke:"
+msgstr "Določi Filtermacro ime datoteke"
 
 #: ../gap/gap_story_properties.c:2560
 msgid "EMPTY"
@@ -7724,10 +7718,10 @@ msgid "NO vindex created (SMART %.1f%% %d frames)"
 msgstr "slikovno kazalo ni bilo ustvarjeno (pametno - %.1f%% %d sličic)"
 
 #: ../gap/gap_video_index_creator.c:575
-#, fuzzy, c-format
+#, c-format
 #| msgid "NO vindex created (SMART %.1f%% %d frames)"
 msgid "incomplete vindex created (%d frames)"
-msgstr "slikovno kazalo ni bilo ustvarjeno (pametno - %.1f%% %d sličic)"
+msgstr "ustvarjen nepopoln vindex (%d sličic)"
 
 #: ../gap/gap_video_index_creator.c:660
 msgid "counting and checking videofiles"
@@ -8027,22 +8021,19 @@ msgid "Set Layer Opacity"
 msgstr "Nastavite prekrivnost plasti"
 
 #: ../gap/gap_wr_resynth.c:159
-#, fuzzy
 #| msgid "Selection invert"
 msgid "Smart selection eraser."
-msgstr "Zapomni si izbiro"
+msgstr "Pametni brisalec izbire."
 
 #: ../gap/gap_wr_resynth.c:175
-#, fuzzy
 msgid "Smart selection eraser..."
-msgstr "Zapomni si izbiro"
+msgstr "Pametni brisalec izbire ..."
 
 #. Menu names
 #: ../gap/gap_wr_resynth.c:183
-#, fuzzy
 #| msgid "<Image>/Video/Layer/"
 msgid "<Image>/Video/Layer/Enhance/"
-msgstr "SDL_image dekodirnik slike"
+msgstr "<Image>/Video/Plasti/Poudarjanje/"
 
 #: ../gap/gap_wr_resynth.c:314
 #: ../gap/gap_wr_trans.c:447
@@ -8058,10 +8049,9 @@ msgstr ""
 
 #: ../gap/gap_wr_resynth.c:418
 #: ../gap/gap_wr_resynth.c:430
-#, fuzzy
 #| msgid "Selection invert"
 msgid "Smart selection eraser"
-msgstr "Zapomni si izbiro"
+msgstr "Pametni brisalec izbire"
 
 #: ../gap/gap_wr_resynth.c:463
 msgid ""
@@ -8069,6 +8059,9 @@ msgid ""
 "But this 3rd party plug-in is not installed\n"
 "Resynthesizer is available at the gimp plug-in registry"
 msgstr ""
+"The Resynthesizer plug-in is required for this operation\n"
+"But this 3rd party plug-in is not installed\n"
+"Resynthesizer is available at the gimp plug-in registry"
 
 #: ../gap/gap_wr_resynth.c:476
 #| msgid "Feather Radius:"
@@ -8081,10 +8074,9 @@ msgstr "Seme:"
 
 #. layer combo_box (alt_selection)
 #: ../gap/gap_wr_resynth.c:501
-#, fuzzy
 #| msgid "Invert Selection"
 msgid "Set Selection:"
-msgstr "_Počisti izbor"
+msgstr "Določen izbor:"
 
 #: ../gap/gap_wr_resynth.c:606
 #, c-format
@@ -8093,6 +8085,9 @@ msgid ""
 "failed.\n"
 "probably the 3rd party plug-in resynthesizer is not installed or is not compatible to version:%s"
 msgstr ""
+"The call of plug-in %s\n"
+"failed.\n"
+"probably the 3rd party plug-in resynthesizer is not installed or is not compatible to version:%s"
 
 #: ../gap/gap_wr_trans.c:185
 msgid "Flip Horizontal"
@@ -8571,10 +8566,9 @@ msgid "Frames Copied (lossless):"
 msgstr "Kopirane sličice (brez izgub):"
 
 #: ../vid_common/gap_cme_gui.c:2895
-#, fuzzy
 #| msgid "Encoding Extras"
 msgid "Encoding Time Elapsed:"
-msgstr "Prikaz stolpca pretečenega časa"
+msgstr "Pretečeni čas kodiranja:"
 
 #: ../vid_common/gap_cme_gui.c:2929
 msgid "Encoding Extras"
@@ -8831,6 +8825,9 @@ msgid ""
 "and feed the temporary file to the selected encoder\n"
 "(the temporary file is deleted when encoding is done)"
 msgstr ""
+"Pretvori zvočno datoteko v začasno\n"
+"in zapolni začasno datoteko za izbran kodirnik\n"
+"(začasna datoteka bo izbrisana, ko bo kodiranje končano)"
 
 #. the resample general information label
 #: ../vid_common/gap_cme_gui.c:3450
@@ -8974,16 +8971,16 @@ msgid "Call of Required Plugin %s failed"
 msgstr "Klic zahtevanega vtičnika %s ni uspel"
 
 #: ../vid_common/gap_cme_gui.c:4065
-#, fuzzy, c-format
+#, c-format
 #| msgid "Video encoding %d of %d frames done"
 msgid "Video encoding %d of %d frames done, PASS 1 of 2"
-msgstr "Video-kodiranje %d sličic od %d dokončano"
+msgstr "Video-kodiranje %d od %d sličic končano, prehod 1 od 2"
 
 #: ../vid_common/gap_cme_gui.c:4077
-#, fuzzy, c-format
+#, c-format
 #| msgid "Video encoding %d of %d frames done"
 msgid "Video encoding %d of %d frames done, PASS 2 of 2"
-msgstr "Video-kodiranje %d sličic od %d dokončano"
+msgstr "Video-kodiranje %d od %d sličic končano, prehod 2 od 2"
 
 #: ../vid_common/gap_cme_gui.c:4090
 #, c-format
@@ -9003,10 +9000,9 @@ msgid "This plugin is a common GUI for all available video + audio encoding plug
 msgstr "Ta vtičnik je splošen uporabniški vmesnik za vse kodirne vtičnike, ki so na voljo; deluje na izbranem obsegu sličic ali datotek zgodborisa. Neobvezni zvočni vhodni podatki (parameter: audfile) so spremenjeni v zapis RIFF WAVE (16-bitni PCM) in predani izbranemu vtičniku kodiranja slike kot začasna datoteka (ali neposredno, če je vrsta datoteke in hitrost vzorčenja že ustrezna ciljni hitrosti vzorčenja). Slikovni zapis določa parameter vid_enc_plugin. Navedeni vtičnik je priklican s parametri, ki so navedeni v pogovornem oknu. Za neinteraktivne klice bodo uporabljene privzete vrednosti (želeni vtičnik lahko pokličete neposredno, če želite navesti neinteraktivne parametre)."
 
 #: ../vid_common/gap_cme_main.c:160
-#, fuzzy
 #| msgid "Master Videoencoder"
 msgid "Master Videoencoder..."
-msgstr "Glavni diapozitiv %u"
+msgstr "Glavni video kodirnik ..."
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:452
 msgid "AVI Video Encode Parameters"
@@ -10030,13 +10026,12 @@ msgstr "H264:"
 #. CHECKBUTTONS
 #. the Fast checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2544
-#, fuzzy
 msgid "Fast Non-Compliant"
-msgstr "Ne-angleški zvok"
+msgstr "Hitro nezvezno"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2550
 msgid "Allow non spec compliant speedup tricks"
-msgstr ""
+msgstr "Allow non spec compliant speedup tricks"
 
 #. the use_bpyramid checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2558
@@ -10045,7 +10040,7 @@ msgstr "Bpyramid"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2564
 msgid "allow B-frames to be used as references for predicting.(for H264 codec)"
-msgstr ""
+msgstr "dovoli uporabo B-sličic kot sklice napovedovanja (za kodek H264)."
 
 #. the use_local_header checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2575
@@ -10054,7 +10049,7 @@ msgstr "Krajevna glava"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2581
 msgid "Place global headers at every keyframe instead of in extradata"
-msgstr ""
+msgstr "Postavi splošne glave na vsako ključno sličico namesto v extradata"
 
 #. the use_wpred checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2588
@@ -10063,7 +10058,7 @@ msgstr "Uravnoteženo B napovedovanje"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2594
 msgid "weighted biprediction for B-frames (for H264 codec)"
-msgstr ""
+msgstr "weighted biprediction for B-frames (for H264 codec)"
 
 #. the use_brdo checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2606
@@ -10083,7 +10078,7 @@ msgstr "Mešani sklici"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2628
 msgid "one reference per partition, as opposed to one reference per macroblock (for H264 codec)"
-msgstr ""
+msgstr "en sklik na razdelek, v nasprotju z enim sklicem na makroblok (za H264 kodek)"
 
 #. the use_ivlc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2639
@@ -10126,7 +10121,7 @@ msgstr "Časovna koda izpuščanja sličic"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
 msgid "timecode is in drop frame format"
-msgstr ""
+msgstr "časovna koda je v zapisu izpuščanja sličic"
 
 #. the use_aud checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2713
@@ -10139,7 +10134,7 @@ msgstr "uporabi ločilnike dostopa (za H264 kodek)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2735
 msgid "RD optimal MB level residual skipping"
-msgstr ""
+msgstr "RD optimal MB level residual skipping"
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2744
@@ -10148,7 +10143,7 @@ msgstr "Uporabi kose"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2750
 msgid "Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries"
-msgstr ""
+msgstr "Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries"
 
 #. the use_non_linear_quant checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2760
@@ -10178,9 +10173,8 @@ msgstr "Uporabi GMC"
 #. the input_preserved checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2807
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2813
-#, fuzzy
 msgid "Input Preserved"
-msgstr "Standardni dovod:"
+msgstr "Ohranjeni dovod"
 
 #. the use_gray checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2822
@@ -10204,14 +10198,13 @@ msgstr "Ne nariši robov"
 
 #. the use_truncated checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2853
-#, fuzzy
 #| msgid "unchanged"
 msgid "Truncated"
-msgstr "nespremenjeno"
+msgstr "Razčlenjeno"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2859
 msgid "Input bitstream might be truncated at a random location instead of only at frame boundaries"
-msgstr ""
+msgstr "Input bitstream might be truncated at a random location instead of only at frame boundaries"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2890
 msgid "FFMpeg Expert Encoder Options"
@@ -10224,7 +10217,7 @@ msgstr "kvzabriši (qblur):"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2919
 msgid "Video quantiser scale blur (VBR) amount of qscale smoothing over time (0.0-1.0)"
-msgstr ""
+msgstr "Video quantiser scale blur (VBR) amount of qscale smoothing over time (0.0-1.0)"
 
 #. the qcomp label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2933
@@ -10233,7 +10226,7 @@ msgstr "kvkomp (qcomp):"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2949
 msgid "Video quantiser scale compression (VBR) amount of qscale change between easy & hard scenes (0.0-1.0)"
-msgstr ""
+msgstr "Video quantiser scale compression (VBR) amount of qscale change between easy & hard scenes (0.0-1.0)"
 
 #. the rc-init-cplx label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2960
