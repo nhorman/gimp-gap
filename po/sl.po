@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Gimp-gap\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
 "POT-Creation-Date: 2009-05-22 19:51+0000\n"
-"PO-Revision-Date: 2010-03-15 12:25+0100\n"
+"PO-Revision-Date: 2010-03-15 12:26+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -10575,7 +10575,7 @@ msgstr "Zapisniške datoteke prehoda ni bilo mogoče odpreti:'%s'%s"
 #, c-format
 #| msgid "Audio CODEC:"
 msgid "Unknown Audio CODEC: %s"
-msgstr "Neznan zvočni kodek: %S"
+msgstr "Neznan zvočni kodek: %s"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2309
 #, c-format
