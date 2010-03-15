@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Gimp-gap\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
 "POT-Creation-Date: 2009-05-22 19:51+0000\n"
-"PO-Revision-Date: 2010-03-15 11:43+0100\n"
+"PO-Revision-Date: 2010-03-15 12:25+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -2794,6 +2794,8 @@ msgid ""
 "File: %s\n"
 " ==>is no workpointfile (header is missing)"
 msgstr ""
+"Datoteka: %s\n"
+" ==>ni datoteka delovne točke (manjka glava)"
 
 #: ../gap/gap_morph_exec.c:401
 #, c-format
@@ -2801,6 +2803,8 @@ msgid ""
 "file: %s\n"
 " ==> is corrupted (LAYER-SIZES: record requires 4 numbers)"
 msgstr ""
+"datoteka: %s\n"
+" ==> je pokvarjena (LAYER-SIZES: zapis zahteva 4 številke)"
 
 #: ../gap/gap_morph_exec.c:419
 #, c-format
@@ -2808,11 +2812,13 @@ msgid ""
 "file: %s\n"
 " ==> is corrupted (TWEEN-STEPS record requires 1 number)"
 msgstr ""
+"datoteka: %s\n"
+" ==> je pokvarjena (TWEEN-STEPS zahteva 1 številko)"
 
 #: ../gap/gap_morph_exec.c:437
 #, c-format
 msgid "file: %s ==> is corrupted (AFFECT-RADIUS record requires 1 number)"
-msgstr ""
+msgstr "datoteka: %s ==> je pokvarjena (AFFECT-RADIUS zapis zahteva 1 številko)"
 
 #: ../gap/gap_morph_exec.c:459
 #, c-format
@@ -2820,6 +2826,8 @@ msgid ""
 "file: %s\n"
 " ==>is corrupted (INTENSITY record requires 1 number)"
 msgstr ""
+"datoteka: %s\n"
+" ==> je pokvarjena (INTENSITY zapis zahteva 1 številko)"
 
 #: ../gap/gap_morph_exec.c:481
 #, c-format
@@ -2827,6 +2835,8 @@ msgid ""
 "file: %s\n"
 " ==>is corrupted (QUALITY-WP-SELECT record requires 1 number)"
 msgstr ""
+"datoteka: %s\n"
+" ==> je pokvarjena (QUALITY-WP-SELECT zapis zahteva 1 številko)"
 
 #: ../gap/gap_morph_exec.c:515
 #, c-format
@@ -2834,6 +2844,8 @@ msgid ""
 "file: %s\n"
 " ==> is corrupted (WP: record requires 4 numbers)"
 msgstr ""
+"datoteka: %s\n"
+" ==> je pokvarjena (WP: zapis zahteva 4 številke)"
 
 #: ../gap/gap_morph_exec.c:2724
 msgid "creating morph tween layers..."
@@ -2846,18 +2858,18 @@ msgstr "Ustvarjanje ukrivljenosti med plastema ..."
 #: ../gap/gap_morph_exec.c:3073
 #| msgid "creating morph tween layers..."
 msgid "creating morph tween frames..."
-msgstr "Ustvarjanje preoblikovanja med sličicama ..."
+msgstr "ustvarjanje preoblikovanja med plastema ..."
 
 #: ../gap/gap_morph_exec.c:3097
-#, fuzzy, c-format
+#, c-format
 msgid "target frame does not exist, name: %s"
-msgstr "Zbirka ključev s tem imenom ne obstaja."
+msgstr "ciljna sličica ne obstaja z imenom: %s"
 
 #: ../gap/gap_morph_exec.c:3151
 #, c-format
 #| msgid "creating morph tween layers..."
 msgid "creating morph tween frame: %d"
-msgstr "ustvarjanje tween preoblikovanja: %d"
+msgstr "ustvarjanje preoblikovanja vmesne plasti: %d"
 
 #: ../gap/gap_morph_exec.c:3167
 #, c-format
@@ -2871,23 +2883,21 @@ msgstr "datoteka: %s že obstaja"
 #| "failed to save file:\n"
 #| "'%s'"
 msgid "file: %s save failed"
-msgstr "datoteka: napaka med shranjevanjem datoteke %s"
+msgstr "datoteka: %s ni mogoče shraniti"
 
 #: ../gap/gap_morph_main.c:188
 msgid "Morph..."
 msgstr "Preoblikuj ..."
 
 #: ../gap/gap_morph_main.c:211
-#, fuzzy
 #| msgid "Converting frames..."
 msgid "Morph Tweenframes..."
-msgstr "Pretvarjanje sličic ..."
+msgstr "Pretvarjanje vmesnih sličic ..."
 
 #: ../gap/gap_morph_main.c:235
-#, fuzzy
 #| msgid "Morph..."
 msgid "Morph One Tween..."
-msgstr "Izberite imenik"
+msgstr "Pretvarjanje vmesne sličice ..."
 
 #. Menu names
 #: ../gap/gap_morph_main.c:247
@@ -2898,7 +2908,7 @@ msgstr "<Image>/Video/Morph/"
 #: ../gap/gap_morph_tween_dialog.c:142
 #| msgid "Save Morph Workpointfile"
 msgid "Enter Morph Workpoint filename"
-msgstr "Vnos imena datoteke delovne točke za Morph"
+msgstr "Vnos datoteke delovne točke preoblikovanja"
 
 #. morph workpoint entry
 #: ../gap/gap_morph_tween_dialog.c:224
@@ -2912,6 +2922,8 @@ msgid ""
 "Name of a Workpointfile created with the Morph feature\n"
 "(note that tweens are created via simple fade operations when no workpointfile is available))"
 msgstr ""
+"Ime datoteke delovne točke ustvarjene s preoblikovanjem\n"
+"(opomba: vmesne plasti so ustvarjene preko enostavnih prelivanj, kadar delovne točke niso razpoložljive))"
 
 #: ../gap/gap_morph_tween_dialog.c:284
 #, fuzzy
@@ -2920,23 +2932,20 @@ msgid "Create one tween"
 msgstr "Izberite imenik"
 
 #: ../gap/gap_morph_tween_dialog.c:317
-#, fuzzy
 msgid "tween mix:"
-msgstr "Mešani izvajalci"
+msgstr "Mešani tween:"
 
 #. layer combo_box (source)
 #: ../gap/gap_morph_tween_dialog.c:328
-#, fuzzy
 #| msgid "Source Image/Layer:"
 msgid "Source Layer:"
-msgstr "Dostopna raven"
+msgstr "Izvorna plast:"
 
 #. layer combo_box (source)
 #: ../gap/gap_morph_tween_dialog.c:349
-#, fuzzy
 #| msgid "Destination"
 msgid "Destination Layer:"
-msgstr "Dostopna raven"
+msgstr "Ciljna plast:"
 
 #: ../gap/gap_morph_tween_dialog.c:428
 #, fuzzy
@@ -2946,15 +2955,14 @@ msgstr "Okvirji (1 sekunda = 75 okvirjev)"
 
 #. morph workpoint entry
 #: ../gap/gap_morph_tween_dialog.c:460
-#, fuzzy
 #| msgid "XANIM Information"
 msgid "Information:"
-msgstr "Podrobnosti"
+msgstr "Podrobnosti:"
 
 #: ../gap/gap_morph_tween_dialog.c:469
 #, c-format
 msgid "this operation creates %d mising frames between frame %d and %d"
-msgstr ""
+msgstr "možnost ustvari %d manjkajočih sličic med sličico %d in %d"
 
 #: ../gap/gap_morph_tween_dialog.c:480
 #, fuzzy
@@ -5955,16 +5963,17 @@ msgstr ""
 "IZKLJUČENO: Obdelaj vse plasti in vsili vidnost."
 
 #: ../gap/gap_split.c:485
-#, fuzzy
 #| msgid "Clip Properties"
 msgid "Copy properties:"
-msgstr "Lastnosti prekinitvene točke"
+msgstr "Lastnosti kopiranja:"
 
 #: ../gap/gap_split.c:486
 msgid ""
 "ON: Copy all image properties (channels, pathes, guides) to all frame images.\n"
 "OFF: copy only layers without image properties to frame images"
 msgstr ""
+"Omogočeno: kopiraj vse lastnosti slike (kanali, poti, vodila) za vse sličice.\n"
+"Onemogočeno: kopiraj le plasti brez lastnosti"
 
 #: ../gap/gap_split.c:495
 msgid "How many digits to use for the framenumber filename part"
@@ -6446,10 +6455,9 @@ msgstr "Preklopi enote"
 
 #: ../gap/gap_story_dialog.c:6041
 #: ../gap/gap_story_dialog.c:6141
-#, fuzzy
 #| msgid "original audio"
 msgid "Add Original Audio Track"
-msgstr "Ohrani originalno velikost zvočnega posnetka"
+msgstr "Dodaj izvorno zvočno sled"
 
 #: ../gap/gap_story_dialog.c:6047
 #: ../gap/gap_story_dialog.c:6147
@@ -7998,10 +8006,9 @@ msgstr "Nastavi prekrivnosti plasti ..."
 
 #. Menu names
 #: ../gap/gap_wr_opacity.c:150
-#, fuzzy
 #| msgid "<Image>/Video/Layer/Colors/"
 msgid "<Image>/Video/Layer/Attributes/"
-msgstr "SDL_image dekodirnik slike"
+msgstr "<Image>/Video/Plasti/Atributi/"
 
 #: ../gap/gap_wr_opacity.c:333
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
@@ -8026,8 +8033,9 @@ msgid "Smart selection eraser."
 msgstr "Zapomni si izbiro"
 
 #: ../gap/gap_wr_resynth.c:175
+#, fuzzy
 msgid "Smart selection eraser..."
-msgstr "Pametni brisalec izbire ..."
+msgstr "Zapomni si izbiro"
 
 #. Menu names
 #: ../gap/gap_wr_resynth.c:183
@@ -8063,15 +8071,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_wr_resynth.c:476
-#, fuzzy
 #| msgid "Feather Radius:"
 msgid "Border Radius:"
-msgstr "Radij vogala"
+msgstr "Radij obrobe:"
 
 #: ../gap/gap_wr_resynth.c:489
-#, fuzzy
 msgid "Seed:"
-msgstr "Dolžina semena entropije:"
+msgstr "Seme:"
 
 #. layer combo_box (alt_selection)
 #: ../gap/gap_wr_resynth.c:501
@@ -8986,7 +8992,7 @@ msgstr "Video-kodiranje %d sličic od %d dokončano"
 
 #: ../vid_common/gap_cme_gui.c:4109
 msgid "ENCODER process has terminated"
-msgstr "Opravilo ENCODER je končano"
+msgstr "Opravilo ENCODER je prekinjeno"
 
 #: ../vid_common/gap_cme_main.c:147
 msgid "This plugin is the master dialog for video + audio encoding"
@@ -9515,19 +9521,19 @@ msgstr "6 x1"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1630
 msgid "7 hex (x264 specific)"
-msgstr "7 hex (posebej za x264)"
+msgstr "7 hex (določeno za x264)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1631
 msgid "8 umh (x264 specific)"
-msgstr "8 umh (posebej za x264)"
+msgstr "8 umh (določeno za x264)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1632
 msgid "9 iter (snow specific)"
-msgstr "9 iter (posebej za snow)"
+msgstr "9 iter (določeno za snow)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1633
 msgid "10 tesa (x264 specific)"
-msgstr "10 tesa (posebej za x264)"
+msgstr "10 tesa (določeno za x264)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1640
 msgid "Select algorithm for motion estimation"
@@ -10012,10 +10018,9 @@ msgstr "FFMpeg Expert Flags2"
 
 #. LABELS
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2523
-#, fuzzy
 #| msgid "General flags:"
 msgid "General flags2:"
-msgstr "Splošna naprava"
+msgstr "Splošni flags2:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2530
 #| msgid "H263:"
@@ -10044,9 +10049,8 @@ msgstr ""
 
 #. the use_local_header checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2575
-#, fuzzy
 msgid "Local Header"
-msgstr "Datoteka glave:"
+msgstr "Krajevna glava"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2581
 msgid "Place global headers at every keyframe instead of in extradata"
@@ -10054,9 +10058,8 @@ msgstr ""
 
 #. the use_wpred checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2588
-#, fuzzy
 msgid "Weighted Biprediction"
-msgstr "Mediano sredinjenje"
+msgstr "Uravnoteženo B napovedovanje"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2594
 msgid "weighted biprediction for B-frames (for H264 codec)"
@@ -10064,22 +10067,19 @@ msgstr ""
 
 #. the use_brdo checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2606
-#, fuzzy
 #| msgid "rate distortion"
 msgid "B Rate Distortion"
-msgstr "Filtri popačenja slike"
+msgstr "B hitrost popačenja"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2612
-#, fuzzy
 #| msgid "Use rate distortion optimization for cbp"
 msgid "B-frame rate-distortion optimization"
-msgstr "Sprememba hitrosti dovoda sličic"
+msgstr "Optimizacija hitrosti popačenja B-sličic"
 
 #. the use_mixed_refs checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2622
-#, fuzzy
 msgid "Mixed Refs"
-msgstr "Mešani zvočno-podatkovni disk"
+msgstr "Mešani sklici"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2628
 msgid "one reference per partition, as opposed to one reference per macroblock (for H264 codec)"
@@ -10097,7 +10097,7 @@ msgstr "Uporabi MPEG-2 intra VLC preglednico."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2659
 msgid "high profile 8x8 transform (for H264 codec)"
-msgstr ""
+msgstr "profil 8x8 pretvorbe (za kodek H264)"
 
 #. the use_memc_only checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2669
@@ -10106,14 +10106,13 @@ msgstr "Le ME/MC"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2675
 msgid "Only do ME/MC (I frames -> ref, P frame -> ME+MC)"
-msgstr ""
+msgstr "Naredi le ME/MC (I sličice -> sklic, P sličice -> ME+MC)"
 
 #. the use_fastpskip checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2683
-#, fuzzy
 #| msgid "Last Point"
 msgid "Fast Pskip"
-msgstr "Hitro stiskanje"
+msgstr "Hitri Pskip"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2689
 msgid "fast pskip (for H264 codec)"
@@ -10121,10 +10120,9 @@ msgstr "hitri pskip (za kodek H264)"
 
 #. the use_drop_frame_timecode checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2700
-#, fuzzy
 #| msgid "Frames Encoded:"
 msgid "DropFrame Timecode"
-msgstr "Kodiranih sličic:"
+msgstr "Časovna koda izpuščanja sličic"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
 msgid "timecode is in drop frame format"
@@ -10133,21 +10131,20 @@ msgstr ""
 #. the use_aud checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2713
 msgid "AccessUnit"
-msgstr ""
+msgstr "EnotaDostopa"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2719
 msgid "use access unit delimiters (for H264 codec)"
-msgstr ""
+msgstr "uporabi ločilnike dostopa (za H264 kodek)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2735
 msgid "RD optimal MB level residual skipping"
-msgstr "optimalna RD  MB raven preskakovanja"
+msgstr ""
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2744
-#, fuzzy
 msgid "Use chunks"
-msgstr "Uporabi šifriranje:"
+msgstr "Uporabi kose"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2750
 msgid "Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries"
@@ -10159,19 +10156,17 @@ msgid "Nonlinear Quant"
 msgstr "Nelinearni kvant"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2766
-#, fuzzy
 msgid "Use MPEG-2 nonlinear quantizer"
-msgstr "Uporaba določena lestvice deljenja."
+msgstr "Uporabi MPEG-2 nelinearni kvantizator"
 
 #. the use_bit_reservoir checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2775
-#, fuzzy
 msgid "Bit Reservoir"
-msgstr "Bitna hitrost"
+msgstr "Bitni rezervoar"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2781
 msgid "Use a bit reservoir when encoding if possible"
-msgstr ""
+msgstr "Uporabi bitni rezervoar med kodiranjem, če je le mogoče"
 
 #. the use_gmc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2792
@@ -10195,12 +10190,12 @@ msgstr "Uporabi sivine"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2828
 msgid "Only encode grayscale"
-msgstr "Kodiraj le sivine"
+msgstr "Kodiraj le v sivinah"
 
 #. the use_emu_edge checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2838
 msgid "Emu Edges"
-msgstr ""
+msgstr "Robovi EMu"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2844
 #| msgid "Don't recode"
@@ -10513,10 +10508,9 @@ msgstr "Napredne zastavice"
 
 #. the notebook page label for expert flags
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3924
-#, fuzzy
 #| msgid "Expert Flags"
 msgid "Expert Flags2"
-msgstr "Napredno iskanje"
+msgstr "Expert Flags2"
 
 #. the notebook page label for expert encoder options
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3939
@@ -10581,12 +10575,12 @@ msgstr "Zapisniške datoteke prehoda ni bilo mogoče odpreti:'%s'%s"
 #, c-format
 #| msgid "Audio CODEC:"
 msgid "Unknown Audio CODEC: %s"
-msgstr "Neznan kodirnik zvoka: %s"
+msgstr "Neznan zvočni kodek: %S"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2309
 #, c-format
 msgid "CODEC: %s is no AUDIO CODEC!"
-msgstr "KODEK: %s ni ZVOČNI kodek!"
+msgstr "KODEK: %s ni zvočni kodek!"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2371
 #, c-format
@@ -10597,8 +10591,8 @@ msgid ""
 "that is supported by most codecs)"
 msgstr ""
 "ni mogoče odpreti zvočnega kodeka: %s\n"
-"pri zvočni vzorčni hitrosti:%d kanali:%d bitov na kanal:%d\n"
-"(poskusite zvok pretvoriti v 48 KHz, 44.1KHz ali 32 kHz vzorčno\n"
+"pri zvočni vzorčni hitrosti:%d kanalih:%d bitih na kanal:%d\n"
+"(poskusite pretvoriti zvok v 48 KHz, 44.1KHz ali 32 kHz vzorčno\n"
 "hitrost, ki jo podpira večina kodekov)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2429
@@ -10646,13 +10640,11 @@ msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 msgstr "Datoteke parametro kodirnika slike ffmpeg ni mogoče shraniti:'%s'%s"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:183
-#, fuzzy
 #| msgid "avi video encoding for anim frames. Menu: @AVI@"
 msgid "rawframes video encoding for anim frames. Menu: @rawframeS@"
 msgstr "Kodiranje slike avi za sličice animacije. Meni: @AVI@"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:184
-#, fuzzy
 #| msgid ""
 #| "This plugin has a video encoder API but writes a series of single frames "
 #| "instead of one videofile. the filetype of the output frames is derived "
@@ -10665,31 +10657,26 @@ msgid "This plugin has a video encoder API but writes a series of single raw fra
 msgstr "Ta vtičnik ima API kodirnika slike, vendar zapiše niz posamičnih sličic namesto ene slikovne datoteke. Vrsta izhodnih sličic izhaja iz končnice. Končnica je pripona parametra \"videofile\". Imena izhodnih sličic so enaka parametru \"videofile\", le da je del številke sličice zamenjan s številko trenutne sličice (ali dodan samodejno, če datoteka posnetka nima številskega dela). Zvočni podatki so prezrti. Klic \""
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:214
-#, fuzzy
 #| msgid "Set Parameters for GAP singleframes video encoder Plugins"
 msgid "Set Parameters for GAP rawframes video encoder Plugins"
-msgstr "Nastavite parametre za vtičnike video-kodirnika posamičnih sličic GAP"
+msgstr "Nastavite parametre za vstavke video-kodirnika posamičnih sličic GAP"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:215
-#, fuzzy
 #| msgid "This plugin sets singleframes specific video encoding parameters."
 msgid "This plugin sets rawframes specific video encoding parameters."
-msgstr "Ta vtičnik nastavi parametre kodiranja slike za posamične sličice."
+msgstr "Ta vstavek nastavi parametre kodiranja slike za posamične sličice."
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:228
-#, fuzzy
 #| msgid "Get GUI Parameters for GAP singleframes video encoder"
 msgid "Get GUI Parameters for GAP rawframes video encoder"
-msgstr "Dobi parametre up. vmesnika za kodirnik posamičnih sličic GAP"
+msgstr "Pridobi parametre vmesnika za kodirnik posamičnih sličic GAP"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:229
-#, fuzzy
 #| msgid "This plugin returns singleframes encoder specific parameters."
 msgid "This plugin returns rawframes encoder specific parameters."
-msgstr "Ta vtičnik vrne parametre kodiranja za posamične sličice."
+msgstr "Ta vstavek vrne parametre kodiranja za posamične sličice."
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:310
-#, fuzzy
 #| msgid ""
 #| "The Singleframes Encoder\n"
 #| "writes single frames instead of one videofile\n"
@@ -10710,10 +10697,9 @@ msgstr ""
 "ime_videa + 6-mestno število + končnica"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:527
-#, fuzzy
 #| msgid "the Singleframe Encoder has no encoder specific Parameters"
 msgid "the rawframe Encoder has no encoder specific Parameters"
-msgstr "Kodirnik posamičnih sličic nima nobenih zanj specifičnih parametrov"
+msgstr "kodirnik posamičnih sličic nima nobenih zanj specifičnih parametrov"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:893
 #: ../vid_enc_single/gap_enc_singleframes_main.c:732
