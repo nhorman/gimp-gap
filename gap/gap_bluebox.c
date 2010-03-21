@@ -1295,6 +1295,26 @@ p_check_HSV_thres (GimpRGB       *src,
   if(bbp->vals.tolerance > 0)
   {
     l_diff_h = fabs(src_hsv.h - bbp->key_hsv.h);
+
+    /* normalize hue difference.
+     * hue values represents an angle
+     * where value 0.5 equals 180 degree
+     * and value 1.0 stands for 360 degree that is
+     * equal to 0.0
+     * Hue is maximal different at 180 degree.
+     *
+     * after normalizing, the difference
+     * hDiff value 1.0 represents angle difference of 180 degree
+     */
+    if(l_diff_h > 0.5)
+    {
+      l_diff_h = (1.0 - l_diff_h) * 2.0;
+    }
+    else
+    {
+      l_diff_h = l_diff_h * 2.0;
+
+    }
     if (l_diff_h > bbp->vals.thres_h) { return 1.0; }
 
     l_diff_s = fabs(src_hsv.s - bbp->key_hsv.s);

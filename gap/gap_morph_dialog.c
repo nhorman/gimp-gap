@@ -42,6 +42,8 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_base.h"
+
 #include "gap_morph_main.h"
 #include "gap_morph_dialog.h"
 #include "gap_morph_exec.h"
@@ -61,10 +63,16 @@
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 #define GAP_MORPH_RESPONSE_RESET 1
+#define GAP_MORPH_RESPONSE_LOAD  2
+#define GAP_MORPH_RESPONSE_SAVE  3
+#define GAP_MORPH_RESPONSE_SWAP  4
 
 #define GAP_MORPH_CHECK_SIZE  8
-#define GAP_MORPH_PV_WIDTH  480
-#define GAP_MORPH_PV_HEIGHT 320
+#define GAP_MORPH_PV_WIDTH_DEFAULT  480
+#define GAP_MORPH_PV_HEIGHT_DEFAULT 320
+
+#define GAP_MORPH_PREVIEW_WIDTH  "gap_morph_preview_width"
+#define GAP_MORPH_PREVIEW_HEIGHT "gap_morph_preview_height"
 
 #define GAP_MORPH_ZOOMSTEP    1.5
 #define RADIUS           3
@@ -98,6 +106,8 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 #define GAP_MORPH_SWAP(ty, x, y)    { ty tmp; tmp = x; x = y; y = tmp; }
 
+static gint32 global_morph_pv_width = GAP_MORPH_PV_WIDTH_DEFAULT;
+static gint32 global_morph_pv_height = GAP_MORPH_PV_HEIGHT_DEFAULT;
 
 static void         p_morph_response(GtkWidget *w, gint response_id, GapMorphGUIParams *mgup);
 static void         p_upd_widget_values(GapMorphGUIParams *mgup);
@@ -231,6 +241,15 @@ p_morph_response(GtkWidget *w, gint response_id, GapMorphGUIParams *mgup)
       mgup->mgpp->create_tween_layers = TRUE;
       mgup->mgpp->have_workpointsets = FALSE;
       p_upd_widget_values(mgup);
+      break;
+    case GAP_MORPH_RESPONSE_LOAD:
+      on_wp_load_button_clicked(NULL, NULL, mgup);
+      break;
+    case GAP_MORPH_RESPONSE_SAVE:
+      on_wp_save_button_clicked(NULL, NULL, mgup);
+      break;
+    case GAP_MORPH_RESPONSE_SWAP:
+      on_swap_button_pressed_callback(NULL, mgup);
       break;
     case GTK_RESPONSE_OK:
       if(mgup)
@@ -647,7 +666,7 @@ p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
       height = (gdouble) gimp_drawable_height(*swp->layer_id_ptr);
 
 
-      pv_pixelsize = MAX(GAP_MORPH_PV_WIDTH, GAP_MORPH_PV_HEIGHT);
+      pv_pixelsize = MAX(global_morph_pv_width, global_morph_pv_height);
 
       /*
        * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
@@ -3177,12 +3196,12 @@ p_create_subwin(GapMorphSubWin *swp
   row = 0;
 
   /* the layer seletion combobox */
-  label = gtk_label_new( _("Layer:"));
-
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1
-                  , GTK_FILL, 0, 4, 0);
-  gtk_widget_show(label);
+//   label = gtk_label_new( _("Layer:"));
+// 
+//   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+//   gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1
+//                   , GTK_FILL, 0, 4, 0);
+//   gtk_widget_show(label);
 
   combo = gimp_drawable_combo_box_new (p_imglayer_constrain, NULL);
   gtk_table_attach(GTK_TABLE(table), combo, 1, 10, row, row+1,
@@ -3348,7 +3367,7 @@ p_create_subwin(GapMorphSubWin *swp
   aspect_frame = gtk_aspect_frame_new (NULL   /* without label */
                                       , 0.5   /* xalign center */
                                       , 0.5   /* yalign center */
-                                      , GAP_MORPH_PV_WIDTH / GAP_MORPH_PV_HEIGHT     /* ratio */
+                                      , global_morph_pv_width / global_morph_pv_height     /* ratio */
                                       , TRUE  /* obey_child */
                                       );
 
@@ -3356,8 +3375,8 @@ p_create_subwin(GapMorphSubWin *swp
   /* PREVIEW DRAWING AREA */
   /* the preview drawing_area_widget */
   /* ############################### */
-  swp->pv_ptr = gap_pview_new(GAP_MORPH_PV_WIDTH
-                            , GAP_MORPH_PV_HEIGHT
+  swp->pv_ptr = gap_pview_new(global_morph_pv_width
+                            , global_morph_pv_height
                             , GAP_MORPH_CHECK_SIZE
                             , aspect_frame
                             );
@@ -3465,11 +3484,26 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   GtkObject *adj;
 
 
+  global_morph_pv_width = gap_base_get_gimprc_int_value(GAP_MORPH_PREVIEW_WIDTH
+                                 , GAP_MORPH_PV_WIDTH_DEFAULT
+				 , 120
+				 , 1280
+				 );
+  global_morph_pv_height = gap_base_get_gimprc_int_value(GAP_MORPH_PREVIEW_HEIGHT
+                                 , GAP_MORPH_PV_HEIGHT_DEFAULT
+				 , 100
+				 , 1024
+				 );
+  
+
   dlg = gimp_dialog_new (_("Morph / Warp"), GAP_MORPH_PLUGIN_NAME,
                          NULL, 0,
                          gimp_standard_help_func, GAP_MORPH_HELP_ID,
 
                          GIMP_STOCK_RESET, GAP_MORPH_RESPONSE_RESET,
+                         _("Swap"),        GAP_MORPH_RESPONSE_SWAP,
+                         GTK_STOCK_SAVE,   GAP_MORPH_RESPONSE_SAVE,
+                         GTK_STOCK_OPEN,   GAP_MORPH_RESPONSE_LOAD,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
@@ -3631,31 +3665,18 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   /* RADIO Buttons (attaches to 6 Columns) */
   p_radio_create_op_mode(table, row, 4, mgup);
 
-  /* the show lines checkbutton */
-  checkbutton = gtk_check_button_new_with_label ( _("Lines"));
-  mgup->show_lines_checkbutton = checkbutton;
-  gtk_widget_show (checkbutton);
-  gtk_table_attach( GTK_TABLE(table), checkbutton, 10, 11, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  g_signal_connect (checkbutton, "toggled",
-                    G_CALLBACK (on_show_lines_toggled_callback),
-                    mgup);
-  gimp_help_set_help_data(checkbutton,
-                       _("Show movement vector lines in the destination preview")
-                       , NULL);
-
 
   /* Swap Windows Button */
-  button = gtk_button_new_from_stock (_("Swap"));
-  gtk_table_attach( GTK_TABLE(table), button, 11, 12, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  gimp_help_set_help_data(button,
-                       _("Exchange source and destination")
-                       , NULL);
-  gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "pressed",
-                    G_CALLBACK (on_swap_button_pressed_callback),
-                    mgup);
+//   button = gtk_button_new_from_stock (_("Swap"));
+//   gtk_table_attach( GTK_TABLE(table), button, 11, 12, row, row+1,
+//                     GTK_FILL, 0, 0, 0 );
+//   gimp_help_set_help_data(button,
+//                        _("Exchange source and destination")
+//                        , NULL);
+//   gtk_widget_show (button);
+//   g_signal_connect (G_OBJECT (button), "pressed",
+//                     G_CALLBACK (on_swap_button_pressed_callback),
+//                     mgup);
 
 
   row++;
@@ -3738,45 +3759,30 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
                          "OFF: Linear deform action inside the radius")
                        , NULL);
 
-  /* the use_quality_wp_selection checkbutton */
-  checkbutton = gtk_check_button_new_with_label ( _("Quality"));
-  mgup->use_quality_wp_selection_checkbutton = checkbutton;
-  gtk_widget_show (checkbutton);
-  gtk_table_attach( GTK_TABLE(table), checkbutton, 10, 11, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  g_signal_connect (checkbutton, "toggled",
-                    G_CALLBACK (on_use_quality_wp_selection_toggled_callback),
-                    mgup);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->use_quality_wp_selection);
-  gimp_help_set_help_data(checkbutton,
-                       _("ON: Use quality workpoint selection algorithm."
-                         "OFF: Use fast workpoint selection algorithm.")
-                       , NULL);
-
 
   /* Load Workpoints Button */
-  button = gtk_button_new_from_stock (GTK_STOCK_OPEN );
-  gtk_table_attach( GTK_TABLE(table), button, 11, 12, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  gimp_help_set_help_data(button,
-                       _("Load morph workpoints from file. SHIFT-click: define filename of Pointset B")
-                       , NULL);
-  gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "button_press_event",
-                    G_CALLBACK (on_wp_load_button_clicked),
-                    mgup);
+//   button = gtk_button_new_from_stock (GTK_STOCK_OPEN );
+//   gtk_table_attach( GTK_TABLE(table), button, 11, 12, row, row+1,
+//                     GTK_FILL, 0, 0, 0 );
+//   gimp_help_set_help_data(button,
+//                        _("Load morph workpoints from file. SHIFT-click: define filename of Pointset B")
+//                        , NULL);
+//   gtk_widget_show (button);
+//   g_signal_connect (G_OBJECT (button), "button_press_event",
+//                     G_CALLBACK (on_wp_load_button_clicked),
+//                     mgup);
 
-  /* Save Workpoints Button */
-  button = gtk_button_new_from_stock ( GTK_STOCK_SAVE );
-  gtk_table_attach( GTK_TABLE(table), button, 12, 13, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  gimp_help_set_help_data(button,
-                       _("Save morph workpoints to file. SHIFT-click: define filename of Pointset B")
-                       , NULL);
-  gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "button_press_event",
-                    G_CALLBACK (on_wp_save_button_clicked),
-                    mgup);
+//   /* Save Workpoints Button */
+//   button = gtk_button_new_from_stock ( GTK_STOCK_SAVE );
+//   gtk_table_attach( GTK_TABLE(table), button, 12, 13, row, row+1,
+//                     GTK_FILL, 0, 0, 0 );
+//   gimp_help_set_help_data(button,
+//                        _("Save morph workpoints to file. SHIFT-click: define filename of Pointset B")
+//                        , NULL);
+//   gtk_widget_show (button);
+//   g_signal_connect (G_OBJECT (button), "button_press_event",
+//                     G_CALLBACK (on_wp_save_button_clicked),
+//                     mgup);
 
 
   row++;
@@ -3860,23 +3866,6 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   /* the render_mode RADIO Buttons (attaches to 3 Columns: 4,5,6 ) */
   p_radio_create_render_mode(table, row, 4, mgup);
 
-
-
-  /* the create tween checkbutton */
-  checkbutton = gtk_check_button_new_with_label ( _("Create Layers"));
-  mgup->create_tween_layers_checkbutton = checkbutton;
-  gtk_widget_show (checkbutton);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->create_tween_layers);
-  gtk_table_attach( GTK_TABLE(table), checkbutton, 10, 11, row, row+1,
-                    GTK_FILL, 0, 0, 0 );
-  g_signal_connect (checkbutton, "toggled",
-                    G_CALLBACK (on_create_tween_layers_toggled_callback),
-                    mgup);
-  gimp_help_set_help_data(checkbutton,
-                       _("ON: Create specified number of tween layers. "
-                         "OFF: Operate on existing layers below the destination layer")
-                       , NULL);
-
   /* the multiple pointsets checkbutton */
   checkbutton = gtk_check_button_new_with_label ( _("Multiple Pointsets"));
   mgup->have_workpointsets_checkbutton = checkbutton;
@@ -3948,6 +3937,55 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  row++;
+
+  /* the create tween checkbutton */
+  checkbutton = gtk_check_button_new_with_label ( _("Create Layers"));
+  mgup->create_tween_layers_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->create_tween_layers);
+  gtk_table_attach( GTK_TABLE(table), checkbutton, 0, 2, row, row+1,
+                    GTK_FILL, 0, 0, 0 );
+  g_signal_connect (checkbutton, "toggled",
+                    G_CALLBACK (on_create_tween_layers_toggled_callback),
+                    mgup);
+  gimp_help_set_help_data(checkbutton,
+                       _("ON: Create specified number of tween layers. "
+                         "OFF: Operate on existing layers below the destination layer")
+                       , NULL);
+
+  /* the use_quality_wp_selection checkbutton */
+  checkbutton = gtk_check_button_new_with_label ( _("Quality"));
+  mgup->use_quality_wp_selection_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach( GTK_TABLE(table), checkbutton, 4, 5, row, row+1,
+                    GTK_FILL, 0, 0, 0 );
+  g_signal_connect (checkbutton, "toggled",
+                    G_CALLBACK (on_use_quality_wp_selection_toggled_callback),
+                    mgup);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->use_quality_wp_selection);
+  gimp_help_set_help_data(checkbutton,
+                       _("ON: Use quality workpoint selection algorithm."
+                         "OFF: Use fast workpoint selection algorithm.")
+                       , NULL);
+
+  /* the show lines checkbutton */
+  checkbutton = gtk_check_button_new_with_label ( _("Lines"));
+  mgup->show_lines_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach( GTK_TABLE(table), checkbutton, 6, 7, row, row+1,
+                    GTK_FILL, 0, 0, 0 );
+  g_signal_connect (checkbutton, "toggled",
+                    G_CALLBACK (on_show_lines_toggled_callback),
+                    mgup);
+  gimp_help_set_help_data(checkbutton,
+                       _("Show movement vector lines in the destination preview")
+                       , NULL);
+
+
+
+
+
 
   /*  Show the main container  */
   gtk_widget_show (main_vbox);
@@ -3958,6 +3996,9 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   on_have_workpointsets_toggled_callback(mgup->have_workpointsets_checkbutton, mgup);
   on_use_gravity_toggled_callback(mgup->use_gravity_checkbutton, mgup);
   on_use_quality_wp_selection_toggled_callback(mgup->use_quality_wp_selection_checkbutton, mgup);
+
+
+
 }  /* end gap_morph_create_dialog */
 
 

@@ -1,3 +1,29 @@
+2010-03-21 Wolfgang Hofer <hof@gimp.org>
+
+- added gimprc parameters to specify width and height
+  for the previews in the morph dialog.
+  In additon with some other layout changes
+  (Moved buttons for save,load, and swap to button row at the bottom of the dialog window
+   and omitted "Layer:" labels ...)
+  the dialog window now fits into small resolution displays (1024x768)
+  when using english language settings.
+  (relevant for #611826)
+
+  Note that translated texts may still result in dialog window that
+  does not fit into small displays.
+  
+  (gap_morph_preview_width  "260")
+  (gap_morph_preview_height "180")
+
+- fixed a bug in the bluebox filter
+  (hue difference handling must respect that 180 degree is the biggest
+   difference for a hue value in the HSV colorspace)
+   
+  * gap/gap_bluebox.c
+  * gap/gap_morph_dialog.c
+
+
+
 2010-02-16 Wolfgang Hofer <hof@gimp.org>
 
 - acceleration characteristic behavior was changed for MovePath.
