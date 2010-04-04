@@ -2,16 +2,16 @@
 # Copyright (C) 2000-2007 THE GIMP'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the GIMP package.
 #
-# Miha Tomšič <miha.tomsic@guest.arnes.si>, 2000-2002.
-# Martin Srebotnjak <miles@filmsi.net>, 2007.
+# Miha Tomšič <miha.tomsic@guest.arnes.si>, 2000 - 2002.
 # Nedeljko Grabant <nedeljkograbant@gmail.com>, 2007.
+# Martin Srebotnjak <miles@filmsi.net>, 2007, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
 "POT-Creation-Date: 2010-03-21 14:06+0000\n"
-"PO-Revision-Date: 2010-04-02 20:06+0100\n"
+"PO-Revision-Date: 2010-04-03 16:40+0100\n"
 "Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -2003,7 +2003,7 @@ msgstr "Odstrani zrnatost"
 
 #: ../gap/gap_mod_layer_dialog.c:502
 msgid "Grain merge"
-msgstr "Združi zrnatost"
+msgstr "Spoji zrnatost"
 
 #: ../gap/gap_mod_layer_dialog.c:507
 #: ../gap/gap_mov_dialog.c:2950
@@ -3159,7 +3159,7 @@ msgstr "Odstrani zrnatost"
 
 #: ../gap/gap_mov_dialog.c:2944
 msgid "Grain Merge"
-msgstr "Združi zrnatost"
+msgstr "Spoji zrnatost"
 
 #: ../gap/gap_mov_dialog.c:2948
 msgid "Darken Only"
@@ -7603,7 +7603,7 @@ msgstr "VKLJUČENO: Oponaša iskalne operacije z zaporednim branjem, tudi če je
 #. the Aspect Ratio Label(s)
 #: ../gap/gap_vex_dialog.c:2397
 msgid "Aspect Ratio:"
-msgstr "Razmerje stranic slike:"
+msgstr "Razmerje stranic:"
 
 #. the output frame
 #. the hbox
@@ -9510,7 +9510,7 @@ msgstr "Največje število B-sličic v sekvenci"
 #. the Set Aspectratio checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1542
 msgid "Set Aspectratio"
-msgstr "Nastavi razmerje stranic slike"
+msgstr "Nastavi razmerje stranic sličic"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1548
 msgid "store aspectratio information (width/height) in the output video"
@@ -9535,7 +9535,7 @@ msgstr "16:9"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1568
 msgid "Select aspect ratio"
-msgstr "Izberite razmerje stranic slike"
+msgstr "Izberite razmerje stranic"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1603
 msgid "FFMpeg Expert Encoder Algorithms"
