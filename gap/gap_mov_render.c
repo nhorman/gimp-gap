@@ -369,7 +369,9 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   guint        l_image_height;
   GimpLayerModeEffects l_mode;
 
-  if(gap_debug) printf("gap_mov_render_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
+  if(gap_debug) 
+  {
+    printf("gap_mov_render_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
                 "       Width=%f Height=%f\n"
                 "       Opacity=%f  Rotate=%f  clip_to_img = %d force_visibility = %d\n"
                 "       src_stepmode = %d\n",
@@ -382,7 +384,8 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
                      val_ptr->clip_to_img,
                      val_ptr->src_force_visible,
                      val_ptr->src_stepmode);
-
+  }
+  
   if(val_ptr->src_stepmode < GAP_STEP_FRAME)
   {
     if(gap_debug)

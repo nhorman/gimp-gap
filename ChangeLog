@@ -1,3 +1,19 @@
+2010-04-19 Wolfgang Hofer <hof@gimp.org>
+
+- move path fix for unwanted object jumps forth and back as reported in #607927
+  (the 1st frame in a segment was sometimes calculated based on the controlpoint
+   of the previous segment. this resulted in the reported  pixel jumps)
+
+- added information label to the move path dialog to show max speed for current segment
+  and current segment length in pixels.
+  (this shall help to adjust ontrolpoints in a way to avoid unwanted speed jumps)
+  
+  * gap/gap_mov_render.c
+  * gap/gap_mov_exec.c [.h]
+  * gap/gap_mov_dialog.c [.h]
+  * docs/reference/txt/plug-in-gap-move-path.txt
+  
+
 2010-03-21 Wolfgang Hofer <hof@gimp.org>
 
 - added gimprc parameters to specify width and height

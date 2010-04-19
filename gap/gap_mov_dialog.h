@@ -243,6 +243,22 @@ typedef struct {
         GapMovValues *val_ptr;
 } GapMovData;
 
+
+typedef struct {
+    /* IN */
+   gint  pointIndexToQuery;
+   gint  startOfSegmentIndexToQuery;
+   gint  endOfSegmentIndexToQuery;
+   gint  tweenCount;
+   
+   /* OUT */
+   gint    segmentNumber;
+   gdouble pathSegmentLengthInPixels;
+   gdouble maxSpeedInPixelsPerFrame;
+   gdouble minSpeedInPixelsPerFrame;
+} GapMovQuery;
+
+
 long  gap_mov_dlg_move_dialog (GapMovData *mov_ptr);
 
 #endif

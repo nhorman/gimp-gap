@@ -439,12 +439,18 @@ Move Path (make things move)
 	 the keyframe is internally stored as 2 (7 - 5)
 	 
 	Keyframes are also used to define path segments.
-	Where a Path segment includes all followin controlpoints
+	Where a Path segment includes all following controlpoints
         until the next Keyframe.
         
         Independent acceleration characteristics can be set at
         those controlpoints that are the begin of a path segment.
         (e.g the 1st controlpoint and all keyframes)
+        
+        The current Segment Number, current segment length (in pixels)
+        and minimal / maximal speed (in pixels per tween) are displayed
+        below the preview.
+        The current Segment is the segment that includes the current
+        displayed controlpoint.
         
         Example:
           You have 500 frames and want to render an object
@@ -453,9 +459,18 @@ Move Path (make things move)
           until frame 400, decelerates until frame 450 and stays still
           at coordinate 470/150 until the end frame 500.
           
+          Tip: 
+          To avoid unwanted speed jumps in this multi segmented
+          example, the controlpoints should be set in a way 
+          that max speed value of segment B is nearly equal
+          to the max speed value of Segment C and segment D.
+          Note that changes of control point coordinates affect the
+          length of the path segment, acceleration characteristic,
+          and number of involved frames (or tweens) also have
+          influence on the speed of the object within a segment.
           
         
-        #Segment A  (standstill)
+        #Segment  A  (standstill in Segment Number 0)
         [ 0]  x:320 y:200
 
         #Segment B  (increasing speed due to acceleration value 20 for Movement)
@@ -478,7 +493,7 @@ Move Path (make things move)
         [13]  x:475 y:155
         [14]  x:475 y:155
 
-        #Segment D  (standstill)
+        #Segment E  (standstill)
         [15]  x:470 y:150  keyframe:450
         [16]  x:470 y:150
 

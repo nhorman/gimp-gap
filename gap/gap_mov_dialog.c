@@ -276,6 +276,12 @@ typedef struct
   GdkCursor     *cursor_wait;
   GdkCursor     *cursor_acitve;
   GimpRGB               pathcolor;
+  
+  
+  GtkWidget            *segNumberLabel;
+  GtkWidget            *segLengthLabel;
+  GtkWidget            *segSpeedLabel;
+  
 } t_mov_gui_stuff;
 
 
@@ -350,6 +356,7 @@ static void        mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp
                                              );
 
 
+static void     mov_upd_seg_labels       (GtkWidget *widget, t_mov_gui_stuff *mgp);
 static void     mov_padd_callback        (GtkWidget *widget,gpointer data);
 static void     mov_pgrab_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void     mov_pins_callback        (GtkWidget *widget,gpointer data);
@@ -472,9 +479,11 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   char      *l_str;
   t_mov_gui_stuff *mgp;
 
-  if(gap_debug) printf("GAP-DEBUG: START gap_mov_dlg_move_dialog\n");
-
   mgp = g_new( t_mov_gui_stuff, 1 );
+  if(gap_debug)
+  {
+    printf("gap_mov_dlg_move_dialog START mgp:%d\n", (int)mgp);
+  }
   if(mgp == NULL)
   {
     printf("error can't alloc path_preview structure\n");
@@ -499,7 +508,10 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->tween_opacity_desc_adj = NULL;
   mgp->trace_opacity_initial_adj = NULL;
   mgp->sel_feather_radius_adj = NULL;
-
+  mgp->segNumberLabel = NULL;
+  mgp->segLengthLabel = NULL;
+  mgp->segSpeedLabel = NULL;
+  
   pvals = mov_ptr->val_ptr;
 
   l_str = gap_base_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
@@ -1560,6 +1572,67 @@ mov_pgrab_callback (GtkWidget *widget,
 }  /* end mov_pgrab_callback */
 
 
+/* --------------------------------
+ * mov_upd_seg_labels
+ * --------------------------------
+ * update information about max speed and path segment length
+ * 
+ */
+static void
+mov_upd_seg_labels(GtkWidget *widget, t_mov_gui_stuff *mgp)
+{
+  if(gap_debug)
+  {
+    printf("mov_upd_seg_labels START mgp:%d widget:%d\n", (int)mgp, (int)widget);
+  }
+
+  if(mgp != NULL)
+  {
+    if((mgp->segLengthLabel != NULL)
+    && (mgp->segSpeedLabel != NULL)
+    && (mgp->segNumberLabel != NULL))
+    {
+       GapMovQuery mov_query;
+       char *numString;
+       
+       mov_query.pointIndexToQuery = pvals->point_idx;
+
+      if(gap_debug)
+      {
+        printf("mov_upd_seg_labels pointIndexToQuery:%d dst_range_end:%d\n"
+              , (int)mov_query.pointIndexToQuery
+              , (int)pvals->dst_range_end
+              );
+      }
+       
+       /* query path segment length and max speed per frame values */
+       gap_mov_exec_query(pvals, mgp->ainfo_ptr, &mov_query);
+       
+       numString = g_strdup_printf("%d"
+                                  , (int)mov_query.segmentNumber
+                                  );
+       gtk_label_set_text( GTK_LABEL(mgp->segNumberLabel), numString);
+       g_free(numString);
+
+       numString = g_strdup_printf("%.1f"
+                                  , (float)mov_query.pathSegmentLengthInPixels
+                                  );
+       gtk_label_set_text( GTK_LABEL(mgp->segLengthLabel), numString);
+       g_free(numString);
+       
+       
+       numString = g_strdup_printf("%.1f / %.1f"
+                                  , (float)mov_query.minSpeedInPixelsPerFrame
+                                  , (float)mov_query.maxSpeedInPixelsPerFrame
+                                  );
+       gtk_label_set_text( GTK_LABEL(mgp->segSpeedLabel), numString);
+       g_free(numString);
+       
+    }
+  }
+}
+
+
 static void
 mov_padd_callback (GtkWidget *widget,
                       gpointer   data)
@@ -1620,7 +1693,7 @@ mov_pdel_callback (GtkWidget *widget,
   l_idx = pvals->point_idx_max;
   if(pvals->point_idx_max == 0)
   {
-    /* This is the las t point to delete */
+    /* This is the last point to delete */
     p_reset_points();
   }
   else
@@ -2089,6 +2162,8 @@ p_point_refresh(t_mov_gui_stuff *mgp)
   gtk_adjustment_set_value (mgp->accSelFeatherRadius_adj,
                             (gdouble)mgp->accSelFeatherRadius);
 
+  mov_upd_seg_labels(NULL, mgp);
+  
   mgp->in_call = FALSE;
 }       /* end p_point_refresh */
 
@@ -3576,7 +3651,6 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
                               ,gboolean vertical_layout
                               )
 {
-  GtkWidget *vcbox;
   GtkWidget *master_table;
   GtkWidget *table;
   GtkObject *adj;
@@ -3584,6 +3658,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   gint  master_rows;
   gint  master_cols;
   gint  tabcol, tabrow, boxcol, boxrow;
+  gint  row;
 
   if(vertical_layout)
   {
@@ -3633,6 +3708,9 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   g_signal_connect (G_OBJECT (adj), "value_changed",
                     G_CALLBACK (gimp_int_adjustment_update),
                     &pvals->dst_range_start);
+  g_signal_connect (adj, "value-changed",
+                            G_CALLBACK (mov_upd_seg_labels),
+                            mgp);
 
   /* the end frame scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 1,          /* table col, row */
@@ -3651,6 +3729,9 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   g_signal_connect (G_OBJECT (adj), "value_changed",
                     G_CALLBACK (gimp_int_adjustment_update),
                     &pvals->dst_range_end);
+  g_signal_connect (adj, "value-changed",
+                            G_CALLBACK (mov_upd_seg_labels),
+                            mgp);
 
   /* the Layerstack scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 2,          /* table col, row */
@@ -3671,10 +3752,11 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
                     G_CALLBACK (mov_instant_int_adjustment_update),
                     &pvals->dst_layerstack);
 
-  /* the vbox for checkbuttons */
-  vcbox = gtk_vbox_new (FALSE, 3);
-  gtk_widget_show (vcbox);
+  /* the table for checkbuttons and info labels */
+  table = gtk_table_new (3, 3, FALSE);
+  gtk_widget_show (table);
 
+  row = 0;
 
   /* toggle force visibility  */
   check_button = gtk_check_button_new_with_label ( _("Force Visibility"));
@@ -3688,7 +3770,11 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK  (mov_force_visibility_toggle_callback),
                     &pvals->src_force_visible);
-  gtk_box_pack_start (GTK_BOX (vcbox), check_button, TRUE, TRUE, 0);
+  gtk_table_attach(GTK_TABLE(table), check_button, 0, 1, row, row+1
+                  , GTK_FILL, GTK_FILL, 4, 0);
+
+
+  row = 1;
 
   /* toggle clip_to_image */
   check_button = gtk_check_button_new_with_label ( _("Clip To Frame"));
@@ -3701,10 +3787,16 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (mov_gint_toggle_callback),
                     &pvals->clip_to_img);
-  gtk_box_pack_start (GTK_BOX (vcbox), check_button, TRUE, TRUE, 0);
-
-  gtk_table_attach(GTK_TABLE(master_table), vcbox, boxcol, boxcol+1, boxrow, boxrow+1
+  gtk_table_attach(GTK_TABLE(table), check_button, 0, 1, row, row+1
                   , GTK_FILL, GTK_FILL, 4, 0);
+
+
+
+
+
+  gtk_table_attach(GTK_TABLE(master_table), table, boxcol, boxcol+1, boxrow, boxrow+1
+                  , GTK_FILL, GTK_FILL, 4, 0);
+
 
   return(master_table);
 }  /* end mov_path_framerange_box_create */
@@ -4510,6 +4602,67 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   }
 
 
+  /* segmnt information labels */
+  {
+    GtkWidget *label;
+    GtkWidget *seg_table;
+    gint seg_row;
+    
+    seg_row = 0;
+    
+    /* the preview sub table (1 row) */
+    seg_table = gtk_table_new ( 1, 6, FALSE );
+    gtk_widget_show (seg_table);
+
+    label = gtk_label_new(_("Segment:"));
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach(GTK_TABLE(seg_table), label, 0, 1, seg_row, seg_row+1
+                  , GTK_FILL, GTK_FILL, 4, 0);
+ 
+    label = gtk_label_new("0");
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    mgp->segNumberLabel = label;
+    gtk_table_attach(GTK_TABLE(seg_table), label, 1, 2, seg_row, seg_row+1
+                    , GTK_FILL, GTK_FILL, 4, 0);
+  
+
+    label = gtk_label_new(_("Length:"));
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach(GTK_TABLE(seg_table), label, 2, 3, seg_row, seg_row+1
+                  , GTK_FILL, GTK_FILL, 4, 0);
+  
+ 
+    label = gtk_label_new("0.0");
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    mgp->segLengthLabel = label;
+    gtk_table_attach(GTK_TABLE(seg_table), label, 3, 4, seg_row, seg_row+1
+                    , GTK_FILL, GTK_FILL, 4, 0);
+
+    label = gtk_label_new(_("Speed Min/Max:"));
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach(GTK_TABLE(seg_table), label, 4, 5, seg_row, seg_row+1
+                    , GTK_FILL, GTK_FILL, 4, 0);
+
+    label = gtk_label_new("0.0");
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+    gtk_widget_show (label);
+    mgp->segSpeedLabel = label;
+    gtk_table_attach(GTK_TABLE(seg_table), label, 5, 6, seg_row, seg_row+1
+                    , GTK_FILL, GTK_FILL, 4, 0);
+
+
+    gtk_table_attach(GTK_TABLE(pv_table), seg_table, 0, 1, 1, 2,
+                     GTK_FILL|GTK_EXPAND, 0, 0, 0);
+  
+  }
+
+
+
   /* hbox_show block */
   {
     GtkWidget *hbox_show;
@@ -4518,7 +4671,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     hbox_show = gtk_hbox_new (FALSE, 3);
     gtk_widget_show (hbox_show);
 
-    /* pathclor selction button */
+    /* pathclor selection button */
     {
       GtkWidget      *color_button;
 
@@ -4604,8 +4757,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                       mgp);
 
 
-    gtk_table_attach(GTK_TABLE(pv_table), hbox_show, 0, 1, 1, 2,
-                     0, 0, 16, 0);
+    gtk_table_attach(GTK_TABLE(pv_table), hbox_show, 0, 1, 2, 3,
+                     GTK_FILL, 0, 0, 0);
   }
 
   /* the preview sub table (1 row) */
@@ -4632,7 +4785,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   mgp->preview_frame_nr_adj = GTK_ADJUSTMENT(adj);
 
 
-  gtk_table_attach( GTK_TABLE(pv_table), pv_sub_table, 0, 1, 2, 3,
+  gtk_table_attach( GTK_TABLE(pv_table), pv_sub_table, 0, 1, 3, 4,
                     GTK_FILL|GTK_EXPAND, 0, 0, 0 );
   gtk_widget_show (pv_sub_table);
 
@@ -4745,6 +4898,8 @@ mov_path_prevw_draw ( t_mov_gui_stuff *mgp, gint update )
   guchar   l_red, l_green, l_blue;
 
   if(gap_debug) printf("mov_path_prevw_draw: START update:%d\n", (int)update);
+
+  mov_upd_seg_labels(NULL, mgp);
 
   if(mgp->pv_ptr == NULL)
   {
@@ -4995,6 +5150,8 @@ mov_path_keyframe_update ( GtkWidget *widget, t_mov_gui_stuff *mgp)
 {
   gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), &mgp->keyframe_abs);
   p_accel_widget_sensitivity(mgp);
+  p_points_to_tab(mgp);
+  mov_upd_seg_labels(NULL, mgp);
 }
 
 
@@ -5094,6 +5251,8 @@ mov_path_acceleration_adjustment_update(GtkWidget *widget,
   if(mgp == NULL) return;
   old_val = *val;
   gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), (gpointer)val);
+  p_points_to_tab(mgp);
+  mov_upd_seg_labels(NULL, mgp);
 
   return;
 
