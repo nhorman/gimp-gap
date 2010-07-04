@@ -1,3 +1,38 @@
+2010-07-04 Wolfgang Hofer <hof@gimp.org>
+
+- fixed bug in move path rendering acceleration handling at last controlpoint.
+  when acceleration characteristic value other than 0 and 1 was used, 
+  the value(s) specified in the last controlpoint were not reached in the last frame.
+
+  example:
+  have 5 frames and use 2 controlpoints that scale an object from 25 % to 400 %
+  expected result is an object scaled to 400% in the last frame
+  
+  with (buggy version) got unexpected result:
+  frame  | scale in %
+  -------+------------
+  1      |  25.0
+  2      |  64.3979 
+  3      | 128.9717
+  4      | 208.4185
+  5      | 299.3830    // expected to reach 400% in the last rendered frame
+
+
+  with fixed version now get the expected result:
+
+  frame  | scale in %
+  -------+------------
+  1      |  25.0
+  2      |  78.8452 
+  3      | 167.0984
+  4      | 275.6785
+  5      | 400.0000
+
+- fixed bug in fetching boolean gimprc parmeter that always returned FALSE
+
+  * gap/gap_mov_exec.c
+  * libgapbase/gap_base.c [.h]
+
 2010-04-19 Wolfgang Hofer <hof@gimp.org>
 
 - move path fix for unwanted object jumps forth and back as reported in #607927

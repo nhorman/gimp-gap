@@ -178,4 +178,28 @@ gint32
 gap_base_get_current_time(void);
 
 
+
+/* ------------------------------
+ * gap_base_mix_value_exp
+ * ------------------------------
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            exponential mix for factors inbetween
+ */
+gdouble 
+gap_base_mix_value_exp(gdouble factor, gdouble a, gdouble b);
+
+/* ---------------------------------
+ * gap_base_mix_value_exp_and_round
+ * ---------------------------------
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            exponential mix for factors inbetween
+ *            and rounded
+ *            (0.5 is rounded to 1.0, -0.5 is rounded to -1.0
+ */
+gdouble 
+gap_base_mix_value_exp_and_round(gdouble factor, gdouble a, gdouble b);
+
+
 #endif

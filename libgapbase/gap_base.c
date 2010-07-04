@@ -456,7 +456,7 @@ gap_base_get_gimprc_gboolean_value (const char *gimprc_option_name
      value = FALSE;
      if((*value_string == 'y') || (*value_string == 'Y'))
      {
-       value = FALSE;
+       value = TRUE;
      }
      g_free(value_string);
   }
@@ -520,3 +520,56 @@ gap_base_get_current_time(void)
   return ((gint32)time(0));
 }
 
+
+/* ------------------------------
+ * gap_base_mix_value_exp
+ * ------------------------------
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            exponential mix for factors inbetween
+ */
+gdouble 
+gap_base_mix_value_exp(gdouble factor, gdouble a, gdouble b)
+{
+  gdouble minAB;
+  gdouble offset;
+  gdouble value;
+  
+  if((a > 0) && (b > 0))
+  {
+    return ((a) * exp((factor) * log((b) / (a))));
+  }
+
+  if(a == b)
+  {
+    return (a);
+  }
+  
+  /* offset that makes both a and b positve values > 0
+   * to perform the exponential mix calculation
+   */
+  
+  minAB = (a < b ? a : b);
+  offset = 1 - minAB;
+  
+  value = ((a + offset) * exp((factor) * log((b + offset) / (a + offset))));
+
+  /* shift mixed value back to original range */
+  return (value - offset);
+}  /* end gap_base_mix_value_exp */
+
+
+/* ---------------------------------
+ * gap_base_mix_value_exp_and_round
+ * ---------------------------------
+ *  result is a  for factor 0.0
+ *            b  for factor 1.0
+ *            exponential mix for factors inbetween
+ *            and rounded
+ *            (0.5 is rounded to 1.0, -0.5 is rounded to -1.0
+ */
+gdouble 
+gap_base_mix_value_exp_and_round(gdouble factor, gdouble a, gdouble b)
+{
+  return (ROUND(gap_base_mix_value_exp(factor, a, b)));
+}

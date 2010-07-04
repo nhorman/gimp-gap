@@ -704,7 +704,7 @@ p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames)
     }
   }
 
-  return (frames);
+  return (MAX(1, (frames -1)));
 
 }  /* end p_calculate_relframe_nr_at_index */
 
