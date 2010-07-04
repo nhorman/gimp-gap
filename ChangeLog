@@ -1,5 +1,15 @@
 2010-07-04 Wolfgang Hofer <hof@gimp.org>
 
+- removed the execution bit on .txt, *.c and *.h source files
+  as suggested in #623078
+  
+    find . -name '*.txt' -exec chmod a-x '{}' \;
+    find . -name '*.c' -exec chmod a-x '{}' \;
+    find . -name '*.h' -exec chmod a-x '{}' \;
+  
+  
+2010-07-04 Wolfgang Hofer <hof@gimp.org>
+
 - fixed bug in move path rendering acceleration handling at last controlpoint.
   when acceleration characteristic value other than 0 and 1 was used, 
   the value(s) specified in the last controlpoint were not reached in the last frame.
