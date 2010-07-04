@@ -1,5 +1,29 @@
 2010-07-04 Wolfgang Hofer <hof@gimp.org>
 
+- added gitignore files (applied patch provided by Carlo Baldassi #623050)
+
+   git add .gitignore
+   git add docs/.gitignore
+   git add docs/howto/.gitignore
+   git add docs/howto/txt/.gitignore
+   git add docs/reference/.gitignore
+   git add docs/reference/txt/.gitignore
+   git add extern_libs/.gitignore
+   git add gap/.gitignore
+   git add images/.gitignore
+   git add libgapbase/.gitignore
+   git add libgapvidapi/.gitignore
+   git add libgapvidutil/.gitignore
+   git add libwavplayclient/.gitignore
+   git add po/.gitignore
+   git add vid_common/.gitignore
+   git add vid_enc_avi/.gitignore
+   git add vid_enc_ffmpeg/.gitignore
+   git add vid_enc_rawframes/.gitignore
+   git add vid_enc_single/.gitignore
+   
+2010-07-04 Wolfgang Hofer <hof@gimp.org>
+
 - removed the execution bit on .txt, *.c and *.h source files
   as suggested in #623078
   
