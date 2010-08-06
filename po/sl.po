@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
-"POT-Creation-Date: 2010-03-21 14:06+0000\n"
-"PO-Revision-Date: 2010-04-03 16:40+0100\n"
-"Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
+"POT-Creation-Date: 2010-06-26 10:12+0000\n"
+"PO-Revision-Date: 2010-08-06 17:40+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -356,7 +356,7 @@ msgstr "Spremeni zgoščenost sličic"
 #: ../gap/gap_base_ops.c:1751
 #: ../gap/gap_decode_xanim.c:247
 #: ../gap/gap_mod_layer_dialog.c:1354
-#: ../gap/gap_mov_dialog.c:3621
+#: ../gap/gap_mov_dialog.c:3696
 #: ../gap/gap_mpege.c:302
 #: ../gap/gap_onion_dialog.c:914
 #: ../gap/gap_range_ops.c:296
@@ -383,7 +383,7 @@ msgstr "Prizadeti obseg se začne s številko te sličice."
 #: ../gap/gap_base_ops.c:1759
 #: ../gap/gap_decode_xanim.c:257
 #: ../gap/gap_mod_layer_dialog.c:1376
-#: ../gap/gap_mov_dialog.c:3639
+#: ../gap/gap_mov_dialog.c:3717
 #: ../gap/gap_mpege.c:312
 #: ../gap/gap_onion_dialog.c:921
 #: ../gap/gap_range_ops.c:306
@@ -542,7 +542,7 @@ msgstr "Drugi prehod pri preštevilčenju sličic"
 
 #. toggle bluebox
 #: ../gap/gap_bluebox.c:251
-#: ../gap/gap_mov_dialog.c:3109
+#: ../gap/gap_mov_dialog.c:3184
 msgid "Bluebox"
 msgstr "Modro ozadje"
 
@@ -554,7 +554,7 @@ msgstr "Izbor po barvi"
 #. the keycolor label
 #. keycolor label
 #: ../gap/gap_bluebox.c:288
-#: ../gap/gap_mov_dialog.c:3125
+#: ../gap/gap_mov_dialog.c:3200
 msgid "Keycolor:"
 msgstr "Barva ključenja:"
 
@@ -647,7 +647,7 @@ msgstr "VKLJUČENO: Sproti osvežuj predogled slike"
 #. button
 #. the preview frame
 #: ../gap/gap_bluebox.c:447
-#: ../gap/gap_mov_dialog.c:4429
+#: ../gap/gap_mov_dialog.c:4521
 msgid "Preview"
 msgstr "Predogled "
 
@@ -880,19 +880,19 @@ msgstr "** ni na voljo **"
 
 #: ../gap/gap_dbbrowser_utils.c:767
 msgid "Searching by name - please wait"
-msgstr "Iskanje po imenu - prosim, počakajte"
+msgstr "Iskanje po imenu - prosimo, počakajte"
 
 #: ../gap/gap_dbbrowser_utils.c:790
 msgid "Searching by blurb - please wait"
-msgstr "Iskanje po opisu - prosim, počakajte"
+msgstr "Iskanje po opisu - prosimo, počakajte"
 
 #: ../gap/gap_dbbrowser_utils.c:802
 msgid "Searching by menupath - please wait"
-msgstr "Iskanje po poti menija - prosim, počakajte"
+msgstr "Iskanje po poti menija - prosimo, počakajte"
 
 #: ../gap/gap_dbbrowser_utils.c:806
 msgid "Searching - please wait"
-msgstr "Iskanje v teku - prosim, počakajte"
+msgstr "Iskanje v teku - prosimo, počakajte"
 
 #: ../gap/gap_dbbrowser_utils.c:905
 msgid "No matches"
@@ -1923,47 +1923,47 @@ msgid "Layer Modes"
 msgstr "Načini plasti"
 
 #: ../gap/gap_mod_layer_dialog.c:415
-#: ../gap/gap_mov_dialog.c:2933
+#: ../gap/gap_mov_dialog.c:3008
 msgid "Normal"
 msgstr "Navadno"
 
 #: ../gap/gap_mod_layer_dialog.c:420
-#: ../gap/gap_mov_dialog.c:2934
+#: ../gap/gap_mov_dialog.c:3009
 msgid "Dissolve"
 msgstr "Prelij"
 
 #: ../gap/gap_mod_layer_dialog.c:425
-#: ../gap/gap_mov_dialog.c:2935
+#: ../gap/gap_mov_dialog.c:3010
 msgid "Multiply"
 msgstr "Pomnoži"
 
 #: ../gap/gap_mod_layer_dialog.c:430
-#: ../gap/gap_mov_dialog.c:2936
+#: ../gap/gap_mov_dialog.c:3011
 msgid "Divide"
 msgstr "Deli"
 
 #: ../gap/gap_mod_layer_dialog.c:435
-#: ../gap/gap_mov_dialog.c:2937
+#: ../gap/gap_mov_dialog.c:3012
 msgid "Screen"
 msgstr "Zakrij"
 
 #: ../gap/gap_mod_layer_dialog.c:440
-#: ../gap/gap_mov_dialog.c:2938
+#: ../gap/gap_mov_dialog.c:3013
 msgid "Overlay"
 msgstr "Prekrij"
 
 #: ../gap/gap_mod_layer_dialog.c:446
-#: ../gap/gap_mov_dialog.c:2945
+#: ../gap/gap_mov_dialog.c:3020
 msgid "Difference"
 msgstr "Razlika"
 
 #: ../gap/gap_mod_layer_dialog.c:451
-#: ../gap/gap_mov_dialog.c:2946
+#: ../gap/gap_mov_dialog.c:3021
 msgid "Addition"
 msgstr "Dodaj"
 
 #: ../gap/gap_mod_layer_dialog.c:456
-#: ../gap/gap_mov_dialog.c:2947
+#: ../gap/gap_mov_dialog.c:3022
 msgid "Subtract"
 msgstr "Odštej"
 
@@ -1976,12 +1976,12 @@ msgid "Lighten only"
 msgstr "Samo posvetli"
 
 #: ../gap/gap_mod_layer_dialog.c:472
-#: ../gap/gap_mov_dialog.c:2939
+#: ../gap/gap_mov_dialog.c:3014
 msgid "Dodge"
 msgstr "Posvetli"
 
 #: ../gap/gap_mod_layer_dialog.c:477
-#: ../gap/gap_mov_dialog.c:2940
+#: ../gap/gap_mov_dialog.c:3015
 msgid "Burn"
 msgstr "Ožgi"
 
@@ -2006,22 +2006,22 @@ msgid "Grain merge"
 msgstr "Spoji zrnatost"
 
 #: ../gap/gap_mod_layer_dialog.c:507
-#: ../gap/gap_mov_dialog.c:2950
+#: ../gap/gap_mov_dialog.c:3025
 msgid "Hue"
 msgstr "Obarvanost"
 
 #: ../gap/gap_mod_layer_dialog.c:512
-#: ../gap/gap_mov_dialog.c:2951
+#: ../gap/gap_mov_dialog.c:3026
 msgid "Saturation"
 msgstr "Nasičenost"
 
 #: ../gap/gap_mod_layer_dialog.c:517
-#: ../gap/gap_mov_dialog.c:2952
+#: ../gap/gap_mov_dialog.c:3027
 msgid "Color"
 msgstr "Barva"
 
 #: ../gap/gap_mod_layer_dialog.c:522
-#: ../gap/gap_mov_dialog.c:2953
+#: ../gap/gap_mov_dialog.c:3028
 msgid "Value"
 msgstr "Vrednost"
 
@@ -2561,7 +2561,7 @@ msgstr "Izberite ciljno plast"
 #. gtk_container_add (GTK_CONTAINER (abox), table3);
 #. the x/y offest labels
 #: ../gap/gap_morph_dialog.c:3233
-#: ../gap/gap_mov_dialog.c:4315
+#: ../gap/gap_mov_dialog.c:4407
 #: ../gap/gap_name2layer_main.c:475
 #: ../gap/gap_resi_dialog.c:847
 msgid "X:"
@@ -2575,7 +2575,7 @@ msgstr "Koordinata X točke preoblikovanja"
 #. Y
 #. table col, row
 #: ../gap/gap_morph_dialog.c:3264
-#: ../gap/gap_mov_dialog.c:4333
+#: ../gap/gap_mov_dialog.c:4425
 #: ../gap/gap_name2layer_main.c:486
 #: ../gap/gap_resi_dialog.c:853
 msgid "Y:"
@@ -2712,7 +2712,7 @@ msgid ""
 "ON: use 2 or more pointsets from file. Please create and save the pointsets first, using filenames with a 2-digit numberpart before the extension (points_01.txt, points_02.txt, points_03.txt) then open and SHIFT open the first and last pointset\n"
 "OFF: use current set of workpoints"
 msgstr ""
-"VKLJUČENO: Uporabi dve ali več množic točk iz datoteke. Prosim, najprej ustvarite in shranite množice točk z imeni datotek z dvomestnim številskim delom pred končnico (točke_01.txt, točke_02.txt, točke_03.txt), nato odprite in SHIFT-odprite prvo in zadnjo množico točk.\n"
+"VKLJUČENO: Uporabi dve ali več množic točk iz datoteke. Najprej ustvarite in shranite množice točk z imeni datotek z dvomestnim številskim delom pred končnico (točke_01.txt, točke_02.txt, točke_03.txt), nato odprite in s SHIFT-om odprite prvo in zadnjo množico točk.\n"
 "IZKLJUČENO: Uporabi trenutno množico delovnih točk."
 
 #. the lower workpoint label
@@ -2923,64 +2923,64 @@ msgstr "Od:"
 msgid "To:"
 msgstr "Do:"
 
-#: ../gap/gap_mov_dialog.c:661
+#: ../gap/gap_mov_dialog.c:673
 msgid "Move Path"
 msgstr "Premakni pot"
 
-#: ../gap/gap_mov_dialog.c:704
+#: ../gap/gap_mov_dialog.c:716
 msgid "Show preview frame with selected source layer at current controlpoint"
 msgstr "Pokaži predogled sličice z izbrano izvorno plastjo pri trenutni nadzorni točki"
 
-#: ../gap/gap_mov_dialog.c:715
+#: ../gap/gap_mov_dialog.c:727
 msgid "Generate animated preview as multilayer image"
 msgstr "Ustvari animirani predogled kot večplastno sliko"
 
-#: ../gap/gap_mov_dialog.c:736
+#: ../gap/gap_mov_dialog.c:748
 msgid "Copy moving source-layer(s) into frames"
 msgstr "Kopiranje premikajočih se izvornih plasti v sličice"
 
-#: ../gap/gap_mov_dialog.c:763
+#: ../gap/gap_mov_dialog.c:775
 msgid "Source Select"
 msgstr "Izbira vira"
 
-#: ../gap/gap_mov_dialog.c:771
+#: ../gap/gap_mov_dialog.c:783
 msgid "Advanced Settings"
 msgstr "Napredne nastavitve"
 
-#: ../gap/gap_mov_dialog.c:840
+#: ../gap/gap_mov_dialog.c:852
 msgid ""
 "No source image was selected.\n"
 "Please open a 2nd image of the same type before opening 'Move Path'"
 msgstr ""
 "Nobena izvorna slika ni bila izbrana.\n"
-"Prosim, odprite drugo sliko iste vrste, preden odprete 'Premakni pot'."
+"Preden odprete 'Premakni pot', odprite drugo sliko iste vrste."
 
-#: ../gap/gap_mov_dialog.c:1028
+#: ../gap/gap_mov_dialog.c:1040
 msgid "Object on empty frames"
 msgstr "Predmet na prazni sličici"
 
-#: ../gap/gap_mov_dialog.c:1029
+#: ../gap/gap_mov_dialog.c:1041
 msgid "Object on one frame"
 msgstr "Predmet na eni sličici"
 
-#: ../gap/gap_mov_dialog.c:1030
+#: ../gap/gap_mov_dialog.c:1042
 msgid "Exact object on frames"
 msgstr "Natanko predmet na sličicah"
 
-#: ../gap/gap_mov_dialog.c:1061
+#: ../gap/gap_mov_dialog.c:1073
 msgid "Anim Preview Mode:"
 msgstr "Način predogleda animacije:"
 
-#: ../gap/gap_mov_dialog.c:1083
+#: ../gap/gap_mov_dialog.c:1095
 msgid "Scale Preview:"
 msgstr "Spremeni merilo predogleda:"
 
-#: ../gap/gap_mov_dialog.c:1084
+#: ../gap/gap_mov_dialog.c:1096
 msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Pomanjšaj merilo slike za predogled animacije (v %)"
 
 #. the Framerate lable
-#: ../gap/gap_mov_dialog.c:1094
+#: ../gap/gap_mov_dialog.c:1106
 #: ../gap/gap_mpege.c:321
 #: ../gap/gap_navigator_dialog.c:4255
 #: ../gap/gap_story_dialog.c:8783
@@ -2988,20 +2988,20 @@ msgstr "Pomanjšaj merilo slike za predogled animacije (v %)"
 msgid "Framerate:"
 msgstr "Hitrost sličic:"
 
-#: ../gap/gap_mov_dialog.c:1095
+#: ../gap/gap_mov_dialog.c:1107
 msgid "Framerate to use in the animated preview in frames/sec"
 msgstr "Hitrost sličic, uporabljena pri predogledu animacije v št. sličic/sekundo"
 
-#: ../gap/gap_mov_dialog.c:1111
+#: ../gap/gap_mov_dialog.c:1123
 msgid "Copy to Video Buffer:"
 msgstr "Kopiraj v video medpomnilnik:"
 
-#: ../gap/gap_mov_dialog.c:1112
+#: ../gap/gap_mov_dialog.c:1124
 msgid "Save all single frames of animated preview to video buffer.(configured in gimprc by video-paste-dir and video-paste-basename)"
 msgstr "Shrani vse posamične sličice predogleda animacije v video medpomnilnik (konfigurirano v datoteki gimprc z video-paste-dir in video-paste-basename)."
 
 #. the Default button
-#: ../gap/gap_mov_dialog.c:1119
+#: ../gap/gap_mov_dialog.c:1131
 #: ../gap/gap_mpege.c:373
 #: ../gap/gap_name2layer_main.c:512
 #: ../gap/gap_split.c:505
@@ -3012,7 +3012,7 @@ msgstr "Shrani vse posamične sličice predogleda animacije v video medpomnilnik
 msgid "Default"
 msgstr "Privzeto"
 
-#: ../gap/gap_mov_dialog.c:1120
+#: ../gap/gap_mov_dialog.c:1132
 #: ../gap/gap_mpege.c:374
 #: ../gap/gap_name2layer_main.c:513
 #: ../gap/gap_split.c:506
@@ -3020,19 +3020,19 @@ msgstr "Privzeto"
 msgid "Reset all parameters to default values"
 msgstr "Ponastavi vse parametre na privzete vrednosti"
 
-#: ../gap/gap_mov_dialog.c:1122
+#: ../gap/gap_mov_dialog.c:1134
 msgid "Move Path Animated Preview"
 msgstr "Premakni poti predogleda animacije"
 
-#: ../gap/gap_mov_dialog.c:1123
+#: ../gap/gap_mov_dialog.c:1135
 msgid "Options"
 msgstr "Možnosti"
 
-#: ../gap/gap_mov_dialog.c:1175
+#: ../gap/gap_mov_dialog.c:1187
 msgid "Generation of animated preview failed"
 msgstr "Pri ustvarjanju predogleda animacije je prišlo do napake"
 
-#: ../gap/gap_mov_dialog.c:1467
+#: ../gap/gap_mov_dialog.c:1479
 #, c-format
 msgid ""
 "No stroke ids found in path:\n"
@@ -3045,7 +3045,7 @@ msgstr ""
 "slike:\n"
 " '%s'"
 
-#: ../gap/gap_mov_dialog.c:1504
+#: ../gap/gap_mov_dialog.c:1516
 #, c-format
 msgid ""
 "Unsupported pathtype %d found in path:\n"
@@ -3058,7 +3058,7 @@ msgstr ""
 "slike:\n"
 " '%s'"
 
-#: ../gap/gap_mov_dialog.c:1517
+#: ../gap/gap_mov_dialog.c:1529
 #, c-format
 msgid ""
 "No controlpoints found in path:\n"
@@ -3071,7 +3071,7 @@ msgstr ""
 "slike:\n"
 " '%s'"
 
-#: ../gap/gap_mov_dialog.c:1554
+#: ../gap/gap_mov_dialog.c:1566
 #, c-format
 msgid ""
 "No path found in the image:\n"
@@ -3080,20 +3080,20 @@ msgstr ""
 "V sliki ni mogoče najti poti:\n"
 "'%s'"
 
-#: ../gap/gap_mov_dialog.c:1903
+#: ../gap/gap_mov_dialog.c:1976
 msgid "Load Path Points from File"
 msgstr "Naloži točke poti iz datoteke"
 
-#: ../gap/gap_mov_dialog.c:1944
+#: ../gap/gap_mov_dialog.c:2017
 msgid "Save Path Points to File"
 msgstr "Shrani točke poti v datoteko"
 
-#: ../gap/gap_mov_dialog.c:2686
+#: ../gap/gap_mov_dialog.c:2761
 #, c-format
 msgid "Current Point: [ %3d ] of [ %3d ]"
 msgstr "Trenutna točka: [ %3d ] od [ %3d ]"
 
-#: ../gap/gap_mov_dialog.c:2824
+#: ../gap/gap_mov_dialog.c:2899
 #, c-format
 msgid ""
 "ERROR: Could not open controlpoints\n"
@@ -3104,7 +3104,7 @@ msgstr ""
 "Ime datoteke: '%s'\n"
 "%s"
 
-#: ../gap/gap_mov_dialog.c:2830
+#: ../gap/gap_mov_dialog.c:2905
 #, c-format
 msgid ""
 "ERROR: Could not read controlpoints\n"
@@ -3115,7 +3115,7 @@ msgstr ""
 "Ime datoteke: '%s'\n"
 "(to ni veljavna datoteka z nadzornimi točkami)"
 
-#: ../gap/gap_mov_dialog.c:2861
+#: ../gap/gap_mov_dialog.c:2936
 #, c-format
 msgid ""
 "Failed to write controlpointfile\n"
@@ -3127,17 +3127,17 @@ msgstr ""
 "%s"
 
 #. Source Layer menu
-#: ../gap/gap_mov_dialog.c:2907
+#: ../gap/gap_mov_dialog.c:2982
 msgid "Source Image/Layer:"
 msgstr "Izvorna slika/plast:"
 
-#: ../gap/gap_mov_dialog.c:2917
+#: ../gap/gap_mov_dialog.c:2992
 msgid "Source object to insert into destination frames of the specified range"
 msgstr "Izvorni objekt, ki naj bo vstavljen v ciljno sličico v navedenem obsegu."
 
 #. Paintmode combo (menu)
 #. the operating Mode label
-#: ../gap/gap_mov_dialog.c:2928
+#: ../gap/gap_mov_dialog.c:3003
 #: ../gap/gap_name2layer_main.c:444
 #: ../gap/gap_vex_dialog.c:2437
 #: ../gap/gap_video_index_creator.c:982
@@ -3145,46 +3145,46 @@ msgstr "Izvorni objekt, ki naj bo vstavljen v ciljno sličico v navedenem obsegu
 msgid "Mode:"
 msgstr "Način:"
 
-#: ../gap/gap_mov_dialog.c:2941
+#: ../gap/gap_mov_dialog.c:3016
 msgid "Hard Light"
 msgstr "Trda osvetlitev"
 
-#: ../gap/gap_mov_dialog.c:2942
+#: ../gap/gap_mov_dialog.c:3017
 msgid "Soft Light"
 msgstr "Mehka osvetlitev"
 
-#: ../gap/gap_mov_dialog.c:2943
+#: ../gap/gap_mov_dialog.c:3018
 msgid "Grain Extract"
 msgstr "Odstrani zrnatost"
 
-#: ../gap/gap_mov_dialog.c:2944
+#: ../gap/gap_mov_dialog.c:3019
 msgid "Grain Merge"
 msgstr "Spoji zrnatost"
 
-#: ../gap/gap_mov_dialog.c:2948
+#: ../gap/gap_mov_dialog.c:3023
 msgid "Darken Only"
 msgstr "Samo potemni"
 
-#: ../gap/gap_mov_dialog.c:2949
+#: ../gap/gap_mov_dialog.c:3024
 msgid "Lighten Only"
 msgstr "Samo posvetli"
 
-#: ../gap/gap_mov_dialog.c:2954
+#: ../gap/gap_mov_dialog.c:3029
 msgid "Keep Paintmode"
 msgstr "Obdrži način slikanja"
 
-#: ../gap/gap_mov_dialog.c:2964
+#: ../gap/gap_mov_dialog.c:3039
 msgid "Paintmode"
 msgstr "Način slikanja"
 
 #. Loop Stepmode menu (Label)
-#: ../gap/gap_mov_dialog.c:2972
+#: ../gap/gap_mov_dialog.c:3047
 msgid "Stepmode:"
 msgstr "Koračni način:"
 
 #. StepSpeedFactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:2991
+#: ../gap/gap_mov_dialog.c:3066
 msgid "SpeedFactor:"
 msgstr "Faktor hitrosti:"
 
@@ -3196,126 +3196,126 @@ msgstr "Faktor hitrosti:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:2999
+#: ../gap/gap_mov_dialog.c:3074
 msgid "Source and target frames step synchronized at value 1.0. A value of 0.5 will step the source half time slower. One source step is done only at every 2nd target frame."
 msgstr "Izvorni in ciljni korak sličic sta sinhronizirana pri vrednosti 1,0. Vrednost 0,5 povzroča, da je ciljni enkrat počasnejši. En korak pri izvoru povzroči spremembo pri vsaki drugi ciljni sličici."
 
 #. Loop Stepmode combo
 #. the playback mode checkbuttons
 #. Loop Toggle
-#: ../gap/gap_mov_dialog.c:3011
+#: ../gap/gap_mov_dialog.c:3086
 #: ../gap/gap_player_dialog.c:7868
 msgid "Loop"
 msgstr "Zankaj"
 
-#: ../gap/gap_mov_dialog.c:3012
+#: ../gap/gap_mov_dialog.c:3087
 msgid "Loop Reverse"
 msgstr "Zankaj v nasprotni smeri"
 
-#: ../gap/gap_mov_dialog.c:3013
+#: ../gap/gap_mov_dialog.c:3088
 msgid "Once"
 msgstr "Enkrat"
 
-#: ../gap/gap_mov_dialog.c:3014
+#: ../gap/gap_mov_dialog.c:3089
 msgid "Once Reverse"
 msgstr "Enkrat v nasprotni smeri"
 
-#: ../gap/gap_mov_dialog.c:3015
+#: ../gap/gap_mov_dialog.c:3090
 msgid "Ping Pong"
 msgstr "Ping pong"
 
 #. radio button delace_mode None
 #. radio button flip_request None
-#: ../gap/gap_mov_dialog.c:3016
+#: ../gap/gap_mov_dialog.c:3091
 #: ../gap/gap_story_properties.c:2065
 #: ../gap/gap_story_properties.c:4137
 #: ../gap/gap_story_properties.c:4283
 msgid "None"
 msgstr "Brez"
 
-#: ../gap/gap_mov_dialog.c:3017
+#: ../gap/gap_mov_dialog.c:3092
 msgid "Frame Loop"
 msgstr "Zankanje sličic"
 
-#: ../gap/gap_mov_dialog.c:3018
+#: ../gap/gap_mov_dialog.c:3093
 msgid "Frame Loop Reverse"
 msgstr "Obratno zankanje sličic"
 
-#: ../gap/gap_mov_dialog.c:3019
+#: ../gap/gap_mov_dialog.c:3094
 msgid "Frame Once"
 msgstr "Enkrat sličica"
 
-#: ../gap/gap_mov_dialog.c:3020
+#: ../gap/gap_mov_dialog.c:3095
 msgid "Frame Once Reverse"
 msgstr "Enkrat sličica v obratni smeri"
 
-#: ../gap/gap_mov_dialog.c:3021
+#: ../gap/gap_mov_dialog.c:3096
 msgid "Frame Ping Pong"
 msgstr "Sličica ping pong"
 
-#: ../gap/gap_mov_dialog.c:3022
+#: ../gap/gap_mov_dialog.c:3097
 msgid "Frame None"
 msgstr "Brez sličice"
 
-#: ../gap/gap_mov_dialog.c:3033
+#: ../gap/gap_mov_dialog.c:3108
 msgid "How to fetch the next source layer at the next handled frame"
 msgstr "Kako priti do naslednjega vira plasti, pri naslednji obdelani sličici."
 
 #. Source Image Handle menu
-#: ../gap/gap_mov_dialog.c:3040
+#: ../gap/gap_mov_dialog.c:3115
 msgid "Handle:"
 msgstr "Ročica:"
 
-#: ../gap/gap_mov_dialog.c:3045
+#: ../gap/gap_mov_dialog.c:3120
 msgid "Left  Top"
 msgstr "levo zgoraj"
 
-#: ../gap/gap_mov_dialog.c:3046
+#: ../gap/gap_mov_dialog.c:3121
 msgid "Left  Bottom"
 msgstr "levo spodaj"
 
-#: ../gap/gap_mov_dialog.c:3047
+#: ../gap/gap_mov_dialog.c:3122
 msgid "Right Top"
 msgstr "desno zgoraj"
 
-#: ../gap/gap_mov_dialog.c:3048
+#: ../gap/gap_mov_dialog.c:3123
 msgid "Right Bottom"
 msgstr "desno spodaj"
 
-#: ../gap/gap_mov_dialog.c:3049
+#: ../gap/gap_mov_dialog.c:3124
 msgid "Center"
 msgstr "na sredini"
 
-#: ../gap/gap_mov_dialog.c:3061
+#: ../gap/gap_mov_dialog.c:3136
 msgid "How to place the Source layer at controlpoint coordinates"
 msgstr "Kako postaviti izvorno plast na koordinate kontrolnih točk."
 
-#: ../gap/gap_mov_dialog.c:3113
+#: ../gap/gap_mov_dialog.c:3188
 msgid "Apply the bluebox filter on the moving object(s). The bluebox filter makes the keycolor transparent."
 msgstr "Uporabi Modri filter na premikajočih se objektih. Modri filter naredi ključno barvo prosojno."
 
 #. keycolor button
-#: ../gap/gap_mov_dialog.c:3137
+#: ../gap/gap_mov_dialog.c:3212
 msgid "Move Path Bluebox Keycolor"
 msgstr "Premakni pot ključne barve za Modro ozadje"
 
-#: ../gap/gap_mov_dialog.c:3153
+#: ../gap/gap_mov_dialog.c:3228
 msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr "Odpri pogovorno okno za nastavitev parametrov in ključne barve filtra modrega ozadja."
 
 #. toggle Tracelayer
-#: ../gap/gap_mov_dialog.c:3171
-#: ../gap/gap_mov_exec.c:1522
+#: ../gap/gap_mov_dialog.c:3246
+#: ../gap/gap_mov_exec.c:1627
 msgid "Tracelayer"
 msgstr "Sledilna plast"
 
-#: ../gap/gap_mov_dialog.c:3175
+#: ../gap/gap_mov_dialog.c:3250
 msgid "Create an additional trace layer in all handled frames"
 msgstr "Ustvari dodatno sledilno plast v vseh obravnavanih sličicah."
 
 #. TraceOpacityInitial
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3187
+#: ../gap/gap_mov_dialog.c:3262
 msgid "TraceOpacity1:"
 msgstr "Prekrivnost sledenja 1:"
 
@@ -3327,13 +3327,13 @@ msgstr "Prekrivnost sledenja 1:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3195
+#: ../gap/gap_mov_dialog.c:3270
 msgid "Initial opacity of the trace layer"
 msgstr "Začetna prekrivnost v sledilni plasti"
 
 #. TraceOpacityDescending
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3205
+#: ../gap/gap_mov_dialog.c:3280
 msgid "TraceOpacity2:"
 msgstr "Prekrivnost sledenja 2:"
 
@@ -3345,13 +3345,13 @@ msgstr "Prekrivnost sledenja 2:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3213
+#: ../gap/gap_mov_dialog.c:3288
 msgid "Descending opacity of the trace layer"
 msgstr "Padajoča prekrivnost v sledilni plasti"
 
 #. TweenSteps
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3225
+#: ../gap/gap_mov_dialog.c:3300
 msgid "Tweensteps:"
 msgstr "Vmesni koraki:"
 
@@ -3363,13 +3363,13 @@ msgstr "Vmesni koraki:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3233
+#: ../gap/gap_mov_dialog.c:3308
 msgid "Calculate n steps between 2 frames. The rendered tween steps are collected in a tween layer that will be added to the handled destination frames. If the tween step value is 0, no tweens are calculated and no tween layers are created"
 msgstr "Izračunaj n korakov med dvema sličicama. Upodobitev vmesnih korakov je zbrana v vmesni plasti, ki bo dodana obravnavanim ciljnim sličicam. Če je vrednost vmesnih korakov 0, ne bo izračunan noben vmesni korak in ne bo ustvarjen nobena vmesna plast."
 
 #. TweenOpacityInitial
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3248
+#: ../gap/gap_mov_dialog.c:3323
 msgid "TweenOpacity1:"
 msgstr "Vmesna prekrivnost sličic 1:"
 
@@ -3381,13 +3381,13 @@ msgstr "Vmesna prekrivnost sličic 1:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3256
+#: ../gap/gap_mov_dialog.c:3331
 msgid "Initial opacity of the tween layer"
 msgstr "Začetna prekrivnost vmesnih plasti"
 
 #. TweenOpacityDescending
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3265
+#: ../gap/gap_mov_dialog.c:3340
 msgid "TweenOpacity2:"
 msgstr "Vmesna prekrivnost sličic 2:"
 
@@ -3399,68 +3399,68 @@ msgstr "Vmesna prekrivnost sličic 2:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3273
+#: ../gap/gap_mov_dialog.c:3348
 msgid "Descending opacity of the tween layer"
 msgstr "Padajoča prekrivnost vmesnih plasti"
 
 #. the frame
-#: ../gap/gap_mov_dialog.c:3308
+#: ../gap/gap_mov_dialog.c:3383
 msgid "Edit Controlpoints"
 msgstr "Uredi nadzorne točke"
 
-#: ../gap/gap_mov_dialog.c:3326
+#: ../gap/gap_mov_dialog.c:3401
 msgid "Add controlpoint at end. The last controlpoint is duplicated."
 msgstr "Dodaj nadzorno točko na konec. Zadnja nadzorna točka bo podvojena."
 
-#: ../gap/gap_mov_dialog.c:3339
+#: ../gap/gap_mov_dialog.c:3414
 msgid "Delete all controlpoints, and replace them with a copy of all anchorpoints of the current path from the image from which 'MovePath' was invoked. Hold down the Shift key to create controlpoints for each handled frame, following the Bezier path."
 msgstr "Izbriši vse nadzorne točke in jih zamenjaj s kopijo vseh sidrnih točk trenutne poti iz slike, iz katere je bil priklican ukaz 'Premakni vzdolž poti'. Držite pritisnjeno tipko Shift, da ustvarite nadzorne točke za vsako obravnavano sličico po sledi poti Bezier."
 
-#: ../gap/gap_mov_dialog.c:3358
+#: ../gap/gap_mov_dialog.c:3433
 msgid "Insert controlpoint. The current controlpoint is duplicated."
 msgstr "Vstavi nadzorno točko. Aktivna nadzorna točka bo podvojena."
 
-#: ../gap/gap_mov_dialog.c:3371
+#: ../gap/gap_mov_dialog.c:3446
 msgid "Delete current controlpoint"
 msgstr "Izbriši trenutno nadzorno točko"
 
-#: ../gap/gap_mov_dialog.c:3386
+#: ../gap/gap_mov_dialog.c:3461
 msgid "Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr "Pokaži prejšnjo nadzorno točko. Držite pritisnjeno tipko <Shift> za sledenje ključnim sličicam."
 
-#: ../gap/gap_mov_dialog.c:3399
+#: ../gap/gap_mov_dialog.c:3474
 msgid "Show next controlpoint. Hold down the shift key to follow keyframes."
 msgstr "Pokaži naslednjo nadzorno točko. Držite pritisnjeno tipko <Shift> za sledenje ključnim sličicam."
 
-#: ../gap/gap_mov_dialog.c:3414
+#: ../gap/gap_mov_dialog.c:3489
 msgid "Show first controlpoint. Hold down the shift key to follow keyframes."
 msgstr "Pokaži prvo nadzorno točko. Držite pritisnjeno tipko <Shift> za sledenje ključnim sličicam."
 
-#: ../gap/gap_mov_dialog.c:3427
+#: ../gap/gap_mov_dialog.c:3502
 msgid "Show last controlpoint. Hold down the shift key to follow keyframes."
 msgstr "Pokaži zadnjo nadzorno točko. Držite pritisnjeno tipko <Shift> za sledenje ključnim sličicam."
 
-#: ../gap/gap_mov_dialog.c:3442
+#: ../gap/gap_mov_dialog.c:3517
 msgid "Reset the current controlpoint to default values"
 msgstr "Ponastavi vse trenutne nadzorne točke na privzete vrednosti"
 
-#: ../gap/gap_mov_dialog.c:3455
+#: ../gap/gap_mov_dialog.c:3530
 msgid "Reset all controlpoints to default values but dont change the path (X/Y values). Hold down the shift key to copy settings of point1 into all other points. Holding down the ctrl key spreads a mix of the settings of point1 and the last point into the other points inbetween."
 msgstr "Ponastavi vse nadzorne točke na privzete vrednosti, vendar ne spremeni poti (vrednosti X/Y). Držite pritisnjeno tipko Shift, če želite skopirati nastavitve točke1 v vse druge točke. S pritisnjeno tipko Ctrl razširite mešanico nastavitev točke1 in zadnje točke na vse druge točke med njima."
 
-#: ../gap/gap_mov_dialog.c:3476
+#: ../gap/gap_mov_dialog.c:3551
 msgid "Set rotation for all controlpoints to follow the shape of the path. Hold down the shift key to use rotation of contolpoint 1 as offset."
 msgstr "Nastavi zasuk vseh nadzornih točk, ki bodo sledili obliki poti. Pritisni tipko Shift za zamik zasuka nadzorne točke za 1."
 
-#: ../gap/gap_mov_dialog.c:3491
+#: ../gap/gap_mov_dialog.c:3566
 msgid "Delete all controlpoints"
 msgstr "Izbriši vse nadzorne točke"
 
-#: ../gap/gap_mov_dialog.c:3507
+#: ../gap/gap_mov_dialog.c:3582
 msgid "Load controlpoints from file"
 msgstr "Naloži nadzorne točke iz datoteke"
 
-#: ../gap/gap_mov_dialog.c:3520
+#: ../gap/gap_mov_dialog.c:3595
 msgid "Save controlpoints to file"
 msgstr "Shrani nadzorne točke v datoteko"
 
@@ -3474,7 +3474,7 @@ msgstr "Shrani nadzorne točke v datoteko"
 #. constrain
 #. lower, (unconstrained)
 #. upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3631
+#: ../gap/gap_mov_dialog.c:3706
 msgid "First handled destination frame"
 msgstr "Prva obravnavana ciljna sličica"
 
@@ -3488,13 +3488,13 @@ msgstr "Prva obravnavana ciljna sličica"
 #. constrain
 #. lower, (unconstrained)
 #. upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3649
+#: ../gap/gap_mov_dialog.c:3727
 msgid "Last handled destination frame"
 msgstr "Zadnja obravnavana ciljna sličica"
 
 #. the Layerstack scale_entry
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3657
+#: ../gap/gap_mov_dialog.c:3738
 #: ../gap/gap_range_ops.c:317
 msgid "Layerstack:"
 msgstr "Sklad plasti:"
@@ -3507,32 +3507,32 @@ msgstr "Sklad plasti:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3665
+#: ../gap/gap_mov_dialog.c:3746
 msgid "How to insert source layer into the layerstack of the destination frames. layerstack 0 means on top i.e. in front"
 msgstr "Kako vstaviti izvorne plasti v sklad plasti ciljnih sličic. Sklad plasti 0 pomeni vrh oz. je v ospredju."
 
 #. toggle force visibility
-#: ../gap/gap_mov_dialog.c:3680
+#: ../gap/gap_mov_dialog.c:3762
 msgid "Force Visibility"
 msgstr "Vsili vidnost"
 
-#: ../gap/gap_mov_dialog.c:3684
+#: ../gap/gap_mov_dialog.c:3766
 msgid "Force visibility for all copied source layers"
 msgstr "Vsili vidnost za vse iz izvora kopirane plasti"
 
 #. toggle clip_to_image
-#: ../gap/gap_mov_dialog.c:3694
+#: ../gap/gap_mov_dialog.c:3780
 msgid "Clip To Frame"
 msgstr "Prireži po sličici"
 
-#: ../gap/gap_mov_dialog.c:3698
+#: ../gap/gap_mov_dialog.c:3784
 msgid "Clip all copied source layers at destination frame boundaries"
 msgstr "Obreži vse iz izvora skopirane plasti na mejno velikost ciljnih sličic."
 
 #. Width Scale
 #. table col, row
 #. the width label
-#: ../gap/gap_mov_dialog.c:3744
+#: ../gap/gap_mov_dialog.c:3836
 #: ../gap/gap_story_dialog.c:8760
 #: ../vid_common/gap_cme_gui.c:3636
 msgid "Width:"
@@ -3546,14 +3546,14 @@ msgstr "Širina:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3752
+#: ../gap/gap_mov_dialog.c:3844
 msgid "Scale source layer's width in percent"
 msgstr "Spremeni merilo širino izvorne plasti v odstotkih"
 
 #. Height Scale
 #. table col, row
 #. the height label
-#: ../gap/gap_mov_dialog.c:3762
+#: ../gap/gap_mov_dialog.c:3854
 #: ../gap/gap_story_dialog.c:8771
 #: ../vid_common/gap_cme_gui.c:3685
 msgid "Height:"
@@ -3567,11 +3567,11 @@ msgstr "Višina:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3770
+#: ../gap/gap_mov_dialog.c:3862
 msgid "Scale source layer's height in percent"
 msgstr "Spremeni merilo višine izvorne plasti v odstotkih"
 
-#: ../gap/gap_mov_dialog.c:3787
+#: ../gap/gap_mov_dialog.c:3879
 #: ../gap/gap_resi_dialog.c:812
 msgid "Constrain aspect ratio"
 msgstr "Ohrani razmerje stranic"
@@ -3583,8 +3583,8 @@ msgstr "Ohrani razmerje stranic"
 #. table col, row
 #. accelaration characteristic
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3796
-#: ../gap/gap_mov_dialog.c:4071
+#: ../gap/gap_mov_dialog.c:3888
+#: ../gap/gap_mov_dialog.c:4163
 #: ../gap/gap_onion_dialog.c:1130
 #: ../gap/gap_story_att_trans_dlg.c:2818
 #: ../gap/gap_wr_opacity.c:332
@@ -3599,13 +3599,13 @@ msgstr "Prekrivnost:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3804
+#: ../gap/gap_mov_dialog.c:3896
 msgid "Set the source layer's opacity in percent"
 msgstr "Nastavi izvorno prekrivnost plasti v odstotkih"
 
 #. Rotation
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3814
+#: ../gap/gap_mov_dialog.c:3906
 msgid "Rotate:"
 msgstr "Zasukaj:"
 
@@ -3617,13 +3617,13 @@ msgstr "Zasukaj:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3822
+#: ../gap/gap_mov_dialog.c:3914
 msgid "Rotate source layer (in degrees)"
 msgstr "Zasukaj izvirno plast (v stopinjah)."
 
 #. ttlx transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3868
+#: ../gap/gap_mov_dialog.c:3960
 msgid "x1:"
 msgstr "x1:"
 
@@ -3635,13 +3635,13 @@ msgstr "x1:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3876
+#: ../gap/gap_mov_dialog.c:3968
 msgid "Transformfactor for upper left corner X coordinate"
 msgstr "Faktor transformacije za koordinato X zgornjega levega kota"
 
 #. ttly transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3887
+#: ../gap/gap_mov_dialog.c:3979
 msgid "y1:"
 msgstr "y1:"
 
@@ -3653,13 +3653,13 @@ msgstr "y1:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3895
+#: ../gap/gap_mov_dialog.c:3987
 msgid "Transformfactor for upper left corner Y coordinate"
 msgstr "Faktor transformacije za koordinato Y zgornjega levega kota"
 
 #. ttrx transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3906
+#: ../gap/gap_mov_dialog.c:3998
 msgid "x2:"
 msgstr "x2:"
 
@@ -3671,13 +3671,13 @@ msgstr "x2:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3914
+#: ../gap/gap_mov_dialog.c:4006
 msgid "Transformfactor for upper right corner X coordinate"
 msgstr "Faktor transformacije za koordinato X zgornjega desnega kota"
 
 #. ttry transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3924
+#: ../gap/gap_mov_dialog.c:4016
 msgid "y2:"
 msgstr "y2:"
 
@@ -3689,13 +3689,13 @@ msgstr "y2:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3932
+#: ../gap/gap_mov_dialog.c:4024
 msgid "Transformfactor for upper right corner Y coordinate"
 msgstr "Faktor transformacije za koordinato Y zgornjega desnega kota"
 
 #. tblx transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3942
+#: ../gap/gap_mov_dialog.c:4034
 msgid "x3:"
 msgstr "x3:"
 
@@ -3707,13 +3707,13 @@ msgstr "x3:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3950
+#: ../gap/gap_mov_dialog.c:4042
 msgid "Transformfactor for lower left corner X coordinate"
 msgstr "Faktor transformacije za koordinato X spodnjega levega kota"
 
 #. tbly transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3960
+#: ../gap/gap_mov_dialog.c:4052
 msgid "y3:"
 msgstr "y3:"
 
@@ -3725,13 +3725,13 @@ msgstr "y3:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3968
+#: ../gap/gap_mov_dialog.c:4060
 msgid "Transformfactor for lower left corner Y coordinate"
 msgstr "Faktor transformacije za koordinato Y spodnjega levega kota"
 
 #. tbrx transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3978
+#: ../gap/gap_mov_dialog.c:4070
 msgid "x4:"
 msgstr "x4:"
 
@@ -3743,13 +3743,13 @@ msgstr "x4:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:3986
+#: ../gap/gap_mov_dialog.c:4078
 msgid "Transformfactor for lower right corner X coordinate"
 msgstr "Faktor transformacije za koordinato X spodnjega desnega kota"
 
 #. tbry transformfactor
 #. table col, row
-#: ../gap/gap_mov_dialog.c:3996
+#: ../gap/gap_mov_dialog.c:4088
 msgid "y4:"
 msgstr "y4:"
 
@@ -3761,13 +3761,13 @@ msgstr "y4:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4004
+#: ../gap/gap_mov_dialog.c:4096
 msgid "Transformfactor for lower right corner Y coordinate"
 msgstr "Faktor transformacije za koordinato Y spodnjega desnega kota"
 
 #. accelaration characteristic for Position (e.g. movement)
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4051
+#: ../gap/gap_mov_dialog.c:4143
 msgid "Movement:"
 msgstr "Gibanje:"
 
@@ -3779,7 +3779,7 @@ msgstr "Gibanje:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4059
+#: ../gap/gap_mov_dialog.c:4151
 msgid "acceleration characteristic for movement (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za gibanje (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
@@ -3791,14 +3791,14 @@ msgstr "značilnost pospeševanja za gibanje (1 za konstantno hitrost, pozitivno
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4079
+#: ../gap/gap_mov_dialog.c:4171
 #: ../gap/gap_story_att_trans_dlg.c:2840
 msgid "acceleration characteristic for opacity (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za prekrivnost (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
 #. accelaration characteristic for Size (e.g. Zoom)
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4092
+#: ../gap/gap_mov_dialog.c:4184
 msgid "Scale:"
 msgstr "Merilo:"
 
@@ -3810,13 +3810,13 @@ msgstr "Merilo:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4100
+#: ../gap/gap_mov_dialog.c:4192
 msgid "acceleration characteristic for zoom (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za približevanje (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
 #. accelaration characteristic for Rotation
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4111
+#: ../gap/gap_mov_dialog.c:4203
 msgid "Rotation:"
 msgstr "Zasukanost:"
 
@@ -3828,13 +3828,13 @@ msgstr "Zasukanost:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4119
+#: ../gap/gap_mov_dialog.c:4211
 msgid "acceleration characteristic for rotation (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za sukanje (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
 #. accelaration characteristic for Perspective
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4129
+#: ../gap/gap_mov_dialog.c:4221
 msgid "Perspective:"
 msgstr "Perspektiva:"
 
@@ -3846,13 +3846,13 @@ msgstr "Perspektiva:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4137
+#: ../gap/gap_mov_dialog.c:4229
 msgid "acceleration characteristic for perspective (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za perspektivo (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
 #. accelaration characteristic for feather radius
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4148
+#: ../gap/gap_mov_dialog.c:4240
 msgid "FeatherRadius:"
 msgstr "Polmer izginjanja:"
 
@@ -3864,30 +3864,30 @@ msgstr "Polmer izginjanja:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4156
+#: ../gap/gap_mov_dialog.c:4248
 msgid "acceleration characteristic for feather radius (1 for constant speed, positive: acceleration, negative: deceleration)"
 msgstr "značilnost pospeševanja za izginjajoče robove po polmeru (1 za konstantno hitrost, pozitivno pospešuje, negativno pojemuje)"
 
 #. Selection combo
-#: ../gap/gap_mov_dialog.c:4196
+#: ../gap/gap_mov_dialog.c:4288
 msgid "Ignore selection (in all source images)"
 msgstr "Prezri izbiro (v vseh izvornih slikah)"
 
-#: ../gap/gap_mov_dialog.c:4197
+#: ../gap/gap_mov_dialog.c:4289
 msgid "Use selection (from initial source image)"
 msgstr "Uporabi izbor (iz začetne izvorne slike)"
 
-#: ../gap/gap_mov_dialog.c:4198
+#: ../gap/gap_mov_dialog.c:4290
 msgid "Use selections (from all source images)"
 msgstr "Uporabi izbore (iz vseh izvornih slik)"
 
-#: ../gap/gap_mov_dialog.c:4207
+#: ../gap/gap_mov_dialog.c:4299
 msgid "How to handle selections in the source image"
 msgstr "Kako obravnavati izbore iz izvorne slike"
 
 #. Feather Radius
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4213
+#: ../gap/gap_mov_dialog.c:4305
 msgid "Selection Feather Radius:"
 msgstr "Izbira polmera operjanja:"
 
@@ -3899,23 +3899,23 @@ msgstr "Izbira polmera operjanja:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4221
+#: ../gap/gap_mov_dialog.c:4313
 msgid "Feather radius in pixels (for smoothing selection(s))"
 msgstr "Polmer operjanja v slikovnih točkah (za glajenje izborov)"
 
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4324
+#: ../gap/gap_mov_dialog.c:4416
 msgid "X coordinate"
 msgstr "Koordinata X "
 
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4342
+#: ../gap/gap_mov_dialog.c:4434
 msgid "Y coordinate"
 msgstr "Koordinata Y"
 
 #. Keyframe
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4351
+#: ../gap/gap_mov_dialog.c:4443
 msgid "Keyframe:"
 msgstr "Ključna sličica:"
 
@@ -3927,73 +3927,86 @@ msgstr "Ključna sličica:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4359
+#: ../gap/gap_mov_dialog.c:4451
 msgid "Fix controlpoint to keyframe number where 0 == no keyframe"
 msgstr "Pripne nadzorno točko ključni sličici, kjer 0 pomeni, da ni ključnih sličic"
 
-#: ../gap/gap_mov_dialog.c:4389
+#: ../gap/gap_mov_dialog.c:4481
 msgid "Scale and Modify"
 msgstr "Spremeni velikost in podobo"
 
-#: ../gap/gap_mov_dialog.c:4395
+#: ../gap/gap_mov_dialog.c:4487
 msgid "Perspective"
 msgstr "Perspektiva"
 
-#: ../gap/gap_mov_dialog.c:4401
+#: ../gap/gap_mov_dialog.c:4493
 msgid "Selection Handling"
 msgstr "Obravnavanje izbora"
 
-#: ../gap/gap_mov_dialog.c:4407
+#: ../gap/gap_mov_dialog.c:4499
 msgid "Acceleration"
 msgstr "Pospešek"
 
-#: ../gap/gap_mov_dialog.c:4527
+#: ../gap/gap_mov_dialog.c:4617
+#| msgid "Movement:"
+msgid "Segment:"
+msgstr "Odsek:"
+
+#: ../gap/gap_mov_dialog.c:4631
+msgid "Length:"
+msgstr "Dolžina:"
+
+#: ../gap/gap_mov_dialog.c:4645
+msgid "Speed Min/Max:"
+msgstr "Najv./najm. hitrost:"
+
+#: ../gap/gap_mov_dialog.c:4680
 msgid "Pathline Color Picker"
 msgstr "Kapalka črte poti"
 
-#: ../gap/gap_mov_dialog.c:4534
+#: ../gap/gap_mov_dialog.c:4687
 msgid "Select the color that is used to draw pathlines in the preview"
 msgstr "Izberi barvo, ki bo uporabljena pri izrisu črte poti v oknu predogleda."
 
 #. toggle Show path
-#: ../gap/gap_mov_dialog.c:4546
+#: ../gap/gap_mov_dialog.c:4699
 msgid "Path"
 msgstr "Pot"
 
-#: ../gap/gap_mov_dialog.c:4550
+#: ../gap/gap_mov_dialog.c:4703
 msgid "Show path lines and enable pick/drag with left button or move with right button"
 msgstr "Pokaži črte poti in omogoči izbora/povlek z levo tipko ali premik z desno tipko"
 
 #. toggle Show cursor
-#: ../gap/gap_mov_dialog.c:4564
+#: ../gap/gap_mov_dialog.c:4717
 msgid "Cursor"
 msgstr "Kazalec"
 
-#: ../gap/gap_mov_dialog.c:4568
+#: ../gap/gap_mov_dialog.c:4721
 msgid "Show cursor crosslines"
 msgstr "Prikaži križ za kazalec "
 
 #. toggle Show Grid
-#: ../gap/gap_mov_dialog.c:4579
+#: ../gap/gap_mov_dialog.c:4732
 msgid "Grid"
 msgstr "Mreža"
 
-#: ../gap/gap_mov_dialog.c:4583
+#: ../gap/gap_mov_dialog.c:4736
 msgid "Show source layer as gridlines"
 msgstr "Pokaži izvorno plast kot mrežne črte"
 
 #. toggle Instant Apply
-#: ../gap/gap_mov_dialog.c:4593
+#: ../gap/gap_mov_dialog.c:4746
 msgid "Instant Apply"
 msgstr "Uporabi sproti"
 
-#: ../gap/gap_mov_dialog.c:4597
+#: ../gap/gap_mov_dialog.c:4750
 msgid "Update the preview automatically"
 msgstr "Samodejno posodobi predogled"
 
 #. the Preview Frame Number
 #. table col, row
-#: ../gap/gap_mov_dialog.c:4616
+#: ../gap/gap_mov_dialog.c:4769
 msgid "Frame:"
 msgstr "Sličica:"
 
@@ -4007,11 +4020,11 @@ msgstr "Sličica:"
 #. constrain
 #. lower (unconstrained)
 #. upper (unconstrained)
-#: ../gap/gap_mov_dialog.c:4626
+#: ../gap/gap_mov_dialog.c:4779
 msgid "Frame to show when 'Refresh' button is pressed"
 msgstr "Prikazana sličica ob pritisku na gumb 'Osveži'"
 
-#: ../gap/gap_mov_dialog.c:5369
+#: ../gap/gap_mov_dialog.c:5528
 #, c-format
 msgid ""
 "Can't operate with current controlpoint\n"
@@ -4026,27 +4039,27 @@ msgstr ""
 "Seznam napak:\n"
 "%s"
 
-#: ../gap/gap_mov_exec.c:274
+#: ../gap/gap_mov_exec.c:276
 msgid "Tweenlayer"
 msgstr "Vmesna plast (Tweenlayer)"
 
-#: ../gap/gap_mov_exec.c:1254
+#: ../gap/gap_mov_exec.c:1350
 msgid ""
 "No source image was selected.\n"
 "Please open a 2nd image of the same type before opening 'Move Path'."
 msgstr ""
 "Izvorna slika ni bila izbrana.\n"
-"Prosim, odprite drugo sliko iste vrste, preden odprete 'Pomakni pot'."
+"Preden odprete 'Pomakni pot', odprite drugo sliko iste vrste."
 
-#: ../gap/gap_mov_exec.c:1266
+#: ../gap/gap_mov_exec.c:1364
 msgid "Copying layers into frames..."
 msgstr "Kopiranje plasti v sličice ..."
 
-#: ../gap/gap_mov_exec.c:1270
+#: ../gap/gap_mov_exec.c:1368
 msgid "Generating animated preview..."
 msgstr "Ustvarjanje animiranega predogleda ..."
 
-#: ../gap/gap_mov_exec.c:2599
+#: ../gap/gap_mov_exec.c:2800
 #, c-format
 msgid ""
 "\n"
@@ -4055,7 +4068,7 @@ msgstr ""
 "\n"
 "Napaka: Ključna sličica %d je v točki [%d] višja ali enaka kot nazadnje obravnavana sličica."
 
-#: ../gap/gap_mov_exec.c:2607
+#: ../gap/gap_mov_exec.c:2808
 #, c-format
 msgid ""
 "\n"
@@ -4066,7 +4079,7 @@ msgstr ""
 "Napaka: Ključna sličica %d v točki [%d] ni pustila dovolj prostora (sličic)\n"
 "za prejšnje nadzorne točke."
 
-#: ../gap/gap_mov_exec.c:2617
+#: ../gap/gap_mov_exec.c:2818
 #, c-format
 msgid ""
 "\n"
@@ -4075,7 +4088,7 @@ msgstr ""
 "\n"
 "Napaka: Ključna sličica %d ni v zaporedju pri točki [%d]."
 
-#: ../gap/gap_mov_exec.c:2635
+#: ../gap/gap_mov_exec.c:2836
 #, c-format
 msgid ""
 "\n"
@@ -4084,7 +4097,7 @@ msgstr ""
 "\n"
 "Napaka: kontrolna točka [%d] je zunaj obravnavanega obsega sličic."
 
-#: ../gap/gap_mov_exec.c:2649
+#: ../gap/gap_mov_exec.c:2850
 #, c-format
 msgid ""
 "\n"
@@ -4093,7 +4106,7 @@ msgid ""
 msgstr ""
 "\n"
 "Napaka: Povečajte število nadzornih točk (%d) za obravnavane sličice (%d).\n"
-"Prosim, zmanjšajte število nadzornih točk ali izberite večje število sličic."
+"Zmanjšajte število nadzornih točk ali izberite večje število sličic."
 
 #: ../gap/gap_mpege.c:127
 msgid "Requirements to run mpeg2encode 1.2:"
@@ -4950,7 +4963,7 @@ msgid ""
 "you can set the Environmentvariable WAVPLAYPATH before gimp startup\n"
 msgstr ""
 "Zgodila se je težka napaka pri zagonu strežnika wavplay.\n"
-"Prosim, preverite izvedljivost ukaza 'wavplay'.\n"
+"Preverite izvedljivost ukaza 'wavplay'.\n"
 "Če je izvršljiva datoteka wavplay nameščena,\n"
 "nastavite spremenljivko okolja WAVPLAYPATH, preden zaženete GIMP.\n"
 
@@ -5145,7 +5158,7 @@ msgstr ""
 
 #: ../gap/gap_player_dialog.c:6250
 msgid "Creating audiofile - please wait"
-msgstr "Ustvarjanje zvočne datoteke - prosim, počakajte!"
+msgstr "Ustvarjanje zvočne datoteke - prosimo, počakajte!"
 
 #: ../gap/gap_player_dialog.c:6286
 msgid "external audioconverter FAILED."
@@ -6939,12 +6952,12 @@ msgstr "Samodejna razpoznava prizorov deluje le na vrsti posnetkov FILM in SLIČ
 
 #: ../gap/gap_story_properties.c:708
 msgid "Scene detection depends on video thumbnails. Please enable videothumbnails (in the Windows Menu)"
-msgstr "Razpoznava prizorov je odvisna od sličic slikovnega predogleda. Prosim, omogočite sličice slikovnega predogleda (v meniju Okna)."
+msgstr "Razpoznava prizorov je odvisna od sličic slikovnega predogleda. Omogočite sličice slikovnega predogleda (v meniju Okna)."
 
 #: ../gap/gap_story_properties.c:769
 #: ../gap/gap_story_properties.c:837
 msgid "Scene detection for cliptype FRAMES depends on thumbnails. Please create thumbnails for your frames and then try again."
-msgstr "Razpoznava prizorov za vrsto posnetkov SLIČICE je odvisna od sličic predogleda. Prosim, ustvarite sličice za predogled vaših animiranih sličic, nato poskusite znova."
+msgstr "Razpoznava prizorov za vrsto posnetkov SLIČICE je odvisna od sličic predogleda. Ustvarite sličice za predogled vaših animiranih sličic, nato poskusite znova."
 
 #: ../gap/gap_story_properties.c:1791
 #, c-format
@@ -6953,7 +6966,7 @@ msgid ""
 "please enter another name."
 msgstr ""
 "Napaka: ime maske:  \"%s\" je že zasedeno,\n"
-"prosimo, vnesite drugo ime."
+"vnesite drugo ime."
 
 #: ../gap/gap_story_properties.c:2333
 msgid "Set Image or Frame Filename"
