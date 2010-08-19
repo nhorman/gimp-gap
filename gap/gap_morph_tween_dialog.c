@@ -466,7 +466,7 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
   if (isFrameMissing)
   {
     char *msg;
-    msg = g_strdup_printf(_("this operation creates %d mising frames between frame %d and %d")
+    msg = g_strdup_printf(_("this operation creates %d missing frames between frame %d and %d")
                          ,(int)(mgpp->range_to - mgpp->range_from) -1
                          ,(int)mgpp->range_from
                          ,(int)mgpp->range_to
