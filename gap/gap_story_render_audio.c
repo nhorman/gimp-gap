@@ -356,7 +356,7 @@ p_find_min_max_aud_tracknumbers(GapStoryRenderAudioRangeElem *aud_list
 /* ---------------------------------
  * p_get_audio_sample
  * ---------------------------------
- * - scann the aud_list to findout
+ * - scan the aud_list to findout
  *   audiofile that is played at desired track
  *   at desired sample_index position.
  * - return the sample (amplitude) at desired sample_index position

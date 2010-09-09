@@ -56,7 +56,7 @@ void    gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                                       );
 gint32  gap_morph_execute(GapMorphGlobalParams *mgpp);
 gint32  gap_morph_render_one_tween(GapMorphGlobalParams *mgpp);
-gint32  gap_morph_render_frame_tweens(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp);
+gint32  gap_morph_render_frame_tweens(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp, gboolean *cancelFlagPtr);
 
 #endif
 

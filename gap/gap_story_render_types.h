@@ -60,7 +60,8 @@ typedef gpointer t_GVA_Handle;
 typedef enum
 {
    GAP_MSK_ANCHOR_CLIP
-  ,GAP_MSK_ANCHOR_MASTER        
+  ,GAP_MSK_ANCHOR_MASTER
+  ,GAP_MSK_ANCHOR_XCOLOR   /* apply to clip as colormask */
 } GapStoryMaskAnchormode;
 
 typedef enum
@@ -137,7 +138,7 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    char   *filtermacro_file_to;  /* additional macro with 2nd parameterset(s) for varying apply */
    gint32  fmac_total_steps;     /* total steps for varying filtermacro apply */
    gint32  fmac_accel;           /* acceleration characteristic for filtermacro apply with varying values */
-   
+
    gdouble  frame_from;       /* internal frame number that is 1.st of range (float due to internal clip splitting) */
    gdouble  frame_to;         /* internal frame number that is the last handled frame of the range */
    gint32  frames_to_handle;
@@ -157,10 +158,18 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    char    *mask_name;          /* optional reference to a layer mask */
    gdouble  mask_stepsize;
    GapStoryMaskAnchormode  mask_anchor;
+   char   *colormask_file;    /* optional reference to a colormask parameter file
+                               * relevant for ancor mode GAP_MSK_ANCHOR_CLIPCOLOR
+                               * where mask is applied as colormask
+                               */
 
 
    gdouble  wait_untiltime_sec;
    gint32   wait_untilframes;
+
+   gdouble rotate_from;        /* -36000.0 upto 3600.0 degree */
+   gdouble rotate_to;          /*  -36000.0 upto 3600.0 degree */
+   gint32  rotate_dur;         /* number of frames to change from -> to value */
 
    gdouble opacity_from;       /* 0.0 upto 1.0 */
    gdouble opacity_to;         /* 0.0 upto 1.0 */
@@ -183,7 +192,7 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    gint32  move_y_dur;         /* number of frames to change from -> to value */
 
    gint    opacity_accel;        /* acceleration characteristic for opacity transformation */
-   gint32  opacity_frames_done;  /* already processed frames since begin of transition */ 
+   gint32  opacity_frames_done;  /* already processed frames since begin of transition */
    gint    move_x_accel;
    gint32  move_x_frames_done;
    gint    move_y_accel;
@@ -192,6 +201,8 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    gint32  scale_x_frames_done;
    gint    scale_y_accel;
    gint32  scale_y_frames_done;
+   gint    rotate_accel;        /* acceleration characteristic for opacity transformation */
+   gint32  rotate_frames_done;  /* already processed frames since begin of transition */
 
 
    void   *next;
@@ -251,6 +262,10 @@ typedef struct GapStoryRenderVTrackAttrElem
    gboolean fit_width;
    gboolean fit_height;
 
+   gdouble rotate_from;       /* rotation in degree */
+   gdouble rotate_to;         /* rotation in degree */
+   gint32  rotate_dur;        /* number of frames to change from -> to value */
+
    gdouble opacity_from;       /* 0.0 upto 1.0 */
    gdouble opacity_to;         /* 0.0 upto 1.0 */
    gint32  opacity_dur;        /* number of frames to change from -> to value */
@@ -271,8 +286,10 @@ typedef struct GapStoryRenderVTrackAttrElem
    gdouble move_y_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
    gint32  move_y_dur;         /* number of frames to change from -> to value */
 
+   gint    rotate_accel;        /* acceleration characteristic for opacity transformation */
+   gint32  rotate_frames_done;  /* already processed frames since begin of transition */
    gint    opacity_accel;        /* acceleration characteristic for opacity transformation */
-   gint32  opacity_frames_done;  /* already processed frames since begin of transition */ 
+   gint32  opacity_frames_done;  /* already processed frames since begin of transition */
    gint    move_x_accel;
    gint32  move_x_frames_done;
    gint    move_y_accel;
@@ -323,6 +340,11 @@ typedef struct GapStoryRenderVidHandle
   GapStoryRenderAudioRangeElem    *aud_list;
   GapStoryRenderErrors            *sterr;
   char                         *preferred_decoder;
+
+  char                         *master_insert_alpha_format;    /* Format for alpha channel inserting */
+  gboolean                      master_insert_alpha_format_has_videobasename;
+  gboolean                      master_insert_alpha_format_has_framenumber;
+
   char                         *master_insert_area_format;    /* Format for logo replacement */
   gboolean                      master_insert_area_format_has_videobasename;
   gboolean                      master_insert_area_format_has_framenumber;
@@ -372,7 +394,7 @@ typedef struct GapStoryRenderMaskDefElem  /* nick: maskdef_elem */
 
 
   GapStoryRenderVidHandle *mask_vidhand;
-  
+
   struct GapStoryRenderMaskDefElem *next;
 } GapStoryRenderMaskDefElem;
 

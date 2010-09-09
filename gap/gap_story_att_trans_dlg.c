@@ -84,6 +84,7 @@
 
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
+static gdouble  p_getConvertFactor(gint att_type_idx);
 static void     p_attw_prop_response(GtkWidget *widget
                   , gint       response_id
                   , GapStbAttrWidget *attw
@@ -232,6 +233,17 @@ static void     p_create_and_attach_att_arr_widgets(const char *row_title
                  , gint32     *att_arr_value_accel_ptr
                  );
 
+
+static gdouble
+p_getConvertFactor(gint att_type_idx)
+{
+  if (att_type_idx == GAP_STB_ATT_TYPE_ROTATE)
+  {
+    return 1.0;
+  }
+  return (CONVERT_TO_100PERCENT);
+}
+
 /* ---------------------------------
  * p_attw_prop_response
  * ---------------------------------
@@ -347,9 +359,11 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
                                 , attw->stb_elem_refptr->att_arr_enable[ii]);
 
         gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_from_adj)
-                                , attw->stb_elem_refptr->att_arr_value_from[ii] * CONVERT_TO_100PERCENT);
+                                , attw->stb_elem_refptr->att_arr_value_from[ii] *
+				p_getConvertFactor(ii));
         gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_to_adj)
-                                , attw->stb_elem_refptr->att_arr_value_to[ii] * CONVERT_TO_100PERCENT);
+                                , attw->stb_elem_refptr->att_arr_value_to[ii] *
+				p_getConvertFactor(ii));
         gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_dur_adj)
                                 , attw->stb_elem_refptr->att_arr_value_dur[ii]);
 
@@ -446,7 +460,7 @@ p_attw_timer_job(GapStbAttrWidget *attw)
  * p_attw_update_properties
  * ------------------------------------
  * render graphical view respecting all enabled attributes
- * opacity, move X/Y and Zoom X/Y
+ * rotate, opacity, move X/Y and Zoom X/Y
  */
 static void
 p_attw_update_properties(GapStbAttrWidget *attw)
@@ -540,6 +554,10 @@ p_get_default_attribute(GapStbAttrWidget *attw
       {
         return (0.5);  /* 1.0 scale to half size */
       }
+      if (att_type_idx == GAP_STB_ATT_TYPE_ROTATE)
+      {
+        return (180.0);
+      }
       return (0.5);    /* indicates 50% opacity */
     }
 
@@ -554,6 +572,10 @@ p_get_default_attribute(GapStbAttrWidget *attw
       ||  (att_type_idx == GAP_STB_ATT_TYPE_ZOOM_Y))
       {
         return (2.0);  /* 1.0 scale to doble size */
+      }
+      if (att_type_idx == GAP_STB_ATT_TYPE_ROTATE)
+      {
+        return (360.0);
       }
       return (0.75);  /* indicates 75% opacity */
     }
@@ -593,7 +615,7 @@ p_attw_start_button_clicked_callback(GtkWidget *widget
       gdouble attr_value;
 
       p_attw_push_undo_and_set_unsaved_changes(attw);
-      attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
+      attr_value = p_getConvertFactor(att_type_idx) * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
                         , TRUE   /* use from value for reset */
@@ -624,7 +646,7 @@ p_attw_end_button_clicked_callback(GtkWidget *widget
       gdouble attr_value;
 
       p_attw_push_undo_and_set_unsaved_changes(attw);
-      attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
+      attr_value = p_getConvertFactor(att_type_idx) * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
                         , FALSE   /* use to value for reset */
@@ -728,14 +750,15 @@ p_attw_gdouble_adjustment_callback(GtkObject *obj, gdouble *val)
 {
   GapStbAttrWidget *attw;
   gdouble l_val;
+  gint    att_type_idx;
 
-
+  att_type_idx = g_object_get_data( G_OBJECT(obj), "att_type_idx" );
   attw = g_object_get_data( G_OBJECT(obj), OBJ_DATA_KEY_ATTW );
   if(attw)
   {
     if(attw->stb_elem_refptr)
     {
-      l_val = (GTK_ADJUSTMENT(obj)->value) / CONVERT_TO_100PERCENT;
+      l_val = (GTK_ADJUSTMENT(obj)->value) / p_getConvertFactor(att_type_idx);
       if(gap_debug)
       {
         printf("gdouble_adjustment_callback: old_val:%f val:%f\n"
@@ -1031,6 +1054,7 @@ p_calculate_prefetch_render_attributes(GapStbAttrWidget *attw
     , attw->stb_elem_refptr->att_keep_proportions
     , attw->stb_elem_refptr->att_fit_width
     , attw->stb_elem_refptr->att_fit_height
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_ROTATE]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_OPACITY]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_X]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_Y]
@@ -1096,6 +1120,7 @@ p_calculate_render_attributes(GapStbAttrWidget *attw
     , attw->stb_elem_refptr->att_keep_proportions
     , attw->stb_elem_refptr->att_fit_width
     , attw->stb_elem_refptr->att_fit_height
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_ROTATE]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_OPACITY]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_X]
     , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_Y]
@@ -1436,6 +1461,10 @@ p_create_transformed_layer(gint32 image_id
                         , calculated->x_offs
                         , calculated->y_offs
                         );
+
+  gap_story_transform_rotate_layer(image_id, *layer_id_ptr, calculated->rotate);
+
+
   gimp_layer_set_opacity(*layer_id_ptr
                         , calculated->opacity
                         );
@@ -2117,7 +2146,7 @@ p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
 
     if(! gimp_drawable_has_alpha (l_new_layer_id))
     {
-      /* implicite add an alpha channel before we try to raise */
+      /* implicitly add an alpha channel before we try to raise */
       gimp_layer_add_alpha(l_new_layer_id);
     }
 
@@ -2410,9 +2439,10 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   GtkObject *adj;
   GtkWidget *spinbutton;
   gint      col;
+  gdouble   convertFactor;
 
   col = column;
-
+  convertFactor = p_getConvertFactor(att_type_idx);
   /* enable label */
   label = gtk_label_new(row_title);
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -2458,7 +2488,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   col++;
 
   /* From (Start value of transition) button */
-  adj = gtk_adjustment_new ( *att_arr_value_from_ptr * CONVERT_TO_100PERCENT
+  adj = gtk_adjustment_new ( *att_arr_value_from_ptr * convertFactor
                            , lower_constraint
                            , upper_constraint
                            , step_increment
@@ -2476,6 +2506,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   gtk_widget_set_size_request (spinbutton, 80, -1);
   gimp_help_set_help_data (spinbutton, from_tooltip, NULL);
 
+  g_object_set_data(G_OBJECT(adj), "att_type_idx", att_type_idx);
   g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
   g_signal_connect (G_OBJECT (adj), "value_changed",
                       G_CALLBACK (p_attw_gdouble_adjustment_callback),
@@ -2500,7 +2531,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   col++;
 
   /* the To value spinbutton */
-  adj = gtk_adjustment_new ( *att_arr_value_to_ptr * CONVERT_TO_100PERCENT
+  adj = gtk_adjustment_new ( *att_arr_value_to_ptr * convertFactor
                            , lower_constraint
                            , upper_constraint
                            , step_increment
@@ -2518,6 +2549,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   gtk_widget_set_size_request (spinbutton, 80, -1);
   gimp_help_set_help_data (spinbutton, to_tooltip, NULL);
 
+  g_object_set_data(G_OBJECT(adj), "att_type_idx", att_type_idx);
   g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
   g_signal_connect (G_OBJECT (adj), "value_changed",
                       G_CALLBACK (p_attw_gdouble_adjustment_callback),
@@ -2814,6 +2846,33 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     gint att_type_idx;
     gint col = 0;
 
+
+    att_type_idx = GAP_STB_ATT_TYPE_ROTATE;
+    p_create_and_attach_att_arr_widgets(_("Rotate:")
+      , attw
+      , table
+      , row
+      , col
+      , att_type_idx
+      , -36000.0    /* lower constraint for the from/to values */
+      ,  36000.0    /* upper constraint for the from/to values */
+      , 1.0        /* step increment   for the from/to values  */
+      , 45.0       /* page increment   for the from/to values */
+      , 0.0        /* page size        for the from/to values */
+      , 1          /* digits for the from/to values */
+      , _("ON: Enable rotation settings")
+      , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
+      , _("rotation value in degree for the first handled frame ")
+      , &attw->stb_elem_refptr->att_arr_value_from[att_type_idx]
+      , _("rotation value in degree for the last handled frame ")
+      , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
+      , _("number of frames")
+      , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
+      , _("acceleration characteristic for rotation (1 for constant speed, positive: acceleration, negative: deceleration)")
+      , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
+      );
+
+    row++;
     att_type_idx = GAP_STB_ATT_TYPE_OPACITY;
     p_create_and_attach_att_arr_widgets(_("Opacity:")
       , attw
@@ -2841,6 +2900,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , &attw->stb_elem_refptr->att_arr_value_accel[att_type_idx]
       );
 
+
     row++;
     att_type_idx = GAP_STB_ATT_TYPE_MOVE_X;
     p_create_and_attach_att_arr_widgets(_("Move X:")
@@ -2858,10 +2918,10 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , _("ON: Enable move horizontal settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
       , _("move horizontal value for the first handled frame "
-          " where 0.0 is centered, 100.0 is outside right, -100.0 is outside left)")
+          "where 0.0 is centered, 100.0 is outside right, -100.0 is outside left")
       , &attw->stb_elem_refptr->att_arr_value_from[att_type_idx]
       , _("move horizontal value for the last handled frame "
-          " where 0.0 is centered, 100.0 is outside right, -100.0 is outside left)")
+          "where 0.0 is centered, 100.0 is outside right, -100.0 is outside left")
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]
@@ -2887,10 +2947,10 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , _("ON: Enable move vertical settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
       , _("move vertical value for the first handled frame "
-          " where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top)")
+          "where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top")
       , &attw->stb_elem_refptr->att_arr_value_from[att_type_idx]
       , _("move vertical value for the last handled frame "
-          " where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top)")
+          "where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top")
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
       , &attw->stb_elem_refptr->att_arr_value_dur[att_type_idx]

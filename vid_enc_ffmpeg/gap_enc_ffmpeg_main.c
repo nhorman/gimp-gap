@@ -76,7 +76,8 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include "imgconvert.h"
+//#include "imgconvert.h"
+#include "swscale.h"
 
 #include "gap-intl.h"
 
@@ -204,6 +205,8 @@ typedef struct t_ffmpeg_handle
  gdouble pts_stepsize_per_frame;
  gint32 encode_frame_nr;          /* number of frame to encode always starts at 1 and inc by one (base for monotone timecode calculation) */
 
+ struct SwsContext *img_convert_ctx;
+
 } t_ffmpeg_handle;
 
 
@@ -230,6 +233,7 @@ static void run(const gchar *name
 
 
 static void   p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext);
+static int    p_av_metadata_set(AVMetadata **pm, const char *key, const char *value, int flags);
 static void   p_set_flag(gint32 value_bool32, int *flag_ptr, int maskbit);
 
 
@@ -699,7 +703,7 @@ static void
 p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
 {
   printf("AVCodecContext Settings START\n");
-  
+
   printf("(av_class (ptr AVClass*)      %d)\n", (int)    codecContext->av_class);
   printf("(bit_rate                     %d)\n", (int)    codecContext->bit_rate);
   printf("(bit_rate_tolerance           %d)\n", (int)    codecContext->bit_rate_tolerance);
@@ -901,9 +905,46 @@ p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
   printf("(rc_max_available_vbv_use     %f)\n", (float)  codecContext->rc_max_available_vbv_use);
   printf("(rc_min_vbv_overflow_use      %f)\n", (float)  codecContext->rc_min_vbv_overflow_use);
 
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+
+  printf("(hwaccel_context              %d)\n", (int)    codecContext->hwaccel_context);
+  printf("(color_primaries              %d)\n", (int)    codecContext->color_primaries);
+  printf("(color_trc                    %d)\n", (int)    codecContext->color_trc);
+  printf("(colorspace                   %d)\n", (int)    codecContext->colorspace);
+  printf("(color_range                  %d)\n", (int)    codecContext->color_range);
+  printf("(chroma_sample_location       %d)\n", (int)    codecContext->chroma_sample_location);
+  /* *func */
+  printf("(weighted_p_pred              %d)\n", (int)    codecContext->weighted_p_pred);
+  printf("(aq_mode                      %d)\n", (int)    codecContext->aq_mode);
+  printf("(aq_strength                  %f)\n", (float)  codecContext->aq_strength);
+  printf("(psy_rd                       %f)\n", (float)  codecContext->psy_rd);
+  printf("(psy_trellis                  %f)\n", (float)  codecContext->psy_trellis);
+  printf("(rc_lookahead                 %d)\n", (int)    codecContext->rc_lookahead);
+
+#endif
+
   printf("AVCodecContext Settings END\n");
 
 }  /* end p_debug_print_dump_AVCodecContext */
+
+
+/* --------------------------------
+ * p_av_metadata_set
+ * --------------------------------
+ */
+static int
+p_av_metadata_set(AVMetadata **pm, const char *key, const char *value, int flags)
+{
+  int ret;
+  
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+  ret = av_metadata_set2(pm, key, value, flags);
+#else
+  ret = av_metadata_set(pm, key, value);
+#endif  
+  
+  return (ret);
+}  /* end p_av_metadata_set */
 
 
 /* --------------------------------
@@ -1155,7 +1196,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
 
 
   /* new parms 2009.01.31 */
-  
+
   epp->b_frame_strategy              = 0;
   epp->workaround_bugs               = FF_BUG_AUTODETECT;
   epp->error_recognition             = FF_ER_CAREFUL;
@@ -1177,7 +1218,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->cqp                           = -1;
   epp->keyint_min                    = 25;   /* minimum GOP size */
   epp->refs                          = 1;
-  epp->chromaoffset                  = 0;        
+  epp->chromaoffset                  = 0;
   epp->bframebias                    = 0;
   epp->trellis                       = 0;
   epp->complexityblur                = 20.0;
@@ -1201,7 +1242,20 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->channel_layout                = 0;
   epp->rc_max_available_vbv_use      = 1.0 / 3.0;
   epp->rc_min_vbv_overflow_use       = 3.0;
-  
+
+  /* new params of ffmpeg-0.6 2010.07.31 */
+  epp->color_primaries               =  0; // TODO  enum AVColorPrimaries color_primaries;
+  epp->color_trc                     =  0; //  enum AVColorTransferCharacteristic color_trc;
+  epp->colorspace                    =  0; //  enum AVColorSpace colorspace;
+  epp->color_range                   =  0; //  enum AVColorRange color_range;
+  epp->chroma_sample_location        =  0; //  enum AVChromaLocation chroma_sample_location;
+  epp->weighted_p_pred               = 0;
+  epp->aq_mode                       = 0;
+  epp->aq_strength                   = 0.0; 
+  epp->psy_rd                        = 0.0;
+  epp->psy_trellis                   = 0.0;
+  epp->rc_lookahead                  = 0;
+
   /* new flags/flags2 2009.01.31 */
   epp->codec_FLAG_GMC                   = 0; /* 0: FALSE */
   epp->codec_FLAG_INPUT_PRESERVED       = 0; /* 0: FALSE */
@@ -1225,6 +1279,11 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->codec_FLAG2_CHUNKS               = 0; /* 0: FALSE */
   epp->codec_FLAG2_NON_LINEAR_QUANT     = 0; /* 0: FALSE */
   epp->codec_FLAG2_BIT_RESERVOIR        = 0; /* 0: FALSE */
+
+  /* new flags/flags2 of ffmpeg-0.6 2010.07.31 */
+  epp->codec_FLAG2_MBTREE               = 0; /* 0: FALSE */
+  epp->codec_FLAG2_PSY                  = 0; /* 0: FALSE */
+  epp->codec_FLAG2_SSIM                 = 0; /* 0: FALSE */
 
 }   /* end gap_enc_ffmpeg_main_init_preset_params */
 
@@ -1621,7 +1680,7 @@ p_calculate_current_timecode(t_ffmpeg_handle *ffh)
 {
   gdouble dblTimecode;
   gint64  timecode64;
-  
+
   /*
    * gdouble seconds;
    * seconds = (ffh->encode_frame_nr  / gpp->val.framerate);
@@ -1629,7 +1688,7 @@ p_calculate_current_timecode(t_ffmpeg_handle *ffh)
 
   dblTimecode = ffh->encode_frame_nr * ffh->pts_stepsize_per_frame;
   timecode64 = dblTimecode;
-  
+
   return (timecode64);
 }
 
@@ -1669,19 +1728,19 @@ p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate)
   {
     time_base->num = 1001;
     time_base->den = 60000;
-  
+
   }
   if ((framerate > 29.90) && (framerate < 29.99))
   {
     time_base->num = 1001;
     time_base->den = 30000;
-  
+
   }
   if ((framerate > 23.90) && (framerate < 23.99))
   {
     time_base->num = 1001;
     time_base->den = 24000;
-  
+
   }
 
 }  /* end p_set_timebase_from_framerate */
@@ -1729,10 +1788,10 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
     ffh->ast[ii].audio_buffer = NULL;
     ffh->ast[ii].audio_buffer_size = 0;
   }
-  
+
   {
     AVRational l_time_base;
-    
+
     p_set_timebase_from_framerate(&l_time_base, gpp->val.framerate);
     ffh->pts_stepsize_per_frame = l_time_base.num;
 
@@ -1786,7 +1845,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
      g_free(ffh);
      return(FALSE); /* error */
   }
-  if(ffh->vst[ii].vid_codec->type != CODEC_TYPE_VIDEO)
+  if(ffh->vst[ii].vid_codec->type != AVMEDIA_TYPE_VIDEO)
   {
      printf("CODEC: %s is no VIDEO CODEC!\n", epp->vcodec_name);
      g_free(ffh);
@@ -1825,14 +1884,14 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   video_enc = ffh->vst[ii].vid_codec_context;
 
-  video_enc->codec_type = CODEC_TYPE_VIDEO;
+  video_enc->codec_type = AVMEDIA_TYPE_VIDEO;
   video_enc->codec_id = ffh->vst[ii].vid_codec->id;
 
   video_enc->bit_rate = epp->video_bitrate * 1000;
   video_enc->bit_rate_tolerance = epp->bitrate_tol * 1000;
 
   p_set_timebase_from_framerate(&video_enc->time_base, gpp->val.framerate);
-      
+
   video_enc->width = gpp->val.vid_width;
   video_enc->height = gpp->val.vid_height;
 
@@ -2005,6 +2064,12 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   p_set_flag(epp->codec_FLAG2_NON_LINEAR_QUANT,    &video_enc->flags2, CODEC_FLAG2_NON_LINEAR_QUANT);
   p_set_flag(epp->codec_FLAG2_BIT_RESERVOIR,       &video_enc->flags2, CODEC_FLAG2_BIT_RESERVOIR);
 
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+  p_set_flag(epp->codec_FLAG2_MBTREE,              &video_enc->flags2, CODEC_FLAG2_MBTREE);
+  p_set_flag(epp->codec_FLAG2_PSY,                 &video_enc->flags2, CODEC_FLAG2_PSY);
+  p_set_flag(epp->codec_FLAG2_SSIM,                &video_enc->flags2, CODEC_FLAG2_SSIM);
+#endif
+
 
   if ((epp->b_frames > 0) && (!epp->intra))
   {
@@ -2036,7 +2101,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
         break;
     }
   }
-  
+
   video_enc->qmin      = epp->qmin;
   video_enc->qmax      = epp->qmax;
   video_enc->max_qdiff = epp->qdiff;
@@ -2069,8 +2134,8 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->workaround_bugs        = epp->workaround_bugs;
   video_enc->error_recognition      = epp->error_recognition;
   video_enc->mpeg_quant             = epp->mpeg_quant;
-  
-  
+
+
   video_enc->debug                  = 0;
   video_enc->mb_qmin                = epp->mb_qmin;
   video_enc->mb_qmax                = epp->mb_qmax;
@@ -2081,8 +2146,8 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->rc_qsquish             = epp->rc_qsquish;
   video_enc->rc_qmod_amp            = epp->rc_qmod_amp;
   video_enc->rc_qmod_freq           = epp->rc_qmod_freq;
-  
-  
+
+
   video_enc->luma_elim_threshold    = epp->video_lelim;
   video_enc->chroma_elim_threshold  = epp->video_celim;
 
@@ -2108,7 +2173,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   video_enc->nsse_weight            = epp->nsse_weight;
   video_enc->me_subpel_quality      = epp->subpel_quality;
-  
+
   video_enc->dia_size               = epp->dia_size;
   video_enc->last_predictor_count   = epp->last_predictor_count;
   video_enc->pre_dia_size           = epp->pre_dia_size;
@@ -2130,7 +2195,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->cqp                      = epp->cqp;
   video_enc->keyint_min               = epp->keyint_min;
   video_enc->refs                     = epp->refs;
-  video_enc->chromaoffset             = epp->chromaoffset;        
+  video_enc->chromaoffset             = epp->chromaoffset;
   video_enc->bframebias               = epp->bframebias;
   video_enc->trellis                  = epp->trellis;
   video_enc->complexityblur           = (float) epp->complexityblur;
@@ -2153,6 +2218,21 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->rc_max_available_vbv_use = (float)epp->rc_max_available_vbv_use;
   video_enc->rc_min_vbv_overflow_use  = (float)epp->rc_min_vbv_overflow_use;
 
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+  //video_enc->hwaccel_context == NULL;
+  video_enc->color_primaries = epp->color_primaries;
+  video_enc->color_trc = epp->color_trc;
+  video_enc->colorspace = epp->colorspace;
+  video_enc->color_range = epp->color_range;
+  video_enc->chroma_sample_location = epp->chroma_sample_location;
+  //video_enc->func = NULL;
+  video_enc->weighted_p_pred = (int)epp->weighted_p_pred;
+  video_enc->aq_mode = (int)epp->aq_mode;
+  video_enc->aq_strength = (float)epp->aq_strength;
+  video_enc->psy_rd = (float)epp->psy_rd;
+  video_enc->psy_trellis = (float)epp->psy_trellis;
+  video_enc->rc_lookahead = (int)epp->rc_lookahead;
+#endif
 
 
   if(epp->packet_size)
@@ -2167,19 +2247,19 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   if (epp->title[0] != '\0')
   {
-      av_metadata_set(&ffh->output_context->metadata, "title",  &epp->title[0]);
+      p_av_metadata_set(&ffh->output_context->metadata, "title",  &epp->title[0], 0);
   }
   if (epp->author[0] != '\0')
   {
-      av_metadata_set(&ffh->output_context->metadata, "author",  &epp->author[0]);
+      p_av_metadata_set(&ffh->output_context->metadata, "author",  &epp->author[0], 0);
   }
   if (epp->copyright[0] != '\0')
   {
-      av_metadata_set(&ffh->output_context->metadata, "copyright",  &epp->copyright[0]);
+      p_av_metadata_set(&ffh->output_context->metadata, "copyright",  &epp->copyright[0], 0);
   }
   if (epp->comment[0] != '\0')
   {
-      av_metadata_set(&ffh->output_context->metadata, "comment",  &epp->comment[0]);
+      p_av_metadata_set(&ffh->output_context->metadata, "comment",  &epp->comment[0], 0);
   }
 
 
@@ -2265,7 +2345,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
 
   return (TRUE); /* OK */
-  
+
 }  /* end p_init_video_codec */
 
 
@@ -2291,7 +2371,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
 
   audioOK = TRUE;
   msg = NULL;
-  
+
   /* ------------ Start Audio CODEC init -------   */
   if(audio_channels > 0)
   {
@@ -2305,7 +2385,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
     }
     else
     {
-      if(ffh->ast[ii].aud_codec->type != CODEC_TYPE_AUDIO)
+      if(ffh->ast[ii].aud_codec->type != AVMEDIA_TYPE_AUDIO)
       {
          audioOK = FALSE;
          msg = g_strdup_printf(_("CODEC: %s is no AUDIO CODEC!"), epp->acodec_name);
@@ -2326,7 +2406,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         /*  ffh->ast[ii].aud_codec_context = avcodec_alloc_context();*/
         audio_enc = ffh->ast[ii].aud_codec_context;
 
-        audio_enc->codec_type = CODEC_TYPE_AUDIO;
+        audio_enc->codec_type = AVMEDIA_TYPE_AUDIO;
         audio_enc->codec_id = ffh->ast[ii].aud_codec->id;
 
         audio_enc->bit_rate = epp->audio_bitrate * 1000;
@@ -2340,7 +2420,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         audio_enc->workaround_bugs       = epp->workaround_bugs;
         audio_enc->error_recognition     = epp->error_recognition;
         audio_enc->cutoff                = epp->cutoff;
-        
+
         if (bits == 16)
         {
           audio_enc->sample_fmt = SAMPLE_FMT_S16;
@@ -2349,8 +2429,8 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         {
           audio_enc->sample_fmt = SAMPLE_FMT_U8;
         }
-        
-        
+
+
         switch (audio_channels)
         {
           case 1:
@@ -2362,14 +2442,14 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
           default:
             audio_enc->channel_layout = epp->channel_layout;
             break;
-            
+
         }
 
         /* open audio codec */
         if (avcodec_open(ffh->ast[ii].aud_codec_context, ffh->ast[ii].aud_codec) < 0)
         {
           audioOK = FALSE;
-          
+
           msg = g_strdup_printf(_("could not open audio codec: %s\n"
                       "at audio_samplerate:%d channels:%d bits per channel:%d\n"
                       "(try to convert to 48 KHz, 44.1KHz or 32 kHz samplerate\n"
@@ -2381,7 +2461,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
                      );
           ffh->ast[ii].aud_codec = NULL;
         }
-        
+
       }
     }
   }
@@ -2447,7 +2527,11 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
   /* ------------ File Format  -------   */
 
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+  ffh->file_oformat = av_guess_format(epp->format_name, gpp->val.videoname, NULL);
+#else
   ffh->file_oformat = guess_format(epp->format_name, gpp->val.videoname, NULL);
+#endif
   if (!ffh->file_oformat)
   {
      printf("Unknown output format: %s\n", epp->format_name);
@@ -2558,7 +2642,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
    */
   ffh->ap->sample_rate = awp->awk[0].sample_rate;
   ffh->ap->channels = awp->awk[0].channels;
-  
+
   p_set_timebase_from_framerate(&ffh->ap->time_base, gpp->val.framerate);
 
   ffh->ap->width = gpp->val.vid_width;
@@ -2636,6 +2720,8 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   ffh->output_context->mux_rate    = epp->mux_rate;
   ffh->output_context->preload     = (int)(epp->mux_preload*AV_TIME_BASE);
   ffh->output_context->max_delay   = (int)(epp->mux_max_delay*AV_TIME_BASE);
+
+  ffh->img_convert_ctx = NULL; /* will be allocated at first img conversion */
 
   if(gap_debug)
   {
@@ -2740,7 +2826,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
       chunk_frame_type = GVA_util_check_mpg_frame_type(ffh->vst[ii].video_buffer, encoded_size);
       if(chunk_frame_type == 1)  /* check for intra frame type */
       {
-        pkt.flags |= PKT_FLAG_KEY;
+        pkt.flags |= AV_PKT_FLAG_KEY;
       }
 
 
@@ -2758,14 +2844,14 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
       ///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;  // OLD
       {
         AVCodecContext *c;
-        
+
         c = ffh->vst[ii].vid_codec_context;
         if (c->coded_frame->pts != AV_NOPTS_VALUE)
         {
           pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->vst[ii].vid_stream->time_base);
         }
       }
-      
+
       pkt.dts = AV_NOPTS_VALUE;  /* let av_write_frame calculate the decompression timestamp */
       pkt.stream_index = ffh->vst[ii].video_stream_index;
       pkt.data = ffh->vst[ii].video_buffer;
@@ -2784,7 +2870,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
  * p_convert_colormodel
  * -----------------------
  * convert video frame specified in the rgb_buffer
- * from PIX_FMT_BGR24 to the colormodel that is required
+ * from PIX_FMT_RGB24 to the colormodel that is required
  * by the video codec.
  *
  * conversion is done based on ffmpegs img_convert procedure.
@@ -2796,7 +2882,7 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
   AVPicture *picture_rgb;
   uint8_t   *l_convert_buffer;
   int        ii;
-  int        l_rc;
+  //int        l_rc;
 
   ii = ffh->vst[vid_track].video_stream_index;
 
@@ -2804,7 +2890,7 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
   big_picture_rgb = avcodec_alloc_frame();
   picture_rgb = (AVPicture *)big_picture_rgb;
 
-    
+
   /* allocate buffer for image conversion large enough for for uncompressed RGBA32 colormodel */
   l_convert_buffer = g_malloc(4 * ffh->frame_width * ffh->frame_height);
 
@@ -2844,16 +2930,45 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
         , (int)PIX_FMT_YUV420P);
   }
 
-  /* convert to pix_fmt needed by the codec */
-  l_rc = img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
-               ,picture_rgb, PIX_FMT_BGR24                    /* src */
-               ,ffh->frame_width
-               ,ffh->frame_height
-               );
+  /* reuse the img_convert_ctx or create a new one
+   * (in case ctx is NULL or params have changed)
+   */
+  ffh->img_convert_ctx = sws_getCachedContext(ffh->img_convert_ctx
+                                         , ffh->frame_width
+                                         , ffh->frame_height
+                                         , PIX_FMT_RGB24               /* src pixelformat */
+                                         , ffh->frame_width
+                                         , ffh->frame_height
+                                         , ffh->vst[ii].vid_codec_context->pix_fmt    /* dest pixelformat */
+                                         , SWS_BICUBIC                 /* int sws_flags */
+                                         , NULL, NULL, NULL
+                                         );
+  if (ffh->img_convert_ctx == NULL)
+  {
+     printf("Cannot initialize the conversion context (sws_getCachedContext delivered NULL pointer)\n");
+     exit(1);
+  }
+
+  /* convert from RGB to pix_fmt needed by the codec */
+  sws_scale(ffh->img_convert_ctx
+           , picture_rgb->data        /* srcSlice */
+           , picture_rgb->linesize    /* srcStride the array containing the strides for each plane */
+           , 0                        /* srcSliceY starting at 0 */
+           , ffh->frame_height        /* srcSliceH the height of the source slice */
+           , picture_codec->data      /* dst */
+           , picture_codec->linesize  /* dstStride the array containing the strides for each plane */
+           );
+
+  // /* img_convert is no longer available since ffmpeg.0.6 */
+  //l_rc = img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
+  //             ,picture_rgb, PIX_FMT_BGR24                    /* src */
+  //             ,ffh->frame_width
+  //             ,ffh->frame_height
+  //             );
 
   if(gap_debug)
   {
-    printf("after img_convert: l_rc:%d\n", l_rc);
+    printf("after sws_scale:\n");
   }
 
   g_free(big_picture_rgb);
@@ -2964,7 +3079,7 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
     {
       l_convert_buffer = p_convert_colormodel(ffh, picture_codec, rgb_buffer, vid_track);
     }
-    
+
 
     if(gap_debug)
     {
@@ -3021,26 +3136,26 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
 
 
         ///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts; // OLD
-        
+
         if (c->coded_frame->pts != AV_NOPTS_VALUE)
         {
           pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->vst[ii].vid_stream->time_base);
         }
-        
+
 //        if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
 //        {
 //          /* WORKAROND calculate pts timecode for the current frame
-//           * because the codec did not deliver a valid timecode 
+//           * because the codec did not deliver a valid timecode
 //           */
 //          pkt.pts = p_calculate_current_timecode(ffh);
 //        }
 
-        
+
         if(c->coded_frame->key_frame)
         {
-          pkt.flags |= PKT_FLAG_KEY;
+          pkt.flags |= AV_PKT_FLAG_KEY;
         }
-        
+
         pkt.stream_index = ffh->vst[ii].video_stream_index;
         pkt.data = ffh->vst[ii].video_buffer;
         pkt.size = encoded_size;
@@ -3048,7 +3163,7 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
         if(gap_debug)
         {
           AVStream *st;
-          
+
           st = ffh->output_context->streams[pkt.stream_index];
 
           printf("before av_write_frame video encoded_size:%d\n"
@@ -3065,7 +3180,7 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
              ,st->pts.den
              ,st->pts.val
              );
-             
+
         }
         ret = av_write_frame(ffh->output_context, &pkt);
 
@@ -3130,7 +3245,7 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 
 
 //      pkt.pts = ffh->ast[ii].aud_codec_context->coded_frame->pts;  // OLD
-      
+
       if (c->coded_frame->pts != AV_NOPTS_VALUE)
       {
         pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->ast[ii].aud_stream->time_base);
@@ -3139,16 +3254,16 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 //      if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
 //      {
 //        /* calculate pts timecode for the current frame
-//         * because the codec did not deliver a valid timecode 
+//         * because the codec did not deliver a valid timecode
 //         */
 //        pkt.pts = p_calculate_current_timecode(ffh);
 //      }
-      
-      
+
+
       pkt.stream_index = ffh->ast[ii].audio_stream_index;
       pkt.data = ffh->ast[ii].audio_buffer;
       pkt.size = encoded_size;
-      
+
       if(gap_debug)
       {
         printf("before av_write_frame audio  encoded_size:%d pkt.pts:%lld dts:%lld\n"
@@ -3157,7 +3272,7 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
           , pkt.dts
           );
       }
-      
+
       ret = av_write_frame(ffh->output_context, &pkt);
 
       if(gap_debug)
@@ -3175,13 +3290,13 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
  * my_url_fclose
  * ---------------
  * this procedure is a workaround that fixes a crash that happens on attempt to call the original
- * url_fclose procedure 
+ * url_fclose procedure
  * my private copy of (libavformat/aviobuf.c url_fclose)
  * just skips the crashing step "av_free(s);"  that frees up the ByteIOContext itself
  * (free(): invalid pointer: 0x0859f3b0)
  * The workaround is still required in ffmpeg snapshot from 2009.01.31
  */
-int 
+int
 my_url_fclose(ByteIOContext *s)
 {
     URLContext *h = s->opaque;
@@ -3312,7 +3427,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
     }
 
   }
- 
+
   if(gap_debug)
   {
     printf("Closing AUDIO stuff\n");
@@ -3343,7 +3458,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
         printf("before url_fclose\n");
       }
       my_url_fclose(&ffh->output_context->pb);
-      
+
       if(gap_debug)
       {
         printf("after url_fclose\n");
@@ -3355,6 +3470,11 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
     }
   }
 
+  if(ffh->img_convert_ctx != NULL)
+  {
+    sws_freeContext(ffh->img_convert_ctx);
+    ffh->img_convert_ctx = NULL;
+  }
 
 }  /* end p_ffmpeg_close */
 
@@ -3543,7 +3663,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
   l_cnt_encoded_frames = 0;
   l_cnt_reused_frames = 0;
   p_init_audio_workdata(awp);
-  
+
   l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
   l_vcodec_list = p_setup_check_flags(epp, &l_check_flags);
 
@@ -3594,7 +3714,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
   }
 
   /* TODO check for overwrite (in case we are called non-interactive)
-   * overwrite check shall be done only if (current_pass < 2) 
+   * overwrite check shall be done only if (current_pass < 2)
    */
 
   if (gap_debug) printf("Creating ffmpeg file.\n");
@@ -3674,7 +3794,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
     if(gap_debug)
     {
       printf("\nFFenc: after gap_story_render_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n"
-        , (int)l_tmp_image_id 
+        , (int)l_tmp_image_id
         , (int) l_layer_id
         );
     }
@@ -3793,7 +3913,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
     printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
     printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
   }
-  
+
   return l_rc;
 }    /* end p_ffmpeg_encode_pass */
 

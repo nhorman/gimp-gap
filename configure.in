@@ -405,6 +405,7 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/libavcodec/${LIBPREF}avcodec${LIBSUF}"
       FFMPEG_LIBAVUTIL_A="$FFMPEG_DIR/libavutil/${LIBPREF}avutil${LIBSUF}"
       FFMPEG_LIBAVDEVICE_A="$FFMPEG_DIR/libavdevice/${LIBPREF}avdevice${LIBSUF}"
+      FFMPEG_LIBSWSCALE_A="$FFMPEG_DIR/libswscale/${LIBPREF}swscale${LIBSUF}"
       dnl
       dnl ffmpeg can be configured to use external codec libs x264, xvid ....
       dnl options for ffmpeg ext libs configuration will be passed to ffmpeg/configure
@@ -415,8 +416,8 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
         FFMPEG_EXTLIBS="$FFMPEG_EXTLIBS -lws2_32"
       fi
 
-      GAP_VLIBS_FFMPEG="  $FFMPEG_LIBAVDEVICE_A $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_EXTLIBS "
-      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil -I$FFMPEG_DIR/libavdevice "
+      GAP_VLIBS_FFMPEG="  $FFMPEG_LIBAVDEVICE_A $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_LIBSWSCALE_A $FFMPEG_EXTLIBS "
+      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil -I$FFMPEG_DIR/libavdevice  -I$FFMPEG_DIR/libswscale"
 
       vid_ffmpeg_warning="
           $x264_warn
@@ -450,9 +451,9 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       	 ff_pass_through_flags=" $ff_pass_through_flags --cc=$CC "
       fi
       
-      FFMPEG_CONFIGURE_OPTIONS=" $ff_pass_through_flags $FFMPEG_CONFIGURE_OPTIONS"
+      FFMPEG_CONFIGURE_OPTIONS=" $ff_pass_through_flags $FFMPEG_CONFIGURE_OPTIONS --enable-swscale"
  
- 
+      FFMPEG_ENABLE_NONFREE=""
 
       dnl configure ffmpeg bzip2 usage
       if test "x$FF_BZIP2" != "x"; then
@@ -467,6 +468,7 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       fi
       if test "x$FF_LIBFAAC" != "x"; then
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libfaac"
+         FFMPEG_ENABLE_NONFREE="--enable-nonfree"
       fi
       if test "x$FF_LIBFAAD" != "x"; then
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libfaad"
@@ -481,6 +483,9 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       if test "x$FF_LIBXVID" != "x"; then
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libxvid"
       fi
+
+      dnl in case nonfree libs are used ffmeg 0.6 configure requires --enable-nonfree
+      FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS $FFMPEG_ENABLE_NONFREE"
       
       if  test "x$os_win32" = "xyes"; then
          dnl here we could check for required win32 api version on MonGW Win32 Systems.
@@ -934,6 +939,7 @@ AC_SUBST(FFMPEG_DIR)
 AC_SUBST(FFMPEG_LIBAVFORMAT_A)
 AC_SUBST(FFMPEG_LIBAVCODEC_A)
 AC_SUBST(FFMPEG_LIBAVUTIL_A)
+AC_SUBST(FFMPEG_LIBSWSCALE_A)
 AC_SUBST(LMPEG3_DIR)
 AC_SUBST(LMPEG3_A)
 

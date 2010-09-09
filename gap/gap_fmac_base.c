@@ -277,7 +277,7 @@ p_build_fmac_list(const char *filtermacro_file, GimpRunMode run_mode)
       return NULL;
   }
 
-  /* process filtermacro file (scann line by line and add filtername
+  /* process filtermacro file (scan line by line and add filtername
    * and params to the fmac_root list) 
    */
   txf_ptr_root = gap_val_load_textfile(filtermacro_file);
@@ -380,7 +380,7 @@ p_merge_fmac_list(FMacElem *fmac_root, const char *filtermacro_file, GimpRunMode
   }
 
 
-  /* process filtermacro file (scann line by line and overwrite
+  /* process filtermacro file (scan line by line and overwrite
    * the 2nd parameter set where filtername matches
    */
   txf_ptr_root = gap_val_load_textfile(filtermacro_file);

@@ -932,7 +932,7 @@ p_vindex_dialog(VindexValues *val_ptr)
                                               "and no critical timecode steps are detected in the probereads so far.\n"
                                               "\nWARNING: positioning via native seek may not work exact in case critical "
                                               "timecode steps were not detected in the probereads.")
-                                         , N_("Create video index. Requires unconditional full scann of all frames."
+                                         , N_("Create video index. Requires unconditional full scan of all frames."
                                               "Native seek is enabled only in case all timecodes are OK.")
                                          };
 
@@ -991,7 +991,7 @@ p_vindex_dialog(VindexValues *val_ptr)
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_FLT); ii_percentage_smart_mode = ii;
   argv[ii].constraint = TRUE;
   argv[ii].label_txt = _("Percentage:");
-  argv[ii].help_txt  = _("stop scann after percentage reached and no unplausible timecode was detected so far (only relevant in smart mode)");
+  argv[ii].help_txt  = _("stop scan after percentage reached and no unplausible timecode was detected so far (only relevant in smart mode)");
   argv[ii].flt_min   =  1.0;
   argv[ii].flt_max   = (gint)100.0;
   argv[ii].flt_step  =  1.0;
@@ -1444,7 +1444,7 @@ p_create_progress_window(GapVideoIndexCreatorProgressParams *vipp)
     gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
     gtk_widget_show (button);
     gimp_help_set_help_data (button
-                   , _("Cancel video access if in progress and disable automatic videothumbnails")
+                   , _("Cancel video access if in progress and disable automatic video thumbnails")
                    , NULL);
     g_signal_connect (G_OBJECT (button), "clicked",
                     G_CALLBACK (p_cancel_button_cb),

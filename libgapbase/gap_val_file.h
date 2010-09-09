@@ -46,6 +46,7 @@ typedef enum
 , GAP_VAL_STRING
 , GAP_VAL_GBOOLEAN
 , GAP_VAL_G32BOOLEAN
+, GAP_VAL_GINT
 } GapValDataType;
 
 

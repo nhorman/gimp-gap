@@ -149,6 +149,7 @@ static void     p_pw_mask_name_reference_update(GapStbPropWidget *pw, const char
 static void     p_pw_mask_name_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_nullable_widget_set_sensitive(GtkWidget *widget, gboolean sensitive, gboolean show);
 static void     p_pw_nullable_gimp_scale_entry_set_sensitive(GtkObject *adj, gboolean sensitive, gboolean show);
+static void     p_pw_set_colormask_param_sensitivity (GapStbPropWidget *pw);
 static void     p_pw_set_mask_name_dependent_widget_sensitivity(GapStbPropWidget *pw, gint active_index);
 static void     p_pw_set_strings_for_mask_name_combo(GapStbPropWidget *pw);
 static void     p_pw_mask_name_combo_changed_cb( GtkWidget *widget, GapStbPropWidget *pw);
@@ -157,10 +158,14 @@ static void     p_pw_filename_changed(const char *filename, GapStbPropWidget *pw
 static void     p_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
+static void     p_pw_colormask_file_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_colormask_file_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_colormask_file_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
 static void     p_pw_fmac_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_fmac_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_fmac_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
 static void     p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_colormask_file_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_update_info_labels_and_cliptype_senstivity(GapStbPropWidget *pw);
 static void     p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr);
@@ -306,7 +311,7 @@ p_pw_prop_reset_all(GapStbPropWidget *pw)
                                    , TRUE);
     }
     
-    idx = CLAMP((gint32)pw->stb_elem_refptr->mask_anchor, 0, (2 -1));
+    idx = CLAMP((gint32)pw->stb_elem_refptr->mask_anchor, 0, (3 -1));
     if(pw->pw_mask_anchor_radio_button_arr[idx])
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pw->pw_mask_anchor_radio_button_arr[idx])
@@ -706,7 +711,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   &&  (sgpp->auto_vthumb == FALSE))
   {
     g_message(_("Scene detection depends on video thumbnails. "
-                "Please enable videothumbnails (in the Windows Menu)"));
+                "Please enable video thumbnails (in the Windows Menu)"));
     return;
   }
 
@@ -1282,7 +1287,7 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
              * from_frame number at this point. (dont know exactly why)
              * the simple workaround is just render twice
              * and now it seems to work fine.
-             * (rendering twice should not be too slow, since the requested videothumbnails
+             * (rendering twice should not be too slow, since the requested video thumbnails
              *  are now cached in memory)
              */
             p_pv_pview_render_immediate(pw, pw->stb_elem_refptr, pw->pv_ptr);
@@ -1334,7 +1339,7 @@ p_pv_pview_render (GapStbPropWidget *pw)
    }
    pw->go_job_framenr = pw->stb_elem_refptr->from_frame;
 
-   /* videothumb is rendered deferred (16 millisec) via timer */
+   /* video thumb is rendered deferred (16 millisec) via timer */
    if(pw->go_timertag < 0)
    {
      pw->go_timertag = (gint32) g_timeout_add(16, (GtkFunction)p_pw_timer_go_job, pw);
@@ -1995,6 +2000,25 @@ p_pw_nullable_gimp_scale_entry_set_sensitive(GtkObject *adj, gboolean sensitive,
 }
 
 
+/* ------------------------------------
+ * p_pw_set_colormask_param_sensitivity
+ * ------------------------------------
+ */
+static void
+p_pw_set_colormask_param_sensitivity (GapStbPropWidget *pw)
+{
+  gint active_index;
+
+  if(pw == NULL) { return; }
+  if(pw->mask_name_combo == NULL) {return;}
+  if(pw->stb_elem_refptr == NULL) {return;}
+
+  active_index = gtk_combo_box_get_active(GTK_COMBO_BOX (pw->mask_name_combo));
+  p_pw_set_mask_name_dependent_widget_sensitivity(pw, active_index);
+
+
+}  /* end p_pw_set_colormask_param_sensitivity */
+
 /* ------------------------------------------------
  * p_pw_set_mask_name_dependent_widget_sensitivity
  * ------------------------------------------------
@@ -2017,13 +2041,22 @@ p_pw_set_mask_name_dependent_widget_sensitivity(GapStbPropWidget *pw, gint activ
   p_pw_nullable_widget_set_sensitive(pw->pw_mask_enable_toggle, l_sensitive, l_show);
   p_pw_nullable_widget_set_sensitive(pw->pw_mask_anchor_radio_button_arr[0], l_sensitive, l_show);
   p_pw_nullable_widget_set_sensitive(pw->pw_mask_anchor_radio_button_arr[1], l_sensitive, l_show);
-  
+  p_pw_nullable_widget_set_sensitive(pw->pw_mask_anchor_radio_button_arr[2], l_sensitive, l_show);
+ 
   p_pw_nullable_gimp_scale_entry_set_sensitive(pw->pw_spinbutton_mask_stepsize_adj
       , l_sensitive
       , l_show
       );
-  
-}  /* end p_pw_set_mask_name_dependent_widget_sensitivity */
+ 
+  if(pw->mask_anchor != GAP_MSK_ANCHOR_XCOLOR)
+  {
+    l_sensitive = FALSE;
+  } 
+
+  p_pw_nullable_widget_set_sensitive(pw->colormask_file_label, l_sensitive, l_show);
+  p_pw_nullable_widget_set_sensitive(pw->colormask_file_entry, l_sensitive, l_show);
+  p_pw_nullable_widget_set_sensitive(pw->colormask_file_filesel_button, l_sensitive, l_show);
+ }  /* end p_pw_set_mask_name_dependent_widget_sensitivity */
 
 /* ------------------------------------
  * p_pw_set_strings_for_mask_name_combo
@@ -2380,6 +2413,105 @@ p_pw_filesel_button_cb ( GtkWidget *w
 
 
 /* ==================================================== END FILESEL stuff ======  */
+/* ==================================================== START COLORMASK FILESEL stuff ======  */
+/* ------------------------------------
+ * p_pw_colormask_file_filesel_pw_ok_cb
+ * -----------------------------------
+ */
+static void
+p_pw_colormask_file_filesel_pw_ok_cb (GtkWidget *widget
+                   ,GapStbPropWidget *pw)
+{
+  const gchar *colormask_file_name;
+  gchar *dup_colormask_file_name;
+
+  if(pw == NULL) return;
+  if(pw->pw_colormask_file_filesel == NULL) return;
+
+  dup_colormask_file_name = NULL;
+  colormask_file_name = gtk_file_selection_get_filename (GTK_FILE_SELECTION (pw->pw_colormask_file_filesel));
+  if(colormask_file_name)
+  {
+    dup_colormask_file_name = g_strdup(colormask_file_name);
+  }
+
+  gtk_widget_destroy(GTK_WIDGET(pw->pw_colormask_file_filesel));
+
+  if(dup_colormask_file_name)
+  {
+    gtk_entry_set_text(GTK_ENTRY(pw->colormask_file_entry), dup_colormask_file_name);
+    g_free(dup_colormask_file_name);
+  }
+
+  pw->pw_colormask_file_filesel = NULL;
+}  /* end p_pw_colormask_file_filesel_pw_ok_cb */
+
+
+/* ---------------------------------------
+ * p_pw_colormask_file_filesel_pw_close_cb
+ * ---------------------------------------
+ */
+static void
+p_pw_colormask_file_filesel_pw_close_cb ( GtkWidget *widget
+                      , GapStbPropWidget *pw)
+{
+  if(pw->pw_colormask_file_filesel == NULL) return;
+
+  gtk_widget_destroy(GTK_WIDGET(pw->pw_colormask_file_filesel));
+  pw->pw_colormask_file_filesel = NULL;   /* indicate that filesel is closed */
+
+}  /* end p_pw_colormask_file_filesel_pw_close_cb */
+
+
+
+/* -------------------------------------
+ * p_pw_colormask_file_filesel_button_cb
+ * -------------------------------------
+ */
+static void
+p_pw_colormask_file_filesel_button_cb ( GtkWidget *w
+                       , GapStbPropWidget *pw)
+{
+  GtkWidget *filesel = NULL;
+
+  if(pw->scene_detection_busy)
+  {
+     return;
+  }
+
+  if(pw->pw_colormask_file_filesel != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(pw->pw_colormask_file_filesel));
+     return;   /* filesel is already open */
+  }
+  if(pw->stb_elem_refptr == NULL) { return; }
+
+  filesel = gtk_file_selection_new ( _("Set Colormark Parmeter Filename"));
+  pw->pw_colormask_file_filesel = filesel;
+
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", G_CALLBACK (p_pw_colormask_file_filesel_pw_ok_cb),
+                    pw);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                    "clicked", G_CALLBACK (p_pw_colormask_file_filesel_pw_close_cb),
+                    pw);
+  g_signal_connect (filesel, "destroy",
+                    G_CALLBACK (p_pw_colormask_file_filesel_pw_close_cb),
+                    pw);
+
+
+  if(pw->stb_elem_refptr->colormask_file)
+  {
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+                                     pw->stb_elem_refptr->colormask_file);
+  }
+  gtk_widget_show (filesel);
+
+}  /* end p_pw_colormask_file_filesel_button_cb */
+
+
+/* ==================================================== END COLORMASK FILESEL stuff ======  */
 
 /* ==================================================== START FMAC FILESEL stuff ======  */
 /* --------------------------------
@@ -2516,6 +2648,29 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
     pw->stb_elem_refptr->comment->orig_src_line = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
   }
 }  /* end p_pw_comment_entry_update_cb */
+
+/* -----------------------------------
+ * p_pw_colormask_file_entry_update_cb
+ * -----------------------------------
+ */
+static void
+p_pw_colormask_file_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  if(pw == NULL) { return; }
+  if(pw->stb_elem_refptr == NULL) { return; }
+  if(pw->stb_refptr)
+  {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
+  }
+
+  if(pw->stb_elem_refptr->colormask_file)
+  {
+    g_free(pw->stb_elem_refptr->colormask_file);
+  }
+
+  pw->stb_elem_refptr->colormask_file = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+
+}  /* end p_pw_colormask_file_entry_update_cb */
 
 
 /* ----------------------------
@@ -2825,6 +2980,7 @@ p_radio_mask_anchor_clip_callback(GtkWidget *widget, GapStbPropWidget *pw)
     {
       p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->mask_anchor = pw->mask_anchor;
+      p_pw_set_colormask_param_sensitivity(pw);
     }
   }
 }  /* end p_radio_mask_anchor_clip_callback */
@@ -2844,9 +3000,29 @@ p_radio_mask_anchor_master_callback(GtkWidget *widget, GapStbPropWidget *pw)
     {
       p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->mask_anchor = pw->mask_anchor;
+      p_pw_set_colormask_param_sensitivity(pw);
     }
   }
 }  /* end p_radio_mask_anchor_master_callback */
+
+/* -----------------------------------
+ * p_radio_mask_anchor_xcolor_callback
+ * -----------------------------------
+ */
+static void
+p_radio_mask_anchor_xcolor_callback(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    pw->mask_anchor = GAP_MSK_ANCHOR_XCOLOR;
+    if(pw->stb_elem_refptr)
+    {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
+      pw->stb_elem_refptr->mask_anchor = pw->mask_anchor;
+      p_pw_set_colormask_param_sensitivity(pw);
+    }
+  }
+}  /* end p_radio_mask_anchor_xcolor_callback */
 
 
 /* ---------------------------------
@@ -3150,10 +3326,10 @@ p_radio_flip_both_callback(GtkWidget *widget, GapStbPropWidget *pw)
  *
  * The triggered action is to create (or replace) the mask_name reference
  * of the current property widget.
- * If the droped element was not a mask definition, then implicite
+ * If the dropped element was not a mask definition, then implicitly
  * add it to the mask definitions.
  *
- * NOTE: mask definition property windows can NOT act as drop destionation.
+ * NOTE: mask definition property windows can NOT act as drop destination.
  */
 static void
 on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
@@ -3252,8 +3428,8 @@ on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
             GapStoryElem *stb_elem_dup;
             
             mask_name_new = gap_story_generate_unique_maskname(pw->stb_refptr);
-            /* implicite create a new mask definition from the dropped
-             * clip and change properties of current pw to refere
+            /* implicitly create a new mask definition from the dropped
+             * clip and change properties of current pw to refer
              * to the newly created mask definition
              */
             stb_elem_dup = gap_story_elem_duplicate(fw_drop->stb_elem_refptr);
@@ -3303,7 +3479,7 @@ on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
  * accept dropping of application internal storyboard elements
  * to add (or replace) the current mask_name (only for mask references)
  *
- * if the dropped element is NOT a mask definition, then implicite
+ * if the dropped element is NOT a mask definition, then implicitly
  * add it to the mask definitions.
  */
 static void
@@ -3345,13 +3521,13 @@ p_pw_dialog_init_dnd(GapStbPropWidget *pw)
  * -------------------------------
  * - set sensitivity for the filtermacro steps spinbutton.
  *   It is sensitive if both filtermacro_file and an 
- *   implicite alternative filtermacro_file (MACRO2) are existent and valid.
+ *   implicit alternative filtermacro_file (MACRO2) are existent and valid.
  *   In this case filter apply with varying values can be used
  *   by entering a value > 1 into the filtermacro steps spinbutton.
  *
  * - The presence of the alternative filtermacro_file is also
  *   displayed in the label pw_label_alternate_fmac_file
- *   via shortened version of the alternat filtermacro filename.
+ *   via shortened version of the alternate filtermacro filename.
  * - This label is set to space if no valid alternate filtermacro_file
  *   is available. This label also indicates if MACRO2 is active
  *   or not active by adding Suffix "(ON)" or "(OFF)"
@@ -3680,6 +3856,10 @@ p_pw_clear_widgets(GapStbPropWidget *pw)
   pw->comment_entry = NULL;
   pw->pw_fmac_filesel = NULL;
   pw->fmac_entry = NULL;
+  pw->pw_colormask_file_filesel = NULL;
+  pw->colormask_file_filesel_button = NULL;
+  pw->colormask_file_entry = NULL;
+  pw->colormask_file_label = NULL;
   pw->pw_spinbutton_from_adj = NULL;
   pw->pw_spinbutton_to_adj = NULL;
   pw->pw_spinbutton_loops_adj = NULL;
@@ -3699,6 +3879,8 @@ p_pw_clear_widgets(GapStbPropWidget *pw)
   pw->pw_mask_enable_toggle = NULL;
   pw->pw_mask_anchor_radio_button_arr[0] = NULL;
   pw->pw_mask_anchor_radio_button_arr[1] = NULL;
+  pw->pw_mask_anchor_radio_button_arr[2] = NULL;
+  
   pw->pw_spinbutton_mask_stepsize_adj = NULL;
   
   pw->pw_spinbutton_fmac_steps = NULL;
@@ -4499,7 +4681,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     radio_table = gtk_table_new (1, 2, FALSE);
 
     l_idx = 0;
-    /* radio button mask_anchor None */
+    /* radio button mask_anchor Clip */
     radio_button = gtk_radio_button_new_with_label ( radio_group, _("Clip") );
     radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
     gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
@@ -4517,7 +4699,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                        pw);
 
     l_idx++;
-    /* radio button mask_anchor odd */
+    /* radio button mask_anchor Master */
     radio_button = gtk_radio_button_new_with_label ( radio_group, _("Master") );
     radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
     gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
@@ -4534,11 +4716,81 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                        G_CALLBACK (p_radio_mask_anchor_master_callback),
                        pw);
 
+    l_idx++;
+    /* radio button mask_anchor ColormaskClip */
+    radio_button = gtk_radio_button_new_with_label ( radio_group, _("ClipColormask") );
+    radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+    gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
+                     , 0, 1, 0, 0, 0, 0);
+
+    pw->pw_mask_anchor_radio_button_arr[2] = radio_button;
+    l_radio_pressed = (pw->mask_anchor == GAP_MSK_ANCHOR_XCOLOR);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+                                     l_radio_pressed);
+    gimp_help_set_help_data(radio_button, _("Apply as colormask to clip at clip position in clip size"), NULL);
+
+    gtk_widget_show (radio_button);
+    g_signal_connect ( G_OBJECT (radio_button), "toggled",
+                       G_CALLBACK (p_radio_mask_anchor_xcolor_callback),
+                       pw);
+
+
 
     gtk_widget_show (radio_table);
     gtk_table_attach_defaults (GTK_TABLE(table_ptr), radio_table, 1, 2, row, row+1);
   }
 
+
+  row++;
+
+  /* the colormask parameter file label */
+  label = gtk_label_new (_("Mask Params:"));
+  pw->colormask_file_label = label;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
+  gtk_widget_show (label);
+
+
+
+  /* colormask parameter file entry and filesel invoker button */
+  {
+    GtkWidget *hbox_colormask_file;
+  
+    hbox_colormask_file = gtk_hbox_new (FALSE, 1);
+    gtk_widget_show (hbox_colormask_file);
+    gtk_table_attach_defaults (GTK_TABLE(table), hbox_colormask_file, 1, 2, row, row+1);
+
+    /* the filtermacro entry */
+    entry = gtk_entry_new ();
+    gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->colormask_file)
+      {
+        gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->colormask_file);
+      }
+    }
+
+    gtk_box_pack_start (GTK_BOX (hbox_colormask_file), entry, TRUE, TRUE, 1);
+
+    g_signal_connect(G_OBJECT(entry), "changed",
+                     G_CALLBACK(p_pw_colormask_file_entry_update_cb),
+                     pw);
+    gtk_widget_show (entry);
+    gimp_help_set_help_data (entry, _("parameter file for the colormask filter")
+                            , NULL);
+    pw->colormask_file_entry = entry;
+
+
+    /* the filesel invoker button */
+    button = gtk_button_new_with_label ("...");
+    pw->colormask_file_filesel_button = button;
+    gtk_box_pack_start (GTK_BOX (hbox_colormask_file), button, FALSE, FALSE, 1);
+    g_signal_connect(G_OBJECT(button), "clicked",
+                     G_CALLBACK(p_pw_colormask_file_filesel_button_cb),
+                     pw);
+    gtk_widget_show (button);
+  }
 
   if(!pw->is_mask_definition)
   {
@@ -4622,7 +4874,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     gtk_widget_show (entry);
     gimp_help_set_help_data (entry, _("filter macro to be performed when frames "
                                     "of this clips are rendered. "
-                                    "A 2nd macrofile is implicite referenced by naming convetion "
+                                    "A 2nd macrofile is implicitly referenced by naming convention "
                                     "via the keyword .VARYING (as suffix or before the extension)")
                                            , NULL);
     pw->fmac_entry = entry;
@@ -4875,7 +5127,7 @@ gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
   {
     pw->pw_flip_request_radio_button_arr[idx] = NULL;
   }
-  for(idx=0; idx < 2; idx++)
+  for(idx=0; idx < sizeof(pw->pw_mask_anchor_radio_button_arr); idx++)
   {
     pw->pw_mask_anchor_radio_button_arr[idx] = NULL;
   }

@@ -36,6 +36,11 @@
 
 #include "gap-intl.h"
 #include "gap_arr_dialog.h"
+#include "gap_colordiff.h"
+#include "gap_locate.h"
+#include "gap_edge_detection.h"
+#include "gap_colormask_file.h"
+#include "gap_colormask_exec.h"
 #include "gap_image.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"

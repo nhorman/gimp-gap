@@ -847,3 +847,41 @@ gap_layer_create_layer_from_alpha(gint32 src_layer_id, gint32 image_id
 
 }  /* end gap_layer_create_layer_from_alpha  */
 
+/* ---------------------------------
+ * gap_layer_find_by_name
+ * ---------------------------------
+ * return -1 if the specified image has no layer with the specified name
+ */
+gint32
+gap_layer_find_by_name(gint32 image_id, const char *name)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32        l_layer_id;
+
+  l_layer_id = -1;
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    gint ii;
+    for(ii=0; ii < l_nlayers; ii++)
+    {
+      char *layername;
+      gboolean isEqual;
+
+      layername = gimp_drawable_get_name(l_layers_list[ii]);
+      isEqual = (strcmp(layername, name) == 0);
+      g_free(layername);
+      
+      if (isEqual)
+      {
+        l_layer_id = l_layers_list[ii];
+        break;
+      }
+    }
+    g_free (l_layers_list);
+  }
+
+  return (l_layer_id);
+
+}  /* end gap_layer_find_by_name */

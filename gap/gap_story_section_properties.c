@@ -396,7 +396,7 @@ p_switch_to_section(GapStbSecpropWidget *spw, GapStorySection *target_section)
   
   /* make the section the active section
    * make the section the active section, refresh the sections combo box
-   * (this implicite triggers thumbnail rendering)
+   * (this implicitly triggers thumbnail rendering)
    */
   gap_story_dlg_spw_section_refresh(spw, target_section);
   

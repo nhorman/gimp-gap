@@ -284,7 +284,7 @@ p_replace_combo_vid_codec(GapGveFFMpegGlobalParams *gpp)
   {
      char *menu_name;
      char *object_data;
-     if ((avcodec->encode) && (avcodec->type == CODEC_TYPE_VIDEO))
+     if ((avcodec->encode) && (avcodec->type == AVMEDIA_TYPE_VIDEO))
      {
        object_data = (char *)avcodec->name;
 
@@ -358,7 +358,7 @@ p_replace_combo_aud_codec(GapGveFFMpegGlobalParams *gpp)
   {
      char *menu_name;
      char *object_data;
-     if ((avcodec->encode) && (avcodec->type == CODEC_TYPE_AUDIO))
+     if ((avcodec->encode) && (avcodec->type == AVMEDIA_TYPE_AUDIO))
      {
        object_data = (char *)avcodec->name;
 
@@ -3736,7 +3736,7 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gpp->ff_codec_FLAG_GRAY_checkbutton = NULL;
   gpp->ff_codec_FLAG_EMU_EDGE_checkbutton = NULL;
   gpp->ff_codec_FLAG_TRUNCATED_checkbutton = NULL;
-  
+
   gpp->ff_codec_FLAG2_FAST_checkbutton = NULL;
   gpp->ff_codec_FLAG2_LOCAL_HEADER_checkbutton = NULL;
   gpp->ff_codec_FLAG2_BPYRAMID_checkbutton = NULL;

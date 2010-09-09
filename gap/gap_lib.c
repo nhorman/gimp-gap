@@ -528,7 +528,7 @@ p_do_active_layer_tracking(gint32 image_id
 /* ============================================================================
  * gap_lib_file_exists
  *
- * return 0  ... file does not exist, or is not accessable by user,
+ * return 0  ... file does not exist, or is not accessible by user,
  *               or is empty,
  *               or is not a regular file
  *        1  ... file exists
@@ -882,6 +882,39 @@ gap_lib_alloc_extension(const char *imagename)
 
   return(l_ext);
 }
+
+/* -------------------------------------
+ * gap_lib_build_basename_without_ext
+ * -------------------------------------
+ * return a duplicate of the basename part of the specified filename without extension.
+ *        leading directory path and drive letter (for WinOS) is cut off
+ * the caller is responsible to g_free the returned string.
+ */
+char *
+gap_lib_build_basename_without_ext(const char *filename)
+{
+  char *basename;
+  gint  idx;
+  
+  basename = g_filename_display_basename(filename);
+  idx = strlen(basename) -1;
+  while(idx > 0)
+  {
+    if(basename[idx] == '.')
+    {
+      basename[idx] = '\0';
+      break;
+    }
+    if((basename[idx] == G_DIR_SEPARATOR) || (basename[idx] == DIR_ROOT))
+    {
+      break;    /* dont run into dir part */
+    }
+
+    idx--;
+  }
+  return(basename);
+}  /* end gap_lib_build_basename_without_ext */
+
 
 
 /* ----------------------------------
@@ -2611,14 +2644,14 @@ gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
   
   if (gap_pdb_gimp_displays_reconnect(old_image_id, l_new_image_id))
   {
-      /* deleteing the old image if it is still alive
+      /* deleting the old image if it is still alive
        * (maybe still required gimp-2.2.x prior to gimp-2.2.11
        * gimp-2.2.11 still accepts the delete, but the old image becomes invalid after
        * reconnecting the display.
        * gimp-2.3.8 even complains and breaks gimp-gap if we attempt to delete
        * the old image. (see #339840)
-       * GAP has no more chance for explicite delete the old image
-       * (hope that this is already done implicite by gimp_reconnect_displays ?)
+       * GAP has no more chance of explicitly deleting the old image
+       * (hope that this is already done implicitly by gimp_reconnect_displays ?)
        */
        
       if(gap_image_is_alive(old_image_id))

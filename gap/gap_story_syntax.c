@@ -280,6 +280,10 @@ p_create_syntax_list(void)
                ,"decoder"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_MASTER_INSERT_ALPHA
+               ,"format"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_VID_MASTER_INSERT_AREA
                ,"format"
                ,NULL
@@ -307,6 +311,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_BLACKSECTION
@@ -325,6 +330,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_MOVIE
@@ -347,6 +353,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_FRAMES
@@ -366,6 +373,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_ANIMIMAGE
@@ -384,6 +392,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
 
@@ -399,6 +408,7 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_COLOR
@@ -416,12 +426,21 @@ p_create_syntax_list(void)
                ,"mask_disable"
                ,"macsteps"
                ,"macaccel"
+               ,"colormask_file"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_SILENCE
                ,"track"
                ,"nloops"
                ,"wait_until_sec"
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_VID_ROTATE
+               ,"track"
+               ,"rotate_from"
+               ,"rotate_to"
+               ,"nframes"
+               ,"accel"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_OPACITY

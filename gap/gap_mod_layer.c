@@ -283,7 +283,7 @@ p_raise_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gi
 
   if(! gimp_drawable_has_alpha (layer_id))
   {
-    /* implicite add an alpha channel before we try to raise */
+    /* implicitly add an alpha channel before we try to raise */
     gimp_layer_add_alpha(layer_id);
   }
   gimp_image_raise_layer(image_id, layer_id);
@@ -296,7 +296,7 @@ p_lower_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gi
 
   if(! gimp_drawable_has_alpha (layer_id))
   {
-    /* implicite add an alpha channel before we try to lower */
+    /* implicitly add an alpha channel before we try to lower */
     gimp_layer_add_alpha(layer_id);
   }
 
@@ -306,7 +306,7 @@ p_lower_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gi
     && (! gimp_drawable_has_alpha (layli_ptr[nlayers-1].layer_id)))
     {
       /* the layer is one step above a "bottom-layer without alpha" */
-      /* implicite add an alpha channel before we try to lower */
+      /* implicitly add an alpha channel before we try to lower */
       gimp_layer_add_alpha(layli_ptr[nlayers-1].layer_id);
     }
   }
@@ -1218,7 +1218,7 @@ cleanup:
 
 
 /* ============================================================================
- * p_frames_modify
+ * gap_mod_frames_modify
  *
  *   foreach frame of the range (given by range_from and range_to)
  *   perform function defined by action_mode
@@ -1228,12 +1228,14 @@ cleanup:
  *           (or -1 on error or cancel)
  * ============================================================================
  */
-static gint32
-p_frames_modify(GapAnimInfo *ainfo_ptr,
+gint32
+gap_mod_frames_modify(GapAnimInfo *ainfo_ptr,
                    long range_from, long range_to,
                    gint32 action_mode, gint32 sel_mode,
                    gint32 sel_case, gint32 sel_invert,
-                   char *sel_pattern, char *new_layername)
+                   char *sel_pattern, char *new_layername,
+                   GtkWidget *progress_bar,
+                   gboolean *run_flag)
 {
   long    l_cur_frame_nr;
   long    l_step, l_begin, l_end;
@@ -1264,7 +1266,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
   if(gap_debug)
   { 
-    printf("gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
+    printf("gap: gap_mod_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
         (int)action_mode, (int)sel_mode, (int)sel_case, (int)sel_invert, sel_pattern);
   }
   
@@ -1324,7 +1326,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   {
     if(gap_debug)
     {
-      printf("p_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
+      printf("gap_mod_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
     }
 
     /* build the frame name */
@@ -1356,7 +1358,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
     if(l_layli_ptr == NULL)
     {
-       printf("gap: p_frames_modify: cant alloc layer info list\n");
+       printf("gap: gap_mod_frames_modify: cant alloc layer info list\n");
        goto error;
     }
 
@@ -1460,7 +1462,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
                    );
     if(l_rc != 0)
     {
-      if(gap_debug) printf("gap: p_frames_modify p_apply-action failed. rc=%d\n", (int)l_rc);
+      if(gap_debug) printf("gap: gap_mod_frames_modify p_apply-action failed. rc=%d\n", (int)l_rc);
       goto error;
     }
 
@@ -1478,7 +1480,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     l_rc = gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename);
     if(l_rc < 0)
     {
-      printf("gap: p_frames_modify save frame %d failed.\n", (int)l_cur_frame_nr);
+      printf("gap: gap_mod_frames_modify save frame %d failed.\n", (int)l_cur_frame_nr);
       goto error;
     }
     else l_rc = 0;
@@ -1558,7 +1560,29 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
     {
       l_percentage += l_percentage_step;
-      gimp_progress_update (l_percentage);
+     
+      if(progress_bar != NULL)
+      {
+        guchar *progressText;
+        progressText = g_strdup_printf("frame:%d (%d)", (int)l_cur_frame_nr, (int)l_end);
+        
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), progressText);
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), l_percentage);
+        g_free(progressText);
+        while (gtk_events_pending ())
+        {
+          gtk_main_iteration ();
+        }
+        if(*run_flag != TRUE)
+        {
+          /* cancel button was pressed in interactive mode */
+          break;
+        }
+      }
+      else
+      {
+        gimp_progress_update (l_percentage);
+      }
     }
 
     /* advance to next frame */
@@ -1597,12 +1621,12 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     }
   }
 
-  if(gap_debug) printf("p_frames_modify End OK\n");
+  if(gap_debug) printf("gap_mod_frames_modify End OK\n");
 
   return 0;
 
 error:
-  if(gap_debug) printf("gap: p_frames_modify exit with Error\n");
+  if(gap_debug) printf("gap: gap_mod_frames_modify exit with Error\n");
 
   if((l_tmp_image_id >= 0) && (l_operating_on_current_image == FALSE))
   {
@@ -1617,7 +1641,7 @@ error:
   if(l_plugin_iterator != NULL)  g_free(l_plugin_iterator);
   return -1;
 
-}               /* end p_frames_modify */
+}               /* end gap_mod_frames_modify */
 
 
 /* ============================================================================
@@ -1639,12 +1663,15 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
   gint32    l_sel_mode;
   gint32    l_sel_case;
   gint32    l_sel_invert;
+  GtkWidget *progress_bar;
+  GtkWidget *dlg;
 
   char      l_sel_pattern[MAX_LAYERNAME];
   char      l_new_layername[MAX_LAYERNAME];
 
   l_rc = 0;
-
+  progress_bar = NULL;
+  dlg = NULL;
 
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
@@ -1654,10 +1681,15 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
     {
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
+         /* note: for interactive call the processing is already done
+          * as callback of the dialog
+          */
          l_rc = gap_mod_frames_dialog (ainfo_ptr, &l_from, &l_to,
                                        &l_action_mode,
                                        &l_sel_mode, &sel_case, &sel_invert,
                                        &l_sel_pattern[0], &l_new_layername[0]);
+         gap_lib_free_ainfo(&ainfo_ptr);
+         return (l_rc);
       }
       else
       {
@@ -1676,16 +1708,20 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
+        gboolean run_flag;
+         
+        run_flag = TRUE;
         /* no need to save the current image before processing
-         * because the p_frames_modify procedure operates directly on the current frame
+         * because the gap_mod_frames_modify procedure operates directly on the current frame
          * and loads all other frames from disc.
          * futher all successful processed frames are saved back to disk
          * (including the current one)
          */
-           l_rc = p_frames_modify(ainfo_ptr, l_from, l_to,
+           l_rc = gap_mod_frames_modify(ainfo_ptr, l_from, l_to,
                                   l_action_mode,
                                   l_sel_mode, sel_case, sel_invert,
-                                  &l_sel_pattern[0], &l_new_layername[0]
+                                  &l_sel_pattern[0], &l_new_layername[0],
+                                  progress_bar, &run_flag
                                  );
       }
 

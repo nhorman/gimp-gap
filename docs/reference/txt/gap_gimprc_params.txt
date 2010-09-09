@@ -4,8 +4,8 @@ Video Configuration (gimprc)
 --------------------------------------------------------------------
 
 There are optional configuration values for the GIMP-GAP video plug-ins.
-Those values are stored in your personal gimprc file (located in $HOME/.gimp-2.2/gimprc)
-or in the system-wide gimprc file (usually located at /usr/local/etc/gimp/2.2/gimprc)
+Those values are stored in your personal gimprc file (located in $HOME/.gimp-2.6/gimprc)
+or in the system-wide gimprc file (usually located at /usr/local/etc/gimp/2.6/gimprc)
 
 If you edit gimprc files by hand, you must do this before you startup GIMP.
 
@@ -253,3 +253,43 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # anaylse results files (even if they are still valid)
 # 
 (video-gva-libavformat-video-analyse-persistent "yes")
+
+
+# gimp_gap frame fetcher configuration
+# ------------------------------------
+#
+# the gap frame fetcher cache is currently relevant for storyboard processing
+# and filtermacro processing. it is used to keep the configured
+# number of images, videohandles and videoframes in cache for potential
+# reuse in further processing steps to avoid multiple load or open/close
+# operations.
+#
+# images are cached as gimp images that are marked with a temporary image parasite
+# "GAP-IMAGE-CACHE-PARASITE"
+# those parasite identifies an image as member of the gimp_gap frame fetcher cache. 
+# (gap does not open a display on such images)
+# setting the gap_ffetch_max_img_cache_elements too high can result in
+# slow processing because the gimp core starts to swap when too much
+# or too large images are loaded.
+#
+# using values up to 100 or more may speed up storyboard processing
+# on machines with large memory (4G or more).
+# (note: expect speed up only in case the storyboard has multiple references
+# to images, such as applying the same mask image to more frames
+# or using the same image to render multiple frames)
+#
+# default value is 18.
+#
+(gap_ffetch_max_img_cache_elements "18")
+
+# number of video handles to keep cached.
+# default value is 6
+(gap_ffetch_max_gvc_cache_elements "6")
+
+# number of video frames per video handle to keep cached.
+# note that video frames are not cached as gimp image.
+# video frames are cached by the gimp gap video api that allocates
+# the memory (and will fail in case not enough memory is available to hold the configured
+# number of video frames)
+# default value is 36
+(gap_ffetch_gva_frames_to_keep_cached "36")

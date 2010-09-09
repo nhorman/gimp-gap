@@ -7585,7 +7585,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       (GtkAttachOptions) (0), 0, 0);
 
     /* the framenr 1 button (does set Begin of range) */
-    framenr_1_button = gtk_button_new_from_stock (GAP_STOCK_SET_RANGE_START);
+    framenr_1_button = gap_stock_button_new (GAP_STOCK_SET_RANGE_START);
     gtk_widget_show (framenr_1_button);
     gtk_box_pack_start (GTK_BOX (fnr_hbox), framenr_1_button, FALSE, FALSE, 0);
     g_object_set_data (G_OBJECT (framenr_1_button), KEY_FRAMENR_BUTTON_TYPE, (gpointer)FRAMENR_BUTTON_BEGIN);
@@ -7612,7 +7612,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
     }
 
     /* the framenr 2 button (does set End of range) */
-    framenr_2_button = gtk_button_new_from_stock (GAP_STOCK_SET_RANGE_END);
+    framenr_2_button = gap_stock_button_new (GAP_STOCK_SET_RANGE_END);
     gtk_widget_show (framenr_2_button);
     gtk_box_pack_start (GTK_BOX (fnr_hbox), framenr_2_button, TRUE, TRUE, 0);
     g_object_set_data (G_OBJECT (framenr_2_button), KEY_FRAMENR_BUTTON_TYPE, (gpointer)FRAMENR_BUTTON_END);
@@ -7661,7 +7661,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   row++;
 
   /* the from button */
-  from_button = gtk_button_new_from_stock (GAP_STOCK_RANGE_START);
+  from_button = gap_stock_button_new (GAP_STOCK_RANGE_START);
   gpp->from_button = from_button;
   /* the from button */
   gtk_widget_show (from_button);
@@ -7711,7 +7711,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   row++;
 
   /* the to button */
-  to_button = gtk_button_new_from_stock (GAP_STOCK_RANGE_END);
+  to_button = gap_stock_button_new (GAP_STOCK_RANGE_END);
   gpp->to_button = to_button;
   gtk_widget_show (to_button);
   gtk_table_attach (GTK_TABLE (table2), to_button, colbutton, colbutton+1, row, row+1
@@ -7765,7 +7765,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   row++;
 
   /* the origspeed_button */
-  origspeed_button = gtk_button_new_from_stock (GAP_STOCK_SPEED);
+  origspeed_button = gap_stock_button_new (GAP_STOCK_SPEED);
   gtk_widget_show (origspeed_button);
   gtk_table_attach (GTK_TABLE (table2), origspeed_button, colbutton, colbutton+1, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -8036,7 +8036,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
 
 
   /* the PLAY button */
-  play_button = gtk_button_new_from_stock (GAP_STOCK_PLAY);
+  play_button = gap_stock_button_new_with_label (GAP_STOCK_PLAY, _("Play"));
   gtk_widget_show (play_button);
   gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), play_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (play_button, _("Start playback. "
@@ -8048,7 +8048,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       gpp);
 
   /* the PAUSE button */
-  pause_button = gtk_button_new_from_stock (GAP_STOCK_PAUSE);
+  pause_button = gap_stock_button_new_with_label (GAP_STOCK_PAUSE, _("Pause"));
   gtk_widget_show (pause_button);
   gtk_widget_set_events(pause_button, GDK_BUTTON_PRESS_MASK);
   gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), pause_button, FALSE, TRUE, 0);
@@ -8059,7 +8059,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       gpp);
 
   /* the PLAY_REVERSE button */
-  back_button = gtk_button_new_from_stock (GAP_STOCK_PLAY_REVERSE);
+  back_button = gap_stock_button_new_with_label (GAP_STOCK_PLAY_REVERSE, _("Reverse"));
   gtk_widget_show (back_button);
   gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), back_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (back_button, _("Start reverse playback. "
@@ -8727,3 +8727,7 @@ gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp)
 
 
 }  /* end gap_player_dlg_playback_dialog */
+
+
+
+

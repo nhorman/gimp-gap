@@ -69,9 +69,13 @@ typedef struct GapModFramesGlobalParams {  /* nick: gmop */
   GtkWidget *case_sensitive_check_button;  
   GtkWidget *invert_check_button;
   GtkWidget *layer_selection_frame;
+  GtkWidget *progress_bar;
+  GtkWidget *main_vbox;  
 
   GtkObject *frame_from_adj;
   GtkObject *frame_to_adj;
+
+  gint32       retcode;
   
 } GapModFramesGlobalParams;
 

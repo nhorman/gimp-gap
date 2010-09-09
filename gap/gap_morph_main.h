@@ -41,6 +41,12 @@
 
 #define   GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH     1024 
 
+#define   GAP_MORPH_WORKPOINT_EXTENSION "morphpoints"
+
+/* Function Typedefs */
+typedef  void       (*t_progress_callback_fptr)(gdouble percentage, gpointer data);
+typedef  void       (*t_master_progress_callback_fptr)(gdouble numDone, gdouble numTotal, const char *filename, gpointer data);
+
 typedef struct GapMorphWorkPoint { /* nickname: wp */
      gdouble fdst_x;   /* final dest koord (as set by user for last dest. frame) */
      gdouble fdst_y;
@@ -66,6 +72,9 @@ typedef struct GapMorphWorkPoint { /* nickname: wp */
      gboolean is_alive;
      void    *next_selected;
      void    *next_sek;
+
+     /* for automatically workpoint genration */
+     gdouble  locateColordiff; /* 0.0 exact match up to theoretical 1.0 */
      
   } GapMorphWorkPoint;
 
@@ -106,7 +115,24 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
   gint32              range_from;
   gint32              range_to;
   gboolean            overwrite_flag;
+  gboolean            append_flag;
   gboolean            do_simple_fade;   /* bypass morph algortihm when renderiing tweens and use simple fade instead */
+  
+  gdouble             edgeColordiffThreshold;
+  gdouble             locateColordiffThreshold;
+  gint32              locateDetailShapeRadius;
+  gint32              locateDetailMoveRadius;
+  gint32              numWorkpoints;
+  gint32              numOutlinePoints;
+
+  /* additional stuff (only relevant for tween frame rendering) */
+  gint32              master_tween_steps;
+  gboolean            create_tweens_in_subdir;
+  char                tween_subdir[GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH];
+
+  t_master_progress_callback_fptr master_progress_callback_fptr;
+  t_progress_callback_fptr        progress_callback_fptr;
+  gpointer                        callback_data_ptr;
 } GapMorphGlobalParams;
 
 typedef struct GapMorphWarpCoreAPI  { /* nickname: wcap */

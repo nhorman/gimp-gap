@@ -235,6 +235,7 @@ typedef struct {
         /* for the bluebox filter */
         GapBlueboxGlobalParams *bbp;
         GapBlueboxGlobalParams *bbp_pv;
+        
 
 } GapMovValues;
 

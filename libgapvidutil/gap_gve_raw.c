@@ -190,9 +190,9 @@ gap_gve_raw_RGB_drawable_encode(GimpDrawable *drawable, gint32 *RAW_size, gboole
                               , 1);
      for(l_idx=0;l_idx < l_rowstride; l_idx += drawable->bpp)
      {
-       *(RAW_ptr++) = pixelrow_data[l_idx + l_blue];
-       *(RAW_ptr++) = pixelrow_data[l_idx + l_green];
        *(RAW_ptr++) = pixelrow_data[l_idx + l_red];
+       *(RAW_ptr++) = pixelrow_data[l_idx + l_green];
+       *(RAW_ptr++) = pixelrow_data[l_idx + l_blue];
      }
   }
   g_free(pixelrow_data);

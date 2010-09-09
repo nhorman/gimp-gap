@@ -88,6 +88,7 @@ typedef struct GapStbFetchData {   /* nick: gfd */
   gint32        layer_id;
 
   gchar  *framename;
+  gdouble rotate;
   gdouble opacity;
   gdouble scale_x;
   gdouble scale_y;
@@ -168,6 +169,7 @@ static char *   p_fetch_framename   (GapStoryRenderFrameRangeElem *frn_list
                             , gdouble  *green_f
                             , gdouble  *blue_f
                             , gdouble  *alpha_f
+                            , gdouble *rotate        /* output rotate in degree */
                             , gdouble *opacity       /* output opacity 0.0 upto 1.0 */
                             , gdouble *scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                             , gdouble *scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -200,6 +202,7 @@ static GapStoryRenderFrameRangeElem *  p_new_framerange_element(
                           ,gboolean mask_disable
                           ,gint32 fmac_total_steps
                           ,gint32 fmac_accel
+                          ,const char *colormask_file  /* IN: NULL, or name of the colormask parameter file */
                           );
 static void       p_add_frn_list(GapStoryRenderVidHandle *vidhand, GapStoryRenderFrameRangeElem *frn_elem);
 static void       p_step_all_vtrack_attributes(gint32 track, gint32 frames_to_handle
@@ -273,12 +276,14 @@ static gint32     p_mask_fetcher(GapStoryRenderVidHandle *vidhand
                     , gint32 mask_height
                     , gint32 *layer_id               /* OUT: Id of the only layer in the composite image */
                     , gboolean *was_last_maskframe   /* OUT: true if this was the last maskframe */
+                    , gboolean makeGrayFlattened     /* IN   true flatten and convert to GRAY, false keep color and alpha channel */
                     );
 static void       p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
                     , GapStoryRenderFrameRangeElem *frn_elem
                     , gint32 local_stepcount
                     , gint32 image_id
                     , gint32 layer_id
+                    , GapStoryMaskAnchormode mask_anchor
                     );
 
 static GapStoryRenderVidHandle * p_open_video_handle_private(    gboolean ignore_audio
@@ -321,6 +326,7 @@ static gint32     p_transform_and_add_layer( gint32 comp_image_id
                          , gboolean keep_proportions
                          , gboolean fit_width
                          , gboolean fit_height
+                         , gdouble rotate     /* rotation in degree */
                          , gdouble opacity    /* 0.0 upto 1.0 */
                          , gdouble scale_x    /* 0.0 upto 10.0 where 1.0 = 1:1 */
                          , gdouble scale_y    /* 0.0 upto 10.0 where 1.0 = 1:1 */
@@ -384,8 +390,11 @@ static void       p_paste_logo_pattern(gint32 drawable_id
 
 static void       p_do_insert_area_processing(GapStbFetchData *gfd
                       , GapStoryRenderVidHandle *vidhand);
+static gint32     p_prepare_GRAY_image(gint32 image_id);
+static void       p_do_insert_alpha_processing(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand);
 
-  
+
 static gint32     p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
                     , gint32  vid_width       /* desired Video Width in pixels */
@@ -529,6 +538,12 @@ gap_story_render_debug_print_frame_elem(GapStoryRenderFrameRangeElem *frn_elem, 
       printf("  [%d] opacity_dur          : %d\n", (int)l_idx, (int)frn_elem->opacity_dur );
       printf("  [%d] opacity_accel        : %d\n", (int)l_idx, (int)frn_elem->opacity_accel );
       printf("  [%d] opacity_frames_done  : %d\n", (int)l_idx, (int)frn_elem->opacity_frames_done );
+
+      printf("  [%d] rotate_from          : %f\n", (int)l_idx, (float)frn_elem->rotate_from );
+      printf("  [%d] rotate_to            : %f\n", (int)l_idx, (float)frn_elem->rotate_to );
+      printf("  [%d] rotate_dur           : %d\n", (int)l_idx, (int)frn_elem->rotate_dur );
+      printf("  [%d] rotate_accel         : %d\n", (int)l_idx, (int)frn_elem->rotate_accel );
+      printf("  [%d] rotate_frames_done   : %d\n", (int)l_idx, (int)frn_elem->rotate_frames_done );
 
       printf("  [%d] scale_x_from         : %f\n", (int)l_idx, (float)frn_elem->scale_x_from );
       printf("  [%d] scale_x_to           : %f\n", (int)l_idx, (float)frn_elem->scale_x_to );
@@ -957,10 +972,10 @@ p_find_min_max_vid_tracknumbers(GapStoryRenderFrameRangeElem *frn_list
 /* --------------------------------
  * p_attribute_query_at_step
  * --------------------------------
- * return 
- *  o) from_val (before and at start of transition) or 
+ * return
+ *  o) from_val (before and at start of transition) or
  *  o) to_val (at end and after transition) or
- *  o) a mixed value according to frame_step progress and acceleratin characteristics 
+ *  o) a mixed value according to frame_step progress and acceleratin characteristics
  *     when frame_step is a frame number within the transition.
  */
 static gdouble
@@ -975,15 +990,15 @@ p_attribute_query_at_step(gint32 frame_step /* current frame (since start of cur
   gdouble l_mixed_val;
   gdouble l_mixed_factor;
   gint32  l_steps_since_transition_start;
-  
+
 
   l_steps_since_transition_start = frames_done + frame_step;
-  
+
   if (l_steps_since_transition_start <= 0)
   {
     return (from_val);
   }
-  
+
   if (l_steps_since_transition_start >= frames_dur)
   {
     return (to_val);
@@ -1098,6 +1113,7 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
                  , gdouble  *green_f
                  , gdouble  *blue_f
                  , gdouble  *alpha_f
+                 , gdouble *rotate        /* output rotate in degree */
                  , gdouble *opacity       /* output opacity 0.0 upto 1.0 */
                  , gdouble *scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , gdouble *scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -1118,6 +1134,7 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
   l_framename = NULL;
 
   /* default attributes (used if storyboard does not define settings) */
+  *rotate  = 0.0;
   *opacity = 1.0;
   *scale_x = 1.0;
   *scale_y = 1.0;
@@ -1160,11 +1177,11 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
 
         {
           gint32 fnrInt;
-          
+
           fnrInt = fnr;  /* truncate to integer */
-          
+
           *localframe_tween_rest = fnr - fnrInt;
-          
+
           if(gap_debug)
           {
             printf("fnr:%.4f, fnrInt:%d localframe_tween_rest:%.4f\n"
@@ -1232,6 +1249,13 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
          l_step = (master_frame_nr - 1) - l_frame_group_count;
 
 
+         *rotate = p_attribute_query_at_step(l_step
+                                    , frn_elem->rotate_from
+                                    , frn_elem->rotate_to
+                                    , frn_elem->rotate_dur
+                                    , frn_elem->rotate_frames_done
+                                    , frn_elem->rotate_accel
+                                    );
          *opacity = p_attribute_query_at_step(l_step
                                     , frn_elem->opacity_from
                                     , frn_elem->opacity_to
@@ -1276,11 +1300,12 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
 
   if(gap_debug)
   {
-    printf("p_fetch_framename: track:%d master_frame_nr:%d framename:%s: found_at_idx:%d opa:%f scale:%f %f move:%f %f layerstack_idx:%d\n"
+    printf("p_fetch_framename: track:%d master_frame_nr:%d framename:%s: found_at_idx:%d rotate:%f opa:%f scale:%f %f move:%f %f layerstack_idx:%d\n"
        , (int)track
        , (int)master_frame_nr
        , l_framename
        , (int)l_found_at_idx
+       , (float)*rotate
        , (float)*opacity
        , (float)*scale_x
        , (float)*scale_y
@@ -1354,6 +1379,7 @@ p_new_framerange_element(GapStoryRenderFrameType  frn_type
                       ,gboolean mask_disable
                       ,gint32 fmac_total_steps
                       ,gint32 fmac_accel
+                      ,const char *colormask_file      /* IN: NULL, or name of the colormask parameter file */
                       )
 {
   GapStoryRenderFrameRangeElem *frn_elem;
@@ -1369,6 +1395,7 @@ p_new_framerange_element(GapStoryRenderFrameType  frn_type
      if(ext)               printf("  ext:%s:\n", ext);
      if(storyboard_file)   printf("  storyboard_file:%s:\n", storyboard_file);
      if(preferred_decoder) printf("  preferred_decoder:%s:\n", preferred_decoder);
+     if(colormask_file)    printf("  colormask_file:%s:\n", colormask_file);
   }
 
 
@@ -1391,13 +1418,30 @@ p_new_framerange_element(GapStoryRenderFrameType  frn_type
    * by using a mask_name == NULL
    */
   frn_elem->mask_name     = NULL;
+  frn_elem->colormask_file     = NULL;
   if(!mask_disable)
   {
     if(mask_name)
     {
       frn_elem->mask_name = g_strdup(mask_name);
     }
+    if(colormask_file)
+    {
+      frn_elem->colormask_file = gap_file_make_abspath_filename(colormask_file, storyboard_file);
+
+      if(!g_file_test(frn_elem->colormask_file, G_FILE_TEST_EXISTS))
+      {
+         char *l_errtxt;
+
+         l_errtxt = g_strdup_printf("colormask_file not found:  %s", frn_elem->colormask_file);
+         p_set_stb_error(sterr, l_errtxt);
+         g_free(l_errtxt);
+         g_free(frn_elem->colormask_file);
+         frn_elem->colormask_file = NULL;
+      }
+    }
   }
+
 
   /* default attributes (used if storyboard does not define settings) */
   frn_elem->red_f              = 0.0;
@@ -1409,6 +1453,9 @@ p_new_framerange_element(GapStoryRenderFrameType  frn_type
   frn_elem->fit_height         = TRUE;
   frn_elem->wait_untiltime_sec = 0.0;
   frn_elem->wait_untilframes   = 0;
+  frn_elem->rotate_from        = 0.0;
+  frn_elem->rotate_to          = 0.0;
+  frn_elem->rotate_dur         = 0;
   frn_elem->opacity_from       = 1.0;
   frn_elem->opacity_to         = 1.0;
   frn_elem->opacity_dur        = 0;
@@ -1578,6 +1625,7 @@ p_step_all_vtrack_attributes(gint32 track
                        , GapStoryRenderVTrackArray *vtarr
                       )
 {
+  vtarr->attr[track].rotate_frames_done += frames_to_handle;
   vtarr->attr[track].opacity_frames_done += frames_to_handle;
   vtarr->attr[track].scale_x_frames_done += frames_to_handle;
   vtarr->attr[track].scale_y_frames_done += frames_to_handle;
@@ -1626,30 +1674,36 @@ p_set_vtrack_attributes(GapStoryRenderFrameRangeElem *frn_elem
   frn_elem->mask_framecount       = vtarr->attr[track].mask_framecount;
 
 
+  frn_elem->rotate_from          = vtarr->attr[track].rotate_from;
+  frn_elem->rotate_to            = vtarr->attr[track].rotate_to;
+  frn_elem->rotate_dur           = vtarr->attr[track].rotate_dur;
+  frn_elem->rotate_accel         = vtarr->attr[track].rotate_accel;
+  frn_elem->rotate_frames_done   = vtarr->attr[track].rotate_frames_done;
+
   frn_elem->opacity_from         = vtarr->attr[track].opacity_from;
   frn_elem->opacity_to           = vtarr->attr[track].opacity_to;
   frn_elem->opacity_dur          = vtarr->attr[track].opacity_dur;
   frn_elem->opacity_accel        = vtarr->attr[track].opacity_accel;
   frn_elem->opacity_frames_done  = vtarr->attr[track].opacity_frames_done;
-  
+
   frn_elem->scale_x_from         = vtarr->attr[track].scale_x_from;
   frn_elem->scale_x_to           = vtarr->attr[track].scale_x_to;
   frn_elem->scale_x_dur          = vtarr->attr[track].scale_x_dur;
   frn_elem->scale_x_accel        = vtarr->attr[track].scale_x_accel;
   frn_elem->scale_x_frames_done  = vtarr->attr[track].scale_x_frames_done;
-  
+
   frn_elem->scale_y_from         = vtarr->attr[track].scale_y_from;
   frn_elem->scale_y_to           = vtarr->attr[track].scale_y_to;
   frn_elem->scale_y_dur          = vtarr->attr[track].scale_y_dur;
   frn_elem->scale_y_accel        = vtarr->attr[track].scale_y_accel;
   frn_elem->scale_y_frames_done  = vtarr->attr[track].scale_y_frames_done;
-  
+
   frn_elem->move_x_from          = vtarr->attr[track].move_x_from;
   frn_elem->move_x_to            = vtarr->attr[track].move_x_to;
   frn_elem->move_x_dur           = vtarr->attr[track].move_x_dur;
   frn_elem->move_x_accel         = vtarr->attr[track].move_x_accel;
   frn_elem->move_x_frames_done   = vtarr->attr[track].move_x_frames_done;
-  
+
   frn_elem->move_y_from          = vtarr->attr[track].move_y_from;
   frn_elem->move_y_to            = vtarr->attr[track].move_y_to;
   frn_elem->move_y_dur           = vtarr->attr[track].move_y_dur;
@@ -1730,6 +1784,7 @@ p_vidclip_shadow_add_silence(gint32 shadow_track
                                      , TRUE                 /* mask_disable */
                                      , 1                    /* fmac_total_steps */
                                      , 0                    /* fmac_accel */
+                                     , NULL                 /* colormask_file */
                                      );
   if(frn_elem)
   {
@@ -1871,30 +1926,36 @@ p_copy_vattr_values(gint32 src_track
   vtarr->attr[dst_track].fit_height        = vtarr->attr[src_track].fit_height;
 
 
+  vtarr->attr[dst_track].rotate_from         = vtarr->attr[src_track].rotate_from;
+  vtarr->attr[dst_track].rotate_to           = vtarr->attr[src_track].rotate_to;
+  vtarr->attr[dst_track].rotate_dur          = vtarr->attr[src_track].rotate_dur;
+  vtarr->attr[dst_track].rotate_accel        = vtarr->attr[src_track].rotate_accel;
+  vtarr->attr[dst_track].rotate_frames_done  = vtarr->attr[src_track].rotate_frames_done;
+
   vtarr->attr[dst_track].opacity_from        = vtarr->attr[src_track].opacity_from;
   vtarr->attr[dst_track].opacity_to          = vtarr->attr[src_track].opacity_to;
   vtarr->attr[dst_track].opacity_dur         = vtarr->attr[src_track].opacity_dur;
   vtarr->attr[dst_track].opacity_accel       = vtarr->attr[src_track].opacity_accel;
   vtarr->attr[dst_track].opacity_frames_done = vtarr->attr[src_track].opacity_frames_done;
-  
+
   vtarr->attr[dst_track].scale_x_from        = vtarr->attr[src_track].scale_x_from;
   vtarr->attr[dst_track].scale_x_to          = vtarr->attr[src_track].scale_x_to;
   vtarr->attr[dst_track].scale_x_dur         = vtarr->attr[src_track].scale_x_dur;
   vtarr->attr[dst_track].scale_x_accel       = vtarr->attr[src_track].scale_x_accel;
   vtarr->attr[dst_track].scale_x_frames_done = vtarr->attr[src_track].scale_x_frames_done;
-  
+
   vtarr->attr[dst_track].scale_y_from        = vtarr->attr[src_track].scale_y_from;
   vtarr->attr[dst_track].scale_y_to          = vtarr->attr[src_track].scale_y_to;
   vtarr->attr[dst_track].scale_y_dur         = vtarr->attr[src_track].scale_y_dur;
   vtarr->attr[dst_track].scale_y_accel       = vtarr->attr[src_track].scale_y_accel;
   vtarr->attr[dst_track].scale_y_frames_done = vtarr->attr[src_track].scale_y_frames_done;
-  
+
   vtarr->attr[dst_track].move_x_from         = vtarr->attr[src_track].move_x_from;
   vtarr->attr[dst_track].move_x_to           = vtarr->attr[src_track].move_x_to;
   vtarr->attr[dst_track].move_x_dur          = vtarr->attr[src_track].move_x_dur;
   vtarr->attr[dst_track].move_x_accel        = vtarr->attr[src_track].move_x_accel;
   vtarr->attr[dst_track].move_x_frames_done  = vtarr->attr[src_track].move_x_frames_done;
-  
+
   vtarr->attr[dst_track].move_y_from         = vtarr->attr[src_track].move_y_from;
   vtarr->attr[dst_track].move_y_to           = vtarr->attr[src_track].move_y_to;
   vtarr->attr[dst_track].move_y_dur          = vtarr->attr[src_track].move_y_dur;
@@ -2017,6 +2078,7 @@ p_vidclip_split_and_add_frn_list(GapStoryRenderFrameRangeElem *frn_elem
                       ,FALSE     /* keep mask enabled if the element has one */
                       ,frn_elem->fmac_total_steps
                       ,frn_elem->fmac_accel
+                      ,frn_elem->colormask_file
                       );
 
 
@@ -2137,31 +2199,37 @@ p_clear_vattr_array(GapStoryRenderVTrackArray *vtarr)
     vtarr->attr[l_idx].keep_proportions     = FALSE;
     vtarr->attr[l_idx].fit_width            = TRUE;
     vtarr->attr[l_idx].fit_height           = TRUE;
-    
+
+    vtarr->attr[l_idx].rotate_from          = 0.0;
+    vtarr->attr[l_idx].rotate_to            = 0.0;
+    vtarr->attr[l_idx].rotate_dur           = 0;
+    vtarr->attr[l_idx].rotate_accel         = 0;
+    vtarr->attr[l_idx].rotate_frames_done   = 0;
+
     vtarr->attr[l_idx].opacity_from         = 1.0;
     vtarr->attr[l_idx].opacity_to           = 1.0;
     vtarr->attr[l_idx].opacity_dur          = 0;
     vtarr->attr[l_idx].opacity_accel        = 0;
     vtarr->attr[l_idx].opacity_frames_done  = 0;
-        
+
     vtarr->attr[l_idx].scale_x_from         = 1.0;
     vtarr->attr[l_idx].scale_x_to           = 1.0;
     vtarr->attr[l_idx].scale_x_dur          = 0;
     vtarr->attr[l_idx].scale_x_accel        = 0;
     vtarr->attr[l_idx].scale_x_frames_done  = 0;
-    
+
     vtarr->attr[l_idx].scale_y_from         = 1.0;
     vtarr->attr[l_idx].scale_y_to           = 1.0;
     vtarr->attr[l_idx].scale_y_dur          = 0;
     vtarr->attr[l_idx].scale_y_accel        = 0;
     vtarr->attr[l_idx].scale_y_frames_done  = 0;
-    
+
     vtarr->attr[l_idx].move_x_from          = 0.0;
     vtarr->attr[l_idx].move_x_to            = 0.0;
     vtarr->attr[l_idx].move_x_dur           = 0;
     vtarr->attr[l_idx].move_x_accel         = 0;
     vtarr->attr[l_idx].move_x_frames_done   = 0;
-    
+
     vtarr->attr[l_idx].move_y_from          = 0.0;
     vtarr->attr[l_idx].move_y_to            = 0.0;
     vtarr->attr[l_idx].move_y_dur           = 0;
@@ -2182,7 +2250,7 @@ p_fmt_string_has_framenumber_format(const char *fmt_string)
 {
   const char *ptr;
   gboolean l_found;
-  
+
   l_found = FALSE;
   ptr = fmt_string;
   while(ptr)
@@ -2191,7 +2259,7 @@ p_fmt_string_has_framenumber_format(const char *fmt_string)
     {
       break;
     }
-    
+
     if (ptr[0] == '%')
     {
       if(ptr[1] != '\0')
@@ -2215,7 +2283,7 @@ p_fmt_string_has_framenumber_format(const char *fmt_string)
     ptr++;
   }
   return (l_found);
-  
+
 }  /* end p_fmt_string_has_framenumber_format */
 
 /* -------------------------------------
@@ -2230,7 +2298,7 @@ p_fmt_string_has_videobasename_format(const char *fmt_string)
 {
   const char *ptr;
   gboolean l_found;
-  
+
   l_found = FALSE;
   ptr = fmt_string;
   while(ptr)
@@ -2239,7 +2307,7 @@ p_fmt_string_has_videobasename_format(const char *fmt_string)
     {
       break;
     }
-    
+
     if ((ptr[0] == '%') && (ptr[1] == 's'))
     {
       l_found = TRUE;
@@ -2248,7 +2316,7 @@ p_fmt_string_has_videobasename_format(const char *fmt_string)
     ptr++;
   }
   return (l_found);
-  
+
 }  /* end p_fmt_string_has_videobasename_format */
 
 /* ----------------------------------------------------
@@ -2308,6 +2376,16 @@ p_storyboard_analyze(GapStoryBoard *stb
   if(stb->preferred_decoder)
   {
     vidhand->preferred_decoder = g_strdup(stb->preferred_decoder);
+  }
+
+  vidhand->master_insert_alpha_format = NULL;
+  if(stb->master_insert_alpha_format)
+  {
+    vidhand->master_insert_alpha_format = g_strdup(stb->master_insert_alpha_format);
+    vidhand->master_insert_alpha_format_has_framenumber =
+      p_fmt_string_has_framenumber_format(vidhand->master_insert_alpha_format);
+    vidhand->master_insert_alpha_format_has_videobasename =
+      p_fmt_string_has_videobasename_format(vidhand->master_insert_alpha_format);
   }
 
   vidhand->master_insert_area_format = NULL;
@@ -2449,6 +2527,13 @@ p_storyboard_analyze(GapStoryBoard *stb
               {
                 switch(ii)
                 {
+                  case GAP_STB_ATT_TYPE_ROTATE:
+                    vtarr->attr[l_track].rotate_from  = stb_elem->att_arr_value_from[ii];
+                    vtarr->attr[l_track].rotate_to    = stb_elem->att_arr_value_to[ii];
+                    vtarr->attr[l_track].rotate_dur   = stb_elem->att_arr_value_dur[ii];
+                    vtarr->attr[l_track].rotate_accel = stb_elem->att_arr_value_accel[ii];
+                    vtarr->attr[l_track].rotate_frames_done  = 0;
+                    break;
                   case GAP_STB_ATT_TYPE_OPACITY:
                     vtarr->attr[l_track].opacity_from  = stb_elem->att_arr_value_from[ii];
                     vtarr->attr[l_track].opacity_to    = stb_elem->att_arr_value_to[ii];
@@ -2516,6 +2601,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                , TRUE                 /* mask_disable */
                                                , 1                    /* fmac_total_steps */
                                                , 0                    /* fmac_accel */
+                                               , NULL                 /* colormask_file */
                                                );
             if(frn_elem)
             {
@@ -2552,6 +2638,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                , TRUE                 /* mask_disable */
                                                , 1                    /* fmac_total_steps */
                                                , 0                    /* fmac_accel */
+                                               , NULL                 /* colormask_file */
                                                );
             if(frn_elem)
             {
@@ -2585,6 +2672,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                , stb_elem->mask_disable
                                                , stb_elem->fmac_total_steps
                                                , stb_elem->fmac_accel
+                                               , stb_elem->colormask_file
                                                );
             if(frn_elem)
             {
@@ -2623,6 +2711,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                , stb_elem->mask_disable
                                                , stb_elem->fmac_total_steps
                                                , stb_elem->fmac_accel
+                                               , stb_elem->colormask_file
                                                );
             if(frn_elem)
             {
@@ -2709,6 +2798,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                     , stb_elem->mask_disable
                                                     , stb_elem->fmac_total_steps
                                                     , stb_elem->fmac_accel
+                                                    , stb_elem->colormask_file
                                                     );
                  if(frn_elem)
                  {
@@ -3339,7 +3429,7 @@ p_find_maskdef_by_name(GapStoryRenderVidHandle *vidhand, const char *mask_name)
 /* ----------------------------------------------------
  * p_mask_image_fetcher
  * ----------------------------------------------------
- * fetch specified mask frame as gray image with only one composite layer.
+ * fetch specified mask frame with only one composite layer.
  * if the mask definition is not found,
  * then deliver -1.
  * if the mask definition has less frames than master_frame_nr, then deliver the
@@ -3354,6 +3444,7 @@ p_mask_fetcher(GapStoryRenderVidHandle *vidhand
    , gint32 mask_height
    , gint32 *layer_id_ptr           /* OUT: Id of the only layer in the composite image */
    , gboolean *was_last_maskframe   /* OUT: true if this was the last maskframe */
+   , gboolean makeGrayFlattened     /* IN   true flatten and convert to GRAY, false keep color and alpha channel */
    )
 {
   GapStoryRenderMaskDefElem *maskdef_elem;
@@ -3378,18 +3469,15 @@ p_mask_fetcher(GapStoryRenderVidHandle *vidhand
     l_framenr = MIN(master_frame_nr, maskdef_elem->frame_count);
 
 
-     if(gap_debug)
-     {
+    if(gap_debug)
+    {
        printf("\n############# MASK start FETCH ##########\n");
        printf("MASK relevant framenr:%d\n"
             , (int)l_framenr
             );
        gap_story_render_debug_print_maskdef_elem(maskdef_elem, -7);
-     }
+    }
 
-    /* the composite image fecther already converts to gray when called
-     * with a mask videohandle (marked with is_mask_handle flag)
-     */
     image_id = p_story_render_fetch_composite_image_private(maskdef_elem->mask_vidhand
                   , l_framenr        /* starts at 1 */
                   , mask_width       /* desired  Width in pixels */
@@ -3406,12 +3494,22 @@ p_mask_fetcher(GapStoryRenderVidHandle *vidhand
       printf("\n.........#### MASK end FETCH ####......\n");
     }
 
+    if(makeGrayFlattened == TRUE)
+    {
+      if(gimp_image_base_type(image_id) != GIMP_GRAY)
+      {
+        gimp_image_convert_grayscale(image_id);
+      }
+    }
 
     *layer_id_ptr = gap_layer_flip(*layer_id_ptr, maskdef_elem->flip_request);
 
-    if(gimp_drawable_has_alpha(*layer_id_ptr))
+    if(makeGrayFlattened == TRUE)
     {
-      *layer_id_ptr = gimp_image_flatten(image_id);
+      if(gimp_drawable_has_alpha(*layer_id_ptr))
+      {
+        *layer_id_ptr = gimp_image_flatten(image_id);
+      }
     }
 
     if(gap_debug)
@@ -3443,6 +3541,7 @@ p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
                   , gint32 local_stepcount
                   , gint32 image_id
                   , gint32 layer_id
+                  , GapStoryMaskAnchormode mask_anchor
                   )
 {
   gint32  l_tmp_mask_image_id;
@@ -3451,10 +3550,17 @@ p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
   gdouble l_framenr;
   gboolean l_found_in_cache;
   gboolean l_was_last_maskframe;
+  gboolean l_makeGrayFlattened;
 
   /* both local_stepcount and mask_framecount start with 0 for the 1st element */
   l_framenr = frn_elem->mask_stepsize * (gdouble)(frn_elem->mask_framecount + local_stepcount);
   l_master_framenr = 1 + (gint32)(l_framenr);
+  l_makeGrayFlattened = TRUE;
+
+  if (mask_anchor == GAP_MSK_ANCHOR_XCOLOR)
+  {
+    l_makeGrayFlattened = FALSE;
+  }
 
   if(gap_debug)
   {
@@ -3490,6 +3596,7 @@ p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
                               , gimp_drawable_height(layer_id)
                               ,&l_tmp_mask_layer_id
                               ,&l_was_last_maskframe
+                              , l_makeGrayFlattened
                               );
   }
 
@@ -3519,14 +3626,29 @@ p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
      {
        gimp_layer_add_alpha(layer_id);
      }
-     l_new_layer_mask_id = gimp_layer_create_mask(layer_id, GIMP_ADD_WHITE_MASK);
-     gimp_layer_add_mask(layer_id, l_new_layer_mask_id);
+
+     if (mask_anchor == GAP_MSK_ANCHOR_XCOLOR)
+     {
+       /* render the layermask by applying the mask as colormask */
+       gap_colormask_apply_to_layer_of_same_size_from_file (layer_id
+                                  , l_tmp_mask_layer_id       /* the colormask to be applied */
+                                  , frn_elem->colormask_file  /* colormask parameter file */
+                                  , TRUE                      /* keepLayerMask  */
+                                  , FALSE                     /* doProgress */
+                            );
+     }
+     else
+     {
+       l_new_layer_mask_id = gimp_layer_create_mask(layer_id, GIMP_ADD_WHITE_MASK);
+       gimp_layer_add_mask(layer_id, l_new_layer_mask_id);
 
 
-     /* overwrite the white layer mask with the fetched mask */
-     gap_layer_copy_content(l_new_layer_mask_id   /* dst_drawable_id */
-                           ,l_tmp_mask_layer_id     /* src_drawable_id */
-                           );
+       /* overwrite the white layer mask with the fetched mask */
+       gap_layer_copy_content(l_new_layer_mask_id   /* dst_drawable_id */
+                             ,l_tmp_mask_layer_id     /* src_drawable_id */
+                             );
+     }
+
 
 
      if(!l_found_in_cache)
@@ -3549,6 +3671,7 @@ p_fetch_and_add_layermask(GapStoryRenderVidHandle *vidhand
   }
 
 }  /* end p_fetch_and_add_layermask */
+
 
 
 /* ----------------------------------------------------
@@ -3617,10 +3740,14 @@ p_open_video_handle_private(    gboolean ignore_audio
 
   vidhand->frn_list = NULL;
   vidhand->preferred_decoder = NULL;
+  vidhand->master_insert_alpha_format = NULL;
+  vidhand->master_insert_alpha_format_has_videobasename = FALSE;
+  vidhand->master_insert_alpha_format_has_framenumber = FALSE;
+
   vidhand->master_insert_area_format = NULL;
   vidhand->master_insert_area_format_has_videobasename = FALSE;
   vidhand->master_insert_area_format_has_framenumber = FALSE;
-  
+
   vidhand->do_gimp_progress = do_gimp_progress;
   *vidhand->progress = 0.0;
   vidhand->sterr = p_new_stb_error();
@@ -3722,6 +3849,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , TRUE                 /* mask_disable */
                                          , 1                    /* fmac_total_steps */
                                          , 0                    /* fmac_accel */
+                                         , NULL                 /* colormask_file */
                                          );
       if(frn_elem)
       {
@@ -3755,6 +3883,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , TRUE                 /* mask_disable */
                                          , 1                    /* fmac_total_steps */
                                          , 0                    /* fmac_accel */
+                                         , NULL                 /* colormask_file */
                                          );
         render_section->frn_list->frames_to_handle = l_from -1;
         render_section->frn_list->next = frn_elem;
@@ -3815,6 +3944,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , TRUE                 /* mask_disable */
                                          , 1                    /* fmac_total_steps */
                                          , 0                    /* fmac_accel */
+                                         , NULL                 /* colormask_file */
                                          );
       if(frn_elem) *frame_count = frn_elem->frames_to_handle;
 
@@ -3846,6 +3976,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                            , TRUE                 /* mask_disable */
                                            , 1                    /* fmac_total_steps */
                                            , 0                    /* fmac_accel */
+                                           , NULL                 /* colormask_file */
                                            );
         render_section->frn_list->frames_to_handle = l_from -1;
         render_section->frn_list->next = frn_elem;
@@ -3894,6 +4025,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , TRUE                 /* mask_disable */
                                          , 1                    /* fmac_total_steps */
                                          , 0                    /* fmac_accel */
+                                         , NULL                 /* colormask_file */
                                          );
       if(frn_elem)
       {
@@ -3932,6 +4064,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , TRUE                 /* mask_disable */
                                          , 1                    /* fmac_total_steps */
                                          , 0                    /* fmac_accel */
+                                         , NULL                 /* colormask_file */
                                          );
       if(frn_elem)
       {
@@ -4165,7 +4298,7 @@ p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_fil
                               , (int)total_steps
                               );
        }
-       
+
        if(! gimp_drawable_has_alpha (layer_id))
        {
          /* some filtermacros do not work with layer that do not have an alpha channel
@@ -4194,7 +4327,7 @@ p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_fil
        else
        {
            gdouble   current_accel_step;
-           
+
            current_accel_step = gap_calculate_current_step_with_acceleration(current_step
                                    , total_steps
                                    , accelerationCharacteristic
@@ -4254,11 +4387,15 @@ p_transform_operate_on_full_layer(GapStoryCalcAttr *calculated, gint32 comp_imag
   gboolean l_ret;
 
   l_ret = TRUE;
-  
+
+  if(calculated->rotate != 0.0)
+  {
+    return (l_ret);
+  }
   calculated_area = calculated->width * calculated->height;
   visible_on_composite_area = calculated->visible_width * calculated->visible_height;
   composite_img_area = gimp_image_width(comp_image_id) * gimp_image_height(comp_image_id);
- 
+
   if(gap_debug)
   {
       tmp_image_area = gimp_image_width(tmp_image_id) * gimp_image_height(tmp_image_id);
@@ -4269,15 +4406,15 @@ p_transform_operate_on_full_layer(GapStoryCalcAttr *calculated, gint32 comp_imag
          , (int)composite_img_area
          );
   }
-  
+
   if ((calculated_area > composite_img_area)
   ||  (visible_on_composite_area < composite_img_area))
   {
     if((frn_elem->mask_name != NULL)
-    && (frn_elem->mask_anchor == GAP_MSK_ANCHOR_CLIP))
+    && (frn_elem->mask_anchor != GAP_MSK_ANCHOR_MASTER))
     {
       tmp_image_area = gimp_image_width(tmp_image_id) * gimp_image_height(tmp_image_id);
-      
+
       /* operation on clipped rectangle requires creation of the mask already at
        * tmp_image_area size. in case the calculated area
        * is smaller than the original tmp image, it will be
@@ -4285,18 +4422,20 @@ p_transform_operate_on_full_layer(GapStoryCalcAttr *calculated, gint32 comp_imag
        */
       if (tmp_image_area < calculated_area)
       {
-        l_ret = FALSE; /* operate on visble rectanngle only */
+        l_ret = FALSE; /* operate on visble rectangle only */
       }
     }
     else
     {
-      l_ret = FALSE; /* operate on visble rectanngle only */
+      l_ret = FALSE; /* operate on visble rectangle only */
     }
   }
-  
+
   return (l_ret);
 
 }  /* end p_transform_operate_on_full_layer */
+
+
 
 /* ----------------------------------------------------
  * p_transform_and_add_layer
@@ -4317,6 +4456,7 @@ p_transform_and_add_layer( gint32 comp_image_id
                          , gboolean keep_proportions
                          , gboolean fit_width
                          , gboolean fit_height
+                         , gdouble rotate     /* rotation in degree */
                          , gdouble opacity    /* 0.0 upto 1.0 */
                          , gdouble scale_x    /* 0.0 upto 10.0 where 1.0 = 1:1 */
                          , gdouble scale_y    /* 0.0 upto 10.0 where 1.0 = 1:1 */
@@ -4338,9 +4478,10 @@ p_transform_and_add_layer( gint32 comp_image_id
 
   if(gap_debug)
   {
-    printf("p_transform_and_add_layer: called at layer_id: %d, tmp_image_id:%d\n"
+    printf("p_transform_and_add_layer: called at layer_id: %d, tmp_image_id:%d comp_image_id:%d\n"
       , (int)layer_id
-      ,(int)tmp_image_id );
+      , (int)tmp_image_id
+      , (int)comp_image_id);
     gap_story_render_debug_print_frame_elem(frn_elem, -77);
   }
 
@@ -4385,6 +4526,7 @@ p_transform_and_add_layer( gint32 comp_image_id
     , keep_proportions
     , fit_width
     , fit_height
+    , rotate
     , opacity
     , scale_x
     , scale_y
@@ -4438,7 +4580,7 @@ p_transform_and_add_layer( gint32 comp_image_id
 
 
     if((frn_elem->mask_name != NULL)
-    && (frn_elem->mask_anchor == GAP_MSK_ANCHOR_CLIP))
+    && (frn_elem->mask_anchor != GAP_MSK_ANCHOR_MASTER))
     {
        /* fetch and add mask at calculated scaled size of layer_id */
        p_fetch_and_add_layermask(vidhand
@@ -4446,12 +4588,28 @@ p_transform_and_add_layer( gint32 comp_image_id
                   , local_stepcount
                   , tmp_image_id
                   , layer_id
+                  , frn_elem->mask_anchor
                   );
        /* apply the mask (necessary because the following copy with this layer
         * as source would ignore the layer mask)
         */
        gimp_layer_remove_mask(layer_id, GIMP_MASK_APPLY);
 
+    }
+
+    if((rotate  > 0.05) || (rotate < -0.05))
+    {
+      gint32       l_orig_width;
+      gint32       l_orig_height;
+
+      l_orig_width  = gimp_drawable_width(layer_id);
+      l_orig_height  = gimp_drawable_height(layer_id);
+
+      gap_story_transform_rotate_layer(tmp_image_id, layer_id, rotate);
+
+      /* recalculate offests to compensate size changes caused by rotation */
+      calculated->x_offs = calculated->x_offs + (l_orig_width / 2.0) - (gimp_drawable_width(layer_id) / 2.0);
+      calculated->y_offs = calculated->y_offs + (l_orig_height / 2.0) - (gimp_drawable_height(layer_id) / 2.0);
     }
 
     /* copy from tmp_image and paste to composite_image
@@ -4470,20 +4628,20 @@ p_transform_and_add_layer( gint32 comp_image_id
   }
   else
   {
-    /* operate on clipped rectangle size */
+    /* operate on clipped rectangle size (rotation not handled in this case) */
     if(gap_debug)
     {
       printf("p_transform operate on CLIPPED RECTANGLE\n");
     }
-    
+
     if ((calculated->visible_width <= 0) || (calculated->visible_height <= 0))
     {
       /* nothing will be visible (width or height is 0), so we can skip copying and scaling */
       return (l_new_layer_id);  /* that is still fully transparent */
     }
-         
+
     if((frn_elem->mask_name != NULL)
-    && (frn_elem->mask_anchor == GAP_MSK_ANCHOR_CLIP))
+    && (frn_elem->mask_anchor != GAP_MSK_ANCHOR_MASTER))
     {
       /* add and apply layermask at original unscaled tmp_image size */
       p_fetch_and_add_layermask(vidhand
@@ -4491,6 +4649,7 @@ p_transform_and_add_layer( gint32 comp_image_id
                   , local_stepcount
                   , tmp_image_id
                   , layer_id
+                  , frn_elem->mask_anchor
                   );
       /* apply the mask (necessary because the following copy with this layer
        * as source would ignore the layer mask)
@@ -4499,8 +4658,8 @@ p_transform_and_add_layer( gint32 comp_image_id
     }
 
 
-         
-    /* copy selected clipped source rectangle from tmp_image to composite image 
+
+    /* copy selected clipped source rectangle from tmp_image to composite image
      * as floating selection attached to l_new_layer_id (visble part at source size)
      */
     {
@@ -4508,21 +4667,21 @@ p_transform_and_add_layer( gint32 comp_image_id
       gdouble sy;
       gdouble swidth;
       gdouble sheight;
-      
+
       sx = 0;
       if (calculated->x_offs < 0)
       {
-        sx = (0 - calculated->x_offs) * 
+        sx = (0 - calculated->x_offs) *
             ((gdouble)gimp_image_width(tmp_image_id) / MAX((gdouble)calculated->width, 1.0));
       }
-      
+
       sy = 0;
       if (calculated->y_offs < 0)
       {
-        sy = (0 - calculated->y_offs) * 
+        sy = (0 - calculated->y_offs) *
             ((gdouble)gimp_image_height(tmp_image_id) / MAX((gdouble)calculated->height, 1.0));
       }
-      
+
       swidth = calculated->visible_width * gimp_image_width(tmp_image_id) / MAX(calculated->width, 1);
       sheight = calculated->visible_height * gimp_image_height(tmp_image_id) / MAX(calculated->height, 1);
 
@@ -4569,10 +4728,14 @@ p_transform_and_add_layer( gint32 comp_image_id
 
     gimp_floating_sel_anchor(l_fsel_layer_id);
 
-    
+
   }
 
 
+//   if((rotate  > 0.05) || (rotate < -0.05))
+//   {
+//     gap_story_transform_rotate_layer(comp_image_id, l_new_layer_id, rotate);
+//   }
 
 
 
@@ -4584,6 +4747,7 @@ p_transform_and_add_layer( gint32 comp_image_id
                   , local_stepcount
                   , comp_image_id
                   , l_new_layer_id
+                  , frn_elem->mask_anchor
                   );
 
   }
@@ -4717,13 +4881,13 @@ p_limit_open_videohandles(GapStoryRenderVidHandle *vidhand
                                                         , 100
                                                         );
   l_count_open_videohandles = currently_open_videohandles;
-  
+
   if (l_count_open_videohandles <= l_max_open_videohandles)
   {
     /* we are below the limit, nothing left to do in that case */
     return;
   }
-  
+
   for (frn_elem = vidhand->frn_list; frn_elem != NULL; frn_elem = (GapStoryRenderFrameRangeElem *)frn_elem->next)
   {
     if((frn_elem->last_master_frame_access < master_frame_nr)
@@ -4747,7 +4911,7 @@ p_limit_open_videohandles(GapStoryRenderVidHandle *vidhand
        {
          return;
        }
-       
+
     }
   }
 #endif
@@ -5038,8 +5202,8 @@ gap_story_render_fetch_composite_image(GapStoryRenderVidHandle *vidhand
 /* ------------------------------------------------
  * p_split_delace_value
  * ------------------------------------------------
- * split the specified delace value: 
- *    integer part is deinterlace mode, 
+ * split the specified delace value:
+ *    integer part is deinterlace mode,
  *      (0 NO,
  *       1 Odd,
  *       2 Even,
@@ -5053,7 +5217,7 @@ gap_story_render_fetch_composite_image(GapStoryRenderVidHandle *vidhand
  * between 2 framenumbers, where the value 0.5 is the middle.
  * An Interlaced frame contains 2 half-frames where one half-frame is represented by
  * the even, the other half-frame by the odd lines.
- * 
+ *
  * therfore localframe_tween_rest values >= 0.5 selects the other half-frame,
  * in case the enable_interlace_tween_pick option is enabled.
  *
@@ -5102,7 +5266,7 @@ p_split_delace_value(gdouble delace, gdouble localframe_tween_rest, gint32 *dein
 
 
 /* -------------------------------------------------------------------
- * p_conditional_delace_drawable 
+ * p_conditional_delace_drawable
  * -------------------------------------------------------------------
  * general deinterlace handling for frames, images an animimages
  * (except cliptype movie)
@@ -5155,12 +5319,22 @@ p_stb_render_image_or_animimage(GapStbFetchData *gfd
                         , gfd->framename            /* full filename of the image */
                         , TRUE /*  enable caching */
                        );
-  
+
   gimp_selection_none(l_orig_image_id);
   if(gfd->frn_type == GAP_FRN_IMAGE)
   {
-    gfd->layer_id = p_prepare_RGB_image(l_orig_image_id);
     gfd->tmp_image_id = gimp_image_duplicate(l_orig_image_id);
+    gfd->layer_id = p_prepare_RGB_image(gfd->tmp_image_id);
+    gap_frame_fetch_remove_parasite(gfd->tmp_image_id);
+    if(gap_debug)
+    {
+      printf("IMAGE fetch  master_frame_nr:%d  (dup)tmp_image_id:%d layer_id:%d l_orig_image_id:%d\n"
+         ,(int)master_frame_nr
+         ,(int)gfd->tmp_image_id
+         ,(int)gfd->layer_id
+         ,(int)l_orig_image_id
+         );
+    }
   }
   else
   {
@@ -5213,14 +5387,14 @@ p_stb_render_image_or_animimage(GapStbFetchData *gfd
        g_free (l_layers_list);
     }
   }
-  
+
 }  /* end p_stb_render_image_or_animimage */
 
 
 /* -------------------------------------------
  * p_stb_render_movie (GAP_FRN_MOVIE)
  * -------------------------------------------
- * fetch frame from a videofile (gfd->framename contains the videofile name) 
+ * fetch frame from a videofile (gfd->framename contains the videofile name)
  */
 static void
 p_stb_render_movie(GapStbFetchData *gfd
@@ -5417,7 +5591,7 @@ p_stb_render_section(GapStbFetchData *gfd
  * p_stb_render_frame_images (GAP_FRN_FRAMES)
  * -------------------------------------------
  * gfd->framename  is one single imagefile out of a series of numbered imagefiles.
- * (note that the gfd->framename is already full qualified 
+ * (note that the gfd->framename is already full qualified
  *  and includes path name, numberpart and extension)
  */
 static void
@@ -5440,7 +5614,7 @@ p_stb_render_frame_images(GapStbFetchData *gfd, gint32 master_frame_nr)
  * p_stb_render_composite_image_postprocessing
  * -------------------------------------------
  * perform postprocessing on the composite frame image.
- * this includes 
+ * this includes
  *  - convert to gray (only when fetching masks)
  *  - optional applying the global filtermacro
  *  - check size and scale (if filtermacro has changed size of the composite image)
@@ -5472,17 +5646,6 @@ p_stb_render_composite_image_postprocessing(GapStbFetchData *gfd
                          , 0.0
                          , 1.0
                          );
-  }
-
-  if(vidhand->is_mask_handle == TRUE)
-  {
-    /* we are running as mask fetcher,
-     * therefore convert to GRAY image
-     */
-    if(gimp_image_base_type(gfd->comp_image_id) != GIMP_GRAY)
-    {
-      gimp_image_convert_grayscale(gfd->comp_image_id);
-    }
   }
 
   /* debug: disabled code to display a copy of the image */
@@ -5600,7 +5763,7 @@ p_stb_render_result_monitoring(GapStbFetchData *gfd, gint32 master_frame_nr)
 
 /* ------------------------
  * p_paste_logo_pattern
- * ------------------------  
+ * ------------------------
  * replace logo area with the specified logo pattern
  */
 static void
@@ -5646,7 +5809,7 @@ p_paste_logo_pattern(gint32 drawable_id
   gimp_layer_set_offsets(l_fsel_layer_id
                         , offsetX + l_src_offset_x
                         , offsetY + l_src_offset_y);
-  
+
   gimp_floating_sel_anchor(l_fsel_layer_id);
 
 } /* end p_copy_and_paste_replacement_pattern */
@@ -5656,6 +5819,7 @@ p_paste_logo_pattern(gint32 drawable_id
 /* -------------------------------------
  * p_do_insert_area_processing
  * -------------------------------------
+ * add logo area to video clip
  */
 static void
 p_do_insert_area_processing(GapStbFetchData *gfd
@@ -5663,10 +5827,10 @@ p_do_insert_area_processing(GapStbFetchData *gfd
 {
   char *logo_imagename;
   char *videofilename_without_path;
-  
-  
-  videofilename_without_path = gap_story_build_basename(gfd->framename);
-  
+
+
+  videofilename_without_path = gap_lib_build_basename_without_ext(gfd->framename);
+
   if (vidhand->master_insert_area_format_has_framenumber)
   {
     if (vidhand->master_insert_area_format_has_videobasename)
@@ -5714,7 +5878,7 @@ p_do_insert_area_processing(GapStbFetchData *gfd
   {
     gint32 logo_image_id;
     gint32 logo_layer_id;
-    
+
     if (vidhand->master_insert_area_format_has_framenumber)
     {
       logo_image_id = gap_lib_load_image(logo_imagename);
@@ -5727,14 +5891,14 @@ p_do_insert_area_processing(GapStbFetchData *gfd
                             , TRUE /*  enable caching */
                            );
     }
-    
+
     if(logo_image_id < 0)
     {
       printf("p_do_insert_area_processing: ERROR could not load logo_imagename:%s\n", logo_imagename);
       return;
     }
-    
-    
+
+
     gimp_selection_none(logo_image_id);
     logo_layer_id = p_prepare_RGB_image(logo_image_id);
 
@@ -5751,6 +5915,202 @@ p_do_insert_area_processing(GapStbFetchData *gfd
   }
 
 }  /* end p_do_insert_area_processing */
+
+
+
+
+/* ----------------------------------------------------
+ * p_prepare_GRAY_image
+ * ----------------------------------------------------
+ * prepare image to be applied as transparency channel to a frame.
+ * - clear undo stack
+ * - convert to GREY
+ * - merge all visible layer to one layer that
+ *   fits the image size.
+ *
+ * return the resulting layer_id.
+ */
+static gint32
+p_prepare_GRAY_image(gint32 image_id)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32 l_layer_id;
+
+  l_layer_id = -1;
+ /* dont waste time and memory for undo in noninteracive processing
+  * of the frames
+  */
+  /*  gimp_image_undo_enable(image_id); */ /* clear undo stack */
+  /* no more gimp_image_undo_enable, because this results in Warnings since gimp-2.1.6
+   * Gimp-Core-CRITICAL **: file gimpimage.c: line 1708 (gimp_image_undo_thaw): assertion `gimage->undo_freeze_count > 0' failed
+   */
+  gimp_image_undo_disable(image_id); /*  NO Undo */
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    l_layer_id = l_layers_list[0];
+    g_free (l_layers_list);
+  }
+
+  if((l_nlayers > 1 ) || (gimp_layer_get_mask (l_layer_id) >= 0))
+  {
+     if(gap_debug) printf("DEBUG: p_prepare_image merge layers tmp image\n");
+
+     /* merge visible layers (reduce to single layer) */
+     l_layer_id = gap_image_merge_visible_layers(image_id, GIMP_CLIP_TO_IMAGE);
+  }
+
+  /* convert TO GREY if needed */
+  if(gimp_image_base_type(image_id) != GIMP_GRAY)
+  {
+     gimp_image_convert_grayscale(image_id);
+  }
+
+  if(l_layer_id >= 0)
+  {
+    gimp_layer_resize_to_image_size(l_layer_id);
+  }
+
+  return(l_layer_id);
+} /* end p_prepare_GRAY_image */
+
+
+
+
+/* -------------------------------------
+ * p_do_insert_alpha_processing
+ * -------------------------------------
+ * adds alpha channel for videoframes
+ * based on an image or series of frames
+ * matching the configured format string.
+ * (VID_MASTER_INSERT_ALPHA)
+ *
+ */
+static void
+p_do_insert_alpha_processing(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand)
+{
+  char *alpha_imagename;
+  char *videofilename_without_path;
+
+
+  videofilename_without_path =   gap_lib_build_basename_without_ext(gfd->framename);
+
+  if (vidhand->master_insert_alpha_format_has_framenumber)
+  {
+    if (vidhand->master_insert_alpha_format_has_videobasename)
+    {
+      alpha_imagename =
+         g_strdup_printf(vidhand->master_insert_alpha_format
+                       , videofilename_without_path
+                       , gfd->localframe_index   /* videoFrameNr */
+                       );
+    }
+    else
+    {
+      alpha_imagename =
+         g_strdup_printf(vidhand->master_insert_alpha_format
+                       , gfd->localframe_index   /* videoFrameNr */
+                       );
+    }
+  }
+  else
+  {
+    if (vidhand->master_insert_alpha_format_has_videobasename)
+    {
+      alpha_imagename =
+         g_strdup_printf(vidhand->master_insert_alpha_format
+                       , videofilename_without_path
+                       );
+    }
+    else
+    {
+      alpha_imagename = g_strdup(vidhand->master_insert_alpha_format);
+    }
+  }
+
+  if(gap_debug)
+  {
+    printf("p_do_insert_alpha_processing: format:%s\n video:%s\n alpha_imagename:%s\n"
+        , vidhand->master_insert_alpha_format
+        , videofilename_without_path
+        , alpha_imagename
+        );
+  }
+
+
+  if(g_file_test(alpha_imagename, G_FILE_TEST_EXISTS))
+  {
+    gint32 alpha_image_id;
+    gint32 alpha_layer_id;
+    gint   vid_width;
+    gint   vid_height;
+
+    if (vidhand->master_insert_alpha_format_has_framenumber)
+    {
+      alpha_image_id = gap_lib_load_image(alpha_imagename);
+    }
+    else
+    {
+      /* use framefetcher cache in case all frames shall get alpha from the same image */
+      alpha_image_id = gap_frame_fetch_orig_image(vidhand->ffetch_user_id
+                            , alpha_imagename
+                            , TRUE /*  enable caching */
+                           );
+    }
+
+    if(alpha_image_id < 0)
+    {
+      printf("p_do_insert_alpha_processing: ERROR could not load alpha_imagename:%s\n"
+            , alpha_imagename
+            );
+      return;
+    }
+
+
+    gimp_selection_none(alpha_image_id);
+    alpha_layer_id = p_prepare_GRAY_image(alpha_image_id);
+
+    vid_width = gimp_image_width(gfd->tmp_image_id);
+    vid_height = gimp_image_height(gfd->tmp_image_id);
+
+    /* scale alpha image to Videosize (if not already equal) */
+    if ((gimp_image_width(alpha_image_id) != vid_width)
+    ||  (gimp_image_height(alpha_image_id) != vid_height) )
+    {
+       if(gap_debug)
+       {
+         printf("DEBUG: p_do_insert_alpha_processing scaling alpha image\n");
+       }
+       gimp_image_scale(gfd->comp_image_id, vid_width, vid_height);
+    }
+
+    if(! gimp_drawable_has_alpha(gfd->layer_id))
+    {
+      /* have to add alpha channel */
+      gimp_layer_add_alpha(gfd->layer_id);
+    }
+
+
+    /* copy alpha_layer_id into the alpha channel of the current frame */
+    gap_layer_copy_picked_channel(gfd->layer_id, 3  /* dst_pick is the alpha channel */
+                               ,alpha_layer_id, 0   /* gray value */
+                               ,FALSE  /* shadow */
+                               );
+
+    if (vidhand->master_insert_alpha_format_has_framenumber)
+    {
+      /* do not keep individual per frame alpha images cached
+       */
+      gap_image_delete_immediate(alpha_image_id);
+    }
+  }
+
+}  /* end p_do_insert_alpha_processing */
+
+
 
 /* --------------------------------------------
  * p_story_render_fetch_composite_image_private
@@ -5790,6 +6150,8 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
   gfd->layer_id        = -1;
   *layer_id         = -1;
 
+
+
   if(gap_debug)
   {
     printf("p_story_render_fetch_composite_image_private START  master_frame_nr:%d  %dx%d vidhand:%d\n"
@@ -5814,7 +6176,6 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
   {
     if((vidhand->is_mask_handle == FALSE)
     && (master_frame_nr == 1)
-    // && (section_name == NULL)
     )
     {
       printf("\n###\n###\nSTART rendering at master_frame_nr 1 with this list of elements:\n");
@@ -5845,6 +6206,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                  , &l_green_f
                  , &l_blue_f
                  , &l_alpha_f
+                 , &gfd->rotate        /* output rotateion in degree */
                  , &gfd->opacity       /* output opacity 0.0 upto 1.0 */
                  , &gfd->scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , &gfd->scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -5908,11 +6270,19 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
               return -1;
            }
            gfd->layer_id = p_prepare_RGB_image(gfd->tmp_image_id);
-           if((gfd->frn_type == GAP_FRN_MOVIE) && (vidhand->master_insert_area_format))
+
+           if(gfd->frn_type == GAP_FRN_MOVIE)
            {
-             p_do_insert_area_processing(gfd, vidhand);
+             if(vidhand->master_insert_alpha_format)
+             {
+               p_do_insert_alpha_processing(gfd, vidhand);
+             }
+             if(vidhand->master_insert_area_format)
+             {
+               p_do_insert_area_processing(gfd, vidhand);
+             }
            }
-           
+
            p_conditional_delace_drawable(gfd, gfd->layer_id);
            g_free(gfd->framename);
          }
@@ -5921,15 +6291,18 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
 
        if(gap_debug)
        {
-         printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d\n"
+         printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d (master_frame_nr:%d, comp_image_id:%d)\n"
             , (int)gfd->layer_id
             , (int)gfd->tmp_image_id
+            , (int)master_frame_nr
+            , (int)gfd->comp_image_id
             );
-       }         
+       }
 
        if(gfd->comp_image_id  < 0)
        {
          if((gfd->opacity == 1.0)
+         && (gfd->rotate == 0.0)
          && (gfd->scale_x == 1.0)
          && (gfd->scale_y == 1.0)
          && (gfd->move_x == 0.0)
@@ -5978,6 +6351,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                                   ,gfd->keep_proportions
                                   ,gfd->fit_width
                                   ,gfd->fit_height
+                                  ,gfd->rotate
                                   ,gfd->opacity
                                   ,gfd->scale_x
                                   ,gfd->scale_y
@@ -6029,7 +6403,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
 /* -------------------------------------------------------------------
  * gap_story_render_fetch_composite_image_or_chunk (see included file)
  * -------------------------------------------------------------------
- * 
+ *
  */
 
 #include "gap_story_render_lossless.c"

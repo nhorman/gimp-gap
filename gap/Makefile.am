@@ -44,6 +44,14 @@ BASE_SOURCES = \
 	gap_audio_util.h	\
 	gap_audio_wav.c		\
 	gap_audio_wav.h		\
+	gap_colordiff.c	        \
+	gap_colordiff.h 	\
+	gap_colormask_exec.c	\
+	gap_colormask_exec.h 	\
+	gap_colormask_file.c	\
+	gap_colormask_file.h 	\
+        gap_edge_detection.c    \
+        gap_edge_detection.h    \
 	gap_image.c		\
 	gap_image.h		\
 	gap_layer_copy.c	\
@@ -51,6 +59,8 @@ BASE_SOURCES = \
 	gap_lib.c		\
 	gap_lib.h		\
 	gap_lib_common_defs.h	\
+	gap_locate.c		\
+	gap_locate.h		\
 	gap_lock.c		\
 	gap_lock.h		\
 	gap_navi_activtable.c	\
@@ -96,6 +106,7 @@ libgapstory_a_SOURCES = $(BASE_SOURCES)	\
 
 libexec_PROGRAMS = \
 	gap_bluebox		\
+	gap_colormask		\
 	gap_plugins		\
 	gap_filter		\
 	gap_fmac		\
@@ -113,6 +124,7 @@ libexec_PROGRAMS = \
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
+	gap_wr_color_balance	\
 	gap_wr_trans		\
 	gap_wr_resynth		\
 	gap_wr_opacity
@@ -125,6 +137,13 @@ gap_bluebox_SOURCES = \
 	gap_bluebox.h		\
 	gap_libgimpgap.h	
 
+gap_colormask_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_colormask_dialog.c	\
+	gap_colormask_dialog.h 	\
+	gap_colormask_main.c	\
+	gap_libgimpgap.h	
 
 gap_plugins_SOURCES = \
 	gap_base_ops.c		\
@@ -246,6 +265,8 @@ gap_morph_SOURCES = \
 	gap_morph_main.h	\
 	gap_morph_exec.c	\
 	gap_morph_exec.h	\
+	gap_morph_shape.c	\
+	gap_morph_shape.h	\
 	gap_morph_dialog.c	\
 	gap_morph_dialog.h	\
 	gap_morph_tween_dialog.c	\
@@ -369,6 +390,10 @@ gap_wr_color_huesat_SOURCES = \
 	gap_wr_color_huesat.c	\
 	gap_libgimpgap.h
 
+gap_wr_color_balance_SOURCES = \
+	gap_wr_color_balance.c	\
+	gap_libgimpgap.h
+
 gap_wr_resynth_SOURCES = \
 	gap_wr_resynth.c	\
 	gap_lastvaldesc.c	\
@@ -400,6 +425,7 @@ LDADD = $(GIMP_LIBS)
 
 gap_plugins_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_bluebox_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_colormask_LDADD =        $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_filter_LDADD =           $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_fmac_LDADD =             $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_fmac_varying_LDADD =     $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
@@ -418,6 +444,7 @@ gap_wr_trans_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_levels_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_color_balance_LDADD = $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_resynth_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 
 EXTRA_DIST = \

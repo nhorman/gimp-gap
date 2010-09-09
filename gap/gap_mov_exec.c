@@ -1157,6 +1157,7 @@ p_calculate_settings_for_current_FrameTween(
   }
 
 
+
   /* calculate Zoom (e.g. Size) settings for the currently processed Frame (or tween) */
   if ((val_ptr->point[startOfSegmentIndex].accSize != 0)
   && (frameTweensInSegment > 0))
@@ -1184,6 +1185,13 @@ p_calculate_settings_for_current_FrameTween(
       cur_ptr->currWidth    = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].w_resize, (gdouble)val_ptr->point[currPtidx].w_resize);
       cur_ptr->currHeight   = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].h_resize, (gdouble)val_ptr->point[currPtidx].h_resize);
     }
+  }
+
+  if(gap_debug)
+  {
+     printf("currWidth:%.4f\n"
+       ,(float)cur_ptr->currWidth
+       );
   }
 
 

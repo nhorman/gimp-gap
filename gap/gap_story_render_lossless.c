@@ -344,6 +344,7 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
   gint32    l_track_max;
   gchar  *l_framename;
   gchar  *l_videofile;
+  gdouble l_rotate;
   gdouble l_opacity;
   gdouble l_scale_x;
   gdouble l_scale_y;
@@ -395,6 +396,7 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
                  , &l_green_f
                  , &l_blue_f
                  , &l_alpha_f
+		 , &l_rotate
                  , &l_opacity       /* output opacity 0.0 upto 1.0 */
                  , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -425,6 +427,7 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
            {
              /* check for transformations */
              if((l_opacity == 1.0)
+             && (l_rotate == 0.0)
              && (l_scale_x == 1.0)
              && (l_scale_y == 1.0)
              && (l_move_x == 0.0)

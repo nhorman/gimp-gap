@@ -49,7 +49,11 @@
 #define GAP_STOCK_SET_RANGE_START    "gap-set-range-start"
 #define GAP_STOCK_SPEED              "gap-speed"
 
-void  gap_stock_init (void);
 
+#include <gtk/gtk.h>
+
+void  gap_stock_init (void);
+GtkWidget *  gap_stock_button_new(const char *stock_id);
+GtkWidget *  gap_stock_button_new_with_label(const char *stock_id, const char *optional_label);
 
 #endif /* __GAP_STOCK_H__ */

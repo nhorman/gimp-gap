@@ -238,6 +238,19 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
   
   switch(keyptr->dataype)
   {
+    case GAP_VAL_GINT:
+      {
+        gint *val_ptr;
+      
+        val_ptr = (gint *)keyptr->val_ptr;
+        fprintf(fp, "%s%d%s %s\n"
+               , keyptr->keyword   /* "(keyword " */
+               , (int)*val_ptr          /* value */
+               , term_ptr
+               , keyptr->comment
+               );
+      }
+      break;
     case GAP_VAL_GINT32:
       {
         gint32 *val_ptr;
@@ -527,6 +540,14 @@ gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename)
                l_cnt_keys++;
                switch(keyptr->dataype)
                {
+                 case GAP_VAL_GINT:
+                   {
+                      gint *val_ptr;
+                      
+                      val_ptr = (gint *)keyptr->val_ptr;
+                      *val_ptr = atol(&txf_ptr->line[l_len]);
+                   }
+                   break;
                  case GAP_VAL_GINT32:
                    {
                       gint32 *val_ptr;
@@ -641,7 +662,7 @@ gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename)
                break;
              }
           }  /* end for keylist loop */
-      } /* end for text lines scann loop */
+      } /* end for text lines scan loop */
       if(txf_ptr_root)
       {
         gap_val_free_textfile_lines(txf_ptr_root);

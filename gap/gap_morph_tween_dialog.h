@@ -1,4 +1,4 @@
-/*  gap_morph_one_tween_dialog.h
+/*  gap_morph_tween_dialog.h
  *
  *  This module handles the GAP morph tween dialog
  */
@@ -30,6 +30,7 @@
 #include "libgimp/gimp.h"
 #include "gap_libgimpgap.h"
 #include "gap_morph_main.h"
+#include "gap_locate.h"
 #include "gap_libgimpgap.h"
 
 #define GAP_MORPH_ONE_TWEEN_PLUGIN_NAME    "plug_in_gap_morph_one_tween"
@@ -38,7 +39,11 @@
 #define GAP_MORPH_TWEEN_PLUGIN_NAME    "plug_in_gap_morph_tween"
 #define GAP_MORPH_TWEEN_HELP_ID        "plug-in-gap-morph-tween"
 
-gboolean   gap_morph_one_tween_dialog(GapMorphGlobalParams *mgpp);
-gboolean   gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp);
+#define GAP_MORPH_WORKPOINTS_PLUGIN_NAME   "plug_in_gap_morph_workpoints"
+#define GAP_MORPH_WORKPOINTS_HELP_ID       "plug-in-gap-morph-workpoints"
 
+gboolean   gap_morph_one_tween_dialog(GapMorphGlobalParams *mgpp);
+gint32     gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp);
+gint32     gap_morph_generate_frame_tween_workpoints_dialog(GapAnimInfo *ainfo_ptr
+                   , GapMorphGlobalParams *mgpp);
 #endif

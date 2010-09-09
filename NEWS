@@ -19,7 +19,43 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
     Th GAP dbbrowser now supports acceleration characteristic graph and spinbutton
     (that replaces the "Apply Varying" button of older GIMP_GAP releases)
 
-- some other bugfixes (See ChangeLog for details)
+- New colormask plug-in added
+  The colormask filter can apply transparency for pixels matching the colormask image.
+  intended for processing frames where moving objects can be isolated
+  from the non-moving constant background by aplying the constant background
+  as colormask on all frames.
+  the colormask feature is also available as new mask anchor mode 
+  when processing stroyboard clips.
+  (anchor modes are: ClipColormask, Clip, Master)
+
+- The Storyboard now supports rotatation of the prcessed clips by any angle.
+
+- A new storyboard processing feature allows adding external transparency 
+  for clip type movie. This is done via format string that refers to
+  the external frames (typical gray image frames)
+  the format string has placeholder %s (replaced by basename of the video)
+  and %06d (replaced by the currently processed frame number)
+  
+  The format string can be specified in the storyboard master properties dialog
+
+- Added features to the Morph plug-in to support
+  more convenient creation of workpoints and lead to better
+  results (especially for morping tweens of a video)
+  
+  new plug-in "Video/Morph/Morph Workpoint Generator" 
+        Generates workpointfiles for each frame in the specified frame range.
+
+  new feature for the morph plug-in "Video/Morph/Create Tween Frames"
+   that creates a directory with (renumbered) copies of the processed frames
+   and additionally generated tween frames that are rendered via fade or morphing.
+   individual workpointfiles per processed frame are located via
+   name convention (extension .morphpoints) and used for morphing when they exist.
+   (such files can be created with the help of the plug-in "Morph Workpoint Generator").
+
+- support to run gimp_color_balance tool as animated filter 
+  (added wrapper plug-in).
+
+- some bugfixes (See ChangeLog for details)
 
 
 Here is a short overview whats new in GIMP-GAP-2.6.0:

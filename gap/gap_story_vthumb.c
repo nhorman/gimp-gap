@@ -839,7 +839,7 @@ p_story_vthumb_elem_fetch(GapStbMainGlobalParams *sgpp
   {
     if(sgpp->vthumb_prefetch_in_progress != GAP_VTHUMB_PREFETCH_NOT_ACTIVE)
     {
-      /* at this point an implicite cancel of video thumbnail prefetch
+      /* at this point an implicit cancel of video thumbnail prefetch
        * is detected.
        */
       if(gap_debug)
@@ -902,7 +902,7 @@ p_story_vthumb_elem_fetch(GapStbMainGlobalParams *sgpp
     return(NULL);
   }
   
-  /* Videothumbnail not known yet,
+  /* Video thumbnail not known yet,
    * we try to create it now
    */
   switch(velem->vt_type)
@@ -1001,7 +1001,7 @@ gap_story_vthumb_elem_fetch(GapStbMainGlobalParams *sgpp
 /* ------------------------------
  * gap_story_vthumb_fetch_thdata
  * ------------------------------
- * RETURN a copy of the videothumbnail data
+ * RETURN a copy of the video thumbnail data
  *        or NULL if fetch was not successful
  *        the caller is responsible to g_free the returned data
  *        after usage.
@@ -1052,7 +1052,7 @@ gap_story_vthumb_fetch_thdata(GapStbMainGlobalParams *sgpp
 /* --------------------------------------
  * gap_story_vthumb_fetch_thdata_no_store
  * --------------------------------------
- * RETURN a pointer of the videothumbnail data
+ * RETURN a pointer of the video thumbnail data
  *        or thumbnail data read from file (indicated by file_read_flag = TRUE)
  * the caller must g_free the returned data if file_read_flag = TRUE
  * but MUST NOT g_free the returned data if file_read_flag = FALSE
@@ -1124,20 +1124,20 @@ gap_story_vthumb_fetch_thdata_no_store(GapStbMainGlobalParams *sgpp
 
   if(sgpp->vthumb_prefetch_in_progress != GAP_VTHUMB_PREFETCH_NOT_ACTIVE)
   {
-      /* at this point an implicite cancel of video thumbnail prefetch
+      /* at this point an implicit cancel of video thumbnail prefetch
        * is detected.
-       * - one option is to render default icon, and restert the prefetch 
+       * - one option is to render default icon, and restart the prefetch 
        *   via GAP_VTHUMB_PREFETCH_RESTART_REQUEST
        *   (because the storyboard may have changed since prefetch was started
        *    note that prefetch will be very quick for all clips where vthumb is already present
        *    from the cancelled previous prefetch cycle)
-       * - an other (not implemented) option is to cancel prefetch and implicite turn off auto_vthumb mode
+       * - an other (not implemented) option is to cancel prefetch and implicitly turn off auto_vthumb mode
        */
       sgpp->vthumb_prefetch_in_progress = GAP_VTHUMB_PREFETCH_RESTART_REQUEST;
       return (NULL);
   }
 
-  /* Videothumbnail not known yet,
+  /* Video thumbnail not known yet,
    * we try to create it now
    * (but dont add it tho global vthumb list)
    */

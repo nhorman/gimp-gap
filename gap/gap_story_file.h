@@ -1,6 +1,6 @@
 /*  gap_story_file.h
  *
- *  This module handles GAP storyboard file 
+ *  This module handles GAP storyboard file
  *  parsing of storyboard level1 files (load informations into a list)
  *  and (re)write storyboard files from the list (back to storyboard file)
  *
@@ -36,15 +36,16 @@
 #include "gap_story_syntax.h"
 #include "gap_story_render_types.h"
 
-/* transition attribute types 
+/* transition attribute types
  * (values are used as index for look-up tables)
  */
-#define GAP_STB_ATT_TYPES_ARRAY_MAX 5
+#define GAP_STB_ATT_TYPES_ARRAY_MAX 6
 #define GAP_STB_ATT_TYPE_OPACITY  0
 #define GAP_STB_ATT_TYPE_MOVE_X   1
 #define GAP_STB_ATT_TYPE_MOVE_Y   2
 #define GAP_STB_ATT_TYPE_ZOOM_X   3
 #define GAP_STB_ATT_TYPE_ZOOM_Y   4
+#define GAP_STB_ATT_TYPE_ROTATE   5
 
 
 #define GAP_STB_MASK_SECTION_NAME  "Masks"
@@ -57,11 +58,11 @@
   typedef enum
   {
      GAP_STBREC_VID_SILENCE
-    ,GAP_STBREC_VID_COLOR        
-    ,GAP_STBREC_VID_IMAGE        
-    ,GAP_STBREC_VID_ANIMIMAGE        
-    ,GAP_STBREC_VID_FRAMES       
-    ,GAP_STBREC_VID_MOVIE 
+    ,GAP_STBREC_VID_COLOR
+    ,GAP_STBREC_VID_IMAGE
+    ,GAP_STBREC_VID_ANIMIMAGE
+    ,GAP_STBREC_VID_FRAMES
+    ,GAP_STBREC_VID_MOVIE
     ,GAP_STBREC_VID_COMMENT
     ,GAP_STBREC_VID_UNKNOWN
 
@@ -88,14 +89,14 @@
   typedef enum
   {
      GAP_STB_PM_NORMAL
-    ,GAP_STB_PM_PINGPONG        
+    ,GAP_STB_PM_PINGPONG
   } GapStoryVideoPlaymode;
 
   typedef enum
   {
      GAP_STB_MASTER_TYPE_UNDEFINED
     ,GAP_STB_MASTER_TYPE_STORYBOARD
-    ,GAP_STB_MASTER_TYPE_CLIPLIST        
+    ,GAP_STB_MASTER_TYPE_CLIPLIST
   } GapStoryMasterType;
 
 
@@ -112,13 +113,13 @@
     GapStoryRecordType     record_type;
     GapStoryVideoPlaymode  playmode;
     gint32                 track;
-    
-    char  *orig_filename;   /* full filename use for IMAGE and MOVIE Files 
+
+    char  *orig_filename;   /* full filename use for IMAGE and MOVIE Files
                              * and SECTIONS (for section_name)
                              */
     char  *orig_src_line;   /* without \n, used to store header, comment and unknown lines */
-    
-                            /* basename + ext are used for FRAME range elements only */ 
+
+                            /* basename + ext are used for FRAME range elements only */
     gchar *basename;        /* path+filename (without number part and without extension */
     gchar *ext;             /* extenson ".xcf" ".jpg" ... including the dot */
     gint32     seltrack;    /* selected videotrack in a videofile (for GAP_FRN_MOVIE) */
@@ -130,6 +131,10 @@
                                * if track == GAP_STB_MASK_TRACK_NUMBER this atribute
                                * is the mandatory definition of the mask_name.
                                */
+    char   *colormask_file;   /* optional reference to a colormask parameter file
+                               * relevant for ancor mode GAP_MSK_ANCHOR_CLIPCOLOR
+                               * where mask is applied as colormask
+                               */
     gdouble mask_stepsize;
     GapStoryMaskAnchormode  mask_anchor;
     gboolean  mask_disable;
@@ -138,11 +143,11 @@
     gchar *filtermacro_file;
     gint32 fmac_total_steps;
     gint32 fmac_accel;
-    
+
     gint32 from_frame;
     gint32 to_frame;
     gint32 nloop;          /* 1 play one time */
-    
+
     gint32 nframes;        /* if playmode == normal
                             * then frames = nloop * (ABS(from_frame - to_frame) + 1);
                             * else frames = (nloop * 2 * ABS(from_frame - to_frame)) + 1;
@@ -160,7 +165,7 @@
     gdouble  color_green;
     gdouble  color_blue;
     gdouble  color_alpha;
-           
+
     /* members for attribute Record types */
     gboolean att_keep_proportions;
     gboolean att_fit_width;
@@ -188,7 +193,7 @@
     gdouble  aud_min_play_sec;  /* for optimzed audio extract from videofiles */
     gdouble  aud_max_play_sec;
     gdouble  aud_framerate;     /* framerate that is used to convert audio unit frame <-> secs */
- 
+
     struct GapStoryElem  *comment;
     struct GapStoryElem  *next;
   } GapStoryElem;
@@ -198,7 +203,7 @@
      GapStoryElem    *stb_elem;
      gchar           *section_name;  /* null refers to the main section */
      gint32          current_vtrack;
-     
+
      gint32          section_id;  /* unique ID, NOT persistent */
      gint32          version;     /* numer of changes while editing, NOT persistent */
 
@@ -216,9 +221,9 @@
   typedef struct GapStoryFrameNumberMappingElem {
     gint32 mapped_frame_number;
     gint32 orig_frame_number;
-    
+
     struct GapStoryFrameNumberMappingElem *next;
-    
+
   } GapStoryFrameNumberMappingElem;
 
 
@@ -251,7 +256,7 @@
      gint32         layout_thumbsize;
 
      gchar         *preferred_decoder;
-     
+
      /* for error handling while parsing */
      gchar         *errtext;
      gchar         *errline;
@@ -278,11 +283,12 @@
 
      gboolean       unsaved_changes;
      GapStoryEditSettings *edit_settings;
-     
+
+     gchar         *master_insert_alpha_format;
      gchar         *master_insert_area_format;
  }  GapStoryBoard;
 
- 
+
   typedef struct GapStoryLocateRet {
      GapStoryElem  *stb_elem;
      gint32        ret_framenr;
@@ -296,7 +302,8 @@
     gint32  x_offs;
     gint32  y_offs;
     gdouble opacity;
-    
+    gdouble rotate;
+
     gint32  visible_width;
     gint32  visible_height;
   } GapStoryCalcAttr;
@@ -308,7 +315,7 @@
      gchar           *preferred_decoder;
      gint32          seltrack;
      gint32          max_ref_framenr;
-     
+
      void            *next;
   } GapStoryVideoFileRef;
 
@@ -447,6 +454,7 @@ void                gap_story_file_calculate_render_attributes(GapStoryCalcAttr 
                          , gboolean keep_proportions
                          , gboolean fit_width
                          , gboolean fit_height
+                         , gdouble rotate
                          , gdouble opacity
                          , gdouble scale_x
                          , gdouble scale_y
@@ -480,5 +488,7 @@ GapStoryVideoFileRef * p_new_GapStoryVideoFileRef(const char *videofile
                           , gint32          max_ref_framenr);
 GapStoryVideoFileRef * gap_story_get_video_file_ref_list(GapStoryBoard *stb);
 char *                 gap_story_build_basename(const char *filename);
+
+void                   gap_story_transform_rotate_layer(gint32 image_id, gint32 layer_id, gdouble rotate);
 
 #endif

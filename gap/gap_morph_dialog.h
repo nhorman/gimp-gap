@@ -78,6 +78,9 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
 
   GtkObject  *tween_steps_spinbutton_adj;
   GtkObject  *affect_radius_spinbutton_adj;
+  GtkObject  *locate_edge_threshold_spinbutton_adj;
+  GtkObject  *locate_radius_spinbutton_adj;
+  GtkObject  *locate_shape_radius_spinbutton_adj;
   GtkObject  *gravity_intensity_spinbutton_adj;
   GtkWidget  *gravity_intensity_spinbutton;
   GtkWidget  *use_gravity_checkbutton;
@@ -121,6 +124,10 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
   GtkWidget *workpoint_file_upper_label;  
   GtkWidget *workpoint_lower_label;  
   GtkWidget *workpoint_upper_label;
+
+  GtkWidget *progressBar;
+  gboolean   workpointGenerationBusy;
+  gboolean   cancelWorkpointGeneration;
   
 } GapMorphGUIParams;
 

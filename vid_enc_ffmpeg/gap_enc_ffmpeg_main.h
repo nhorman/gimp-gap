@@ -38,6 +38,28 @@
 #include "avformat.h"
 #include "avcodec.h"
 
+/// start ffmpeg 0.5 / 0.6 support
+#if LIBAVCODEC_VERSION_MAJOR < 52
+#define GAP_USES_OLD_FFMPEG_0_5
+#endif
+#if LIBAVCODEC_VERSION_MAJOR == 52
+#if LIBAVCODEC_VERSION_MINOR <= 20
+#define GAP_USES_OLD_FFMPEG_0_5
+#endif
+#endif
+
+
+
+#ifdef GAP_USES_OLD_FFMPEG_0_5
+/* defines to use older ffmpeg-0.5 compatible types */
+#define AVMEDIA_TYPE_UNKNOWN  CODEC_TYPE_UNKNOWN
+#define AVMEDIA_TYPE_VIDEO    CODEC_TYPE_VIDEO
+#define AVMEDIA_TYPE_AUDIO    CODEC_TYPE_AUDIO
+#define AV_PKT_FLAG_KEY       PKT_FLAG_KEY
+#endif
+
+/// end ffmpeg 0.5 / 0.6 support
+
 
 #define GAP_HELP_ID_FFMPEG_PARAMS         "plug-in-gap-encpar-ffmpeg"
 #define GAP_PLUGIN_NAME_FFMPEG_PARAMS     "plug-in-gap-encpar-ffmpeg"
@@ -355,6 +377,20 @@ typedef struct {
   gdouble rc_max_available_vbv_use;
   gdouble rc_min_vbv_overflow_use;
 
+  gint32  color_primaries;        // enum AVColorPrimaries color_primaries;
+  gint32  color_trc;              // enum AVColorTransferCharacteristic color_trc;
+  gint32  colorspace;             // enum AVColorSpace colorspace;
+  gint32  color_range;            // enum AVColorRange color_range;
+  gint32  chroma_sample_location; // enum AVChromaLocation chroma_sample_location;
+  gint32  weighted_p_pred;   // int weighted_p_pred;
+  gint32  aq_mode;           // int aq_mode;
+  gdouble aq_strength;       // float aq_strength;
+  gdouble psy_rd;            // float psy_rd;
+  gdouble psy_trellis;       // float psy_trellis;
+  gint32  rc_lookahead;      // int rc_lookahead;
+
+
+
   gint32 codec_FLAG_GMC;
   gint32 codec_FLAG_INPUT_PRESERVED;
   gint32 codec_FLAG_GRAY;
@@ -377,6 +413,10 @@ typedef struct {
   gint32 codec_FLAG2_CHUNKS;
   gint32 codec_FLAG2_NON_LINEAR_QUANT;
   gint32 codec_FLAG2_BIT_RESERVOIR;
+  gint32 codec_FLAG2_MBTREE;
+  gint32 codec_FLAG2_PSY;
+  gint32 codec_FLAG2_SSIM;
+
 
 } GapGveFFMpegValues;
 

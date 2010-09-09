@@ -92,6 +92,9 @@ gap_frame_fetch_delete_list_of_duplicated_images(gint32 ffetch_user_id);
  * ----------------------------
  * returns image_id of the original cached image.
  *    RESTRICTION: the Caller must NOT not modify that image and shall not open a display for it!
+ *    In case this image is duplicated, the parasite that marks an image as member of the gap frame fetcher cache
+ *    must be removed (by calling procedure gap_frame_fetch_remove_parasite on the duplicate)
+ *    otherwise the duplicate might be unexpectedly deleted  when the frame fetcher cache is full.
  */
 gint32
 gap_frame_fetch_orig_image(gint32 ffetch_user_id
@@ -133,5 +136,13 @@ gap_frame_fetch_dup_video(gint32 ffetch_user_id
     );
 
 
+/* -------------------------------
+ * gap_frame_fetch_remove_parasite
+ * -------------------------------
+ * removes the image parasite that marks the image as member
+ * of the gap frame fetcher cache.
+ */
+void
+gap_frame_fetch_remove_parasite(gint32 image_id);
 
 #endif

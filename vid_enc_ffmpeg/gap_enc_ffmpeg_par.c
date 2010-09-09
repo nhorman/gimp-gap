@@ -207,6 +207,18 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
    gap_val_set_keyword(keylist, "(rc_max_available_vbv_use ",  &epp->rc_max_available_vbv_use,   GAP_VAL_GDOUBLE, 0, "# Ratecontrol attempt to use, at maximum, <value> of what can be used without an underflow");
    gap_val_set_keyword(keylist, "(rc_min_vbv_overflow_use ",   &epp->rc_min_vbv_overflow_use,    GAP_VAL_GDOUBLE, 0, "# Ratecontrol attempt to use, at least, <value> times the amount needed to prevent a vbv overflow");
 
+   /* new params (introduced with ffmpeg 0.6) */
+   gap_val_set_keyword(keylist, "(color_primaries ",          &epp->color_primaries,          GAP_VAL_GINT32, 0, "# Chromaticity coordinates of the source primaries.");
+   gap_val_set_keyword(keylist, "(color_trc ",                &epp->color_trc,                GAP_VAL_GINT32, 0, "# Color Transfer Characteristic.");
+   gap_val_set_keyword(keylist, "(colorspace ",               &epp->colorspace,               GAP_VAL_GINT32, 0, "# YUV colorspace type.");
+   gap_val_set_keyword(keylist, "(color_range ",              &epp->color_range,              GAP_VAL_GINT32, 0, "# MPEG vs JPEG YUV range.");
+   gap_val_set_keyword(keylist, "(chroma_sample_location ",   &epp->chroma_sample_location,   GAP_VAL_GINT32, 0, "# This defines the location of chroma samples.");
+   gap_val_set_keyword(keylist, "(weighted_p_pred ",          &epp->weighted_p_pred,          GAP_VAL_GINT32, 0, "# explicit P-frame weighted prediction analysis method 0:off, 1: fast blind weighting, 2:smart weighting (full fade detection analysis)");
+   gap_val_set_keyword(keylist, "(aq_mode ",                  &epp->aq_mode,                  GAP_VAL_GINT32, 0, "# AQ mode");
+   gap_val_set_keyword(keylist, "(aq_strength ",              &epp->aq_strength,              GAP_VAL_GDOUBLE, 0, "# AQ strength, Reduces blocking and blurring in flat and textured areas.");
+   gap_val_set_keyword(keylist, "(psy_rd ",                   &epp->psy_rd,                   GAP_VAL_GDOUBLE, 0, "# PSY RD Strength of psychovisual optimization ");
+   gap_val_set_keyword(keylist, "(psy_trellis ",              &epp->psy_trellis,              GAP_VAL_GDOUBLE, 0, "# PSY trellis Strength of psychovisual optimization");
+   gap_val_set_keyword(keylist, "(rc_lookahead ",             &epp->rc_lookahead,             GAP_VAL_GINT32, 0,  "# Number of frames for frametype and ratecontrol lookahead");
 
    /* codec flags */
 
@@ -253,6 +265,13 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
    p_set_keyword_bool32(keylist, "(use_chunks ",              &epp->codec_FLAG2_CHUNKS,                 "# CODEC_FLAG2_CHUNKS              Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries");
    p_set_keyword_bool32(keylist, "(use_non_linear_quant ",    &epp->codec_FLAG2_NON_LINEAR_QUANT,       "# CODEC_FLAG2_NON_LINEAR_QUANT    Use MPEG-2 nonlinear quantizer");
    p_set_keyword_bool32(keylist, "(use_bit_reservoir ",       &epp->codec_FLAG2_BIT_RESERVOIR,          "# CODEC_FLAG2_BIT_RESERVOIR       Use a bit reservoir when encoding if possible");
+
+   /* codec flags new in ffmpeg-0.6 */
+
+   p_set_keyword_bool32(keylist, "(use_bit_reservoir ",       &epp->codec_FLAG2_BIT_RESERVOIR,          "# CODEC_FLAG2_BIT_RESERVOIR       Use a bit reservoir when encoding if possible");
+   p_set_keyword_bool32(keylist, "(use_bit_mbtree ",          &epp->codec_FLAG2_MBTREE,                 "# CODEC_FLAG2_MBTREE              Use macroblock tree ratecontrol (x264 only)");
+   p_set_keyword_bool32(keylist, "(use_bit_psy ",             &epp->codec_FLAG2_PSY,                    "# CODEC_FLAG2_PSY                 Use psycho visual optimizations.");
+   p_set_keyword_bool32(keylist, "(use_bit_ssim ",            &epp->codec_FLAG2_SSIM,                   "# CODEC_FLAG2_SSIM                Compute SSIM during encoding, error[] values are undefined");
 
 
 }  /* end p_set_master_keywords */

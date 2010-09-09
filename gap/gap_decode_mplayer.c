@@ -296,7 +296,7 @@ p_mplayer_info(char *errlist)
 /* -----------------------
  * p_scann_start_time
  * -----------------------
- * scann hour, minute, second from a string
+ * scan hour, minute, second from a string
  * that has the format "HH:MM:SS"
  * where any other non-digit characters are treated same as ":"
  * strings with format "HHMMSS" are also accepted.

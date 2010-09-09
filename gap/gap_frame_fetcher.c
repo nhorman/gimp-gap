@@ -89,6 +89,11 @@
 #define GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS 6
 #define GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED 36
 
+#define GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS_GIMPRC_KEY     "gap_ffetch_max_img_cache_elements"
+#define GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS_GIMPRC_KEY     "gap_ffetch_max_gvc_cache_elements" 
+#define GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED_GIMPRC_KEY  "gap_ffetch_gva_frames_to_keep_cached"
+
+
 /* the lists of cached images and duplicates are implemented via GIMP image parasites,
  * where images are simply loaded by GIMP without adding a display and marked with a non persistent parasite.
  * the GAP_IMAGE_CACHE_PARASITE holds the modification timestamp (mtime) and full filename (inclusive terminating 0)
@@ -137,6 +142,7 @@ static GapFFetchGvahandCache *global_gvcache = NULL;
 
 static GapFFetchResourceUserElem *global_rsource_users = NULL;
 
+
 /*************************************************************
  *         FRAME FETCHER procedures                          *
  *************************************************************
@@ -153,7 +159,112 @@ static t_GVA_Handle*  p_ffetch_get_open_gvahand(const char* filename, gint32 sel
 
 static void           p_add_image_to_list_of_duplicated_images(gint32 image_id, gint32 ffetch_user_id);
 
+static gint32 p_get_ffetch_max_img_cache_elements();
+static gint32 p_get_ffetch_max_gvc_cache_elements();
+static gint32 ffetch_gva_frames_to_keep_cached();
 
+
+/* ----------------------------------------------------
+ * p_get_ffetch_max_img_cache_elements
+ * ----------------------------------------------------
+ */
+static gint32
+p_get_ffetch_max_img_cache_elements()
+{
+  static gint32 value = -1;
+  static char *gimprc_key = GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS_GIMPRC_KEY;
+  
+  if(value == -1)
+  {
+    if(gap_debug)
+    {
+      printf("get gimprc value for %s\n"
+        , gimprc_key
+        );
+    }
+    value = gap_base_get_gimprc_int_value (gimprc_key
+        , GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS /* default_value*/
+        , 1                                 /* min_value */
+        , 2000                              /* max_value */
+        );
+  }
+  if(gap_debug)
+  {
+    printf("value for %s is:%d\n"
+        , gimprc_key
+        ,(int)value
+        );
+  }
+  return (value);
+}  /* end p_get_ffetch_max_img_cache_elements */
+
+/* ----------------------------------------------------
+ * p_get_ffetch_max_gvc_cache_elements
+ * ----------------------------------------------------
+ */
+static gint32
+p_get_ffetch_max_gvc_cache_elements()
+{
+  static gint32 value = -1;
+  static char *gimprc_key = GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS_GIMPRC_KEY;
+  
+  if(value == -1)
+  {
+    if(gap_debug)
+    {
+      printf("get gimprc value for %s\n"
+        , gimprc_key
+        );
+    }
+    value = gap_base_get_gimprc_int_value (gimprc_key
+        , GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS /* default_value*/
+        , 1                                 /* min_value */
+        , 80                              /* max_value */
+        );
+  }
+  if(gap_debug)
+  {
+    printf("value for %s is:%d\n"
+        , gimprc_key
+        ,(int)value
+        );
+  }
+  return (value);
+}  /* end p_get_ffetch_max_gvc_cache_elements */
+
+/* ----------------------------------------------------
+ * p_get_ffetch_gva_frames_to_keep_cached
+ * ----------------------------------------------------
+ */
+static gint32
+p_get_ffetch_gva_frames_to_keep_cached()
+{
+  static gint32 value = -1;
+  static char *gimprc_key = GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED_GIMPRC_KEY;
+  
+  if(value == -1)
+  {
+    if(gap_debug)
+    {
+      printf("get gimprc value for %s\n"
+        , gimprc_key
+        );
+    }
+    value = gap_base_get_gimprc_int_value (gimprc_key
+        , GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED /* default_value*/
+        , 1                                 /* min_value */
+        , 1000                              /* max_value */
+        );
+  }
+  if(gap_debug)
+  {
+    printf("value for %s is:%d\n"
+        , gimprc_key
+        ,(int)value
+        );
+  }
+  return (value);
+}  /* end p_get_ffetch_gva_frames_to_keep_cached */
 
 /* ----------------------------------------------------
  * p_load_cache_image
@@ -264,7 +375,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
     gchar  *parasite_filename_ptr;
     gint32  len_filename0;           /* filename length including the terminating 0 */
   
-    if (l_number_of_cached_images > GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS)
+    if (l_number_of_cached_images > p_get_ffetch_max_img_cache_elements())
     {
       /* the image cache already has more elements than desired,
        * drop the 1st cached image
@@ -273,7 +384,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
       {
         printf("FrameFetcher: DELETE because cache is full: (image_id:%d)  name:%s number_of_cached_images:%d pid:%d\n"
               , (int)l_first_chached_image_id
-              , gimp_image_get_filename(images[l_idi])
+              , gimp_image_get_filename(l_first_chached_image_id)
               , (int)l_number_of_cached_images
               , (int)gap_base_getpid()
               );
@@ -473,7 +584,7 @@ p_ffetch_get_open_gvahand(const char* filename, gint32 seltrack, const char *pre
     /* init the global_image cache */
     global_gvcache = g_malloc0(sizeof(GapFFetchGvahandCache));
     global_gvcache->gvc_list = NULL;
-    global_gvcache->max_vid_cache = GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS;
+    global_gvcache->max_vid_cache = p_get_ffetch_max_gvc_cache_elements();
   }
 
   gvcache = global_gvcache;
@@ -510,7 +621,7 @@ p_ffetch_get_open_gvahand(const char* filename, gint32 seltrack, const char *pre
   
   if(l_gvahand)
   {
-    GVA_set_fcache_size(l_gvahand, GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED);
+    GVA_set_fcache_size(l_gvahand, p_get_ffetch_gva_frames_to_keep_cached());
 
     gvc_new = g_malloc0(sizeof(GapFFetchGvahandCacheElem));
     gvc_new->filename = g_strdup(filename);
@@ -676,6 +787,8 @@ gap_frame_fetch_dup_image(gint32 ffetch_user_id
   if (stackpos < 0)
   {
     dup_image_id = gimp_image_duplicate(image_id);
+
+    gap_frame_fetch_remove_parasite(dup_image_id);
     resulting_layer = gap_image_merge_visible_layers(dup_image_id, GIMP_CLIP_TO_IMAGE);
   }
   else
@@ -779,7 +892,7 @@ gap_frame_fetch_dup_video(gint32 ffetch_user_id
     /* if no success, we try explicite read that frame  */
     if(gvahand->current_seek_nr != framenr)
     {
-      if(((gvahand->current_seek_nr + GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED) > framenr)
+      if(((gvahand->current_seek_nr + p_get_ffetch_gva_frames_to_keep_cached()) > framenr)
       &&  (gvahand->current_seek_nr < framenr ) )
       {
         /* near forward seek is performed by dummyreads to fill up the 
@@ -949,3 +1062,30 @@ gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
   }
 
 }  /* end gap_frame_fetch_unregister_user */
+
+
+/* -------------------------------
+ * gap_frame_fetch_remove_parasite
+ * -------------------------------
+ * removes the image parasite that marks the image as member
+ * of the gap frame fetcher cache.
+ */
+void
+gap_frame_fetch_remove_parasite(gint32 image_id)
+{
+  GimpParasite  *l_parasite;
+ 
+  l_parasite = gimp_image_parasite_find(image_id, GAP_IMAGE_CACHE_PARASITE);
+
+  if(l_parasite)
+  {
+    gimp_image_parasite_detach(image_id, GAP_IMAGE_CACHE_PARASITE);
+    if(gap_debug)
+    {
+      printf("FrameFetcher: removed parasite from (image_id:%d) pid:%d\n"
+        , (int)image_id, (int)gap_base_getpid());
+    }
+    gimp_parasite_free(l_parasite);
+  }
+
+}  /* end gap_frame_fetch_remove_parasite */

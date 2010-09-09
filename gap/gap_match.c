@@ -228,7 +228,7 @@ gap_match_number(gint32 layer_idx, const char *pattern)
          {
             /* now we are one character past a number */
             l_digit_buff[l_idx] = '\0';
-            l_num = atol(l_digit_buff);  /* scann the number */
+            l_num = atol(l_digit_buff);  /* scan the number */
 
             if(l_num == layer_idx)
             {

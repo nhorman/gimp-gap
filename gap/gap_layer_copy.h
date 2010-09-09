@@ -93,4 +93,6 @@ gint32  gap_layer_create_layer_from_alpha(gint32 src_layer_id, gint32 image_id
                                , const char *name_prefix, const char *name_suffix
                                , gboolean applyExistingLayermask, gboolean useTransferAlpha);
 
+gint32  gap_layer_find_by_name(gint32 image_id, const char *name);
+
 #endif

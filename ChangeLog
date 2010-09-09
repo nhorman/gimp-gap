@@ -1,3 +1,301 @@
+2010-09-09 Wolfgang Hofer <hof@gimp.org>
+
+- applied patch #625667 that fixed various spelling mistakes.
+  (most of them occured in comments, some in message texts)
+
+
+ * gap/gap_decode_mplayer.c
+ * gap/gap_fmac_base.c  
+ * gap/gap_lib.c
+ * gap/gap_main.c  
+ * gap/gap_match.c  
+ * gap/gap_mod_layer.c  
+ * gap/gap_morph_dialog.c  
+ * gap/gap_morph_main.c  
+ * gap/gap_story_att_trans_dlg.c  
+ * gap/gap_story_dialog.c  
+ * gap/gap_story_file.c  
+ * gap/gap_story_properties.c  
+ * gap/gap_story_render_audio.c  
+ * gap/gap_story_section_properties.c  
+ * gap/gap_story_vthumb.c  
+ * gap/gap_thumbnail.c  
+ * gap/gap_vex_dialog.c  
+ * gap/gap_video_index_creator.c  
+ * gap/TESTPROT_iter_ALT  
+ * libgapbase/gap_val_file.c  
+ * libgapvidapi/gap_vid_api_mpeg3.c  
+ * libgapvidapi/gap_vid_api_mpeg3toc.c  
+
+
+--- 2010-08-23
+
+- added wrapper plug-in to run gimp_color_balance tool as animated filter.
+
+   
+ * gap/Makefile.am
+ * gap/gap_wr_color_balance.c  # NEW file
+ * po/POTFILES.in
+
+--- 2010-08-15 (Morph features)
+   
+- Added features to the Morph plug-in to support
+  more convenient creation of workpoints and lead to better
+  results (especially for morping tweens of a video)
+
+- Created new plug-in "Morph Workpoint Generator" 
+  (in the menupath Video/Morph/)
+  Generates workpointfiles for each frame in the specified frame range.
+
+- added new feature to morph plug-in "Create Tween Frames"
+   that creates a directory with (renumbered) copies of the processed frames
+   and additionally generated tween frames that are rendered via fade or morphing.
+   individual workpointfiles per processed frame are located via
+   name convention (extension .morphpoints) and used for morphing when they exist.
+   (such files can be created with the help of the plug-in "Morph Workpoint Generator").
+   
+ 
+   example1:
+     generate 2 tween frames between each handled frame.
+     master_tween_steps = 2, tween_subdir = "with_tweens"
+    
+    frame_000001.xcf     == copied to     ==>  with_tweens/frame_000001.xcf
+                         render via morph ==>  with_tweens/frame_000002.xcf
+                         render via morph ==>  with_tweens/frame_000003.xcf
+
+    frame_000002.xcf     == copied to     ==>  with_tweens/frame_000004.xcf
+                         render via morph ==>  with_tweens/frame_000005.xcf
+                         render via morph ==>  with_tweens/frame_000006.xcf
+
+
+    frame_000003.xcf     == copied to     ==>  with_tweens/frame_000007.xcf
+
+   
+   example2:
+     generate 1 tween frame between each handled frame
+     master_tween_steps = 1, tween_subdir = "with_tweens"
+     in this example frame 2 is missing, therefore 3 tweens
+     are generates between frame 1 and 3.
+    
+    frame_000001.xcf     == copied to     ==>  with_tweens/frame_000001.xcf
+                         render via morph ==>  with_tweens/frame_000002.xcf
+                         render via morph ==>  with_tweens/frame_000003.xcf
+                         render via morph ==>  with_tweens/frame_000004.xcf
+
+    frame_000003.xcf     == copied to     ==>  with_tweens/frame_000005.xcf
+                         render via morph ==>  with_tweens/frame_000006.xcf
+   
+    frame_000004.xcf     == copied to     ==>  with_tweens/frame_000007.xcf
+
+- Morph dialog provides new features
+  for edge detection based automatic workpoint generation.
+  This feature is available when CTRL modifier key is hold down while
+  the Shape button is pressed.
+  
+
+
+- morph dialog now supports a special way to set morph workpoints
+  that automatically tries to find the corresponding point in the other image
+  within a specified locate radius.
+  This feature is useful when both images contain similar data.
+
+  This new feature is available via CTRL modifier key when setting morph points
+  (in the modes set and move)
+
+
+ * gap/Makefile.am
+ * gap/gap_colordiff.c [.h]          # NEW files
+ * gap/gap_locate.c [.h]             # NEW files
+ * gap/gap_edge_detection.c [.h]     # NEW files
+ * gap/gap_morph_shape.c [.h]        # NEW files
+ 
+ * gap/gap_morph_dialog.c [.h]
+ * gap/gap_morph_main.c [.h]
+ * gap/gap_libgimpgap.h
+ * gap/gap_morph_tween_dialog.c [.h]
+ 
+ * docs/reference/txt/INTRODUCTION.txt
+ 
+
+-- 2010-07-30 (started update to ffmpeg release ffmpeg 0.6)
+  
+  status: partly works, but problems to read some videoformats
+      - mjpeg (my Olympus SP-560UZ digicam uses this format)
+      - RealMedia
+
+  switch to ffmpeg-0.6 shall not be done until fixing this,
+  because update to new release shall not break 
+  compatibility with videoformats that already worked fine with the 
+  ffmpeg-0.5 based gimp-gap video api.
+
+- fixed gap_gve_raw_RGB_drawable_encode  
+  that method did convert to BGR colormodel (and not to RGB as it should)
+  but this was compensated by another bug when using ffmpeg conversion via deprecated
+  img_convert.
+
+- ffmpeg API no longer supports the procedure img_convert.
+  gimp-gap now uses sws_scale (that was already part of ffmpeg-0.5) and provides
+  the colormodel conversions required to feed the codecs of libavcodec.
+
+- replaced calls to deprecated video/audio decoder procedures
+       avcodec_decode_video  ==> avcodec_decode_video2
+       avcodec_decode_audio2 ==> avcodec_decode_audio3
+
+- ffmpeg-0.6 configure now requires --enable-nonfree when built with
+  non free libs (gimp-gap configure now adds this option when
+  building with the non free libfaac)
+  
+- support to compile gimp-gap with ffmpeg-0.6,
+  but keep older ffmpeg-0.5 release as default 
+
+- build gimp-gap with latest versions of xvid and x264 libraries is currently not possible.
+  note that the gap configure script checks the same way as the included ffmpeg 0.5 version
+  which does not accept new versions of those libraries.
+  therefore a change in the gap configure.in is not sufficient !
+
+  ==> for support of newer xvid and x264 libs porting gimp-gap to newer ffmpeg
+      is also required
+
+
+
+  * configure.in
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * extern_libs/README_extern_libs
+  * extern_libs/ffmpeg.tar.gz
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+  * libgapvidutil/gap_gve_raw.c  
+
+
+--- 2010-05-xx
+
+- workaround for gtk_button_new_from_stock (); problem.
+
+  Short description of the problem:
+      buttons created with gtk_button_new_from_stock sometimes do not show the icon
+      (at least in case the theme is configured as "Show symbols in menus" = false")
+      
+      Some of the gimp-gap buttons do not have any text
+      (For example the play, pause and reverse buttons in the playback dialog)
+      and appear as very small completely empty buttons
+      that makes it very hard to use with such a theme configuration.
+  
+
+      Here are some examples of stock_ids where the button does NOT show the image:
+        GAP_STOCK_PLAY
+        GAP_STOCK_PAUSE
+        GAP_STOCK_PLAY_REVERSE
+
+        GIMP_STOCK_RESET
+
+        GTK_STOCK_SAVE
+        GTK_STOCK_CLOSE
+
+      Note that other plug-ins (map object, lighting, gfig) that are using stock images
+      in similar way as gimp-gap have the same problem.
+  
+  The workaround uses the new procedure gap_stock_button_new
+  instead of gtk_button_new_from_stock to create buttons with stock images
+  and is used only where it makes no sense to disable the images via themes configuration.
+
+- support for configuration of the gap frame fetcher cache by new gimprc parameters:
+
+  (gap_ffetch_max_img_cache_elements "18")
+  (gap_ffetch_max_gvc_cache_elements "6")
+  (gap_ffetch_gva_frames_to_keep_cached "36")
+  
+  the gap frame fetcher cache settings are relevant for storyboard
+  and filtermacro processing.
+  
+
+
+- fixed sporadic crash in the storyboard render processor.
+  work copy duplicates of images that are cached as gimp image in the gap frame fetcher cache
+  now do detach the image parasite "GAP-IMAGE-CACHE-PARASITE" that marks the image as member of the cache.
+  In case rendering of one frame requires more than one image fetch operations this parasite
+  did sometimes cause an unexpected delete of the duplicate during fetch
+  when the maximum number of cached images is already reached.
+
+  * gap/gap_player_dialog.c  
+  * gap/gap_stock.c [.h]
+  * gap/gap_frame_fetcher.c [.h]
+  * gap/gap_story_render_processor.c
+  * docs/refernce/txt/gap_gimprc_params.txt
+  
+
+----- 2010-04-xx ----
+
+- modify frames plug-in now keeps dialog window open to show progress while processing frames
+  and provides button to cancel processing.
+  The old behavior based on gimp_progress was not sufficient, especially in case
+  when a filter is applied and the called filter also uses gimp_progresss
+  for local progress. This resulted in confusing concurrent progress updates...
+
+- New colormask plug-in added
+  The colormask filter can apply transparency for pixels matching the colormask image.
+  intended for processing frames where moving objects can be isolated
+  from the non-moving constant background by applying the constant background
+  as colormask on all frames.
+  
+  NOTICE:
+  The current implementation is NOT YET READY for use.
+  There are more implementation variants, most of them are experimental
+  some of them will be removed after testing.
+  The dialog window currently hides the options for those experimental variants
+  (until implentation is finished, those options are only visible for USERNAME=hof).
+  
+  
+
+- New storyboard processing feature mask anchor mode CLIP_COLOR
+  applies the selected mask as colormask
+
+- Storyboard support rotate transitions
+
+- New storyboard processing feature to add external transparency 
+  for clip type movie. This is done via format string that refers to
+  the external frames (typical gray image frames)
+  the format string has placeholder %s (replaced by basename of the video)
+  and %06d (replaced by the currently processed frame number)
+  
+  The format string can be specified in the storyboard master properties dialog
+  (similar to the area replacement for logo processing)
+  
+  * docs/reference/txt/plug-in-gap-move-path.txt
+  * libgapbase/gap_val_file.c [.h]
+  * gap/gap_mod_*         
+
+  * NEWS
+  * docs/reference/txt/INTRODUCTION.txt
+  * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+  * docs/reference/txt/plug-in-colormask.txt    # NEW FILE
+
+  * gap/gap_colormask_main.c          # NEW FILE
+  * gap/gap_colormask_exec.c [.h]     # NEW FILES
+  * gap/gap_colormask_file.c [.h]     # NEW FILES
+  * gap/gap_colormask_dialog.c [.h]   # NEW FILES
+  * gap/Makefile.am
+  * gap/gap_libgimpgap.h
+  * gap/gap_layer_copy.c [.h]
+
+  * gap/gap_morph_dialog.c
+
+
+  * gap/gap_lib.c
+  * gap/gap_lib.h
+  * gap/gap_story_att_trans_dlg.c
+  * gap/gap_story_dialog.c
+  * gap/gap_story_file.c
+  * gap/gap_story_file.h
+  * gap/gap_story_main.h
+  * gap/gap_story_properties.c
+  * gap/gap_story_render_lossless.c
+  * gap/gap_story_render_processor.c
+  * gap/gap_story_render_types.h
+  * gap/gap_story_syntax.c
+  * gap/gap_story_syntax.h
+
+
 2010-07-04 Wolfgang Hofer <hof@gimp.org>
 
 - added gitignore files (applied patch provided by Carlo Baldassi #623050)

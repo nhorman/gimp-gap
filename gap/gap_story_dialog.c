@@ -23,7 +23,7 @@
  * version 2.2.1;   2006/02/07  hof: support drag&drop  destination for image/videofilenames
  * version 2.1.0a;  2005/01/22  hof: copy/cut/paste handling via keys (ctrl-c, ctrl-x, ctrl-v)
  * version 2.1.0a;  2004/12/05  hof: added global layout properties dialog
- * version 1.3.27a; 2004/03/15  hof: videothumbnails are kept in memory
+ * version 1.3.27a; 2004/03/15  hof: video thumbnails are kept in memory
  *                                   for the startframes in all MOVIE clips
  *                                   (common list for both storyboard and cliplist)
  *                                   Need define GAP_ENABLE_VIDEOAPI_SUPPORT
@@ -523,17 +523,17 @@ p_get_begin_and_end_for_single_clip_playback(gint32 *begin_frame, gint32 *end_fr
 {
   *begin_frame = stb_elem->from_frame;
   *end_frame = stb_elem->to_frame;
- 
+
   if(stb_elem->record_type == GAP_STBREC_VID_IMAGE)
   {
     char *l_basename;
     long l_number;
-    
+
     l_basename = gap_lib_alloc_basename(stb_elem->orig_filename, &l_number);
     g_free(l_basename);
     *begin_frame = l_number;
     *end_frame = l_number;
-    
+
   }
 }    /* end p_get_begin_and_end_for_single_clip_playback */
 
@@ -1601,7 +1601,7 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
  *   in case a valid (positive) vtrack number is specified.
  *   (this allows quick direct frame fetch operations without
  *    the use of the storyboard render processor engine,
- *    VID_PLAY_SECTION elemnts are rendered as black frames in this
+ *    VID_PLAY_SECTION elements are rendered as black frames in this
  *    playback mode)
  *
  *   a negative vtrack number (-1) triggers composite video playback
@@ -1679,7 +1679,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
     /* make a copy of the storyboard list
      * for the internal use in the player
      * (note that section clip playback is only supported
-     *  if the main section is active and composite video playback is selectd)
+     *  if the main section is active and composite video playback is selected)
      */
     if(play_all)
     {
@@ -1700,7 +1700,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
         if(stb->active_section == gap_story_find_main_section(stb))
         {
            /* for composite video playback of "only selected elements" in
-            * the main section, we have to copy implictely
+            * the main section, we have to copy implicitly
             * all referenced sub sections.
             * (but we simply add all available subsection)
             */
@@ -1948,7 +1948,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   {
     gtk_main_iteration ();
   }
-   
+
   dummy_layer_id = gap_image_get_any_layer(sgpp->image_id);
   /* generic call of GAP master video encoder plugin */
   l_params = gimp_run_procedure (GAP_PLUG_IN_MASTER_ENCODER,
@@ -2493,7 +2493,7 @@ p_cancel_button_cb (GtkWidget *w,
     }
     else
     {
-      printf("VIDEO-CANCEL occured implicite\n");
+      printf("VIDEO-CANCEL occurred implicitly\n");
     }
   }
 
@@ -2512,7 +2512,7 @@ p_cancel_button_cb (GtkWidget *w,
     sgpp->vthumb_prefetch_in_progress = GAP_VTHUMB_PREFETCH_NOT_ACTIVE;
     if(sgpp->menu_item_win_vthumbs != NULL)
     {
-      /* implicite switch off auto_vthumb  (by setting the relevant menu item FALSE)
+      /* implicitly switch off auto_vthumb  (by setting the relevant menu item FALSE)
        */
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(sgpp->menu_item_win_vthumbs), FALSE);
     }
@@ -3517,7 +3517,7 @@ p_single_clip_playback(GapStbFrameWidget *fw)
         {
           gint32 stb_in_track;
 
-          /* select the secetion clip
+          /* select the section clip
            * (because section playback is only possible in composite
            * mode (using the storyboard render processor)
            * an composite playback operates on mapping for selected clips)
@@ -3548,17 +3548,17 @@ p_single_clip_playback(GapStbFrameWidget *fw)
         {
           gint32 l_begin_frame;
           gint32 l_end_frame;
-          
+
           p_get_begin_and_end_for_single_clip_playback(&l_begin_frame, &l_end_frame, fw->stb_elem_refptr);
           imagename = gap_story_get_filename_from_elem(fw->stb_elem_refptr);
- 
+
           if(gap_debug)
           {
             printf("CALLING Player from single clip imagename:%s\n  from:%d (%d) to:%d (%d) type:%d\n  orig_filename:%s\n\n"
                 , imagename
                 ,(int)fw->stb_elem_refptr->from_frame
                 ,(int)l_begin_frame
-                ,(int)fw->stb_elem_refptr->to_frame 
+                ,(int)fw->stb_elem_refptr->to_frame
                 ,(int)l_end_frame
                 ,(int)fw->stb_elem_refptr->record_type
                 , fw->stb_elem_refptr->orig_filename
@@ -3755,7 +3755,7 @@ gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw)
  * ---------------------------------
  * set specified section as new active section,
  * refresh the section combo box.
- * (this causes an implicite refresh in case
+ * (this causes an implicit refresh in case
  * where the active_section has changed)
  */
 void
@@ -5933,7 +5933,7 @@ p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           );
 
    sgpp->menu_item_win_vthumbs =
-   p_make_check_item_with_label(file_menu, _("Videothumbnails")
+   p_make_check_item_with_label(file_menu, _("Video thumbnails")
                           , p_menu_win_vthumbs_toggle_cb
                           , sgpp
                           , sgpp->auto_vthumb
@@ -6627,12 +6627,12 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
           if(sgpp->progress_bar_master)
           {
             gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar_master),
-                                     _("videothumbnail cancelled"));
+                                     _("video thumbnail cancelled"));
             gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar_master), 0);
           }
           if(gap_debug)
           {
-            printf("p_prefetch_vthumbs : (1) videothumbnail cancelled: cancel_video_api: %d auto_vthumb_refresh_canceled:%d auto_vthumb:%d\n"
+            printf("p_prefetch_vthumbs : (1) video thumbnail cancelled: cancel_video_api: %d auto_vthumb_refresh_canceled:%d auto_vthumb:%d\n"
                ,(int)sgpp->cancel_video_api
                ,(int)sgpp->auto_vthumb_refresh_canceled
                ,(int)sgpp->auto_vthumb
@@ -6653,7 +6653,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
         if(sgpp->progress_bar_master)
         {
 
-           msg = g_strdup_printf(_("Fetching videothumbnail for clip: %d (out of %d)")
+           msg = g_strdup_printf(_("Fetching video thumbnail for clip: %d (out of %d)")
                                 ,(int)l_count
                                 ,(int)l_total
                                 );
@@ -6778,7 +6778,7 @@ p_optimized_prefetch_vthumbs (GapStbMainGlobalParams *sgpp)
            *    note that prefetch will be very quick for all clips where vthumb is already present
            *    from the cancelled previous prefetch cycle)
            *    (currently this attempt leads to crashes that i could not locate yet)
-           * - the other (currently implemented) option is to cancel prefetch and implicite turn off auto_vthumb mode
+           * - the other (currently implemented) option is to cancel prefetch and implicitly turn off auto_vthumb mode
            */
           option_restart = TRUE;
 
@@ -6799,7 +6799,7 @@ p_optimized_prefetch_vthumbs (GapStbMainGlobalParams *sgpp)
 //               if(sgpp->progress_bar_master)
 //               {
 //                 gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar_master),
-//                                          _("videothumbnail cancelled"));
+//                                          _("video thumbnail cancelled"));
 //                 gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar_master), 0);
 //               }
 //               p_cancel_button_cb(NULL, sgpp);
@@ -7450,7 +7450,7 @@ p_activate_section_by_combo_index(gint target_index
        {
          /* the callback p_vtrack_spinbutton_cb is normally triggered automatically
           * if the current vtrack number is set to the another number.
-          * this explicite call is for the case where the track number
+          * this explicit call is for the case where the track number
           * did not change. (but same track number in another section requires
           * always a refresh, that is triggered here)
           */
@@ -7677,7 +7677,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
                   G_CALLBACK (p_tabw_section_properties_cut_cb),
                   tabw);
   gimp_help_set_help_data (button,
-                           _("Show Section properites window"),
+                           _("Show Section properties window"),
                            NULL);
   gtk_widget_show (button);
 
@@ -8428,7 +8428,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
     gtk_box_pack_start (GTK_BOX (hbox_stb_frame), button, FALSE, FALSE, 0);
     gtk_widget_show (button);
     gimp_help_set_help_data (button
-                   , _("Cancel video access if in progress and disable automatic videothumbnails")
+                   , _("Cancel video access if in progress and disable automatic video thumbnails")
                    , NULL);
     g_signal_connect (G_OBJECT (button), "clicked",
                     G_CALLBACK (p_cancel_button_cb),
@@ -8680,7 +8680,7 @@ p_parse_aspect_width_and_height(const char *buff, gint32 *aspect_width, gint32 *
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
-  GapArrArg  argv[12];
+  GapArrArg  argv[13];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
   static char *radio_aspect_args[4]  = { N_("none"), "4:3", "16:9", "3:2"};
   gint   l_ii;
@@ -8701,6 +8701,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gchar    buf_preferred_decoder[60];
   gchar    buf_aspect_string[40];
   gchar   *label_txt;
+  gchar    l_master_insert_alpha_format[GAP_STORY_MAX_STORYFILENAME_LEN];
   gchar    l_master_insert_area_format[GAP_STORY_MAX_STORYFILENAME_LEN];
 
   gboolean l_rc;
@@ -8929,6 +8930,30 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   argv[l_ii].has_default = TRUE;
   argv[l_ii].flt_default = argv[l_ii].flt_ret;
 
+
+
+
+  l_ii++;
+  l_master_insert_alpha_format[0] = '\0';
+  if (stb_dst->master_insert_alpha_format)
+  {
+    g_snprintf(&l_master_insert_alpha_format[0], sizeof(l_master_insert_alpha_format), "%s"
+            , stb_dst->master_insert_alpha_format
+            );
+  }
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
+  argv[l_ii].label_txt = _("Ext. Transparency Format:");
+  argv[l_ii].entry_width = 250;       /* pixel */
+  argv[l_ii].help_txt  = _("Format string to provide external tranparency in movie clips. "
+                           "(e.g automatic alpha channel insertation)"
+                           "this string shall contain \%s as placeholder for the basename of a videoclip and "
+                           "optional \%06d as placeholder for the framenumber.");
+  argv[l_ii].text_buf_len = sizeof(l_master_insert_alpha_format);
+  argv[l_ii].text_buf_ret = &l_master_insert_alpha_format[0];
+
+
+
+
   l_ii++;
   l_master_insert_area_format[0] = '\0';
   if (stb_dst->master_insert_area_format)
@@ -8945,7 +8970,6 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
                            "optional \%06d as placeholder for the framenumber.");
   argv[l_ii].text_buf_len = sizeof(l_master_insert_area_format);
   argv[l_ii].text_buf_ret = &l_master_insert_area_format[0];
-
 
 
   l_ii++;
@@ -9036,6 +9060,34 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
        }
        stb_dst->preferred_decoder = NULL;
      }
+
+
+     if (l_master_insert_alpha_format[0] != '\0')
+     {
+       if (stb_dst->master_insert_alpha_format)
+       {
+         if (strcmp(stb_dst->master_insert_alpha_format, &l_master_insert_alpha_format[0]) != 0)
+         {
+           stb_dst->unsaved_changes = TRUE;
+         }
+         g_free(stb_dst->master_insert_alpha_format);
+       }
+       else
+       {
+           stb_dst->unsaved_changes = TRUE;
+       }
+       stb_dst->master_insert_alpha_format = g_strdup(&l_master_insert_alpha_format[0]);
+     }
+     else
+     {
+       if (stb_dst->master_insert_alpha_format)
+       {
+         stb_dst->unsaved_changes = TRUE;
+         g_free(stb_dst->master_insert_alpha_format);
+         stb_dst->master_insert_alpha_format = NULL;
+       }
+     }
+
 
 
      if (l_master_insert_area_format[0] != '\0')
