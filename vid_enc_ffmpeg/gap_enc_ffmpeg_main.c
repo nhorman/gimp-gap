@@ -76,7 +76,6 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-//#include "imgconvert.h"
 #include "swscale.h"
 
 #include "gap-intl.h"
@@ -207,6 +206,9 @@ typedef struct t_ffmpeg_handle
 
  struct SwsContext *img_convert_ctx;
 
+ int countVideoFramesWritten;
+ uint8_t  *convert_buffer;
+ gint32    validEncodeFrameNr;
 } t_ffmpeg_handle;
 
 
@@ -235,6 +237,7 @@ static void run(const gchar *name
 static void   p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext);
 static int    p_av_metadata_set(AVMetadata **pm, const char *key, const char *value, int flags);
 static void   p_set_flag(gint32 value_bool32, int *flag_ptr, int maskbit);
+static void   p_set_partition_flag(gint32 value_bool32, gint32 *flag_ptr, gint32 maskbit);
 
 
 static void   p_gimp_get_data(const char *key, void *buffer, gint expected_size);
@@ -259,6 +262,7 @@ static void              p_close_audio_input_files(t_awk_array *awp);
 static void              p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp);
 
 static gint64            p_calculate_current_timecode(t_ffmpeg_handle *ffh);
+static gint64            p_calculate_timecode(t_ffmpeg_handle *ffh, int frameNr);
 static void              p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate);
 
 static void              p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp);
@@ -280,7 +284,7 @@ static t_ffmpeg_handle * p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                       , gint video_tracks
                                       );
 static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track);
-static uint8_t * p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track);
+static void   p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track);
 static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track, gboolean useYUV420P);
 static int    p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes, gint aud_track);
 static void   p_ffmpeg_close(t_ffmpeg_handle *ffh);
@@ -960,6 +964,29 @@ p_set_flag(gint32 value_bool32, int *flag_ptr, int maskbit)
   }
 }  /* end p_set_flag */
 
+
+/* --------------------------------
+ * p_set_partition_flag
+ * --------------------------------
+ */
+static void
+p_set_partition_flag(gint32 value_bool32, gint32 *flag_ptr, gint32 maskbit)
+{
+  if(value_bool32)
+  {
+    *flag_ptr |= maskbit;
+  }
+  else
+  {
+    gint32 clearmask;
+    
+    clearmask = ~maskbit;
+    *flag_ptr &= clearmask;
+  }
+
+}  /* end p_set_partition_flag */
+
+
 /* --------------------------------
  * p_gimp_get_data
  * --------------------------------
@@ -1284,6 +1311,12 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->codec_FLAG2_MBTREE               = 0; /* 0: FALSE */
   epp->codec_FLAG2_PSY                  = 0; /* 0: FALSE */
   epp->codec_FLAG2_SSIM                 = 0; /* 0: FALSE */
+
+  epp->partition_X264_PART_I4X4         = 0; /* 0: FALSE */
+  epp->partition_X264_PART_I8X8         = 0; /* 0: FALSE */
+  epp->partition_X264_PART_P8X8         = 0; /* 0: FALSE */
+  epp->partition_X264_PART_P4X4         = 0; /* 0: FALSE */
+  epp->partition_X264_PART_B8X8         = 0; /* 0: FALSE */
 
 }   /* end gap_enc_ffmpeg_main_init_preset_params */
 
@@ -1671,12 +1704,12 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
 }  /* end p_open_audio_input_files */
 
 /* -----------------------------
- * p_calculate_current_timecode
+ * p_calculate_timecode
  * -----------------------------
- * returns the timecode for the current frame
+ * returns the timecode for the specified frameNr
  */
 static gint64
-p_calculate_current_timecode(t_ffmpeg_handle *ffh)
+p_calculate_timecode(t_ffmpeg_handle *ffh, int frameNr)
 {
   gdouble dblTimecode;
   gint64  timecode64;
@@ -1686,10 +1719,21 @@ p_calculate_current_timecode(t_ffmpeg_handle *ffh)
    * seconds = (ffh->encode_frame_nr  / gpp->val.framerate);
    */
 
-  dblTimecode = ffh->encode_frame_nr * ffh->pts_stepsize_per_frame;
+  dblTimecode = frameNr * ffh->pts_stepsize_per_frame;
   timecode64 = dblTimecode;
 
   return (timecode64);
+}  /* end p_calculate_timecode */
+
+/* -----------------------------
+ * p_calculate_current_timecode
+ * -----------------------------
+ * returns the timecode for the current frame
+ */
+static gint64
+p_calculate_current_timecode(t_ffmpeg_handle *ffh)
+{
+  return (p_calculate_timecode(ffh, ffh->encode_frame_nr));
 }
 
 
@@ -1809,14 +1853,38 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
   /* initialize common things */
   ffh->frame_width                  = (int)gpp->val.vid_width;
   ffh->frame_height                 = (int)gpp->val.vid_height;
+  /* allocate buffer for image conversion large enough for for uncompressed RGBA32 colormodel */
+  ffh->convert_buffer = g_malloc(4 * ffh->frame_width * ffh->frame_height);
 
   ffh->audio_bit_rate               = epp->audio_bitrate * 1000;     /* 64000; */
   ffh->audio_codec_id               = CODEC_ID_NONE;
 
   ffh->file_overwrite               = 0;
+  ffh->countVideoFramesWritten      = 0;
 
 }  /* end p_ffmpeg_open_init */
 
+
+/* ------------------
+ * p_choose_pixel_fmt
+ * ------------------
+ */
+static void p_choose_pixel_fmt(AVStream *st, AVCodec *codec)
+{
+    if(codec && codec->pix_fmts){
+        const enum PixelFormat *p= codec->pix_fmts;
+        for(; *p!=-1; p++){
+            if(*p == st->codec->pix_fmt)
+                break;
+        }
+        if(*p == -1
+           && !(   st->codec->codec_id==CODEC_ID_MJPEG
+                && st->codec->strict_std_compliance <= FF_COMPLIANCE_INOFFICIAL
+                && (   st->codec->pix_fmt == PIX_FMT_YUV420P
+                    || st->codec->pix_fmt == PIX_FMT_YUV422P)))
+            st->codec->pix_fmt = codec->pix_fmts[0];
+    }
+}
 
 
 /* ------------------
@@ -1868,6 +1936,8 @@ p_init_video_codec(t_ffmpeg_handle *ffh
       );
   }
 
+  avcodec_get_context_defaults2(ffh->vst[ii].vid_stream->codec, AVMEDIA_TYPE_VIDEO);
+  avcodec_thread_init(ffh->vst[ii].vid_stream->codec, epp->thread_count);
 
   /* set Video codec context in the video stream array (vst) */
   ffh->vst[ii].vid_codec_context = ffh->vst[ii].vid_stream->codec;
@@ -1897,7 +1967,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   if (gap_debug)
   {
-    printf("VCODEC: id:%d (%s) time_base.num :%d  time_base.den:%d    float:%f\n"
+    printf("VCODEC internal DEFAULTS: id:%d (%s) time_base.num :%d  time_base.den:%d    float:%f\n"
            "            DEFAULT_FRAME_RATE_BASE: %d\n"
       , video_enc->codec_id
       , epp->vcodec_name
@@ -1912,13 +1982,25 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   }
 
 
-
   video_enc->pix_fmt = PIX_FMT_YUV420P;     /* PIX_FMT_YUV444P;  PIX_FMT_YUV420P;  PIX_FMT_BGR24;  PIX_FMT_RGB24; */
 
+  p_choose_pixel_fmt(ffh->vst[ii].vid_stream, ffh->vst[ii].vid_codec);
 
+
+  /* some formats want stream headers to be separate */
+  if(ffh->output_context->oformat->flags & AVFMT_GLOBALHEADER)
+  {
+    video_enc->flags |= CODEC_FLAG_GLOBAL_HEADER;
+  }
   if(!strcmp(epp->format_name, "mp4")
   || !strcmp(epp->format_name, "mov")
   || !strcmp(epp->format_name, "3gp"))
+  {
+    video_enc->flags |= CODEC_FLAG_GLOBAL_HEADER;
+  }
+
+  /* some formats want stream headers to be separate */
+  if(ffh->output_context->oformat->flags & AVFMT_GLOBALHEADER)
   {
     video_enc->flags |= CODEC_FLAG_GLOBAL_HEADER;
   }
@@ -2107,6 +2189,12 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->max_qdiff = epp->qdiff;
   video_enc->qblur     = (float)epp->qblur;
   video_enc->qcompress = (float)epp->qcomp;
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+  if (epp->rc_eq[0] != '\0')
+  {
+    video_enc->rc_eq     = &epp->rc_eq[0];
+  }
+#else
   if (epp->rc_eq[0] != '\0')
   {
     video_enc->rc_eq     = &epp->rc_eq[0];
@@ -2116,6 +2204,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
     /* use default rate control equation */
     video_enc->rc_eq     = "tex^qComp";
   }
+#endif
 
   video_enc->rc_override_count      =0;
   video_enc->inter_threshold        = epp->inter_threshold;
@@ -2202,6 +2291,12 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->deblockalpha             = epp->deblockalpha;
   video_enc->deblockbeta              = epp->deblockbeta;
   video_enc->partitions               = epp->partitions;
+  p_set_partition_flag(epp->partition_X264_PART_I4X4,        &video_enc->partitions, X264_PART_I4X4);
+  p_set_partition_flag(epp->partition_X264_PART_I8X8,        &video_enc->partitions, X264_PART_I8X8);
+  p_set_partition_flag(epp->partition_X264_PART_P8X8,        &video_enc->partitions, X264_PART_P8X8);
+  p_set_partition_flag(epp->partition_X264_PART_P4X4,        &video_enc->partitions, X264_PART_P4X4);
+  p_set_partition_flag(epp->partition_X264_PART_B8X8,        &video_enc->partitions, X264_PART_B8X8);
+  
   video_enc->directpred               = epp->directpred;
   video_enc->scenechange_factor       = epp->scenechange_factor;
   video_enc->mv0_threshold            = epp->mv0_threshold;
@@ -2343,6 +2438,21 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   /* dont know why */
   /* *(ffh->vst[ii].vid_stream->codec) = *video_enc; */    /* XXX(#) copy codec context */
 
+  if (gap_debug)
+  {
+    printf("VCODEC initialized: id:%d (%s) time_base.num :%d  time_base.den:%d    float:%f\n"
+           "            DEFAULT_FRAME_RATE_BASE: %d\n"
+      , video_enc->codec_id
+      , epp->vcodec_name
+      , video_enc->time_base.num
+      , video_enc->time_base.den
+      , (float)gpp->val.framerate
+      , (int)DEFAULT_FRAME_RATE_BASE
+      );
+
+    /* dump all parameters (standard values reprsenting ffmpeg internal defaults) to stdout */
+    p_debug_print_dump_AVCodecContext(video_enc);
+  }
 
   return (TRUE); /* OK */
 
@@ -2562,6 +2672,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
 
   ffh->output_context->nb_streams = 0;  /* number of streams */
+  ffh->output_context->timestamp = 0;
 
   /* ------------ video codec -------------- */
 
@@ -2804,6 +2915,14 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
         ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
         ffh->vst[ii].big_picture_codec->key_frame = 1;
 
+        /* some codecs just pass through pts information obtained from
+         * the AVFrame struct (big_picture_codec)
+         * therefore init the pts code in this structure.
+         * (a valid pts is essential to get encoded frame results in the correct order)
+         */
+        //ffh->vst[ii].big_picture_codec->pts = p_calculate_current_timecode(ffh);
+        ffh->vst[ii].big_picture_codec->pts = ffh->encode_frame_nr -1;
+
         encoded_dummy_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
                                ,ffh->vst[ii].video_dummy_buffer, ffh->vst[ii].video_dummy_buffer_size
                                ,ffh->vst[ii].big_picture_codec);
@@ -2857,6 +2976,8 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
       pkt.data = ffh->vst[ii].video_buffer;
       pkt.size = encoded_size;
       ret = av_write_frame(ffh->output_context, &pkt);
+
+      ffh->countVideoFramesWritten++;
     }
 
     if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
@@ -2875,14 +2996,12 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
  *
  * conversion is done based on ffmpegs img_convert procedure.
  */
-static uint8_t *
+static void
 p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb_buffer, gint vid_track)
 {
   AVFrame   *big_picture_rgb;
   AVPicture *picture_rgb;
-  uint8_t   *l_convert_buffer;
   int        ii;
-  //int        l_rc;
 
   ii = ffh->vst[vid_track].video_stream_index;
 
@@ -2890,9 +3009,6 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
   big_picture_rgb = avcodec_alloc_frame();
   picture_rgb = (AVPicture *)big_picture_rgb;
 
-
-  /* allocate buffer for image conversion large enough for for uncompressed RGBA32 colormodel */
-  l_convert_buffer = g_malloc(4 * ffh->frame_width * ffh->frame_height);
 
   if(gap_debug)
   {
@@ -2906,7 +3022,7 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
   /* init destination picture structure (the codec context tells us what pix_fmt is needed)
    */
    avpicture_fill(picture_codec
-                  ,l_convert_buffer
+                  ,ffh->convert_buffer
                   ,ffh->vst[ii].vid_codec_context->pix_fmt          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                   ,ffh->frame_width
                   ,ffh->frame_height
@@ -2925,7 +3041,7 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
 
   if(gap_debug)
   {
-    printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n"
+    printf("before colormodel convert  pix_fmt: %d  (YUV420:%d)\n"
         , (int)ffh->vst[ii].vid_codec_context->pix_fmt
         , (int)PIX_FMT_YUV420P);
   }
@@ -2979,7 +3095,6 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
     printf("DONE p_convert_colormodel\n");
   }
 
-  return (l_convert_buffer);
 }  /* end p_convert_colormodel */
 
 /* --------------------
@@ -2987,19 +3102,19 @@ p_convert_colormodel(t_ffmpeg_handle *ffh, AVPicture *picture_codec, guchar *rgb
  * --------------------
  * encode one videoframe using the selected codec and write
  * the encoded frame to the mediafile as packet.
+ * Passing NULL as drawable is used to flush one frame from the codecs internal buffer
+ * (typically required after the last frame has been already feed to the codec)
  */
 static int
 p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean force_keyframe, gint vid_track, gboolean useYUV420P)
 {
-  AVPicture *picture_codec;
+  AVFrame *picture_codec;
   int encoded_size;
   int ret;
-  uint8_t  *l_convert_buffer;
   int ii;
 
   ii = ffh->vst[vid_track].video_stream_index;
   ret = 0;
-  l_convert_buffer = NULL;
 
   if(gap_debug)
   {
@@ -3007,86 +3122,102 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
 
      codec = ffh->vst[ii].vid_codec_context->codec;
 
-     printf("p_ffmpeg_write_frame: START codec: %d track:%d frame_nr:%d\n"
+     printf("\n-------------------------\n");
+     printf("p_ffmpeg_write_frame: START codec: %d track:%d countVideoFramesWritten:%d frame_nr:%d (validFrameNr:%d)\n"
            , (int)codec
            , (int)vid_track
+           , (int)ffh->countVideoFramesWritten
            , (int)ffh->encode_frame_nr
+           , (int)ffh->validEncodeFrameNr
            );
-     printf("\n-------------------------\n");
      printf("name: %s\n", codec->name);
-     printf("type: %d\n", codec->type);
-     printf("id: %d\n",   codec->id);
-     printf("priv_data_size: %d\n",   codec->priv_data_size);
-     printf("capabilities: %d\n",   codec->capabilities);
-     printf("init fptr: %d\n",   (int)codec->init);
-     printf("encode fptr: %d\n",   (int)codec->encode);
-     printf("close fptr: %d\n",   (int)codec->close);
-     printf("decode fptr: %d\n",   (int)codec->decode);
-
+     if(gap_debug)
+     {
+       printf("type: %d\n", codec->type);
+       printf("id: %d\n",   codec->id);
+       printf("priv_data_size: %d\n",   codec->priv_data_size);
+       printf("capabilities: %d\n",   codec->capabilities);
+       printf("init fptr: %d\n",   (int)codec->init);
+       printf("encode fptr: %d\n",   (int)codec->encode);
+       printf("close fptr: %d\n",   (int)codec->close);
+       printf("decode fptr: %d\n",   (int)codec->decode);
+    }
   }
 
   /* picture to feed the codec */
-  picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
+  picture_codec = ffh->vst[ii].big_picture_codec;
 
+  /* in case drawable is NULL
+   * we feed the previous handled picture (e.g the last of the input)
+   * again and again to the codec
+   * Note that this procedure typically is called with NULL  drawbale
+   * until all frames in its internal buffer are writen to the output video.
+   */
 
-  if ((useYUV420P == TRUE) && (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P))
+  if(drawable != NULL)
   {
-    if(gap_debug)
-    {
-      printf("USE PIX_FMT_YUV420P (no pix_fmt convert needed)\n");
-    }
+   if ((useYUV420P == TRUE) && (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P))
+   {
+     if(gap_debug)
+     {
+       printf("USE PIX_FMT_YUV420P (no pix_fmt convert needed)\n");
+     }
 
 
 
-    /* fill the yuv420_buffer with current frame image data */
-    gap_gve_raw_YUV420P_drawable_encode(drawable, ffh->vst[0].yuv420_buffer);
+     /* fill the yuv420_buffer with current frame image data 
+      * NOTE: gap_gve_raw_YUV420P_drawable_encode does not work on some machines
+      * and gives low quality results. (therefore the useYUV420P flag is FALSE per default)
+      */
+     gap_gve_raw_YUV420P_drawable_encode(drawable, ffh->vst[0].yuv420_buffer);
 
 
-    /* most of the codecs wants YUV420
+     /* most of the codecs wants YUV420
       * (we can use the picture in ffh->vst[ii].yuv420_buffer without pix_fmt conversion
       */
-    avpicture_fill(picture_codec
-                  ,ffh->vst[ii].yuv420_buffer
-                  ,PIX_FMT_YUV420P          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
-                  ,ffh->frame_width
-                  ,ffh->frame_height
-                  );
-  }
-  else
-  {
-    guchar     *rgb_buffer;
-    gint32      rgb_size;
+     avpicture_fill(picture_codec
+                   ,ffh->vst[ii].yuv420_buffer
+                   ,PIX_FMT_YUV420P          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
+                   ,ffh->frame_width
+                   ,ffh->frame_height
+                   );
+   }
+   else
+   {
+     guchar     *rgb_buffer;
+     gint32      rgb_size;
 
-    rgb_buffer = gap_gve_raw_RGB_drawable_encode(drawable, &rgb_size, FALSE /* no vflip */
-                                                , NULL  /* app0_buffer */
-                                                , 0     /*  app0_length */
-                                                );
+     rgb_buffer = gap_gve_raw_RGB_drawable_encode(drawable, &rgb_size, FALSE /* no vflip */
+                                                 , NULL  /* app0_buffer */
+                                                 , 0     /*  app0_length */
+                                                 );
 
-    if (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_BGR24)
-    {
-      if(gap_debug)
-      {
-        printf("USE PIX_FMT_BGR24 (no pix_fmt convert needed)\n");
-      }
-      avpicture_fill(picture_codec
-                  ,rgb_buffer
-                  ,PIX_FMT_BGR24          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
-                  ,ffh->frame_width
-                  ,ffh->frame_height
-                  );
-    }
-    else
-    {
-      l_convert_buffer = p_convert_colormodel(ffh, picture_codec, rgb_buffer, vid_track);
-    }
+     if (ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_RGB24)
+     {
+       if(gap_debug)
+       {
+         printf("USE PIX_FMT_RGB24 (no pix_fmt convert needed)\n");
+       }
+       avpicture_fill(picture_codec
+                   ,rgb_buffer
+                   ,PIX_FMT_RGB24          /* PIX_FMT_RGB24, PIX_FMT_BGR24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
+                   ,ffh->frame_width
+                   ,ffh->frame_height
+                   );
+     }
+     else
+     {
+       p_convert_colormodel(ffh, picture_codec, rgb_buffer, vid_track);
+     }
 
 
-    if(gap_debug)
-    {
-      printf("before g_free rgb_buffer\n");
-    }
+     if(gap_debug)
+     {
+       printf("before g_free rgb_buffer\n");
+     }
 
-    g_free(rgb_buffer);
+     g_free(rgb_buffer);
+   }
   }
 
   /* AVFrame is the new structure introduced in FFMPEG 0.4.6,
@@ -3094,7 +3225,8 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
    */
   ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
 
-  if(force_keyframe)
+  if((force_keyframe)
+  || (ffh->encode_frame_nr == 1))
   {
     /* TODO: howto force the encoder to write an I frame ??
      *   ffh->vst[ii].big_picture_codec->key_frame could be ignored
@@ -3119,10 +3251,26 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
          );
     }
 
+
+    /* some codecs (x264) just pass through pts information obtained from
+     * the AVFrame struct (big_picture_codec)
+     * therefore init the pts code in this structure.
+     * (a valid pts is essential to get encoded frame results in the correct order)
+     */
+    //ffh->vst[ii].big_picture_codec->pts = p_calculate_current_timecode(ffh);
+    ffh->vst[ii].big_picture_codec->pts = ffh->encode_frame_nr -1;
+
     encoded_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
                            ,ffh->vst[ii].video_buffer, ffh->vst[ii].video_buffer_size
                            ,ffh->vst[ii].big_picture_codec);
 
+
+    if(gap_debug)
+    {
+      printf("after avcodec_encode_video  encoded_size:%d\n"
+         ,(int)encoded_size
+         );
+    }
 
     /* if zero size, it means the image was buffered */
     if(encoded_size != 0)
@@ -3142,14 +3290,6 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
           pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->vst[ii].vid_stream->time_base);
         }
 
-//        if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
-//        {
-//          /* WORKAROND calculate pts timecode for the current frame
-//           * because the codec did not deliver a valid timecode
-//           */
-//          pkt.pts = p_calculate_current_timecode(ffh);
-//        }
-
 
         if(c->coded_frame->key_frame)
         {
@@ -3165,8 +3305,12 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
           AVStream *st;
 
           st = ffh->output_context->streams[pkt.stream_index];
+          if (pkt.pts == AV_NOPTS_VALUE)
+          {
+            printf("** HOF: Codec delivered invalid pts  AV_NOPTS_VALUE !\n");
+          }
 
-          printf("before av_write_frame video encoded_size:%d\n"
+          printf("before av_interleaved_write_frame video encoded_size:%d\n"
                 " pkt.stream_index:%d pkt.pts:%lld dts:%lld coded_frame->pts:%lld  c->time_base:%d den:%d\n"
                 " st->pts.num:%lld, st->pts.den:%lld st->pts.val:%lld\n"
              , (int)encoded_size
@@ -3182,11 +3326,15 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
              );
 
         }
-        ret = av_write_frame(ffh->output_context, &pkt);
 
+        //ret = av_write_frame(ffh->output_context, &pkt);
+        ret = av_interleaved_write_frame(ffh->output_context, &pkt);
+
+        ffh->countVideoFramesWritten++;
+        
         if(gap_debug)
         {
-          printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+          printf("after av_interleaved_write_frame  encoded_size:%d\n", (int)encoded_size );
         }
       }
     }
@@ -3199,10 +3347,10 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, GimpDrawable *drawable, gboolean forc
     fprintf(ffh->vst[ii].passlog_fp, "%s", ffh->vst[ii].vid_codec_context->stats_out);
   }
 
-  if(gap_debug)  printf("before free picture structures\n");
-
-
-  if(l_convert_buffer) g_free(l_convert_buffer);
+  if(gap_debug)
+  {
+    printf("before free picture structures\n\n");
+  }
 
   return (ret);
 }  /* end p_ffmpeg_write_frame */
@@ -3238,26 +3386,34 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 
     {
       AVPacket pkt;
-      AVCodecContext *c;
+      AVCodecContext *enc;
 
       av_init_packet (&pkt);
-      c = ffh->ast[ii].aud_codec_context;
+      enc = ffh->ast[ii].aud_codec_context;
 
 
 //      pkt.pts = ffh->ast[ii].aud_codec_context->coded_frame->pts;  // OLD
 
-      if (c->coded_frame->pts != AV_NOPTS_VALUE)
+      if(enc->coded_frame && enc->coded_frame->pts != AV_NOPTS_VALUE)
       {
-        pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->ast[ii].aud_stream->time_base);
+        pkt.pts= av_rescale_q(enc->coded_frame->pts, enc->time_base, ffh->ast[ii].aud_stream->time_base);
       }
+      pkt.flags |= AV_PKT_FLAG_KEY;
 
-//      if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
-//      {
-//        /* calculate pts timecode for the current frame
-//         * because the codec did not deliver a valid timecode
-//         */
-//        pkt.pts = p_calculate_current_timecode(ffh);
-//      }
+
+//       if (pkt.pts == AV_NOPTS_VALUE)
+//       {
+//         /* WORKAROND calculate pts timecode for the current frame
+//          * because the codec did not deliver a valid timecode
+//          */
+//         pkt.pts = p_calculate_current_timecode(ffh);
+//         //pkt.pts = p_calculate_timecode(ffh, ffh->countVideoFramesWritten);
+//         pkt.dts = pkt.pts;
+//         //if(gap_debug)
+//         {
+//           printf("WORKAROND calculated audio pts (because codec deliverd AV_NOPTS_VALUE\n");
+//         }
+//       }
 
 
       pkt.stream_index = ffh->ast[ii].audio_stream_index;
@@ -3266,18 +3422,19 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 
       if(gap_debug)
       {
-        printf("before av_write_frame audio  encoded_size:%d pkt.pts:%lld dts:%lld\n"
+        printf("before av_interleaved_write_frame audio  encoded_size:%d pkt.pts:%lld dts:%lld\n"
           , (int)encoded_size
           , pkt.pts
           , pkt.dts
           );
       }
 
-      ret = av_write_frame(ffh->output_context, &pkt);
+      //ret = av_write_frame(ffh->output_context, &pkt);
+      ret = av_interleaved_write_frame(ffh->output_context, &pkt);  // seems not OK work pts/dts is invalid
 
       if(gap_debug)
       {
-        printf("after av_write_frame audio encoded_size:%d\n", (int)encoded_size );
+        printf("after av_interleaved_write_frame audio encoded_size:%d\n", (int)encoded_size );
       }
     }
   }
@@ -3474,6 +3631,11 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
   {
     sws_freeContext(ffh->img_convert_ctx);
     ffh->img_convert_ctx = NULL;
+  }
+  if(ffh->convert_buffer != NULL)
+  {
+    g_free(ffh->convert_buffer);
+    ffh->convert_buffer = NULL;
   }
 
 }  /* end p_ffmpeg_close */
@@ -3757,12 +3919,15 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
 
   l_cur_frame_nr = l_begin;
   ffh->encode_frame_nr = 1;
+  ffh->countVideoFramesWritten = 0;
   while(l_rc >= 0)
   {
     gboolean l_fetch_ok;
     gboolean l_force_keyframe;
     gint32   l_video_frame_chunk_size;
     gint32   l_video_frame_chunk_hdr_size;
+
+    ffh->validEncodeFrameNr = ffh->encode_frame_nr;
 
     /* must fetch the frame into gimp_image  */
     /* load the current frame image, and transform (flatten, convert to RGB, scale, macro, etc..) */
@@ -3837,7 +4002,11 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
       }
 
       /* encode AUDIO FRAME (audio data for playbacktime of one frame) */
-      p_process_audio_frame(ffh, awp);
+      if(ffh->countVideoFramesWritten > 0)
+      {
+        p_process_audio_frame(ffh, awp);
+      }
+
 
     }
     else  /* if fetch_ok */
@@ -3861,11 +4030,45 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
        break;
     }
 
-    /* advance to next frame */
+    /* detect regular end */
     if((l_cur_frame_nr == l_end) || (l_rc < 0))
     {
+       /* handle encoder latency (encoders typically hold some frames in internal buffers
+        * that must be flushed after the last input frame was feed to the codec)
+        * in case of codecs without frame latency
+        * ffh->countVideoFramesWritten and ffh->encode_frame_nr
+        * shall be already equal at this point. (where no flush is reuired)
+        */
+       int flushTries;
+       int flushCount;
+
+       flushTries = 2 + (ffh->validEncodeFrameNr - ffh->countVideoFramesWritten);
+       
+       for(flushCount = 0; flushCount < flushTries; flushCount++)
+       {
+         if(ffh->countVideoFramesWritten >= ffh->validEncodeFrameNr)
+         {
+           /* all frames are now written to the output video */
+           break;
+         }
+         
+         /* increment encode_frame_nr, because this is the base for pts timecode calculation
+          * and some codecs (mpeg2video) complain about "non monotone timestamps"  otherwise.
+          */
+         ffh->encode_frame_nr++;
+         p_ffmpeg_write_frame(ffh, NULL, l_force_keyframe, 0, /* vid_track */  l_useYUV420P);
+
+         /* continue encode AUDIO FRAME (audio data for playbacktime of one frame)
+          */
+          if(ffh->countVideoFramesWritten > 0)
+          {
+            p_process_audio_frame(ffh, awp);
+          }
+         
+       }
        break;
     }
+    /* advance to next frame */
     l_cur_frame_nr += l_step;
     ffh->encode_frame_nr++;
 

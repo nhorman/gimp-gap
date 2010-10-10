@@ -1,4 +1,4 @@
---enable-shared --enable-static --disable-mmx --enable-gpl 
+--disable-shared --enable-static --disable-mmx --enable-gpl 
 # recent ffmpeg releases does no longer support --enable-liba52
 # for audio /mp3 encoding ffmpeg recommands to link with the external libraries.
 #
@@ -6,10 +6,11 @@
 # are installed and adds further options automatically
 #
 #  --enable-libfaac 
-#  --enable-libfaad
+#  --enable-libfaad  (versions after ffmpeg-0.6 have removed this option)
 #  --enable-libmp3lame
 #  --enable-libx264  (old name: --enable-x264)
-#  --enable-libxvid  (old name: --enable-xvid)
-#
+#  --enable-libxvid  --enable-pthreads  (old name: --enable-xvid)
+#  --enable-swscale
+#  --enable-nonfree
 # options for the ffmpeg configure
 

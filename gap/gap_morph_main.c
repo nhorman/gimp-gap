@@ -295,7 +295,7 @@ static void query (void)
 
   {
     /* Menu names */
-    const char *menupath_image_video_morph = N_("<Image>/Video/Morph/");
+    const char *menupath_image_video_morph = N_("<Image>/Video/Morphing/");
 
     gimp_plugin_menu_register (PLUG_IN_NAME,           menupath_image_video_morph);
     gimp_plugin_menu_register (PLUG_IN_NAME_TWEEN,     menupath_image_video_morph);

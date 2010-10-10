@@ -254,6 +254,13 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # 
 (video-gva-libavformat-video-analyse-persistent "yes")
 
+# the api for ffmpeg video access can be configured how to handle
+# read errors when decoding video files with the gimprc parameter video-gva-libavformat-continue-after-read_errors
+# the default option ("yes") is to skip the current package (e.g. the frame that cant be read/decoded)
+# and try to continue reading the next frame.
+# the other option ("no") is to stop when the first read error occurs
+# (available since 2010.10.02)
+(video-gva-libavformat-continue-after-read_errors "yes")
 
 # gimp_gap frame fetcher configuration
 # ------------------------------------

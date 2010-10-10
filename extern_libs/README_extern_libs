@@ -3,7 +3,7 @@ as sourcecode for convenient static linking.
 
 CURRENT FFMPEG version is:
 
-- ffmpeg 0.5
+- ffmpeg 0.6
 
 CURRENT LIBMPEG3 version is:
        
@@ -20,7 +20,9 @@ of those libs.
 ffmpeg
 --------------
 
-GIMP-GAP uses the libraries libavformat, libavcodec, libavutil, libavdevice and libswscale
+GIMP-GAP uses the libraries 
+   libavformat, libavcodec, libavutil, libavdevice and libswscale
+   (libavcore -- new lib in latest snaphots of ffmpeg, not yet required)
 that are part of ffmpeg. 
 Those libs build up the basic videofile support for 
 many MPEG based fileformats, both for read and write access 
@@ -46,13 +48,19 @@ this GIMP-GAP distribution.
   working. 
   
   GIMP-GAP currently supports 
+  o) ffmpeg-0.6 basically works, tests are in progress
+
   o) ffmpeg-0.5 successfully tested with many videoformats
-     and
-  o) ffmpeg-0.6 basically works, but fails on some videoformats like MJPEG encdoded AVI files
-       (my Olympus SP560UZ Camera records videos in this format). 
+     but does no longer work with recent version of libx264 (X264_BUILD 93)
+     (use gimp-gap configure option --disable-ff-libx264
+     when compiling/linking with ffmpeg-0.5)
+     
+
 
   newer ffmpeg GIT (or SVN) snapshots
   may or may not compile, link and run with this GIMP-GAP release.
+  (a compile/link test was done with ffmpeg-2010-09-14 snapshot
+  that has no more support for libfaad --disable-ff-libfaad)
 
 
 GIMP-GAP can be configured to be compiled without ffmpeg (in this case 

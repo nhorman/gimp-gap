@@ -55,6 +55,14 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
 - support to run gimp_color_balance tool as animated filter 
   (added wrapper plug-in).
 
+- updated gimp-gap video API and ffmpeg-based video encoder
+  to support the libraries provided with the ffmpeg-0.6 release
+  This includes various bugfixes related to video de/encode 
+  (but breaks backwards compatibility when seeking positions by frame number
+  in videofiles that do not start with a keyframe).
+  
+  .. see ChangeLog for details,
+  
 - some bugfixes (See ChangeLog for details)
 
 

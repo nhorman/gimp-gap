@@ -1,3 +1,173 @@
+2010-10-10 Wolfgang Hofer <hof@gimp.org>
+  
+- GIMP-GAP has swichted its main video encoder/decoder engine
+  from ffmpeg-0.5 to ffmpeg-0.6
+  
+  ( Note that gimp-gap still supports compile/linking with the 
+    old ffmpeg-0.5 libraies.
+  
+    to do so, just replace file extern_libs/ffmpeg.tar.gz
+    with a copy from older releases that contains the 0.5 release
+    and then configure gimp-gap with option:
+
+      --disable-ff-libx264
+  )
+  
+  
+  *** COMPATIBILITY WARNING: 
+  
+  Positioning to exact frame numbers in 
+  videos that do not start with a keyframe, or have read errors
+  is not compatible to older ffmpeg-0.5 based GIMP-GAP releases.
+
+  libavcodec prints error logging messages to stderr like this:
+      [mpeg2video @ 0x8d7c290]warning: first frame is no keyframe
+      [mpeg2video @ 0x8d7ef50]mpeg_decode_postinit() failure
+
+
+  Decoding of the first few frames of a video that does not start with a keyframe
+  triggers codec internal error handling and delviers different results
+  in different releases of the ffmpeg libraries.
+  
+  In my tests with mpeg2 encoded .vob files (DVD stuff) ffmpeg-0.6 detects 
+  and decodes some more leading non-key frames than ffmpeg-0.5 did.
+
+  BUT THIS BREAKS BACKWARDS COMPATIBILITY ON POSITIONING BY FRAME NUMBER !
+
+  Therefore Storyboards that were created based on older releases and include
+  references to frames in such videos may now refere to another frame
+  when processed with the newer release.
+
+
+- video api feature: continue after read errors for the ffmpeg based implementation.
+  
+  some of my testvideos that could be read with ffmpeg-0.5 based decoding
+  now fail because ffmpeg-0.6 seems to have a more restrictive error recognition
+  at least when decoding mpeg2 videos.
+  
+  The ffmpeg based gap video API now supports a gimprc parameter 
+    (video-gva-libavformat-continue-after-read_errors "yes")
+  that allows continue reading frames after read errors
+  and therefore is able to skip one frame and read further frames after read errors.
+  The default value is "yes" (e.g. TRUE)
+  
+
+
+
+- changed menu path for morphing tools 
+    to: "<Image>/Video/Morph/"
+    to: "<Image>/Video/Morphing/"
+  I made this change, because in German settings (LANG=de_DE.UTF-8)
+  the morph submenu was presented whre invocation of MovePath was expected
+  (Bewegungspfad) and Morph was not present at all.
+  ==> TODO check german translation for errors..
+    
+
+
+  -- 2010-09-18 ----
+
+
+- video api fixed for usage with ffmpeg-0.6 (MJPEG bug)
+  some codecs of the ffmpeg-0.6 release no longer deliver valid 
+  input length information about a successfully decoded frame.
+  The fix assumes that the decoded frame size is the full packet length
+  Note that packet is already read with av_read_frame and that shall already
+  collect all data of one frame in the packet.
+  The case where multiple frames are included in one packet
+  can not be handled after this fix
+  But this theroretical case does not occure in my testvideos 
+  and probably is not relevant at all (or probably is already handled
+  at lower level internally in  av_read_frame)
+  Note that the gap-video API was written before av_read_frame
+  was available and had to deal with collecting data
+  for one frame.
+    
+    
+  Further disable native seek support in case the codec
+  just delivers DTS timecodes with value 0.
+    
+     
+ 
+- gimp-gap configure.in was changed to detect current versions
+  of libx264 and libxvid.
+  it is now ready for ffmpeg-0.6 (and prepared for latest snapshots)
+  (both libs require to include stdint.h (or inttypes.h) 
+  before including the headerfile x264.h )
+  xvid now depends on the pthread library, 
+       therefore add the option --enable-pthreads when ffmpeg is configured
+       with option --enable-libxvid  
+
+  The older ffmpeg-0.5 fails to detect properly installed libx264 library
+  with current versions. This is OK, because it requires old libx264 version
+  (greater equal 0.65  but less than 0.85) to compile
+  
+  gimp-gap still supports using old ffmpeg-0.5
+  but have to use gimp-gap configure option
+
+   --disable-ff-libx264
+ 
+  further note that latest ffmpeg snapshots already
+  dropped libfaad support after release ffmpeg-0.6.
+  to compile gimp-gap with latest ffmpeg snapshot it is required
+  to configure with option:
+  
+    --disable-ff-libfaad
+
+
+- various bug fixes in the ffmpeg based video encoder.
+  
+  
+  o) added handling to compensate encoder frame latency.
+     some codecs keep frames in internal buffer and start
+     generate output when this internal buffer is filled.
+     After feeding the last input frame N to the codec
+     the obtained output frame is the one with number N - size of internal cached frames.
+     The fix continues feeding the last frame to the codec
+     multiple times until all relevant frames are written
+     to the output video file.
+     
+     without this fix, some frames at the end
+     were not written to the resulting video output file,
+     especially for codecs with high latency like the libx264.
+     
+  o) some codecs (x264) just pass through pts information obtained from
+     the AVFrame struct (big_picture_codec)
+     the fix now sets a valid the pts code to init
+     the AVFrame struct before encoding a video frame.
+     Note that invalid pts code could produce unusable videos,
+     it is also relevant for playback order of the frames.     
+
+ o) fixed another colormodel convert relevant bug.
+    the fix applies for codecs that want BGR input 
+    (dont konw if there is such a codec)
+    note that gap_gve_raw_RGB_drawable_encode was recently fixed to deliver RGB (not BGR)
+
+ o) qmin/qmax upper limit changed to 51
+ 
+ o) Gui parameter support for partition and new codec flags that are new in ffmpeg-0.6:
+     parti4x4
+     parti8x8
+     partp4x4
+     partp8x8
+     partb8x8
+
+     MB-Tree RC    // codec_FLAG2_MBTREE
+     PSY           // codec_FLAG2_PSY
+     Compute SSIM  // codec_FLAG2_SSIM
+
+
+  * configure.in
+  * NEWS
+  * gap/gap_morph_main.c
+  * extern_libs/configure_options_ffmpeg.txt
+  * extern_libs/README_extern_libs
+  * extern_libs/ffmpeg.tar.gz                 # update from ffmpeg-0.5 to ffmpeg-0.6
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * docs/reference/txt/gap_gimprc_params.txt
+
 2010-09-09 Wolfgang Hofer <hof@gimp.org>
 
 - applied patch #625667 that fixed various spelling mistakes.

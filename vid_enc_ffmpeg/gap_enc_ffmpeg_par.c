@@ -97,8 +97,8 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
    gap_val_set_keyword(keylist, "(dct_algo ",      &epp->dct_algo,       GAP_VAL_GINT32, 0, "# algorithm for DCT (0-6)");
    gap_val_set_keyword(keylist, "(idct_algo ",     &epp->idct_algo,      GAP_VAL_GINT32, 0, "# algorithm for IDCT (0-11)");
    gap_val_set_keyword(keylist, "(strict ",        &epp->strict,         GAP_VAL_GINT32, 0, "# how strictly to follow the standards");
-   gap_val_set_keyword(keylist, "(mb_qmin ",       &epp->mb_qmin,        GAP_VAL_GINT32, 0, "# min macroblock quantiser scale (VBR)");
-   gap_val_set_keyword(keylist, "(mb_qmax ",       &epp->mb_qmax,        GAP_VAL_GINT32, 0, "# max macroblock quantiser scale (VBR)");
+   gap_val_set_keyword(keylist, "(mb_qmin ",       &epp->mb_qmin,        GAP_VAL_GINT32, 0, "# OBSOLETE min macroblock quantiser scale (VBR)");
+   gap_val_set_keyword(keylist, "(mb_qmax ",       &epp->mb_qmax,        GAP_VAL_GINT32, 0, "# OBSOLETE max macroblock quantiser scale (VBR)");
    gap_val_set_keyword(keylist, "(mb_decision ",   &epp->mb_decision,    GAP_VAL_GINT32, 0, "# algorithm for macroblock decision (0-2)");
    gap_val_set_keyword(keylist, "(b_frames ",      &epp->b_frames,       GAP_VAL_GINT32, 0, "# max number of B-frames in sequence");
    gap_val_set_keyword(keylist, "(packet_size ",   &epp->packet_size,    GAP_VAL_GINT32, 0, "\0");
@@ -268,13 +268,33 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
 
    /* codec flags new in ffmpeg-0.6 */
 
-   p_set_keyword_bool32(keylist, "(use_bit_reservoir ",       &epp->codec_FLAG2_BIT_RESERVOIR,          "# CODEC_FLAG2_BIT_RESERVOIR       Use a bit reservoir when encoding if possible");
    p_set_keyword_bool32(keylist, "(use_bit_mbtree ",          &epp->codec_FLAG2_MBTREE,                 "# CODEC_FLAG2_MBTREE              Use macroblock tree ratecontrol (x264 only)");
    p_set_keyword_bool32(keylist, "(use_bit_psy ",             &epp->codec_FLAG2_PSY,                    "# CODEC_FLAG2_PSY                 Use psycho visual optimizations.");
    p_set_keyword_bool32(keylist, "(use_bit_ssim ",            &epp->codec_FLAG2_SSIM,                   "# CODEC_FLAG2_SSIM                Compute SSIM during encoding, error[] values are undefined");
 
+   p_set_keyword_bool32(keylist, "(parti4x4 ",                &epp->partition_X264_PART_I4X4,           "# X264_PART_I4X4  Analyze i4x4");
+   p_set_keyword_bool32(keylist, "(parti8x8 ",                &epp->partition_X264_PART_I8X8,           "# X264_PART_I8X8  Analyze i8x8 (requires 8x8 transform)");
+   p_set_keyword_bool32(keylist, "(partp4x4 ",                &epp->partition_X264_PART_P8X8,           "# X264_PART_P8X8  Analyze p16x8, p8x16 and p8x8");
+   p_set_keyword_bool32(keylist, "(partp8x8 ",                &epp->partition_X264_PART_P4X4,           "# X264_PART_P4X4  Analyze p8x4, p4x8, p4x4");
+   p_set_keyword_bool32(keylist, "(partb8x8 ",                &epp->partition_X264_PART_B8X8,           "# X264_PART_B8X8  Analyze b16x8, b8x16 and b8x8");
 
 }  /* end p_set_master_keywords */
+
+
+/* --------------------------------
+ * p_get_partition_flag
+ * --------------------------------
+ */
+static gint32
+p_get_partition_flag(gint32 partitions, gint32 maskbit)
+{
+  if((partitions & maskbit) != 0)
+  {
+    return 1;
+  }
+  return 0;
+
+}  /* end p_get_partition_flag */
 
 
 /* --------------------------
@@ -368,6 +388,28 @@ gap_ffpar_get(const char *filename, GapGveFFMpegValues *epp)
   if (epp->pass_nr == 2)
   {
     epp->twoPassFlag = TRUE;
+  }
+
+  /* The case where all partition flags  are 0 but partitions is not 0
+   * can occure when loading presets from an older preset file
+   * that include the partitions as integer but does not include the (redundant)
+   * flags for each single supported bit.
+   * In this case we must fetch the bits from the integer value.
+   * Note: if all values are present in the preset file, only the single bit representations
+   * are used.
+   */
+  if((epp->partition_X264_PART_I4X4 == 0)
+  && (epp->partition_X264_PART_I8X8 == 0)
+  && (epp->partition_X264_PART_P8X8 == 0)
+  && (epp->partition_X264_PART_P4X4 == 0)
+  && (epp->partition_X264_PART_B8X8 == 0)
+  && (epp->partitions != 0))
+  {
+    epp->partition_X264_PART_I4X4 = p_get_partition_flag(epp->partitions, X264_PART_I4X4);
+    epp->partition_X264_PART_I8X8 = p_get_partition_flag(epp->partitions, X264_PART_I8X8);
+    epp->partition_X264_PART_P8X8 = p_get_partition_flag(epp->partitions, X264_PART_P8X8);
+    epp->partition_X264_PART_P4X4 = p_get_partition_flag(epp->partitions, X264_PART_P4X4);
+    epp->partition_X264_PART_B8X8 = p_get_partition_flag(epp->partitions, X264_PART_B8X8);
   }
 
   if(gap_debug)

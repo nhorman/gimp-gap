@@ -53,6 +53,11 @@
 #define AVMEDIA_TYPE_VIDEO    CODEC_TYPE_VIDEO
 #define AVMEDIA_TYPE_AUDIO    CODEC_TYPE_AUDIO
 #define AV_PKT_FLAG_KEY       PKT_FLAG_KEY
+  static const char *GAP_FFMPEG_VERSION_STRING  = "0.5";
+  static const char *PROCNAME_AVCODEC_DECODE_VIDEO = "avcodec_decode_video";
+#else
+  static const char *GAP_FFMPEG_VERSION_STRING  = "0.6";
+  static const char *PROCNAME_AVCODEC_DECODE_VIDEO = "avcodec_decode_video2";
 #endif
 
 /* end ffmpeg 0.5 / 0.6 support */
@@ -73,6 +78,7 @@
 
 #define MAX_TRIES_NATIVE_SEEK 3
 #define GIMPRC_PERSISTENT_ANALYSE "video-gva-libavformat-video-analyse-persistent"
+#define GIMPRC_CONTINUE_AFTER_READ_ERRORS "video-gva-libavformat-continue-after-read_errors"
 #define ANALYSE_DEFAULT TRUE
 
 /* MAX_PREV_OFFSET defines how to record defered url_offest frames of previous frames for byte positions in video index
@@ -152,7 +158,6 @@ typedef struct t_GVA_ffmpeg
  gboolean        dummy_read;      /* FALSE: read YUV + convert to RGB,  TRUE: dont convert RGB */
  gboolean        capture_offset;  /* TRUE: capture url_offsets to vindex while reading next frame  */
  gint32          max_frame_len;
- gint32          frame_len;
  guint16         got_frame_length16;   /* 16 lower bits of the length */
  gint64          prev_url_offset[MAX_PREV_OFFSET];
  gint32          prev_key_seek_nr;
@@ -186,6 +191,10 @@ typedef struct t_GVA_ffmpeg
  gint32           chunk_len;
 
  struct SwsContext *img_convert_ctx;
+
+ gboolean           continueAfterReadErrors;   /* default TRUE try to to continue reading next frame after read errors */
+ gint32             libavcodec_version_int;    /* the ffmpeg libs version that was used to analyze the current video as integer LIBAVCODEC_VERSION_INT */
+ gint64             pkt1_dts;                  /* dts timecode offset of the 1st package of the current frame */
 
 } t_GVA_ffmpeg;
 
@@ -329,6 +338,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   t_GVA_ffmpeg*  handle;
   AVInputFormat *iformat;
 
+
   if(gap_debug) printf("p_wrapper_ffmpeg_open_read: START filename:%s\n", filename);
 
   if(gvahand->filename == NULL)
@@ -336,12 +346,16 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
     gvahand->filename = g_strdup(filename);
   }
 
+
   gvahand->decoder_handle = (void *)NULL;
   gvahand->vtracks = 0;
   gvahand->atracks = 0;
   gvahand->frame_bpp = 3;              /* RGB pixelformat */
 
   handle = g_malloc0(sizeof(t_GVA_ffmpeg));
+  handle->continueAfterReadErrors = gap_base_get_gimprc_gboolean_value(GIMPRC_CONTINUE_AFTER_READ_ERRORS, TRUE);
+  handle->libavcodec_version_int = 0;
+  handle->pkt1_dts = AV_NOPTS_VALUE;
   handle->dummy_read = FALSE;
   handle->capture_offset = FALSE;
   handle->guess_gop_size = 0;
@@ -462,7 +476,6 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
 
   handle->inbuf_len = 0;            /* start with empty buffer */
-  handle->frame_len = 0;            /* start with 0 frame length */
   handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_frame: pointer to pkt.data read pos */
 
   /* yuv_buffer big enough for all supported PixelFormats
@@ -915,6 +928,7 @@ p_url_ftell(ByteIOContext *s)
 static t_GVA_RetCode
 p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chunk_data)
 {
+  static int ls_callNumber = 0;
   t_GVA_ffmpeg *handle;
   int       l_got_picture;
   int       l_rc;
@@ -938,6 +952,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
                 ,gvahand->height
                 );
 
+  ls_callNumber++;
   l_got_picture = 0;
   l_rc = 0;
   l_len = 0;
@@ -948,6 +963,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
   l_curr_url_offset = -1;
   l_url_seek_nr = gvahand->current_seek_nr;
   l_key_frame_detected = FALSE;
+  handle->pkt1_dts = AV_NOPTS_VALUE;
 
   while(l_got_picture == 0)
   {
@@ -974,15 +990,32 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
       l_pktlen = av_read_frame(handle->vid_input_context, &handle->vid_pkt);
       if(l_pktlen < 0)
       {
-         /* EOF reached */
-         if (gap_debug)
+         if (l_pktlen == AVERROR_EOF)
          {
-           printf("p_wrapper_ffmpeg_get_next_frame: EOF reached (or read ERROR)"
-                  "  (old)total_frames:%d current_frame_nr:%d all_frames_counted:%d\n"
-              ,(int) gvahand->total_frames
-              ,(int) gvahand->current_frame_nr
-              ,(int) gvahand->all_frames_counted
-              );
+           /* EOF reached */
+           if (gap_debug)
+           {
+             printf("get_next_frame: EOF reached"
+                    "  (old)total_frames:%d current_frame_nr:%d all_frames_counted:%d\n"
+                ,(int) gvahand->total_frames
+                ,(int) gvahand->current_frame_nr
+                ,(int) gvahand->all_frames_counted
+                );
+           }
+         }
+         else
+         {
+           /* EOF reached */
+           if (gap_debug)
+           {
+             printf("get_next_frame: ERROR:%d (assuming EOF)"
+                    "  (old)total_frames:%d current_frame_nr:%d all_frames_counted:%d\n"
+                ,(int) l_pktlen
+                ,(int) gvahand->total_frames
+                ,(int) gvahand->current_frame_nr
+                ,(int) gvahand->all_frames_counted
+                );
+           }
          }
          l_record_url_offset = -1;
 
@@ -1023,13 +1056,17 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
       handle->inbuf_len = handle->vid_pkt.size;
 
       l_pkt_size = handle->vid_pkt.size;
-      handle->frame_len += l_pkt_size;
+      if((handle->pkt1_dts == AV_NOPTS_VALUE) 
+      && (handle->vid_pkt.dts != AV_NOPTS_VALUE))
+      {
+        handle->pkt1_dts = handle->vid_pkt.dts;
+      }
+
 
       if(gap_debug)
-      {  printf("using Packet data:%d size:%d  handle->frame_len:%d  dts:%lld  pts:%lld  AV_NOPTS_VALUE:%lld\n"
+      {  printf("using Packet data:%d size:%d  dts:%lld  pts:%lld  AV_NOPTS_VALUE:%lld\n"
                                  ,(int)handle->vid_pkt.data
                                  ,(int)handle->vid_pkt.size
-                                 ,(int)handle->frame_len
                                  , handle->vid_pkt.dts
                                  , handle->vid_pkt.pts
                                  , AV_NOPTS_VALUE
@@ -1039,9 +1076,12 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
     if (gap_debug)
     {
-      printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n",
-             (int)handle->inbuf_ptr,
-             (int)handle->inbuf_len);
+      printf("before %s: inbuf_ptr:%d inbuf_len:%d  USING FFMPEG-%s\n"
+             , PROCNAME_AVCODEC_DECODE_VIDEO
+             , (int)handle->inbuf_ptr
+             , (int)handle->inbuf_len
+             , GAP_FFMPEG_VERSION_STRING
+             );
     }
 
 
@@ -1077,12 +1117,11 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
     avcodec_get_frame_defaults(&handle->big_picture_yuv);
 
-    /* decode a frame. return -1 if error, otherwise return the number of
+    /* decode a frame. return -1 on error, otherwise return the number of
      * bytes used. If no frame could be decompressed, *got_picture_ptr is
      * zero. Otherwise, it is non zero.
      */
 #ifdef GAP_USES_OLD_FFMPEG_0_5
-    // printf("USING avcodec_decode_video FFMPEG-0.5\n");
     l_len = avcodec_decode_video(handle->vid_codec_context  /* AVCodecContext * */
                                ,&handle->big_picture_yuv
                                ,&l_got_picture
@@ -1090,7 +1129,6 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
                                ,handle->inbuf_len
                                );
 #else
-    // printf("USING avcodec_decode_video2 FFMPEG-0.6\n");
     l_len = avcodec_decode_video2(handle->vid_codec_context  /* AVCodecContext * */
                                ,&handle->big_picture_yuv
                                ,&l_got_picture
@@ -1098,7 +1136,21 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
                                );
 #endif
 
-    /*if (gap_debug) printf("after avcodec_decode_video: l_len:%d got_pic:%d\n", (int)l_len, (int)l_got_picture);*/
+    if (gap_debug) 
+    {
+      
+      printf("get_next_frame(call:%d): "
+             "curr_frame_nr:%d Pkt data:%d size:%d  dts:%lld pts:%lld l_len:%d got_pic:%d\n"
+         ,(int)ls_callNumber
+         ,(int) gvahand->current_frame_nr
+         ,(int)handle->vid_pkt.data
+         ,(int)handle->vid_pkt.size
+         , handle->vid_pkt.dts
+         , handle->vid_pkt.pts
+         , (int)l_len
+         , (int)l_got_picture
+         );
+    }
 
     if(handle->yuv_buff_pix_fmt != handle->vid_codec_context->pix_fmt)
     {
@@ -1123,29 +1175,76 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
     if(l_len < 0)
     {
-       printf("p_wrapper_ffmpeg_get_next_frame: avcodec_decode_video returned ERROR)\n");
-       l_rc = 2;
-       break;
+       if(handle->continueAfterReadErrors == FALSE)
+       {
+         printf("get_next_frame: %s returned ERROR configured to break at read errors)\n"
+                ,PROCNAME_AVCODEC_DECODE_VIDEO
+                );
+         l_rc = 2;
+         break;
+       }
+       printf("get_next_frame: %s returned ERROR, "
+              "discarding packet dts:%lld and continueAfterReadErrors)\n"
+           , PROCNAME_AVCODEC_DECODE_VIDEO
+           , handle->vid_pkt.dts
+           );
+   
+       handle->vid_pkt.size = 0;             /* set empty packet status */
+       av_free_packet(&handle->vid_pkt);
+       handle->inbuf_len = 0;
+       handle->pkt1_dts = AV_NOPTS_VALUE;
+       continue;
     }
+    
+#ifndef GAP_USES_OLD_FFMPEG_0_5
+    /* fix for ffmpeg-0.6 MJPEG problem */
+    if(l_len > 0)
+    {
+      /* since ffmpeg-0.6  the length (l_len) returned from avcodec_decode_video2
+       * does not reliable indicate the number of handled input bytes 
+       * (at least when mjpeg codec is used)
+       * therefore assume that the decoded frame size is the full packet length
+       * (note that packet is already read with av_read_frame and that shall already
+       * collect all data for one frame in the packet,
+       * The  case where multiple frames are included in one packet can not be handled after this fix
+       * (i have no testvideos where this rare case occurs, and there is no way to implement
+       * such a solution without reliable length information from the codec)
+       */
+      if(l_len != handle->inbuf_len)
+      {
+        if(gap_debug)
+        {
+          printf("WARNING: (call %d) current_frame_nr:%d decoded length:%d differs from packaet length:%d\n"
+            ,(int)ls_callNumber
+            ,(int)gvahand->current_frame_nr
+            ,(int)l_len
+            ,(int)handle->inbuf_len
+            );
+        }
+        l_len = handle->inbuf_len;
+      }
+    }
+#endif
+    
 
     handle->inbuf_ptr += l_len;
     handle->inbuf_len -= l_len;
     if(l_got_picture)
     {
       l_frame_len = (l_len & 0xffff);
-      handle->frame_len = (l_len - l_pkt_size);
       l_record_url_offset = l_curr_url_offset;
       l_key_frame_detected = ((handle->vid_pkt.flags & AV_PKT_FLAG_KEY) != 0);
 
       if(gap_debug)
       {
         /* log information that could be relevant for redesign of VINDEX creation */
-        printf("GOT PICTURE current_seek_nr:%06d   pp_prev_offset:%lld url_offset:%lld keyflag:%d dts:%lld flen16:%d len:%d\n"
+        printf("GOT PICTURE current_seek_nr:%06d   pp_prev_offset:%lld url_offset:%lld keyflag:%d dts:%lld dts1:%lld flen16:%d len:%d\n"
                   , (int)gvahand->current_seek_nr
                   , handle->prev_url_offset[MAX_PREV_OFFSET -1]
                   , l_record_url_offset
                   ,  (handle->vid_pkt.flags & AV_PKT_FLAG_KEY)
                   , handle->vid_pkt.dts
+                  , handle->pkt1_dts
                   ,(int)l_frame_len
                   ,(int)l_len
                   );
@@ -1206,7 +1305,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
       if (gap_debug)
       {
-        printf("p_wrapper_ffmpeg_get_next_frame: before img_convert via sws_scale\n");
+        printf("get_next_frame: before img_convert via sws_scale\n");
       }
       sws_scale(handle->img_convert_ctx
                , handle->picture_yuv->data      /* srcSlice */
@@ -1219,7 +1318,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
       if (gap_debug)
       {
-        printf("p_wrapper_ffmpeg_get_next_frame: after img_convert via sws_scale\n");
+        printf("get_next_frame: after img_convert via sws_scale\n");
       }
 
     }
@@ -1340,7 +1439,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
     gvahand->current_frame_nr = gvahand->current_seek_nr;
     gvahand->current_seek_nr++;
 
-    if (gap_debug) printf("p_wrapper_ffmpeg_get_next_frame: current_frame_nr :%d\n"
+    if (gap_debug) printf("get_next_frame: current_frame_nr :%d\n"
                          , (int)gvahand->current_frame_nr);
 
     /* if we found more frames, increase total_frames */
@@ -2208,7 +2307,6 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                int      ret_av_seek_frame;
                /* seek based on url_fseek (for support of old video indexes without timecode) */
                seek_pos = vindex->ofs_tab[l_idx].uni.offset_gint64;
-               // url_fseek(handle->vid_input_context->pb, seek_pos, SEEK_SET);
 
                /* byte position based seek  AVSEEK_FLAG_BACKWARD AVSEEK_FLAG_ANY*/
                ret_av_seek_frame = av_seek_frame(handle->vid_input_context, handle->vid_stream_index
@@ -3995,7 +4093,6 @@ p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
     handle->vid_pkt.size = 0;             /* REstart with empty packet */
     handle->vid_pkt.data = NULL;          /* REstart with empty packet */
     handle->inbuf_len = 0;            /* start with empty buffer */
-    handle->frame_len = 0;            /* start with 0 frame length  */
     handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_frame: pointer to pkt.data read pos */
 
     /* RE-open for the VIDEO part */
@@ -4827,6 +4924,7 @@ p_set_analysefile_master_keywords(GapValKeyList *keylist
    master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
    int ii;
 
+   gap_val_set_keyword(keylist, "(libavcodec_version_int ", &master_handle->libavcodec_version_int, GAP_VAL_GINT32, 0, "\0");
    gap_val_set_keyword(keylist, "(READSTEPS_PROBE_TIMECODE ", &master_handle->readsteps_probe_timecode, GAP_VAL_GINT32, 0, "\0");
    gap_val_set_keyword(keylist, "(timestamp ", &master_handle->timestamp, GAP_VAL_GINT32, 0, "\0");
    gap_val_set_keyword(keylist, "(video_libavformat_seek_gopsize ", &master_handle->video_libavformat_seek_gopsize, GAP_VAL_GINT32, 0, "\0");
@@ -4920,6 +5018,7 @@ p_save_video_analyse_results(t_GVA_Handle *gvahand)
              "#  (start+duration converted to frames:%d)\n"
              "#  (eof_timecode converted to frames:%d)\n"
              "#  (video-libavformat-seek-gopsize config:%d actual:%d)\n"
+             "#  (ffmpeg-libs-version:%s)\n"
            , master_handle->vid_stream->time_base.num
            , master_handle->vid_stream->time_base.den
            , master_handle->vid_input_context->start_time
@@ -4928,6 +5027,7 @@ p_save_video_analyse_results(t_GVA_Handle *gvahand)
            , p_timecode_to_frame_nr(master_handle, master_handle->eof_timecode)
            , gap_base_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE)
            , master_handle->video_libavformat_seek_gopsize
+           , GAP_FFMPEG_VERSION_STRING
            );
     }
     fclose(fp_analyse);
@@ -4935,7 +5035,9 @@ p_save_video_analyse_results(t_GVA_Handle *gvahand)
     keylist = gap_val_new_keylist();
 
     /* setup key/value descriptions */
+    master_handle->libavcodec_version_int = LIBAVCODEC_VERSION_INT;
     p_set_analysefile_master_keywords(keylist, gvahand, master_handle->count_timecode_steps);
+ 
 
     /* save key/value data */
     gap_val_rewrite_file(keylist, analysefile_name
@@ -4976,6 +5078,12 @@ p_get_video_analyse_results(t_GVA_Handle *gvahand)
   analysefile_name = p_create_analysefile_name(gvahand);
   master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
   keylist = gap_val_new_keylist();
+
+  /* init verion with 0
+   * when loading older analyze files that do not contain such version information
+   * the version will keep the inital 0 value after loading.
+   */
+  master_handle->libavcodec_version_int = 0;
   p_set_analysefile_master_keywords(keylist, gvahand, READSTEPS_PROBE_TIMECODE);
 
   /* init structures with some non-plausible values
@@ -5290,8 +5398,10 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
     gdouble avg_fstepsize;
     int64_t prev_timecode;
     gint32 l_countValidTimecodes;
+    gint32 l_countZeroTimecodes;
 
     l_countValidTimecodes = 0;
+    l_countZeroTimecodes = 0;
     master_handle->timecode_proberead_done = TRUE;
     master_handle->timecode_step_abs_min = 99999999;
 
@@ -5318,7 +5428,22 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
     copy_handle->dummy_read = TRUE;
 
     l_rc_rd = p_wrapper_ffmpeg_get_next_frame(copy_gvahand);
+    
     master_handle->timecode_offset_frame1 = copy_handle->vid_pkt.dts;
+//     if(copy_handle->pkt1_dts != AV_NOPTS_VALUE)
+//     {
+//       master_handle->timecode_offset_frame1 = copy_handle->pkt1_dts;
+//     }
+    
+    if(gap_debug)
+    {
+       printf("GOT master_handle->timecode_offset_frame1:%lld copy_handle->vid_pkt.dts:%lld dts1:%lld\n"
+                  , master_handle->timecode_offset_frame1
+                  , copy_handle->vid_pkt.dts
+                  , copy_handle->pkt1_dts
+                  );
+    }
+
     prev_timecode = copy_handle->vid_pkt.dts;
 
     l_readsteps = 0;
@@ -5333,6 +5458,10 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
       if (copy_handle->vid_pkt.dts != AV_NOPTS_VALUE)
       {
         l_countValidTimecodes++;
+      }
+      if (copy_handle->vid_pkt.dts == 0)
+      {
+        l_countZeroTimecodes++;
       }
       master_handle->timecode_steps[l_readsteps] = copy_handle->vid_pkt.dts - prev_timecode;
       master_handle->timecode_step_abs_min =
@@ -5358,7 +5487,8 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
     /* close the extra handle (that was opened for counting only) */
     p_wrapper_ffmpeg_close(copy_gvahand);
 
-    if (l_countValidTimecodes > 0)
+    if ((l_countValidTimecodes > 0) 
+    && (l_countZeroTimecodes < 2))
     {
         p_analyze_stepsize_pattern(l_readsteps, master_gvahand);
     }
@@ -5368,6 +5498,8 @@ p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
         * even if not present in the video.
         * but unfortunately recent ffmpeg snapshots deliver AV_NOPTS_VALUE as dts
         * for such videos. In this case native seek must be disabled.
+        *
+        * (but timecode 0 is not OK for framenumbers > 1)
         */
        master_handle->timecode_steps_sum = 0;
        master_handle->count_timecode_steps = 1;

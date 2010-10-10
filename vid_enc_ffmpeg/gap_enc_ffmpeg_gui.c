@@ -1010,6 +1010,25 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_BIT_RESERVOIR_checkbutton)
                                , gpp->evl.codec_FLAG2_BIT_RESERVOIR);
 
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_MBTREE_checkbutton)
+                               , gpp->evl.codec_FLAG2_MBTREE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_PSY_checkbutton)
+                               , gpp->evl.codec_FLAG2_PSY);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_SSIM_checkbutton)
+                               , gpp->evl.codec_FLAG2_SSIM);
+
+
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_I4X4_checkbutton)
+                               , gpp->evl.partition_X264_PART_I4X4);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_I8X8_checkbutton)
+                               , gpp->evl.partition_X264_PART_I8X8);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_P8X8_checkbutton)
+                               , gpp->evl.partition_X264_PART_P8X8);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_P4X4_checkbutton)
+                               , gpp->evl.partition_X264_PART_P4X4);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_B8X8_checkbutton)
+                               , gpp->evl.partition_X264_PART_B8X8);
+
 }   /* end p_init_vid_checkbuttons */
 
 /* --------------------------------
@@ -1375,7 +1394,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the qmin spinbutton */
-  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 0);
+  adj = gtk_adjustment_new (1, 0, 51, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_qmin_spinbutton_adj = adj;
   gpp->ff_qmin_spinbutton     = spinbutton;
@@ -1403,7 +1422,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qmax spinbutton */
-  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 0);
+  adj = gtk_adjustment_new (1, 0, 51, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_qmax_spinbutton_adj = adj;
   gpp->ff_qmax_spinbutton     = spinbutton;
@@ -2510,7 +2529,7 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
     int flags_row;
     GtkWidget *flags_table;
 
-    flags_table = gtk_table_new (8, 2, FALSE);
+    flags_table = gtk_table_new (8, 3, FALSE);
     gtk_widget_show (flags_table);
     gtk_container_add (GTK_CONTAINER (flags_frame), flags_table);
     gtk_container_set_border_width (GTK_CONTAINER (flags_table), 2);
@@ -2535,6 +2554,12 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       (GtkAttachOptions) (0), 0, 0);
 
 
+    label = gtk_label_new (_("Partition X264:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
 
 
     flags_row++;
@@ -2568,6 +2593,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.codec_FLAG2_BPYRAMID);
 
 
+    /* the partition_X264_PART_I4X4 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("I4x4"));
+    gpp->ff_partition_X264_PART_I4X4_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 4x4 partitions in I-frames.(for X264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partition_X264_PART_I4X4);
+
+
 
     flags_row++;
 
@@ -2596,6 +2635,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG2_WPRED);
+
+
+    /* the partition_X264_PART_I8X8 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("I8x8"));
+    gpp->ff_partition_X264_PART_I8X8_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 8x8 partitions in I-frames.(for X264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partition_X264_PART_I8X8);
 
 
 
@@ -2632,6 +2685,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.codec_FLAG2_MIXED_REFS);
 
 
+    /* the partition_X264_PART_P8X8 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("P8x8"));
+    gpp->ff_partition_X264_PART_P8X8_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 8x8, 16x8 and 8x16 partitions in P-frames.(for X264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partition_X264_PART_P8X8);
+
+
 
     flags_row++;
 
@@ -2663,6 +2730,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.codec_FLAG2_8X8DCT);
 
 
+    /* the partition_X264_PART_P4X4 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("P4X4"));
+    gpp->ff_partition_X264_PART_P4X4_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 4x4, 8x4 and 4x8 partitions in P-frames.(for X264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partition_X264_PART_P4X4);
+
+
     flags_row++;
 
     /* the use_memc_only checkbutton */
@@ -2691,6 +2772,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG2_FASTPSKIP);
+
+
+    /* the partition_X264_PART_B8X8 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("B8x8"));
+    gpp->ff_partition_X264_PART_B8X8_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 8x8 16x8 and 8x16 partitions in B-frames.(for X264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partition_X264_PART_B8X8);
 
 
 
@@ -2738,6 +2833,19 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG2_SKIP_RD);
 
+    /* the use_MB_Tree ratecontrol checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("MB-Tree RC"));
+    gpp->ff_codec_FLAG2_MBTREE_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use macroblock tree ratecontrol (x264 only)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_MBTREE);
+
     flags_row++;
 
     /* the use_chunks checkbutton */
@@ -2769,6 +2877,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG2_NON_LINEAR_QUANT);
 
+
+    /* the use_PSY checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("PSY"));
+    gpp->ff_codec_FLAG2_PSY_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use psycho visual optimizations"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_PSY);
+
     flags_row++;
 
     /* the use_bit_reservoir checkbutton */
@@ -2783,6 +2905,20 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG2_BIT_RESERVOIR);
+
+
+    /* the compute_SSIM checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Compute SSIM"));
+    gpp->ff_codec_FLAG2_SSIM_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Compute SSIM during encoding, error[] values are undefined."), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_SSIM);
 
 
 
@@ -2869,6 +3005,7 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
 
   return(frame);
 }  /* end  p_create_expert_flags2_frame */
+
 
 
 
@@ -3236,7 +3373,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the mb-qmin spinbutton */
-  adj = gtk_adjustment_new (0, 0, 31, 1, 10, 0);
+  adj = gtk_adjustment_new (0, 0, 51, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mb_qmin_spinbutton_adj          = adj;
   gpp->ff_mb_qmin_spinbutton              = spinbutton;
@@ -3263,7 +3400,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the mb-qmax spinbutton */
-  adj = gtk_adjustment_new (31, 0, 31, 1, 10, 0);
+  adj = gtk_adjustment_new (31, 0, 51, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mb_qmax_spinbutton_adj          = adj;
   gpp->ff_mb_qmax_spinbutton              = spinbutton;

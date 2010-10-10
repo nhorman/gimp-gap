@@ -149,6 +149,17 @@ and OLD mpeg encoders.
 AM_CONDITIONAL(GAP_UNIX_FRONTENDS, test "x$enable_unix_frontends" != "xno")
 
 
+
+dnl check for pthread library (required for libmpeg3 and recent versions of the xvid library)
+dnl the check result does not matter unless libmpeg3 or xvid is linked or built later on.
+pthread_err=""
+AC_CHECK_LIB(pthread, pthread_create,
+	[AC_CHECK_HEADER(pthread.h,
+          GAP_PTHREAD_LIB=" -lpthread",
+          pthread_err="pthread header file (pthread.h) not found")],
+	pthread_err="pthread library (libpthread) not found")
+
+
 dnl check for bzip2 library (for ffmpeg matroskadec )
 dnl the check result does not matter unless libavformat is linked or built later on.
 FF_BZIP2=""
@@ -198,7 +209,6 @@ AC_ARG_ENABLE(ff_libfaac,
 dnl
 
 dnl check for faad library (useful for better ffmpeg audio support)
-dnl FAAC is an open source MPEG-4 and MPEG-2 AAC encoder, it is licensed under the LGPL 
 dnl the check result does not matter unless libavformat is linked or built later on.
 FF_LIBFAAD=""
 faad_warn=""
@@ -227,37 +237,78 @@ dnl
 
 
 dnl check for x264 library (additional for ffmpeg video codec support)
-dnl ### TODO check are no longer sufficient for recent ffmpeg 2009.01.31.
-dnl ### check shall verify the condition "X264_BUILD >= 65
-dnl ### Note that the missing check it is not critical, since ffmpeg configure script has such a check
-dnl ###      and turns off x264 support when older versions are detected, and prints an error like this:
-dnl ###          ERROR: libx264 version must be >= 0.65.
+dnl ### 
+dnl ### set X264_REQUIRED_VERSION="0.65" to support ffmpeg-0.5 (condition "X264_BUILD >= 65" for ffmpeg-0.5)
+dnl ### set X264_REQUIRED_VERSION="0.85" to support ffmpeg-0.6 (broken mjpeg decoder)
+dnl ### set X264_REQUIRED_VERSION="0.98" to support ffmpeg-2010-09-14 snapshot (for testing)
+dnl ### new libx264 versions (X264_BUILD >= 93)  require to include stdint.h (or inttypes.h)
+dnl ### before including tthe headerfile x264.h 
+dnl ### therfore we provide this requirement as 4. parameter of the AC_CHECK_HEADER macro.
+dnl ### but AC_CHECK_LIB now fails when checking for procedure x264_encoder_open
+dnl ### because x264_encoder_open is a define constant that refers to x264_encoder_open_<X264_BUILD>
+dnl ### therefore therefore the check was changed to procedure x264_encoder_close
+dnl ### (dont want to AC_CHECK_LIB that works only for one hardcoded version.)
 dnl the check result does not matter unless libavformat is linked or built later on.
+
+
+X264_REQUIRED_VERSION="0.85"
+X264_REQUIRED_INC='#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif'
+
 FF_LIBX264=""
 x264_warn=""
 AC_ARG_ENABLE(ff_libx264,
               [  --disable-ff-libx264         configure libavformat without optional open source variant of H264 video codec])
+dnl  if test "x$enable_ff_libx264" != "xno"; then
+dnl    AC_CHECK_LIB(x264, x264_encoder_open_93,
+dnl      [AC_CHECK_HEADER(x264.h,
+dnl          FF_LIBX264="-lx264",
+dnl          x264_warn="$NEW_LINE x264 header file (x264.h) not found (not critical, but no open H264 video codec support)",
+dnl          $X264_REQUIRED_INC)],
+dnl      x264_warn="$NEW_LINE x264 library (libx264) not found (not critical, but no open H264 video codec support)")
+dnl  fi
   if test "x$enable_ff_libx264" != "xno"; then
-    AC_CHECK_LIB(x264, x264_encoder_open,
-      [AC_CHECK_HEADER(x264.h,
+    if ! $PKG_CONFIG --atleast-version=$X264_REQUIRED_VERSION x264; then
+        x264_warn="$NEW_LINE x264 library (libx264) required version $X264_REQUIRED_VERSION not found (not critical, but no open H264 video codec support)"
+    else
+      AC_CHECK_LIB(x264, x264_encoder_close,
+        [AC_CHECK_HEADER(x264.h,
           FF_LIBX264="-lx264",
-          x264_warn="$NEW_LINE x264 header file (x264.h) not found (not critical, but no open H264 video codec support)")],
-      x264_warn="$NEW_LINE x264 library (libx264) not found (not critical, but no open H264 video codec support)")   
+          x264_warn="$NEW_LINE x264 header file (x264.h) not found (not critical, but no open H264 video codec support)",
+          $X264_REQUIRED_INC)],
+        x264_warn="$NEW_LINE x264 library (libx264) not found (not critical, but no open H264 video codec support)")
+    fi
   fi
 
 
 dnl check for xvid library (additional for ffmpeg open xvid video codec support)
 dnl the check result does not matter unless libavformat is linked or built later on.
+
+XVID_REQUIRED_INC='#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif'
+
 xvid_warn=""
 FF_LIBXVID=""
 AC_ARG_ENABLE(ff_libxvid,
               [  --disable-ff-libxvid         configure libavformat without optional open source variant of xvid video codec])
+dnl  if test "x$enable_ff_libxvid" != "xno"; then
+dnl    AC_CHECK_LIB(xvidcore, xvid_global,
+dnl      [AC_CHECK_HEADER(xvid.h,
+dnl          FF_LIBXVID="-lxvidcore",
+dnl          xvid_warn="$NEW_LINE xvid header file (xvid.h) not found (not critical, but no open xvid video codec support)")],
+dnl      xvid_warn="$NEW_LINE xvid library (libxvidcore) not found (not critical, but no open xvid video codec support)")   
+dnl  fi
   if test "x$enable_ff_libxvid" != "xno"; then
-    AC_CHECK_LIB(xvidcore, xvid_global,
-      [AC_CHECK_HEADER(xvid.h,
+    if test "x$pthread_err" != "x"; then
+       xvid_warn="$NEW_LINE $pthread_err $NEW_LINE xvid disabled because it depends on missing pthread library (not critical, but no open xvid video codec support)"
+    else
+      AC_CHECK_HEADER(xvid.h,
           FF_LIBXVID="-lxvidcore",
-          xvid_warn="$NEW_LINE xvid header file (xvid.h) not found (not critical, but no open xvid video codec support)")],
-      xvid_warn="$NEW_LINE xvid library (libxvidcore) not found (not critical, but no open xvid video codec support)")   
+          xvid_warn="$NEW_LINE xvid header file (xvid.h) not found (not critical, but no open xvid video codec support)",
+          $XVID_REQUIRED_INC)   
+    fi
   fi
 
 
@@ -289,6 +340,8 @@ cd ..
 parent_dir=`pwd`
 cd "$pwd_dir"
 extern_libs_dir="$pwd_dir/extern_libs"
+
+
 
 dnl Test for video libavformat (FFMPEG)
 dnl -----------------------------------
@@ -407,6 +460,10 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       FFMPEG_LIBAVDEVICE_A="$FFMPEG_DIR/libavdevice/${LIBPREF}avdevice${LIBSUF}"
       FFMPEG_LIBSWSCALE_A="$FFMPEG_DIR/libswscale/${LIBPREF}swscale${LIBSUF}"
       dnl
+      dnl libavcore is required for recent development snapshots (such as ffmpeg-2010-09-14 that was used in a compile/link test)
+      dnl
+      FFMPEG_LIBAVCORE_A="$FFMPEG_DIR/libavcore/${LIBPREF}avcore${LIBSUF}"
+      dnl
       dnl ffmpeg can be configured to use external codec libs x264, xvid ....
       dnl options for ffmpeg ext libs configuration will be passed to ffmpeg/configure
       dnl if some of those libs are installed (and not explicitly disabled)
@@ -416,8 +473,12 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
         FFMPEG_EXTLIBS="$FFMPEG_EXTLIBS -lws2_32"
       fi
 
-      GAP_VLIBS_FFMPEG="  $FFMPEG_LIBAVDEVICE_A $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_LIBSWSCALE_A $FFMPEG_EXTLIBS "
-      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil -I$FFMPEG_DIR/libavdevice  -I$FFMPEG_DIR/libswscale"
+      GAP_VLIBS_FFMPEG="  $FFMPEG_LIBAVDEVICE_A $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_LIBSWSCALE_A "
+
+      dnl libavcore is required for recent development snapshots (such as ffmpeg-2010-09-14 that was used in a compile/link test)
+      dnl GAP_VLIBS_FFMPEG=" $GAP_VLIBS_FFMPEG $FFMPEG_LIBAVCORE_A"
+      GAP_VLIBS_FFMPEG=" $GAP_VLIBS_FFMPEG $FFMPEG_EXTLIBS "
+      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil -I$FFMPEG_DIR/libavdevice  -I$FFMPEG_DIR/libswscale  -I$FFMPEG_DIR/libavcore"
 
       vid_ffmpeg_warning="
           $x264_warn
@@ -481,7 +542,7 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
 
       dnl configure ffmpeg libxvid usage (for optional open xvid codec support via libxvid)
       if test "x$FF_LIBXVID" != "x"; then
-      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libxvid"
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-pthreads --enable-libxvid"
       fi
 
       dnl in case nonfree libs are used ffmeg 0.6 configure requires --enable-nonfree
@@ -602,16 +663,6 @@ libmpeg3_info_msg="
 
 
 libmpeg3_dependencies_ok="yes"
-
-dnl check for pthread library (required for libmpeg3)
-dnl the check result does not matter unless libmpeg3 is linked or built later on.
-pthread_err=""
-AC_CHECK_LIB(pthread, pthread_create,
-	[AC_CHECK_HEADER(pthread.h,
-          GAP_PTHREAD_LIB=" -lpthread",
-          pthread_err="pthread header file (pthread.h) not found")],
-	pthread_err="pthread library (libpthread) not found")
-
 if test "x$pthread_err" != "x"; then
    libmpeg3_dependencies_ok="no"
 fi
@@ -885,19 +936,27 @@ dnl the xvid codec lib is used in the AVI videoencoder plug-in for
 dnl MPEG4 support xvid should compile on many operating systems,
 dnl including UNIX and WINDOWS systems (ffmpeg has its own builtin
 dnl MPEG4 codec implementation and does not depend on this codec)
-dnl
+xvid_err=""
+if test "x$pthread_err" != "x"; then
+  xvid_err="$pthread_err $NEW_LINE xvid disabled because it depends on missing pthread library"
+fi
 AC_ARG_ENABLE(libxvidcore,
               [  --disable-libxvidcore        don't build with libxvidcore])
   if test "x$enable_libxvidcore" != "xno"; then
     dnl
     dnl check for libxvidcore
     dnl
-    xvid_err=""
-    AC_CHECK_LIB(xvidcore, xvid_encore,
-      [AC_CHECK_HEADER(xvid.h,
+    dnl AC_CHECK_LIB(xvidcore, xvid_encore,
+    dnl   [AC_CHECK_HEADER(xvid.h,
+    dnl     GAP_VLIBS_XVIDCORE=" -lxvidcore",
+    dnl     xvid_err="xvid header file (xvid.h) not found",
+    dnl     $XVID_REQUIRED_INC)],
+    dnl   xvid_err="xvid library (libxvidcore) not found")
+    dnl
+    AC_CHECK_HEADER(xvid.h,
         GAP_VLIBS_XVIDCORE=" -lxvidcore",
-        xvid_err="xvid header file (xvid.h) not found")],
-      xvid_err="xvid library (libxvidcore) not found")
+        xvid_err="xvid header file (xvid.h) not found",
+        $XVID_REQUIRED_INC)
 
     if test "x$xvid_err" = "x"; then
       AC_DEFINE(ENABLE_LIBXVIDCORE, 1,

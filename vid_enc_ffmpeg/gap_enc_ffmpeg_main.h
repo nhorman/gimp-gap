@@ -417,6 +417,11 @@ typedef struct {
   gint32 codec_FLAG2_PSY;
   gint32 codec_FLAG2_SSIM;
 
+  gint32 partition_X264_PART_I4X4;
+  gint32 partition_X264_PART_I8X8;
+  gint32 partition_X264_PART_P8X8;
+  gint32 partition_X264_PART_P4X4;
+  gint32 partition_X264_PART_B8X8;
 
 } GapGveFFMpegValues;
 
@@ -535,7 +540,15 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_codec_FLAG2_NON_LINEAR_QUANT_checkbutton;
   GtkWidget *ff_codec_FLAG2_BIT_RESERVOIR_checkbutton;
 
+  GtkWidget *ff_codec_FLAG2_MBTREE_checkbutton;
+  GtkWidget *ff_codec_FLAG2_PSY_checkbutton;
+  GtkWidget *ff_codec_FLAG2_SSIM_checkbutton;
 
+  GtkWidget *ff_partition_X264_PART_I4X4_checkbutton;
+  GtkWidget *ff_partition_X264_PART_I8X8_checkbutton;
+  GtkWidget *ff_partition_X264_PART_P8X8_checkbutton;
+  GtkWidget *ff_partition_X264_PART_P4X4_checkbutton;
+  GtkWidget *ff_partition_X264_PART_B8X8_checkbutton;
 
 
 
