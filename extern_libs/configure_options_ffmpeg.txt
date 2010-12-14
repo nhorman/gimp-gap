@@ -1,4 +1,6 @@
---disable-shared --enable-static --disable-mmx --enable-gpl 
+--disable-shared --enable-static --enable-gpl --enable-mmx --enable-mmx2 
+# --enable-mmx --enable-mmx2 
+# 
 # recent ffmpeg releases does no longer support --enable-liba52
 # for audio /mp3 encoding ffmpeg recommands to link with the external libraries.
 #

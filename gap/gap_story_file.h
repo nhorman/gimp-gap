@@ -52,6 +52,14 @@
 #define GAP_STB_MAX_FRAMENR 99999999
 
 
+
+#define GAP_GIMPRC_VIDEO_STORYBOARD_MULTIPROCESSOR_ENABLE      "video-storyboard-multiprocessor-enable"
+#define GAP_GIMPRC_VIDEO_STORYBOARD_PREVIEW_RENDER_FULL_SIZE   "video-storyboard-preview-render-full-size"
+#define GAP_GIMPRC_VIDEO_STORYBOARD_MAX_OPEN_VIDEOFILES        "video-storyboard-max-open-videofiles"
+#define GAP_GIMPRC_VIDEO_STORYBOARD_FCACHE_SIZE_PER_VIDEOFILE  "video-storyboard-fcache-size-per-videofile"
+#define GAP_GIMPRC_VIDEO_STORYBOARD_RESOURCE_LOG_INTERVAL      "video-storyboard-resource-log-interval"
+#define GAP_GIMPRC_VIDEO_ENCODER_FFMPEG_MULTIPROCESSOR_ENABLE  "video-enoder-ffmpeg-multiprocessor-enable"
+
 /* GapStoryRecordType enum values are superset of GapLibAinfoType
  * from the sourcefile gap_lib.h
  */
@@ -490,5 +498,7 @@ GapStoryVideoFileRef * gap_story_get_video_file_ref_list(GapStoryBoard *stb);
 char *                 gap_story_build_basename(const char *filename);
 
 void                   gap_story_transform_rotate_layer(gint32 image_id, gint32 layer_id, gdouble rotate);
+gboolean               gap_story_checkForAtLeatOneClipWithScalingDisabled(GapStoryBoard *stb_ptr);
+gboolean               gap_story_isMultiprocessorSupportEnabled(void);
 
 #endif

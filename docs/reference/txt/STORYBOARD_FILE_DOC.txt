@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2010.03.20:
+STORYBOARD_FILES           2010.11.02:
 
 
 General
@@ -702,8 +702,22 @@ VID_FIT_SIZE
   - The Input Frame is placed in the center of the 
     composite output frame.
     (unless VID_MOVE_X/Y define other offsets than 0.0)
-  - Zooming may cause additional Scaling. The VID_FIT_SIZE
+  - Zooming may cause additional Scaling. The VID_FIT_SIZE record
     describes the normal Size (where zoom is set to 1.0)
+
+  - WARNING: settings that disable scaling 
+    (e.g. use fixed width or height at original source image size)
+    do NOT follow changes of the resulting VID_MASTER_SIZE.
+    In case you want to render videos in different sizes from the same storyboard
+    by simply changing the VID_MASTER_SIZE sizes, you should NOT
+    use such settings for your clips.
+    
+      VID_FIT_SIZE mode=none                                     # for fixed width and height
+      VID_FIT_SIZE mode=width proportions=change_proportions     # fixed width
+      VID_FIT_SIZE mode=height proportions=change_proportions    # fixed height
+      
+    Furthermore the fixed size also forces internal rendering for preview purpose
+    to operate at full VID_MASTER_SIZE which may be very slow (especially for HD video)
 
 
   The described behavior is valid for all fetched Frames in the same track

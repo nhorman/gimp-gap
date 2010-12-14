@@ -81,6 +81,14 @@ static GapStbMainGlobalParams global_params =
 , FALSE       /*  gboolean           force_stb_aspect */
 , GAP_STB_CLIPTARGET_CLIPLIST_APPEND  /* GapStoryClipTargetEnum clip_target */
 , GAP_VTHUMB_PREFETCH_NOT_ACTIVE      /* GapVThumbPrefetchProgressMode    vthumb_prefetch_in_progress */
+,12           /*  gint32             stb_max_open_videofile */
+,36           /*  gint32             stb_fcache_size_per_videofile */
+, 18          /*  gint32             ffetch_max_img_cache_elements */
+, 0           /*  gint32             stb_resource_log_linterval */
+, FALSE       /*  gboolean           stb_isMultithreadEnabled */
+, FALSE       /*  gboolean           stb_preview_render_full_size */
+, FALSE       /*  gboolean           render_prop_dlg_open */
+
 , FALSE       /*  gboolean           win_prop_dlg_open */
 , GAP_STB_EDMO_SEQUENCE_NUMBER   /*  gint32             cll_edmode */
 , 5                              /*  gint32 cll_cols  */

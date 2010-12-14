@@ -30,8 +30,13 @@
 #include "libgimp/gimp.h"
 #include "gap_enc_ffmpeg_main.h"
 
+#define GAP_VIDEO_ENCODER_PRESET_DIR "video_encoder_presets"
+
 int   gap_ffpar_set(const char *filename, GapGveFFMpegValues *ffpar_ptr);
 void  gap_ffpar_get(const char *filename, GapGveFFMpegValues *ffpar_ptr);
+
+gboolean  gap_ffpar_isValidPresetFile(const char *fullPresetFilename);
+GapGveFFMpegValues * gap_ffpar_getPresetList();
 
 
 #endif

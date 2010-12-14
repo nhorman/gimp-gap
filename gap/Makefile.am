@@ -23,7 +23,7 @@ GAP_VIDEO_EXTRACT = gap_video_extract
 GAP_VIDEO_INDEX = gap_video_index
 endif
 
-LIBGAPBASE  = $(top_builddir)/libgapbase/libgapbase.a
+LIBGAPBASE  = $(top_builddir)/libgapbase/libgapbase.a $(GTHREAD_LIBS)
 INC_LIBGAPBASE = -I$(top_srcdir)/libgapbase
 
 LIBGIMPGAP = libgimpgap.a

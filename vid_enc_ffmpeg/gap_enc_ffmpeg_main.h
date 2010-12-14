@@ -192,11 +192,15 @@
 
 
 #define GAP_GVE_FF_QP2LAMBDA   FF_QP2LAMBDA
-
+#define GAP_ENCODER_PRESET_NAME_MAX_LENGTH 60
+#define GAP_ENCODER_PRESET_FILENAME_MAX_LENGTH 1024
 
 
 /* GapGveFFMpegValues ffmpeg specific encoder params */
 typedef struct {
+  gint32  presetId;
+  char    presetName[GAP_ENCODER_PRESET_NAME_MAX_LENGTH];
+  char    presetFileName[GAP_ENCODER_PRESET_FILENAME_MAX_LENGTH];
   char    current_vid_extension[80];
 
   /* ffmpeg options */
@@ -422,6 +426,9 @@ typedef struct {
   gint32 partition_X264_PART_P8X8;
   gint32 partition_X264_PART_P4X4;
   gint32 partition_X264_PART_B8X8;
+
+
+  void *next;
 
 } GapGveFFMpegValues;
 

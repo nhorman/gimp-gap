@@ -39,7 +39,13 @@
 #include "gap_enc_ffmpeg_main.h"
 #include "gap_enc_ffmpeg_par.h"
 
+#define GAP_FFENC_FILEHEADER_LINE "# GIMP / GAP FFMPEG videoencoder parameter file"
+
+
 extern int gap_debug;
+
+static GapGveFFMpegValues *eppRoot = NULL;
+static gint nextPresetId = GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS;
 
 
 /* --------------------------
@@ -447,8 +453,8 @@ gap_ffpar_set(const char *filename, GapGveFFMpegValues *epp)
   p_set_master_keywords(keylist, epp);
   l_rc = gap_val_rewrite_file(keylist
                           ,filename
-                          ,"# GIMP / GAP FFMPEG videoencoder parameter file"   /*  hdr_text */
-                          ,")"                                                 /* terminate char */
+                          ,GAP_FFENC_FILEHEADER_LINE   /*  hdr_text */
+                          ,")"                         /* terminate char */
                           );
 
   gap_val_free_keylist(keylist);
@@ -467,3 +473,160 @@ gap_ffpar_set(const char *filename, GapGveFFMpegValues *epp)
 
   return(l_rc);
 }  /* end gap_ffpar_set */
+
+
+
+
+/* ----------------------------------
+ * gap_ffpar_isValidPresetFile
+ * ----------------------------------
+ * check if specified filename is a preset file.
+ */
+gboolean
+gap_ffpar_isValidPresetFile(const char *fullPresetFilename)
+{
+
+  if (!g_file_test(fullPresetFilename, G_FILE_TEST_IS_DIR))
+  {
+    FILE        *l_fp;
+    char         buffer[500];
+    
+    /* load first few bytes into Buffer */
+    l_fp = g_fopen(fullPresetFilename, "rb");              /* open read */
+    if(l_fp != NULL)
+    {
+      fread(&buffer[0], 1, (size_t)sizeof(buffer -1), l_fp);
+      fclose(l_fp);
+      if(memcmp(&buffer[0], GAP_FFENC_FILEHEADER_LINE, strlen(GAP_FFENC_FILEHEADER_LINE -1)) == 0)
+      {
+        return(TRUE);
+      }
+    }
+  }
+  return(FALSE);
+
+}  /* end gap_ffpar_isValidPresetFile */
+
+
+/* ----------------------------------
+ * p_find_preset_by_filename
+ * ----------------------------------
+ */
+static GapGveFFMpegValues *
+p_find_preset_by_filename(const char *fullPresetFilename)
+{
+  GapGveFFMpegValues *epp;
+
+  for(epp = eppRoot; epp != NULL; epp = epp->next)
+  {
+    if(strncmp(&epp->presetFileName[0], fullPresetFilename, GAP_ENCODER_PRESET_NAME_MAX_LENGTH -1) == 0)
+    {
+      return(epp);
+    }
+  }
+  return (NULL);
+  
+}  /* end p_find_preset_by_filename */
+
+/* ----------------------------------
+ * gap_ffpar_getPresetList
+ * ----------------------------------
+ * returns a list of all available encoder presets.
+ * the list includes harcoded internal presets
+ * and optional presets files found in $GIMPDIR/video_encoder_presets
+ *
+ * presetId is generated as unique value > offset for hardcoded presets
+ * presetName derived from filename.
+ */
+GapGveFFMpegValues *
+gap_ffpar_getPresetList()
+{
+   GapGveFFMpegValues *epp;
+   GapGveFFMpegValues *eppPrev;
+   char          *presetDir;
+   GDir          *dirPtr;
+   const gchar   *entry;
+
+   eppPrev = eppRoot;
+   for(epp = eppRoot; epp != NULL; epp = epp->next)
+   {
+     eppPrev = epp;
+   }
+   
+   presetDir = g_build_filename(gimp_directory(), GAP_VIDEO_ENCODER_PRESET_DIR, NULL);
+   dirPtr = g_dir_open( presetDir, 0, NULL );
+   if(dirPtr != NULL)
+   {
+     while ( (entry = g_dir_read_name( dirPtr )) != NULL )
+     {
+       char          *fullPresetFilename;
+       
+       fullPresetFilename = g_build_filename(presetDir, entry, NULL);
+       
+       if(gap_debug)
+       {
+         printf("FILE:%s ENTRY:%s\n", fullPresetFilename, entry);
+       }
+       
+       if(gap_ffpar_isValidPresetFile(fullPresetFilename) == TRUE)
+       {
+         epp = p_find_preset_by_filename(fullPresetFilename);
+         if(epp != NULL)
+         {
+           /* read the parameters form preset file 
+            * to refresh values (that might have changed since last check)
+            * but keep presetId and presetName
+            */
+           gap_ffpar_get(fullPresetFilename, epp);
+         }
+         else
+         {
+           /* create a new entry in the static list of presets */
+           
+           epp = g_new(GapGveFFMpegValues ,1);
+          
+           /* read the parameters form preset file */
+           gap_ffpar_get(fullPresetFilename, epp);
+          
+           /* generate name and id (from filename and position in the list) */
+           epp->presetId = nextPresetId;
+           g_snprintf(&epp->presetName[0]
+                    , (GAP_ENCODER_PRESET_NAME_MAX_LENGTH -1)
+                    , "%d %s"
+                    , epp->presetId
+                    , entry
+                    );
+           g_snprintf(&epp->presetFileName[0]
+                    , (GAP_ENCODER_PRESET_FILENAME_MAX_LENGTH -1)
+                    , "%s"
+                    , fullPresetFilename
+                    );
+           epp->next = NULL;
+
+           if(gap_debug)
+           {
+            printf("PRESET:%s\n", &epp->presetName[0]);
+           }
+          
+           /* append epp to the list */
+           if(eppPrev == NULL)
+           {
+             eppRoot = epp;
+           }
+           else
+           {
+             eppPrev->next = epp;
+           }
+           eppPrev = epp;
+           nextPresetId++;
+         }  
+       }
+       g_free(fullPresetFilename);
+     }
+     g_dir_close( dirPtr );
+   }
+   g_free(presetDir);
+   
+   return(eppRoot);
+  
+}  /* end gap_ffpar_getPresetList */

@@ -103,6 +103,27 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define GAP_STORY_FW_PTR   "gap_story_fw_ptr"
 #define GAP_STORY_TABW_PTR "gap_story_tabw_ptr"
 
+
+/* render parameters constraint check values */
+
+#define MIN_OPEN_VIDEOFILES 2
+#define MAX_OPEN_VIDEOFILES 100
+#define DEFAULT_OPEN_VIDEOFILES 12
+
+#define MIN_FCACHE_PER_VIDEO 2
+#define MAX_FCACHE_PER_VIDEO 250
+#define DEFAULT_FCACHE_PER_VIDEO 36
+
+#define MIN_IMG_CACHE_ELEMENTS 1
+#define MAX_IMG_CACHE_ELEMENTS 2000
+#define DEFAULT_IMG_CACHE_ELEMENTS 18
+
+#define MIN_RESOURCE_LOG_INTERVAL 0
+#define MAX_RESOURCE_LOG_INTERVAL 100000
+#define DEFAULT_RESOURCE_LOG_INTERVAL 0
+
+
+
 /* the file GAP_DEBUG_STORYBOARD_CONFIG_FILE
  * is a debug configuration intended for development an test
  * if this file exists at start of the storyboard plug-in
@@ -290,6 +311,7 @@ static void     p_menu_win_help_cb (GtkWidget *widget, GapStbMainGlobalParams *s
 static void     p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_win_vthumbs_toggle_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_win_debug_log_to_stdout_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_win_render_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
 static void     p_menu_cll_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_open_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
@@ -399,6 +421,9 @@ static void    p_save_gimprc_int_value(const char *gimprc_option_name, gint32 va
 static void    p_save_gimprc_gboolean_value(const char *gimprc_option_name, gboolean value);
 static void    p_save_gimprc_layout_settings(GapStbMainGlobalParams *sgpp);
 static void    p_get_gimprc_layout_settings(GapStbMainGlobalParams *sgpp);
+static void    p_save_gimprc_render_settings(GapStbMainGlobalParams *sgpp);
+static void    p_get_gimprc_render_settings(GapStbMainGlobalParams *sgpp);
+
 
 static void    p_reset_progress_bars(GapStbMainGlobalParams *sgpp);
 static void    p_call_external_image_viewer(GapStbFrameWidget *fw);
@@ -1786,6 +1811,48 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
       return;  /* in case of errors: NO playback possible */
       sgpp->in_player_call = FALSE;
     }
+    
+    if(sgpp->stb_preview_render_full_size != TRUE)
+    {
+      /* if the storboard duplicate (stb_dup) includes at least one unscalable clip 
+       * (where either with or height is fixed to original size)
+       * then we must force slow internal rendering at full size.
+       */
+      if(gap_story_checkForAtLeatOneClipWithScalingDisabled(stb_dup) == TRUE)
+      {
+        if(gap_debug)
+        {
+          printf("Storyboard includes non-scaleable clip force rendering at full size!\n");
+        }
+      }
+      else
+      {
+        gint32 previewWidth;
+        gint32 previewHeight;
+
+        /* pick small size for preview rendering at composite video playback via storyboard processor
+         * purpose when posible for performance reasons.
+         */
+        if(sgpp->plp)
+        {
+          previewWidth = sgpp->plp->pv_width;
+          previewHeight = sgpp->plp->pv_height;
+        }
+        else
+        {
+          /* in case player was not yet called (e.g this ist the very 1st player call)
+           * the preview size is not yet known.
+           * Assume a preview width of 320 pixel in that case
+           */
+          previewWidth = 320;
+          previewHeight = previewWidth * (stb_dup->master_height / MAX(stb_dup->master_width,1));
+        }
+      
+        stb_dup->master_width = MIN(stb_dup->master_width, previewWidth);
+        stb_dup->master_height = MIN(stb_dup->master_height, previewHeight);
+      }
+    }
+    
   }
 
   if(sgpp->plp)
@@ -5323,6 +5390,176 @@ p_menu_win_debug_log_to_stdout_cb (GtkWidget *widget, GapStbMainGlobalParams *sg
   }
 }  /* end p_menu_win_debug_log_to_stdout_cb */
 
+/* -------------------------------
+ * p_menu_win_render_properties_cb
+ * -------------------------------
+ */
+static void
+p_menu_win_render_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  static GapArrArg  argv[8];
+  gint l_ii;
+  
+  gint l_stb_max_open_videofile_idx;
+  gint l_stb_fcache_size_per_videofile_idx;
+  gint l_ffetch_max_img_cache_elements_idx;
+  gint l_stb_resource_log_linterval_idx;
+  gint l_stb_preview_render_full_size_idx;
+  gint l_stb_isMultithreadEnabled_idx;
+  gint l_stb_isMultithreadFfEncoderEnabled_idx;
+  
+  gint multithreadDefaultFlag;
+  gboolean l_rc;
+
+
+  if(gap_debug) printf("p_menu_win_render_properties_cb\n");
+
+  if(sgpp->render_prop_dlg_open)
+  {
+    g_message(_("Global Render Properties dialog already open"));
+    return;
+  }
+
+  sgpp->render_prop_dlg_open = TRUE;
+
+  l_ii = 0;
+  l_stb_max_open_videofile_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Max open Videofiles:");
+  argv[l_ii].help_txt  = _("Maximum number of videofiles to be opened at same time while storyboard rendering");
+  argv[l_ii].int_min   = (gint)MIN_OPEN_VIDEOFILES;
+  argv[l_ii].int_max   = (gint)MAX_OPEN_VIDEOFILES;
+  argv[l_ii].int_ret   = (gint)sgpp->stb_max_open_videofile;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)DEFAULT_OPEN_VIDEOFILES;
+
+  l_ii++; l_stb_fcache_size_per_videofile_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Framecache / open video:");
+  argv[l_ii].help_txt  = _("Maximum number of frames to be cached per open video "
+                           "(only relevant when video clips are rendered backwards)");
+  argv[l_ii].int_min   = (gint)MIN_FCACHE_PER_VIDEO;
+  argv[l_ii].int_max   = (gint)MAX_FCACHE_PER_VIDEO;
+  argv[l_ii].int_ret   = (gint)sgpp->stb_fcache_size_per_videofile;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)DEFAULT_FCACHE_PER_VIDEO;
+
+
+
+  l_ii++; l_ffetch_max_img_cache_elements_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Max Image cache:");
+  argv[l_ii].help_txt  = _("Maximum number of images to keep cached "
+                           "(in memory as gimp image without display) "
+                           "while storyboard rendering");
+  argv[l_ii].int_min   = (gint)MIN_IMG_CACHE_ELEMENTS;
+  argv[l_ii].int_max   = (gint)MAX_IMG_CACHE_ELEMENTS;
+  argv[l_ii].int_ret   = (gint)sgpp->ffetch_max_img_cache_elements;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)DEFAULT_IMG_CACHE_ELEMENTS;
+
+  l_ii++; l_stb_resource_log_linterval_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Resource Loginterval:");
+  argv[l_ii].help_txt  = _("Value 0 turns off resource logging to stdout. "
+                           "Value n logs current resource usage afte each n processed frames to stdout "
+                           "(this includes the list of cached images and opened videofiles)");
+  argv[l_ii].int_min   = (gint)MIN_RESOURCE_LOG_INTERVAL;
+  argv[l_ii].int_max   = (gint)MAX_RESOURCE_LOG_INTERVAL;
+  argv[l_ii].int_ret   = (gint)sgpp->stb_resource_log_linterval;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)DEFAULT_RESOURCE_LOG_INTERVAL;
+
+
+  l_ii++; l_stb_preview_render_full_size_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Render preview at full size:");
+  argv[l_ii].help_txt  = _("ON: Rendering of composite frames for preview purpose is done (slow) at full size."
+                           "OFF: storyboard rendering for preview purpose is done at small size where possible."
+                           "(typically faster but disables extraction of a composite frame at original size "
+                           "via click into the player preview)");
+  argv[l_ii].int_ret   = (gint)sgpp->stb_preview_render_full_size;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)0;
+
+
+  /* the default for multiprocessing support is derived from
+   * gimprc "num-processors" configuration. In case gimp is configured to use
+   * only one processor the default is NO otherwise it is YES.
+   */
+  multithreadDefaultFlag = 0; /* FALSE */
+  if (gap_base_get_gimprc_int_value("num-processors"
+                               , 1  /* default */
+                               , 1  /* min */
+                               , 32 /* max */
+                               ) > 1)
+  {
+    multithreadDefaultFlag = 1; /* TRUE */
+  }
+
+  l_ii++; l_stb_isMultithreadEnabled_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Multiprocessor Storyboard Support:");
+  argv[l_ii].help_txt  = _("ON: Rendering of composite storyboard frames uses more than one processor. "
+                           "(reading frames from videoclips is done by parallel running prefetch processing) " 
+                           "OFF: Rendering of composite frames uses only one processor.");
+  argv[l_ii].int_ret   = (gint)sgpp->stb_isMultithreadEnabled;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)multithreadDefaultFlag;
+
+
+  l_ii++; l_stb_isMultithreadFfEncoderEnabled_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Multiprocessor Encoder Support:");
+  argv[l_ii].help_txt  = _("ON: Video encoders shall use more than one processor where implemented. "
+                           "The ffmpeg based video encoder implementation supports parallel processing. " 
+                           "OFF: Video encoders use only one processor.");
+  argv[l_ii].int_ret   = (gint)gap_base_get_gimprc_gboolean_value(
+                              GAP_GIMPRC_VIDEO_ENCODER_FFMPEG_MULTIPROCESSOR_ENABLE
+                             , multithreadDefaultFlag  /* default */
+                             );
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)multithreadDefaultFlag;
+
+  /* the reset to default button */
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
+  argv[l_ii].label_txt = _("Default");
+  argv[l_ii].help_txt  = _("Use the standard built in storyboard render settings");
+
+  l_rc = gap_arr_ok_cancel_dialog( _("Global Storyboard Render Properties")
+                                 , _("Render Settings")
+                                 ,G_N_ELEMENTS(argv), argv
+                                 );
+  sgpp->render_prop_dlg_open = FALSE;
+
+  if(l_rc == TRUE)
+  {
+    gboolean isFFMpegEncoderMultiprocessorSupport;
+    
+    sgpp->stb_max_open_videofile         = argv[l_stb_max_open_videofile_idx].int_ret;
+    sgpp->stb_fcache_size_per_videofile  = argv[l_stb_fcache_size_per_videofile_idx].int_ret;
+    sgpp->ffetch_max_img_cache_elements  = argv[l_ffetch_max_img_cache_elements_idx].int_ret;
+    sgpp->stb_resource_log_linterval     = argv[l_stb_resource_log_linterval_idx].int_ret;
+    sgpp->stb_preview_render_full_size   = (argv[l_stb_preview_render_full_size_idx].int_ret != 0);
+    sgpp->stb_isMultithreadEnabled       = (argv[l_stb_isMultithreadEnabled_idx].int_ret != 0);
+    isFFMpegEncoderMultiprocessorSupport = (argv[l_stb_isMultithreadFfEncoderEnabled_idx].int_ret != 0);
+
+    p_save_gimprc_render_settings(sgpp);
+    p_save_gimprc_gboolean_value(GAP_GIMPRC_VIDEO_ENCODER_FFMPEG_MULTIPROCESSOR_ENABLE
+                              , isFFMpegEncoderMultiprocessorSupport
+                              );
+    
+  }
+}  /* end p_menu_win_render_properties_cb  */
+
 
 /* -----------------------------
  * p_menu_cll_new_cb
@@ -5932,6 +6169,12 @@ p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           , sgpp
                           );
 
+   p_make_item_with_label(file_menu, _("Render Settings")
+                          , p_menu_win_render_properties_cb
+                          , sgpp
+                          );
+
+
    sgpp->menu_item_win_vthumbs =
    p_make_check_item_with_label(file_menu, _("Video thumbnails")
                           , p_menu_win_vthumbs_toggle_cb
@@ -6537,6 +6780,7 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
      /* fetch the wanted framenr  */
      th_data = GVA_fetch_frame_to_buffer(sgpp->gvahand
                 , do_scale
+                , FALSE           /* isBackwards */
                 , framenumber
                 , l_deinterlace
                 , l_threshold
@@ -8078,6 +8322,66 @@ p_get_gimprc_layout_settings(GapStbMainGlobalParams *sgpp)
 
 }  /* end p_get_gimprc_layout_settings */
 
+
+/* ---------------------------------
+ * p_save_gimprc_render_settings
+ * ---------------------------------
+ * Save global storyboard render settings as gimprc parameters.
+ */
+static void
+p_save_gimprc_render_settings(GapStbMainGlobalParams *sgpp)
+{
+  p_save_gimprc_int_value("gap_ffetch_max_img_cache_elements", sgpp->ffetch_max_img_cache_elements);
+  p_save_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_MAX_OPEN_VIDEOFILES, sgpp->stb_max_open_videofile);
+  p_save_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_FCACHE_SIZE_PER_VIDEOFILE, sgpp->stb_fcache_size_per_videofile);
+  p_save_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_RESOURCE_LOG_INTERVAL, sgpp->stb_resource_log_linterval);
+  p_save_gimprc_gboolean_value(GAP_GIMPRC_VIDEO_STORYBOARD_PREVIEW_RENDER_FULL_SIZE, sgpp->stb_preview_render_full_size);
+  p_save_gimprc_gboolean_value(GAP_GIMPRC_VIDEO_STORYBOARD_MULTIPROCESSOR_ENABLE, sgpp->stb_isMultithreadEnabled);
+
+}  /* end p_save_gimprc_render_settings */
+
+
+/* ---------------------------------
+ * p_get_gimprc_render_settings
+ * ---------------------------------
+ */
+static void
+p_get_gimprc_render_settings(GapStbMainGlobalParams *sgpp)
+{
+
+  sgpp->ffetch_max_img_cache_elements  = gap_base_get_gimprc_int_value("gap_ffetch_max_img_cache_elements"
+                    ,DEFAULT_IMG_CACHE_ELEMENTS
+                    ,MIN_IMG_CACHE_ELEMENTS
+                    ,MAX_IMG_CACHE_ELEMENTS
+                    );
+  sgpp->stb_max_open_videofile  = gap_base_get_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_MAX_OPEN_VIDEOFILES
+                    ,DEFAULT_OPEN_VIDEOFILES
+                    ,MIN_OPEN_VIDEOFILES
+                    ,MAX_OPEN_VIDEOFILES
+                    );
+
+  sgpp->stb_fcache_size_per_videofile  = gap_base_get_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_FCACHE_SIZE_PER_VIDEOFILE
+                    ,DEFAULT_FCACHE_PER_VIDEO
+                    ,MIN_FCACHE_PER_VIDEO
+                    ,MAX_FCACHE_PER_VIDEO
+                    );
+
+  sgpp->stb_resource_log_linterval  = gap_base_get_gimprc_int_value(GAP_GIMPRC_VIDEO_STORYBOARD_RESOURCE_LOG_INTERVAL
+                    ,0  /* default */
+                    ,0  /* min */
+                    ,100000  /* max */
+                    );
+
+
+  sgpp->stb_preview_render_full_size  = gap_base_get_gimprc_gboolean_value(
+                    GAP_GIMPRC_VIDEO_STORYBOARD_PREVIEW_RENDER_FULL_SIZE
+                    ,FALSE  /* default */
+                    );
+
+  sgpp->stb_isMultithreadEnabled = gap_story_isMultiprocessorSupportEnabled();
+
+}  /* end p_get_gimprc_render_settings */
+
 /* ---------------------------------
  * p_reset_progress_bars
  * ---------------------------------
@@ -8169,12 +8473,17 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->menu_item_stb_close = NULL;
 
   sgpp->win_prop_dlg_open = FALSE;
+  sgpp->render_prop_dlg_open = FALSE;
   sgpp->dnd_pixbuf = NULL;
 
   /* get layout settings from gimprc
    * (keeping initial values if no layout settings available in gimprc)
    */
   p_get_gimprc_layout_settings(sgpp);
+  /* get render settings from gimprc
+   * (using default values if no layout settings available in gimprc)
+   */
+  p_get_gimprc_render_settings(sgpp);
 
   /*  The dialog and main vbox  */
   /* the help_id is passed as NULL to avoid creation of the HELP button

@@ -1,3 +1,182 @@
+2010-12-14 Wolfgang Hofer <hof@gimp.org>
+
+- GIMP-GAP has swichted its main video encoder/decoder engine
+  from ffmpeg-0.6 to ffmpeg-0.6.1
+  
+  - test videos videoinex creation smartscan gives same analyse files as ffmpeg-0.6
+  - seek tests repeated, same results as ffmpeg-0.6
+  - read various videoformat samples same results as ffmpeg-0.6
+
+- Analyze of the videoencoding performance 
+    GVA api and ffmpeg based encoder were checked and
+    some performance relevant changes were implemented.
+    
+    Note: the multithread support did NOT fulfill my expectations.
+    the performance advantage was minimal compared with singlethreaded implementation
+    on my 4 Processor development machine.
+    Other changes (like enable mmx ffmpeg options, replacement of row-by-row
+    processing) were more efficient for performance.
+
+- GVA video api 
+   - GVA_fetch_frame_to_buffer use fcache filling reads in case of backwards seek.
+   - added fcache_mutex to prepare fcache access code for multithred environment.
+   - provide new procedure GVA_search_fcache_and_get_frame_as_gimp_layer_or_rgb888 
+     intended for use in multithreaded environment (e.g. the prefetch tread
+     in the storyboard processor)
+
+- replaced the slow row by row implementation
+  that converts from drawable to RGB buffer at encoding
+  (see: libgapvidutil/gap_gve_raw.c gap_gve_drawable_to_RgbBuffer)
+  
+- added multithreading support for the ffmpeg based video encoder plug-in
+  using a ringbuffer queue implementation where the main thread
+  feeds the queue via storyboard processor. The parallel running encoder
+  thread reads from the queue and uses libavformat/libavcodec to write
+  the resulting videofile.
+
+  On singleprocessor configuration encoding is done without the queue
+  (the same way as prior implementation did)
+
+- added a new menu in the storyboard dialog that allows edit gimprc parameters
+  that are relevant for the storyboard render processing.
+
+- The storyboardprocessor provides a new API procedure
+    gap_story_render_fetch_composite_image_or_buffer_or_chunk
+  that allows video encoders to bypass the render engine 
+  in scenes where simple 1:1 copy of fetched frames in movie clips is possible.
+  (in such cases an rgb888 buffer is delivered to the encoder instead of 
+  a gimp layer)
+  The ffmpeg based video encoder already uses this new API
+  and runs faster when encoding those storyboards scenes.
+
+- added gimprc parameters:
+  
+  "video-storyboard-fcache-size-per-videofile"
+  "video-storyboard-resource-log-interval"
+    # the integer parameter video-storyboard-resource-log-interval
+    # enables logging of cached resources during storyboard processing
+    # value n (positive integer) triggers resource logging every n-th frame.
+    #         where logging includes information about cached images 
+    #         and currently open video handles.
+    #         This is intended for debug purpose.
+    # value 0 (is the default) turns off this type of logging.
+
+  "video-storyboard-multiprocessor-enable"
+    # the boolean parameter video-storyboard-multiprocessor-enable
+    # enables multiprocessor support for the storyboard processor
+    # The current implementation uses a parallel running prefetch thread
+    # that reads frames from referenced videofiles into a frame cache
+    # in advance.
+  
+  "video-enoder-ffmpeg-multiprocessor-enable"
+    # the boolean parameter video-enoder-ffmpeg-multiprocessor-enable
+    # enables multiprocessor support for the ffmpeg based video encoder
+    # The current implementation uses a parallel running encoder thread
+    # that uses a ringbuffer queue that is feed by the storyboard processor.
+  
+
+- Analyse for out of memory errors while encoding large HD videos via storyboard processor.
+  ==> the default values for: 
+    video-storyboard-max-open-videofiles    12
+    GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED 36
+
+  are too large in case HD video is processed
+  (this fills up my 4 GB ram on storyboard encoding
+  with the fcache of the video api.
+
+     one HD frame takes 6271236 bytes  // (1920 x 1088 x 3) + 4  + (1088 * 4)
+     for all videohandles this is a summary of 2709173952 bytes    //  12  * 36 * 6271236
+     
+     the rest of 4GB was mainly filled with gimp images 
+     (the image cache default "gap_ffetch_max_img_cache_elements" is 18 images)
+     
+  as result of this analyse the GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED value
+  is now configurable via gimprc parameter "video-storyboard-fcache-size-per-videofile"
+  furthermore the configured value is only used in case videoclips are played backwards
+  For standard ascening frame access a small fcache size (6) is picked that 
+  shall be big enough for prefetch of videoframes in mutithreaded environment.
+  Those changes result in remarkable less usage of memory resources without
+  loss of performance.
+
+- added optional performance logging in single or multithread environment 
+  for storyboard processing, ffmpeg videoapi parts and ffmpeg based video encoder.
+
+  The new configure option
+     --enable-runtime_recording
+  compiles gimp-gap with support for runtime recording/logging on some
+  instrumented procedures, intended for performance analysis and tuning purpose.
+  (see gap_timm.c calls in the source code)
+  
+  
+  Logging report is triggered by
+  o) STOP button clicked in the player
+  o) after ffmpeg based encoder finished
+  
+  
+- optional resource usage logging while storyboard processing
+
+- use rounding in calculation of storboard scale and movement koords
+  (use gdouble variables and rint function in procedure gap_story_file_calculate_render_attributes)
+
+- AVI1 videoencoder added option to select RGB or BGR for raw video
+  (intended mainly for test purpose, most players want BGR for RAW video
+
+  * NEWS  
+  * configure.in  
+
+  * docs/reference/txt/gap_gimprc_params.txt  
+  * docs/reference/txt/STORYBOARD_FILE_DOC.txt  
+
+  * extern_libs/configure_options_ffmpeg.txt  
+  * extern_libs/ffmpeg.tar.gz                # updated to ffmpeg release 0.6.1
+  * extern_libs/README_extern_libs  
+
+  * gap/gap_frame_fetcher.c  
+  * gap/gap_frame_fetcher.h  
+  * gap/gap_player_dialog.c  
+  * gap/gap_story_dialog.c  
+  * gap/gap_story_file.c  
+  * gap/gap_story_file.h  
+  * gap/gap_story_main.c  
+  * gap/gap_story_main.h  
+  * gap/gap_story_render_audio.c  
+  * gap/gap_story_render_lossless.c  
+  * gap/gap_story_render_processor.c  
+  * gap/gap_story_render_processor.h  
+  * gap/gap_story_render_types.h  
+  * gap/Makefile.am  
+
+  * libgapbase/gap_base.c  
+  * libgapbase/gap_base.h  
+  * libgapbase/gap_libgapbase.h  
+  * libgapbase/Makefile.am  
+
+  * libgapvidapi/gap_vid_api.c  
+  * libgapvidapi/gap_vid_api_ffmpeg.c  
+  * libgapvidapi/gap_vid_api.h 
+  * libgapvidapi/Makefile.am  
+
+  * libgapvidutil/gap_gve_raw.c  
+  * libgapvidutil/gap_gve_raw.h  
+
+  * vid_common/gap_cme_gui.c 
+ 
+  * vid_enc_avi/gap_enc_avi_gui.c  
+  * vid_enc_avi/gap_enc_avi_main.c  
+  * vid_enc_avi/gap_enc_avi_main.h 
+ 
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.h  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c  
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.h  
+
+
+  *  libgapbase/gap_timm.c                # NEW FILE
+  *  libgapbase/gap_timm.h                # NEW FILE
+  *  libgapvidapi/gap_vid_api_mp_util.c   # NEW FILE
+
 2010-10-10 Wolfgang Hofer <hof@gimp.org>
   
 - GIMP-GAP has swichted its main video encoder/decoder engine

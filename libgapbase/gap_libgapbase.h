@@ -36,6 +36,7 @@
 #include "gap_val_file.h"
 #include "gap_file_util.h"
 #include "gap_base.h"
+#include "gap_timm.h"
 
 
 /* GAP_BASE_MIX_VALUE  0.0 <= factor <= 1.0

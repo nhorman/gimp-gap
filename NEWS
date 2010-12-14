@@ -29,6 +29,9 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
   (anchor modes are: ClipColormask, Clip, Master)
 
 - The Storyboard now supports rotatation of the prcessed clips by any angle.
+  bugfixes in the storyboard processing now use less memory resources
+  and produces smoother movent.
+  (the old code did run out of memory when processing multiple HD videoclips)
 
 - A new storyboard processing feature allows adding external transparency 
   for clip type movie. This is done via format string that refers to
@@ -51,12 +54,15 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
    individual workpointfiles per processed frame are located via
    name convention (extension .morphpoints) and used for morphing when they exist.
    (such files can be created with the help of the plug-in "Morph Workpoint Generator").
-
+/home/hof/gimp_devel/gap/gimp-gap-ffmpeg/master-patched/NEWS
 - support to run gimp_color_balance tool as animated filter 
   (added wrapper plug-in).
 
+- significant better performance for ffmpeg based video encoder
+  on single and multiprocessor machines.
+
 - updated gimp-gap video API and ffmpeg-based video encoder
-  to support the libraries provided with the ffmpeg-0.6 release
+  to support the libraries provided with the ffmpeg-0.6.1 release
   This includes various bugfixes related to video de/encode 
   (but breaks backwards compatibility when seeking positions by frame number
   in videofiles that do not start with a keyframe).

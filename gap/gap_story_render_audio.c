@@ -1189,7 +1189,8 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
            }
            if(gvahand)
            {
-             GVA_set_fcache_size(gvahand, GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED);
+             /* set smallest fcache size 1 because fcache is not relevant for audio processing */
+             GVA_set_fcache_size(gvahand, 1);
              aud_elem->samplerate        = gvahand->samplerate;
              aud_elem->channels          = gvahand->audio_cannels;
              aud_elem->bytes_per_sample  = gvahand->audio_cannels * 2;  /* API operates with 16 bit per sample */

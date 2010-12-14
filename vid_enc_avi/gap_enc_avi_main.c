@@ -178,7 +178,8 @@ query ()
     {GIMP_PDB_INT32, "png_dont_recode_frames", "=1: store the frames _directly_ into the AVI where possible. "
                                  "(works only for codec_name PNG )"},
     {GIMP_PDB_INT32, "png_interlaced", "=1: interlaced png frames, 0= no interlace"},
-    {GIMP_PDB_INT32, "png_compression", "the compression of the coded pngs (0 - 9) where 9 is best and 0 is fast "}
+    {GIMP_PDB_INT32, "png_compression", "the compression of the coded pngs (0 - 9) where 9 is best and 0 is fast "},
+    {GIMP_PDB_INT32, "raw_bgr", "=1: bgr else rgb colormodel (only for codec_name RAW and RGB )"}
   };
   static int nargs_avi_enc_par = sizeof(args_avi_enc_par) / sizeof(args_avi_enc_par[0]);
 
@@ -390,6 +391,7 @@ run (const gchar *name,          /* name of plugin */
            epp->png_dont_recode_frames = param[l_ii++].data.d_int32;
            epp->png_interlaced    = param[l_ii++].data.d_int32;
            epp->png_compression   = param[l_ii++].data.d_int32;
+           epp->raw_bgr           = param[l_ii++].data.d_int32;
 
         }
       }
@@ -569,6 +571,7 @@ gap_enc_avi_main_init_default_params(GapGveAviValues *epp)
   epp->APP0_marker = TRUE;
 
   epp->raw_vflip    = 1;
+  epp->raw_bgr    = 1;
 }  /* end gap_enc_avi_main_init_default_params */
 
 
@@ -1013,18 +1016,30 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
           ||  (strcmp(epp->codec_name, GAP_AVI_CODEC_RGB) == 0))
           {
             gboolean l_vflip;
+            gboolean l_convertToBGR;
 
-            /* fill buffer with raw 24bit data, optional flipped.
-             * it seems that some AVI players (for instance the WinDVD player)
-             *  require the inverse row order than gimp,
-             *  and other players (like gmplayer on unix) does not need vflipped images.
+            /* fill buffer with raw 24bit data, optional flipped or converted to BGR.
+             * it seems that some AVI players (for instance the WinDVD and VLC player)
+             *  require the inverse row order than gimp anf BGR colormodel
+             *  other players (like gmplayer on unix) does not want vflipped images.
              */
             l_vflip = FALSE;
             if(epp->raw_vflip != 0)
             {
               l_vflip = TRUE;
             }
-            buffer = gap_gve_raw_BGR_drawable_encode(l_drawable, &l_FRAME_size, l_vflip, l_app0_buffer, l_app0_len);
+            l_convertToBGR = FALSE;
+            if(epp->raw_bgr != 0)
+            {
+              l_convertToBGR = TRUE;
+            }
+            buffer = gap_gve_raw_RGB_or_BGR_drawable_encode(l_drawable
+                     , &l_FRAME_size
+                     , l_vflip
+                     , l_app0_buffer
+                     , l_app0_len
+                     , l_convertToBGR
+                     );
           }
 #ifdef ENABLE_LIBXVIDCORE
           else

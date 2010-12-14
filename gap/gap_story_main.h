@@ -453,6 +453,13 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
    * those values are used for LAST_VALUES runmode at startup only
    * rendering uses the values in the tabw structures
    */
+  gint32                  stb_max_open_videofile;
+  gint32                  stb_fcache_size_per_videofile;
+  gint32                  ffetch_max_img_cache_elements;
+  gint32                  stb_resource_log_linterval;
+  gboolean                stb_isMultithreadEnabled;
+  gboolean                stb_preview_render_full_size;
+  gboolean                render_prop_dlg_open;
   gboolean                win_prop_dlg_open;
   GapStoryElemDisplayMode cll_edmode;
   gint32                  cll_cols;

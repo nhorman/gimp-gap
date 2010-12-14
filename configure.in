@@ -62,6 +62,9 @@ AC_SUBST(GIMP_PLUGIN_DIR)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.8.0)
 
+
+
+
 NEW_LINE="
 "
 
@@ -159,6 +162,10 @@ AC_CHECK_LIB(pthread, pthread_create,
           pthread_err="pthread header file (pthread.h) not found")],
 	pthread_err="pthread library (libpthread) not found")
 
+  if test "x$pthread_err" = "x"; then
+    AC_DEFINE(GAP_HAVE_PTHREAD, 1,
+              [Define to 1 if you have the <pthread.h> header file.])
+  fi
 
 dnl check for bzip2 library (for ffmpeg matroskadec )
 dnl the check result does not matter unless libavformat is linked or built later on.
@@ -1002,17 +1009,18 @@ AC_SUBST(FFMPEG_LIBSWSCALE_A)
 AC_SUBST(LMPEG3_DIR)
 AC_SUBST(LMPEG3_A)
 
-GAPVIDEOAPI_EXTLIBS="\$(GAP_VLIBS_FFMPEG) \$(GAP_VLIBS_MPEG3) -lpng -lz \$(GAP_PTHREAD_LIB) -lm"
-GAPVIDEOAPI_EXTINCS="\$(GAP_VINCS_FFMPEG) \$(GAP_VINCS_MPEG3)"
-AC_SUBST(GAPVIDEOAPI_EXTLIBS)
-AC_SUBST(GAPVIDEOAPI_EXTINCS)
-
 dnl 
 dnl TODO: check for required gthread version, 
 dnl and disable GAP_USE_GTHREAD if not available
 dnl
-GTHREAD_LIBS="-lgthread-2.0"
+GTHREAD_LIBS=`$PKG_CONFIG --libs gthread-2.0`
 AC_SUBST(GTHREAD_LIBS)
+
+GAPVIDEOAPI_EXTLIBS="\$(GAP_VLIBS_FFMPEG) \$(GAP_VLIBS_MPEG3) -lpng -lz \$(GTHREAD_LIBS) \$(GAP_PTHREAD_LIB) -lm"
+GAPVIDEOAPI_EXTINCS="\$(GAP_VINCS_FFMPEG) \$(GAP_VINCS_MPEG3)"
+AC_SUBST(GAPVIDEOAPI_EXTLIBS)
+AC_SUBST(GAPVIDEOAPI_EXTINCS)
+
 
 
 
@@ -1055,6 +1063,26 @@ AC_ARG_ENABLE(gdkpixbuf_pview,
 
 AM_CONDITIONAL(BUILD_FFMPEG_LIBS, test "x$build_ffmpeg_libs_yesno" != "xno")
 AM_CONDITIONAL(BUILD_LIBMPEG3_LIB, test "x$build_libmpeg3_lib_yesno" != "xno")
+
+dnl
+dnl runtime recording is primary a developers feature
+dnl for analyse and performance tuning purpose.
+dnl
+AC_ARG_ENABLE(runtime_recording,
+              [  --enable-runtime-recording-all      enable runtime recording and logging of all procedures using GAP_TIMM macros (default is no for this debug feature)])
+  if test "x$enable_runtime_recording_all" = "xyes"; then
+    AC_DEFINE(GAP_RUNTIME_RECORDING_LOCK, 1,
+              [use gap runtime recording and logging features (enables locking implementations GAP_TIMM_x_FUNCTION macros)])
+    AC_DEFINE(GAP_RUNTIME_RECORDING_NOLOCK, 1,
+              [use gap runtime recording and logging features (enables non-locking implementations GAP_TIMM_x_RECORD macros)])
+  fi
+
+AC_ARG_ENABLE(runtime_recording,
+              [  --enable-runtime-recording-nolock  enable runtime recording (only non-locking implementations, default is no for this debug feature)])
+  if test "x$enable_runtime_recording_nolock" = "xyes"; then
+    AC_DEFINE(GAP_RUNTIME_RECORDING_NOLOCK, 1,
+              [use gap runtime recording and logging features (enables non-locking implementations GAP_TIMM_x_RECORD macros)])
+  fi
 
 
 GAPLIBDIR=${libdir}/$PACKAGE-$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION

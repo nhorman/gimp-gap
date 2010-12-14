@@ -4339,7 +4339,8 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Start\n");
 
 #ifdef GAP_USE_GTHREAD
-  g_thread_init (NULL);
+  /* check and init thread system */
+  gap_base_thread_init();
   gdk_threads_init ();
   gdk_threads_enter ();
 #endif

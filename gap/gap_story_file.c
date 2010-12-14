@@ -34,6 +34,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 #include <glib/gstdio.h>
@@ -8948,7 +8949,7 @@ gap_story_get_default_attribute(gint att_typ_idx)
  *   opacity       0.0 .. fully transparent, 1.0 fully opaque
  * )
  *
- * the results are written to the speccified result_attr structure,
+ * the results are written to the specified result_attr structure,
  * and shall be applied to the layer.
  *
  */
@@ -8971,14 +8972,14 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     , gdouble move_y
     )
 {
-  gint32 result_width;
-  gint32 result_height;
-  gint32 result_ofsx;
-  gint32 result_ofsy;
-  gint32 l_tmp_width;
-  gint32 l_tmp_height;
-  gint32 center_x_ofs;
-  gint32 center_y_ofs;
+  gdouble result_width;
+  gdouble result_height;
+  gdouble result_ofsx;
+  gdouble result_ofsy;
+  gdouble l_tmp_width;
+  gdouble l_tmp_height;
+  gdouble center_x_ofs;
+  gdouble center_y_ofs;
 
 
   if(result_attr == NULL)
@@ -9021,11 +9022,11 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     {
       if(fit_height)
       {
-         l_tmp_width = vid_height * l_frame_prop;
+         l_tmp_width = (gdouble)vid_height * l_frame_prop;
       }
       if(fit_width)
       {
-         l_tmp_height = vid_width / l_frame_prop;
+         l_tmp_height = (gdouble)vid_width / l_frame_prop;
       }
     }
 
@@ -9036,7 +9037,7 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
   {
     if(fit_width)
     {
-      result_width  = MAX(1, (vid_width  * scale_x));
+      result_width  = MAX(1, ((gdouble)vid_width  * scale_x));
     }
     else
     {
@@ -9045,7 +9046,7 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
 
     if(fit_height)
     {
-      result_height = MAX(1, (vid_height * scale_y));
+      result_height = MAX(1, ((gdouble)vid_height * scale_y));
     }
     else
     {
@@ -9053,23 +9054,23 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     }
   }
 
+  result_attr->opacity = CLAMP(opacity * 100.0, 0.0, 100.0);
+  result_attr->width = rint(result_width);
+  result_attr->height = rint(result_height);
 
   /* offset calculation */
   {
 
-    center_x_ofs = (vid_width/2) -  (result_width/2);
-    center_y_ofs = (vid_height/2) - (result_height/2);
+    center_x_ofs = ((gdouble)vid_width/2.0) -  (result_width/2.0);
+    center_y_ofs = ((gdouble)vid_height/2.0) - (result_height/2.0);
 
-    result_ofsx  = center_x_ofs + ((result_width / 2)  * move_x) + ((vid_width / 2)  * move_x);
-    result_ofsy  = center_y_ofs + ((result_height / 2 ) * move_y) + ((vid_height / 2 ) * move_y);
+    result_ofsx  = center_x_ofs + (((gdouble)result_attr->width / 2.0)  * move_x) + (((gdouble)vid_width / 2.0)  * move_x);
+    result_ofsy  = center_y_ofs + (((gdouble)result_attr->height / 2.0 ) * move_y) + (((gdouble)vid_height / 2.0 ) * move_y);
 
   }
 
-  result_attr->opacity = CLAMP(opacity * 100.0, 0.0, 100.0);
-  result_attr->width = result_width;
-  result_attr->height = result_height;
-  result_attr->x_offs = result_ofsx + ((view_vid_width - vid_width) / 2);
-  result_attr->y_offs = result_ofsy + ((view_vid_height - vid_height) / 2);
+  result_attr->x_offs = rint(result_ofsx + (((gdouble)view_vid_width - (gdouble)vid_width) / 2.0));
+  result_attr->y_offs = rint(result_ofsy + (((gdouble)view_vid_height - (gdouble)vid_height) / 2.0));
 
 
   /* calculate visble rectangle size after clipping */
@@ -9850,3 +9851,82 @@ gap_story_transform_rotate_layer(gint32 image_id, gint32 layer_id, gdouble rotat
 
 
 }  /* end gap_story_transform_rotate_layer */
+
+
+/* --------------------------------------------------
+ * gap_story_checkForAtLeatOneClipWithScalingDisabled
+ * --------------------------------------------------
+ * returns TRUE if at least one unscaleable clip was found in the specified storyboard.
+ *         FALSE in case all clips are scaleable.
+ * unscaleable clips are those type of clips where either with or height ist fixed to original size.
+ * Note that sections (including main mask_section and all subsections) and all video tracks are included
+ * in the search for non scalable clips.
+ */
+gboolean
+gap_story_checkForAtLeatOneClipWithScalingDisabled(GapStoryBoard *stb_ptr)
+{
+  GapStorySection   *section;
+  GapStoryElem      *stb_elem;
+
+  for(section = stb_ptr->stb_section; section != NULL; section = section->next)
+  {
+    if (section == stb_ptr->mask_section)
+    {
+      continue;
+    }
+
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      gboolean isScaleableClip;
+      
+      isScaleableClip = FALSE;
+      if(stb_elem->att_fit_width == TRUE)
+      {
+        if ((stb_elem->att_keep_proportions == TRUE)
+        ||  (stb_elem->att_fit_height == TRUE))
+        {
+          isScaleableClip = TRUE;
+        }
+      }
+      else if (stb_elem->att_fit_height == TRUE)
+      {
+        if (stb_elem->att_keep_proportions == TRUE)
+        {
+          isScaleableClip = TRUE;
+        }
+      }
+      
+      if(isScaleableClip != TRUE)
+      {
+        return(TRUE);
+      }
+    }
+
+  }
+
+  return (FALSE);
+}  /* end gap_story_checkForAtLeatOneClipWithScalingDisabled */
+
+
+/* -------------------------------------------
+ * gap_story_isMultiprocessorSupportEnabled 
+ * -------------------------------------------
+ * this procedure checks the gimprc parameters configuration
+ * for multiprocessor support.
+ */
+gboolean
+gap_story_isMultiprocessorSupportEnabled(void)
+{
+  gboolean  isMultithreadEnabled;
+  gint      numProcessors;
+  gboolean  mpDefaultFlag; 
+
+  isMultithreadEnabled = FALSE;
+  numProcessors = gap_base_get_numProcessors();
+  mpDefaultFlag = (numProcessors > 1);
+  isMultithreadEnabled = gap_base_get_gimprc_gboolean_value(GAP_GIMPRC_VIDEO_STORYBOARD_MULTIPROCESSOR_ENABLE
+                                     , mpDefaultFlag  /* default */
+                                     );
+  return(isMultithreadEnabled);
+  
+}  /* end gap_story_isMultiprocessorSupportEnabled */

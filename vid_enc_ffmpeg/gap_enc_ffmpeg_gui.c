@@ -687,6 +687,12 @@ p_init_combo_vals(GapGveFFMpegGlobalParams *gpp)
 {
   char *name;
 
+
+  if(gap_debug)
+  {
+    printf("p_init_combo_vals START\n");
+  }
+
   p_init_gint_combo_active(gpp, gpp->ff_motion_estimation_combo
                               , &gtab_motion_est[0]
                               , gpp->evl.motion_estimation
@@ -766,6 +772,11 @@ p_init_combo_vals(GapGveFFMpegGlobalParams *gpp)
   name = p_init_combo_actual_nameidx(gpp, gpp->ff_fileformat_combo, glist_fileformat, gpp->evl.format_name);
   name = p_init_combo_actual_nameidx(gpp, gpp->ff_vid_codec_combo,  glist_vid_codec,  gpp->evl.vcodec_name);
   name = p_init_combo_actual_nameidx(gpp, gpp->ff_aud_codec_combo,  glist_aud_codec,  gpp->evl.acodec_name);
+
+  if(gap_debug)
+  {
+    printf("p_init_combo_vals DONE\n");
+  }
 
 }  /* end p_init_combo_vals */
 
@@ -3936,16 +3947,27 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   /* the presets combo */
   combo = gimp_int_combo_box_new (
      _("** OOPS do not change any parameter **"),   GAP_GVE_FFMPEG_PRESET_00_NONE,
-     _("use DivX default presets"),                 GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT,
-     _("use DivX high quality presets"),            GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST,
-     _("use DivX low quality presets"),             GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW,
-     _("use DivX WINDOWS presets"),                 GAP_GVE_FFMPEG_PRESET_04_DIVX_MS,
-     _("use MPEG1 (VCD) presets"),                  GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD,
-     _("use MPEG1 high quality presets"),           GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST,
-     _("use MPEG2 (SVCD) presets"),                 GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD,
-     _("use MPEG2 (DVD) presets"),                  GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD,
-     _("use REAL video presets"),                   GAP_GVE_FFMPEG_PRESET_09_REAL,
+     _("DivX default preset"),                 GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT,
+     _("DivX high quality preset"),            GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST,
+     _("DivX low quality preset"),             GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW,
+     _("DivX WINDOWS preset"),                 GAP_GVE_FFMPEG_PRESET_04_DIVX_MS,
+     _("MPEG1 (VCD) preset"),                  GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD,
+     _("MPEG1 high quality preset"),           GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST,
+     _("MPEG2 (SVCD) preset"),                 GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD,
+     _("MPEG2 (DVD) preset"),                  GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD,
+     _("REAL video preset"),                   GAP_GVE_FFMPEG_PRESET_09_REAL,
      NULL);
+  {
+    GapGveFFMpegValues *epp;
+    
+    for(epp = gap_ffpar_getPresetList(); epp != NULL; epp = epp->next)
+    {
+      gimp_int_combo_box_append (GIMP_INT_COMBO_BOX (combo),
+                                 GIMP_INT_STORE_VALUE, epp->presetId,
+                                 GIMP_INT_STORE_LABEL, &epp->presetName[0],
+                                 -1);
+    }
+  }
   gpp->ff_presets_combo                   = combo;
 
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),

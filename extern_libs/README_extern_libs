@@ -3,7 +3,7 @@ as sourcecode for convenient static linking.
 
 CURRENT FFMPEG version is:
 
-- ffmpeg 0.6
+- ffmpeg 0.6.1
 
 CURRENT LIBMPEG3 version is:
        
@@ -48,7 +48,11 @@ this GIMP-GAP distribution.
   working. 
   
   GIMP-GAP currently supports 
-  o) ffmpeg-0.6 basically works, tests are in progress
+  o) ffmpeg-0.6.1 tests repeated, same results as ffmpeg-0.6
+  o) ffmpeg-0.6 basically works, tests done 
+     incopatibility detected at frame exact positioning compared against ffmpeg-0.5 
+     on dvd mpeg2 encoded videos that do not start with a keyframe.
+     (No idea how to fix, there are no plans to investigate more effort on this...)
 
   o) ffmpeg-0.5 successfully tested with many videoformats
      but does no longer work with recent version of libx264 (X264_BUILD 93)

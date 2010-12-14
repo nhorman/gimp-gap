@@ -45,6 +45,11 @@
 #include <unistd.h>
 #endif
 
+#ifdef GAP_HAVE_PTHREAD
+#include "pthread.h"
+#endif
+
+
 #include <glib/gstdio.h>
 
 /* GIMP includes */
@@ -573,3 +578,198 @@ gap_base_mix_value_exp_and_round(gdouble factor, gdouble a, gdouble b)
 {
   return (ROUND(gap_base_mix_value_exp(factor, a, b)));
 }
+
+
+
+/* ---------------------------------
+ * gap_base_get_numProcessors
+ * ---------------------------------
+ * get number of available processors.
+ * This implementation uses the gimprc parameter of the gimp core application.
+ * Therefore the returned number does not reflect hardware information, but
+ * reprents the number of processors that are configured to be used by th gimp.
+ */
+gint
+gap_base_get_numProcessors()
+{
+  gint      numProcessors;
+
+  numProcessors = gap_base_get_gimprc_int_value("num-processors"
+                               , 1  /* default */
+                               , 1  /* min */
+                               , 32 /* max */
+                               );
+  return (numProcessors);
+}
+
+
+/* ---------------------------------
+ * gap_base_thread_init
+ * ---------------------------------
+ * check if thread support and init thread support if true.
+ * returns TRUE on successful initialisation of thread system
+ *         FALSE in case thread support is not available.
+ * Note: multiple calls are tolarated and shall always deliver the same result. 
+ */
+gboolean 
+gap_base_thread_init()
+{
+  static gboolean isFirstCall = TRUE;
+  gboolean isThreadSupportOk;
+  
+  /* check if thread system is already initialized */
+  if(isFirstCall == TRUE)
+  {
+    if(gap_debug)
+    {
+      printf("gap_base_thread_init: CALLING g_thread_init\n");
+    }
+    /* try to init thread system */
+    g_thread_init(NULL);
+
+    isFirstCall = FALSE;
+  }
+
+  isThreadSupportOk = g_thread_supported();
+
+  if(gap_debug)
+  {
+    printf("gap_base_thread_init: isThreadSupportOk:%d\n"
+      ,(int)isThreadSupportOk
+      );
+  }
+
+  return(isThreadSupportOk);
+}
+
+
+/* ---------------------------------
+ * gap_timm_get_thread_id
+ * ---------------------------------
+ * get id of the current thread.
+ * gthread does not provide that feature.
+ *
+ * therefore use pthread implementation to get the current thread id.
+ * In case pthread is not available at compiletime this procedure
+ * will always return 0 and runtime.
+ */
+gint64
+gap_base_get_thread_id()
+{
+  gint64 threadId = 0;
+  
+//#ifdef HAVE_SYS_TYPES_H
+//  threadId = (gint64)gettid();
+//#endif
+
+#ifdef GAP_HAVE_PTHREAD
+  threadId = pthread_self();
+  if(gap_debug)
+  {
+    printf("pthread_self threadId:%lld\n", threadId);
+  }
+#endif
+
+  return (threadId);
+}
+
+
+/* ---------------------------------
+ * gap_base_get_gimp_mutex
+ * ---------------------------------
+ * get the global mutex that is intended to synchronize calls to gimp core function
+ * from within gap plug-ins when running in multithreaded environment.
+ * the returned mutex is a singleton e.g. is the same static mutex at each call.
+ * therefore the caller must not free the returned mutex.
+ */
+GStaticMutex *
+gap_base_get_gimp_mutex()
+{
+  static GStaticMutex gimpMutex = G_STATIC_MUTEX_INIT;
+  
+  return (&gimpMutex);
+
+}
+
+
+
+/* ---------------------------
+ * gap_base_gimp_mutex_trylock 
+ * ---------------------------
+ * lock the static gimpMutex singleton if present (e.g. is NOT NULL)
+ *
+ * return immediate FALSE in case the mutex is locked by another thread
+ * return TRUE in case the mutex was locked successfully (may sleep until other threads unlock the mutex)
+ *        TRUE will be immediatly returned in case
+ *        the thread system is not initialized, e.g g_thread_init was not yet called
+ */
+gboolean
+gap_base_gimp_mutex_trylock(GapTimmRecord  *gimpMutexStats)
+{
+  gboolean isSuccessful;
+
+  GStaticMutex        *gimpMutex;
+
+  gimpMutex = gap_base_get_gimp_mutex();
+  if(gimpMutex)
+  {
+    GAP_TIMM_START_RECORD(gimpMutexStats);
+
+    isSuccessful = g_static_mutex_trylock (gimpMutex);
+
+    GAP_TIMM_STOP_RECORD(gimpMutexStats);
+  }
+  else
+  {
+    isSuccessful = TRUE;
+  }
+
+  return(isSuccessful);
+
+}  /* end gap_base_gimp_mutex_trylock */
+
+
+/* ---------------------------
+ * gap_base_gimp_mutex_lock 
+ * ---------------------------
+ * lock the static gimpMutex singleton if present (e.g. is NOT NULL)
+ */
+void
+gap_base_gimp_mutex_lock(GapTimmRecord  *gimpMutexStats)
+{
+  GStaticMutex        *gimpMutex;
+
+  gimpMutex = gap_base_get_gimp_mutex();
+  if(gimpMutex)
+  {
+    GAP_TIMM_START_RECORD(gimpMutexStats);
+
+    g_static_mutex_lock (gimpMutex);
+
+    GAP_TIMM_STOP_RECORD(gimpMutexStats);
+  }
+
+}  /* end gap_base_gimp_mutex_lock */
+
+
+/* ---------------------------
+ * gap_base_gimp_mutex_unlock 
+ * ---------------------------
+ * lock the static gimpMutex singleton if present (e.g. is NOT NULL)
+ */
+void
+gap_base_gimp_mutex_unlock(GapTimmRecord  *gimpMutexStats)
+{
+  GStaticMutex        *gimpMutex;
+
+  gimpMutex = gap_base_get_gimp_mutex();
+  if(gimpMutex)
+  {
+    GAP_TIMM_START_RECORD(gimpMutexStats);
+    
+    g_static_mutex_unlock (gimpMutex);
+    
+    GAP_TIMM_STOP_RECORD(gimpMutexStats);
+  }
+
+}  /* end gap_base_gimp_mutex_unlock */

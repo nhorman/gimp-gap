@@ -491,12 +491,11 @@ on_ff_presets_combo  (GtkWidget     *widget,
     printf("CB: on_ff_presets_combo index: %d\n", (int)l_idx);
   }
 
-  if((l_idx <= GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS) && (l_idx > 0))
+  if(l_idx > 0)
   {
     /* index 0 is used for OOPS do not use preset menu entry and is not a PRESET
-     * menu_index 1  does access presets[0]
      */
-    l_idx--;
+    l_idx;
 
     if(gap_debug)
     {
@@ -505,12 +504,15 @@ on_ff_presets_combo  (GtkWidget     *widget,
     gap_enc_ffmpeg_main_init_preset_params(&gpp->evl, l_idx);
     gap_enc_ffgui_init_main_dialog_widgets(gpp);                /* update all wdgets */
 
+
     /* switch back to index 0 (OOPS, do not change presets)
      * after presets were loaded.
      */
     gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), GAP_GVE_FFMPEG_PRESET_00_NONE);
   }
+
 }  /* end on_ff_presets_combo */
+
 
 
 

@@ -332,7 +332,7 @@ typedef struct GapStoryRenderSection
 
 
 
-typedef struct GapStoryRenderVidHandle
+typedef struct GapStoryRenderVidHandle  /* nick: vidhand */
 {
   GapStoryRenderSection           *section_list;
   GapStoryRenderSection           *parsing_section;
@@ -378,6 +378,13 @@ typedef struct GapStoryRenderVidHandle
 
   gint32     ffetch_user_id;
 
+  gint32     minVidTrack;                /* lowest video track number of all elemnents in the current frn_list */
+  gint32     maxVidTrack;                /* highest video track number of all elemnents in the current frn_list */
+
+  gboolean      isLogResourceUsage;      /* triggers logging of resources (open videohandles an cached images) */
+  gint32        resourceLogInterval;
+  gboolean      isMultithreadEnabled;    /* triggers prefetch of videoframes via thread pool parallel processing */
+  
 } GapStoryRenderVidHandle;  /* used for storyboard processing */
 
 

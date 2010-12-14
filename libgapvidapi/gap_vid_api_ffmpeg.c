@@ -942,6 +942,20 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
   gboolean  l_potential_index_frame;
   gboolean  l_key_frame_detected;
 
+  static gint32 funcId = -1;
+  static gint32 funcIdReadPacket = -1;
+  static gint32 funcIdDecode = -1;
+  static gint32 funcIdSwScale = -1;
+  
+  GAP_TIMM_GET_FUNCTION_ID(funcId,           "p_private_ffmpeg_get_next_frame");
+  GAP_TIMM_GET_FUNCTION_ID(funcIdReadPacket, "p_private_ffmpeg_get_next_frame.readAndDecodePacket");
+  GAP_TIMM_GET_FUNCTION_ID(funcIdDecode,     "p_private_ffmpeg_get_next_frame.decode");
+  GAP_TIMM_GET_FUNCTION_ID(funcIdSwScale,    "p_private_ffmpeg_get_next_frame.swScale");
+
+  GAP_TIMM_START_FUNCTION(funcId);
+  GAP_TIMM_START_FUNCTION(funcIdReadPacket);
+
+
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
 
   /* redirect picture_rgb pointers to current fcache element */
@@ -1117,6 +1131,8 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
     avcodec_get_frame_defaults(&handle->big_picture_yuv);
 
+    GAP_TIMM_START_FUNCTION(funcIdDecode);
+
     /* decode a frame. return -1 on error, otherwise return the number of
      * bytes used. If no frame could be decompressed, *got_picture_ptr is
      * zero. Otherwise, it is non zero.
@@ -1135,6 +1151,8 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
                                ,&handle->vid_pkt
                                );
 #endif
+
+    GAP_TIMM_STOP_FUNCTION(funcIdDecode);
 
     if (gap_debug) 
     {
@@ -1262,8 +1280,14 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
 
   }  /* end while packet_read and decode frame loop */
 
+  GAP_TIMM_STOP_FUNCTION(funcIdReadPacket);
+
+
+
   if((l_rc == 0)  && (l_got_picture))
   {
+    GAP_TIMM_START_FUNCTION(funcIdSwScale);
+
     if(gvahand->current_seek_nr > 1)
     {
       /* 1.st frame_len may contain headers (size may be too large) */
@@ -1288,7 +1312,7 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
        *
        */
       handle->img_convert_ctx = sws_getCachedContext(handle->img_convert_ctx
-	                                 , gvahand->width
+                                         , gvahand->width
                                          , gvahand->height
                                          , handle->yuv_buff_pix_fmt    /* src pixelformat */
                                          , gvahand->width
@@ -1452,12 +1476,14 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
                   , gvahand->current_frame_nr
                   );
     }
-
+    GAP_TIMM_STOP_FUNCTION(funcIdSwScale);
+    GAP_TIMM_STOP_FUNCTION(funcId);
     return(GVA_RET_OK);
 
   }
 
 
+  GAP_TIMM_STOP_FUNCTION(funcId);
 
   if(l_rc == 1)  { return(GVA_RET_EOF); }
 
@@ -3703,9 +3729,17 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   AVInputFormat *iformat;
   int err, ii, ret;
   int rfps, rfps_base;
-
+  int thread_count;
+  
   if(gap_debug) printf("p_ff_open_input: START  vid_open:%d\n", (int)vid_open);
 
+  thread_count = 4;
+  
+//   gap_base_get_gimprc_int_value("num-processors"
+//                                    , DEFAULT_WORKER_THREADS
+//                                    , 1
+//                                    , MAX_WORKER_THREADS
+//                                    );
 
   /* open the input file with generic libav function
    * Opens a media file as input. The codec are not opened.
@@ -3754,6 +3788,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   for(ii=0; ii < ic->nb_streams; ii++)
   {
     acc = ic->streams[ii]->codec;
+    //avcodec_thread_init(acc, thread_count);
 
     switch(acc->codec_type)
     {
@@ -3770,6 +3805,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
                 handle->aud_codec_context = acc;
 
                 handle->aud_stream = ic->streams[ii];
+                //avcodec_thread_init(handle->aud_stream->codec, thread_count);
               }
               gvahand->audio_cannels = acc->channels;
               gvahand->samplerate = acc->sample_rate;
@@ -3790,6 +3826,8 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
                 handle->vid_codec_context = acc;
 
                 handle->vid_stream = ic->streams[ii];
+                //avcodec_thread_init(handle->vid_stream->codec, thread_count);
+                
               }
               gvahand->height = acc->height;
               gvahand->width = acc->width;

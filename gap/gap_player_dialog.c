@@ -344,6 +344,7 @@ static guchar * p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
                    , gint32 *th_bpp
                    , gint32 *th_width
                    , gint32 *th_height
+                   , gboolean isBackwards
                    );
 static void     p_init_video_playback_cache(GapPlayerMainGlobalParams *gpp);
 static void     p_init_layout_options(GapPlayerMainGlobalParams *gpp);
@@ -366,6 +367,7 @@ static guchar * p_fetch_videoframe_via_cache(GapPlayerMainGlobalParams *gpp
                    , gint32 *th_height_ptr
                    , gint32 *flip_status_ptr
                    , const gchar *ckey
+                   , gboolean isBackwards
                    );
 static void     p_frame_chache_processing(GapPlayerMainGlobalParams *gpp
                    , const gchar *ckey);
@@ -2917,9 +2919,14 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
                    , gint32 *th_bpp
                    , gint32 *th_width
                    , gint32 *th_height
+                   , gboolean isBackwards
                    )
 {
   guchar *th_data;
+  static gint32 funcId = -1;
+  
+  GAP_TIMM_GET_FUNCTION_ID(funcId, "playerDialog.p_fetch_videoframe");
+
 
   th_data = NULL;
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
@@ -2929,6 +2936,8 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
     return(NULL);
   }
   gpp->gva_lock = TRUE;
+
+  GAP_TIMM_START_FUNCTION(funcId);
 
   if((gpp->gva_videofile) && (gpp->gvahand))
   {
@@ -2966,23 +2975,15 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
 
      if(global_max_vid_frames_to_keep_cached < 1)
      {
-        char *value_string;
-
-        value_string = gimp_gimprc_query("video-max-frames-keep-cached");
-
-        if(value_string)
-        {
-//printf(" VIDFETCH (4) gimprc: value_string: %s\n", value_string);
-          global_max_vid_frames_to_keep_cached = atol(value_string);
-        }
-        if(global_max_vid_frames_to_keep_cached < 1)
-        {
-          global_max_vid_frames_to_keep_cached = GAP_PLAYER_VID_FRAMES_TO_KEEP_CACHED;
-        }
+        fcache_size = gap_base_get_gimprc_int_value("video-max-frames-keep-cached"
+                                                     , GAP_PLAYER_VID_FRAMES_TO_KEEP_CACHED  /* default */
+                                                     , 2   /* min */
+                                                     , 250 /* max */
+                                                   );
      }
 
-     fcache_size = CLAMP(rangesize, 1, global_max_vid_frames_to_keep_cached);
-     if(fcache_size > gpp->gvahand->fcache.frame_cache_size)
+     // fcache_size = CLAMP(rangesize, 1, global_max_vid_frames_to_keep_cached);
+     if(fcache_size > GVA_get_fcache_size_in_elements(gpp->gvahand))
      {
 //printf(" VIDFETCH (5) gimprc: FCACHE_MAX:%d fcache_size:%d rangesize:%d\n"
 //         , (int)global_max_vid_frames_to_keep_cached
@@ -3015,6 +3016,7 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
      /* fetch the wanted framenr  */
      th_data = GVA_fetch_frame_to_buffer(gpp->gvahand
                 , do_scale
+                , isBackwards
                 , framenumber
                 , l_deinterlace
                 , l_threshold
@@ -3089,6 +3091,8 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
     }
   }
   gpp->gva_lock = FALSE;
+
+  GAP_TIMM_STOP_FUNCTION(funcId);
 
 #endif
   return (th_data);
@@ -3221,6 +3225,7 @@ p_fetch_videoframe_via_cache(GapPlayerMainGlobalParams *gpp
                    , gint32 *th_height_ptr
                    , gint32 *flip_status_ptr
                    , const gchar *ckey
+                   , gboolean isBackwards
                    )
 {
   guchar *th_data;
@@ -3244,6 +3249,7 @@ p_fetch_videoframe_via_cache(GapPlayerMainGlobalParams *gpp
                 , th_bpp_ptr
                 , th_width_ptr
                 , th_height_ptr
+                , isBackwards
                 );
   }
 
@@ -3476,6 +3482,10 @@ p_fetch_display_th_data_from_storyboard(GapPlayerMainGlobalParams *gpp
 {
   GapStoryLocateRet *stb_ret;
   guchar *l_th_data;
+  static gint32 funcId = -1;
+  
+  GAP_TIMM_GET_FUNCTION_ID(funcId, "playerDialog.p_fetch_display_th_data_from_storyboard");
+  GAP_TIMM_START_FUNCTION(funcId);
 
   l_th_data = NULL;
   stb_ret = gap_story_locate_framenr(gpp->stb_ptr
@@ -3495,6 +3505,8 @@ p_fetch_display_th_data_from_storyboard(GapPlayerMainGlobalParams *gpp
       {
          if(*filename_pptr)
          {
+           gboolean isBackwards;
+           
            if(gpp->use_thumbnails)
            {
              /* fetch does already scale down to current preview size */
@@ -3516,6 +3528,7 @@ p_fetch_display_th_data_from_storyboard(GapPlayerMainGlobalParams *gpp
                          , stb_ret->stb_elem->delace
                          );
            }
+           isBackwards = (stb_ret->stb_elem->to_frame < stb_ret->stb_elem->from_frame) || gpp->play_backward;
            l_th_data  = p_fetch_videoframe_via_cache(gpp
                          , *filename_pptr
                          , stb_ret->ret_framenr
@@ -3528,6 +3541,7 @@ p_fetch_display_th_data_from_storyboard(GapPlayerMainGlobalParams *gpp
                          , th_height_ptr    /* IN/OUT */
                          , flip_status_ptr  /* IN/OUT */
                          , *ckey_pptr       /* IN */
+                         , isBackwards
                          );
            if(gpp->cancel_video_api)
            {
@@ -3549,6 +3563,8 @@ p_fetch_display_th_data_from_storyboard(GapPlayerMainGlobalParams *gpp
     }
     g_free(stb_ret);
   }
+
+  GAP_TIMM_STOP_FUNCTION(funcId);
 
   return (l_th_data);
 }  /* end p_fetch_display_th_data_from_storyboard */
@@ -3869,18 +3885,21 @@ p_render_display_from_active_image_or_file(GapPlayerMainGlobalParams *gpp
 static void
 p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 {
-  char *l_filename;
-   gint32  l_th_width;
-   gint32  l_th_height;
-   gint32  l_th_data_count;
-   gint32  l_th_bpp;
-   gint32  l_flip_request;
-   gint32  l_flip_status;
-   gint32  l_composite_image_id;
-   guchar *l_th_data;
-   gboolean framenr_is_the_active_image;
-   GdkPixbuf *pixbuf;
-   gchar *ckey;
+  char   *l_filename;
+  gint32  l_th_width;
+  gint32  l_th_height;
+  gint32  l_th_data_count;
+  gint32  l_th_bpp;
+  gint32  l_flip_request;
+  gint32  l_flip_status;
+  gint32  l_composite_image_id;
+  guchar *l_th_data;
+  gboolean framenr_is_the_active_image;
+  GdkPixbuf *pixbuf;
+  gchar *ckey;
+  static gint32 funcId = -1;
+  
+  GAP_TIMM_GET_FUNCTION_ID(funcId, "playerDialog.p_display_frame");
 
   /*if(gap_debug) printf("p_display_frame START: framenr:%d\n", (int)framenr);*/
   if(gpp->gva_lock)
@@ -3890,6 +3909,9 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
      */
     return;
   }
+
+  GAP_TIMM_START_FUNCTION(funcId);
+
   ckey = NULL;
   l_th_data = NULL;
   pixbuf = NULL;
@@ -3923,6 +3945,7 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 
       if(gpp->cancel_video_api)
       {
+        GAP_TIMM_STOP_FUNCTION(funcId);
         return;
       }
     }
@@ -3957,6 +3980,8 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 
     if(gpp->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
     {
+      gboolean isBackwards;
+      
       /* playback of a single videoclip */
       if(gpp->use_thumbnails)
       {
@@ -3980,6 +4005,7 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
                          );
       }
 
+      isBackwards = (gpp->ainfo_ptr->last_frame_nr < gpp->ainfo_ptr->first_frame_nr) || gpp->play_backward;
       l_th_data  = p_fetch_videoframe_via_cache(gpp
                                      , gpp->ainfo_ptr->old_filename
                                      , framenr
@@ -3992,6 +4018,7 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
                                      , &l_th_height    /* IN/OUT */
                                      , &l_flip_status  /* OUT */
                                      , ckey            /* IN */
+                                     , isBackwards
                                      );
       if(gpp->cancel_video_api)
       {
@@ -4005,6 +4032,8 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gpp->progress_bar)
                         , _("Canceled"));
         }
+
+        GAP_TIMM_STOP_FUNCTION(funcId);
         return;
       }
 
@@ -4197,6 +4226,8 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
   if(l_th_data)  g_free(l_th_data);
 
   if(l_filename) g_free(l_filename);
+
+  GAP_TIMM_STOP_FUNCTION(funcId);
 
 }  /* end p_display_frame */
 
@@ -4715,6 +4746,8 @@ on_pause_button_press_event        (GtkButton       *button,
   {
     return FALSE;
   }
+
+  GAP_TIMM_PRINT_FUNCTION_STATISTICS();
 
   if(gpp->progress_bar)
   {

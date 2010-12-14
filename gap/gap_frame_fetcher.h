@@ -145,4 +145,18 @@ gap_frame_fetch_dup_video(gint32 ffetch_user_id
 void
 gap_frame_fetch_remove_parasite(gint32 image_id);
 
+
+/* ----------------------------------------------------
+ * gap_frame_fetch_dump_resources
+ * ----------------------------------------------------
+ * print current resource usage to stdout
+ * this includes information about 
+ *  - ALL images currently loaded in gimp
+ *  - all video filehandles with memory cache sizes
+ * 
+ */
+void
+gap_frame_fetch_dump_resources();
+
+
 #endif

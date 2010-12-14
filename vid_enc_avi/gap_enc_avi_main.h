@@ -71,6 +71,7 @@ typedef struct {
 
   /* for the "RGB " (== raw) CODEC */
   gint32 raw_vflip;
+  gint32 raw_bgr;    /* TRUE: BGR (default) FALSE: RGB */
 
   /* for the "PNG " CODEC */
   gint32 png_dont_recode_frames;
@@ -115,6 +116,7 @@ typedef struct GapGveAviGlobalParams {   /* nick: gpp */
   GtkObject *xvid_quality_spinbutton_adj;
   
   GtkWidget *raw_vflip_checkbutton;
+  GtkWidget *raw_bgr_checkbutton;
 
   GtkWidget *png_dont_recode_checkbutton;
   GtkWidget *png_interlace_checkbutton;
