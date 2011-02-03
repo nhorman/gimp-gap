@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
-"POT-Creation-Date: 2010-12-14 19:39+0000\n"
-"PO-Revision-Date: 2011-01-18 23:20+0100\n"
+"POT-Creation-Date: 2011-01-29 19:15+0000\n"
+"PO-Revision-Date: 2011-01-30 23:52+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -853,17 +853,14 @@ msgstr "<Image>/Video/"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:212
-#| msgid "Basic Options"
 msgid "Base Options"
 msgstr "Osnovne možnosti"
 
 #: ../gap/gap_colormask_dialog.c:243
-#| msgid "Color erase"
 msgid "Color mask:"
 msgstr "Barvna maska:"
 
 #: ../gap/gap_colormask_dialog.c:249
-#| msgid "Common color threshold"
 msgid "Colordiff threshold:"
 msgstr "Prag barvnih razlik:"
 
@@ -872,7 +869,6 @@ msgid "Colordiff lower threshold. pixels that differ in color less than this val
 msgstr ""
 
 #: ../gap/gap_colormask_dialog.c:266
-#| msgid "Common color threshold"
 msgid "_HiColordiff threshold:"
 msgstr "_Visoki prag barvnih razlik:"
 
@@ -882,7 +878,6 @@ msgstr ""
 
 #. keep layermask checkbutton
 #: ../gap/gap_colormask_dialog.c:285
-#| msgid "Delete layermask"
 msgid "Keep layermask"
 msgstr "Ohrani masko plasti"
 
@@ -894,13 +889,11 @@ msgstr "Uveljavi takoj"
 
 #. show expert options checkbutton
 #: ../gap/gap_colormask_dialog.c:316
-#| msgid "RAW Options"
 msgid "Show All Options"
 msgstr "Pokaži vse možnosti"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:349
-#| msgid "Dither Options"
 msgid "Filter Options"
 msgstr "Možnosti filtriranja"
 
@@ -925,18 +918,15 @@ msgid "Isle Area size in pixels. small isolated opaque or transparent pixel area
 msgstr ""
 
 #: ../gap/gap_colormask_dialog.c:410
-#| msgid "Feather radius in pixels (for smoothing selection(s))"
 msgid "feather radius in pixels (use value 0 to disable feathering)"
 msgstr "Polmer operjanja v slikovnih točkah (uporabite 0 za izklop operjanja)"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:445
-#| msgid "Basic Options"
 msgid "Opacity Options"
 msgstr "Možnosti prekrivnosti"
 
 #: ../gap/gap_colormask_dialog.c:468
-#| msgid "Set Layer Opacity"
 msgid "Lower opacity:"
 msgstr "Spodnja prekrivnost:"
 
@@ -945,7 +935,6 @@ msgid "Lower opacity value is set for pixels with color difference less than Col
 msgstr ""
 
 #: ../gap/gap_colormask_dialog.c:485
-#| msgid "Opacity:"
 msgid "Upper opacity:"
 msgstr "Gornja prekrivnost:"
 
@@ -954,7 +943,6 @@ msgid "Upper opacity is set for pixels with color difference greater than High C
 msgstr ""
 
 #: ../gap/gap_colormask_dialog.c:503
-#| msgid "Target Alpha:"
 msgid "Trigger alpha:"
 msgstr "Prožilna alfa:"
 
@@ -970,7 +958,6 @@ msgid "Expert Options"
 msgstr "Napredne možnosti"
 
 #: ../gap/gap_colormask_dialog.c:567
-#| msgid "Algorithms"
 msgid "_Algorithm:"
 msgstr "_Algoritem:"
 
@@ -982,18 +969,15 @@ msgstr "Omogoči prag posamezne barve za barvo ključenja"
 
 #. the keycolor label
 #: ../gap/gap_colormask_dialog.c:604
-#| msgid "Keycolor:"
 msgid "Key color:"
 msgstr "Barva ključenja:"
 
 #. the keycolor button
 #: ../gap/gap_colormask_dialog.c:610
-#| msgid "Keycolor:"
 msgid "Key color"
 msgstr "Barva ključenja"
 
 #: ../gap/gap_colormask_dialog.c:631
-#| msgid "Common color threshold"
 msgid "Key Colordiff threshold:"
 msgstr "Prag barvne razlike ključenja:"
 
@@ -1042,7 +1026,6 @@ msgstr "Vel. slik. točk majhne površine:"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:790
-#| msgid "JPEG Options"
 msgid "DEBUG Options"
 msgstr "Možnosti razhroščevanja"
 
@@ -1054,17 +1037,18 @@ msgstr "Razlika občutljivosti:"
 
 #. connectByCorner checkbutton
 #: ../gap/gap_colormask_dialog.c:835
+#, fuzzy
 msgid "DEBUG Connect by corner (+ use RGB colordiff)"
-msgstr ""
+msgstr "RAZHROŠČEVANJE Poveži po vogalih (in uporabi barvno razliko RGB)"
 
 #. keep worklayer checkbutton
 #: ../gap/gap_colormask_dialog.c:851
+#, fuzzy
 msgid "DEBUG Keep worklayer"
-msgstr ""
+msgstr "RAZHROŠČEVANJE Obdrži delovno plast"
 
 #. the layercolor label
 #: ../gap/gap_colormask_dialog.c:873
-#| msgid "Keycolor:"
 msgid "Layer color:"
 msgstr "Barva plasti:"
 
@@ -1075,7 +1059,6 @@ msgstr "Barva plasti (barvna maska)"
 
 #. the maskcolor label
 #: ../gap/gap_colormask_dialog.c:895
-#| msgid "Mask Anchor:"
 msgid "Mask color:"
 msgstr "Barva maske:"
 
@@ -1086,7 +1069,6 @@ msgstr "Barva maske (barvna maska)"
 
 #. the maskcolor label
 #: ../gap/gap_colormask_dialog.c:918
-#| msgid "Keycolor:"
 msgid "Nb color:"
 msgstr "Sosednja barva:"
 
@@ -1097,7 +1079,6 @@ msgstr "Sosednja barva na levi"
 
 #. the colordiff label
 #: ../gap/gap_colormask_dialog.c:940
-#| msgid "Color"
 msgid "Colordiff:"
 msgstr "Barvna razlika:"
 
@@ -1108,20 +1089,15 @@ msgstr "#,#####"
 
 #. the neighbor colordiff label
 #: ../gap/gap_colormask_dialog.c:954
-#| msgid "qdiff:"
 msgid "NbDiff:"
 msgstr "Razlika sos. barve:"
 
 #: ../gap/gap_colormask_dialog.c:1691
-#| msgid "Color erase"
 msgid "Color Mask"
 msgstr "Barvna maska"
 
 #: ../gap/gap_colormask_file.c:115
 #, c-format
-#| msgid ""
-#| "Could not read ffmpeg video encoder parameters from file:\n"
-#| "%s"
 msgid ""
 "Could not read colormask parameters from file:\n"
 "%s"
@@ -1131,12 +1107,10 @@ msgstr ""
 
 #: ../gap/gap_colormask_file.c:156
 #, c-format
-#| msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 msgid "Could not save colormask parameterfile:'%s'%s"
 msgstr "Datoteke parametrov barvne maske ni mogoče shraniti:'%s'%s"
 
 #: ../gap/gap_colormask_main.c:222
-#| msgid "Apply layermask"
 msgid "Apply Colormask..."
 msgstr "Uporabi barvno masko ..."
 
@@ -2945,13 +2919,12 @@ msgid "Shape"
 msgstr "Oblika"
 
 #: ../gap/gap_morph_dialog.c:3615
-#, fuzzy
 #| msgid ""
 #| "Create N workpoints following the outline shape of the layer.(the shape "
 #| "detection is looking for non-transparent pixels).SHIFT-click: adds the "
 #| "new points and keeps the old points"
 msgid "Create N workpoints following the outline shape of the layer.the simple shape detection is looking for non-transparent pixels.CTRL-click uses an edge detection based shape detection algorithm that is capable to operate on opaque images.SHIFT-click: adds the new points and keeps the old points"
-msgstr "Ustvari N delovnih točk, ki sledijo orisni obliki plasti (razpoznava oblik sledi neprosojnim slikovnim točkam). SHIFT-klik: doda nove točke in obdrži stare"
+msgstr "Ustvari N delovnih točk, ki sledijo orisni obliki plasti. Enostavna razpoznava oblik sledi neprosojnim slikovnim točkam. CTRL-klik uporablja na razpoznavi robov temelječ algoritem razpoznave oblik, ki lahko deluje tudi na prekrivnih slikah. SHIFT-klik: doda nove točke in obdrži stare."
 
 #. the deform affect radius label
 #: ../gap/gap_morph_dialog.c:3648
@@ -3033,7 +3006,6 @@ msgstr "Množica točk B:"
 
 #. the LOCATE label
 #: ../gap/gap_morph_dialog.c:3907
-#| msgid "Rotate:"
 msgid "Locate:"
 msgstr "Lociraj:"
 
@@ -3147,7 +3119,6 @@ msgstr "Ustvarjanje ukrivljenosti med plastema ..."
 
 #: ../gap/gap_morph_exec.c:3349
 #, c-format
-#| msgid "ERROR: could not create directory:'%s'%s"
 msgid ""
 "Failed to create tween subdirectory: '%s':\n"
 "%s"
@@ -3184,13 +3155,11 @@ msgid "Morph One Tween..."
 msgstr "Preobliči eno vmesno sličico ..."
 
 #: ../gap/gap_morph_main.c:287
-#| msgid "Morph Workpoint file:"
 msgid "Morph Workpoint Generator..."
 msgstr "Generator delovne točke preoblikovanja ..."
 
 #. Menu names
 #: ../gap/gap_morph_main.c:298
-#| msgid "<Image>/Video/Morph/"
 msgid "<Image>/Video/Morphing/"
 msgstr "<Image>/Video/Preoblikovanje/"
 
@@ -3205,12 +3174,12 @@ msgid "Tween %.0f / %.0f"
 msgstr "Vm. sličica %.0f / %.0f"
 
 #: ../gap/gap_morph_tween_dialog.c:194
-#, fuzzy, c-format
+#, c-format
 msgid "render tween via fade algorithm %.2f%%"
 msgstr "Upodobi vmesne sličice prek algoritma prelivanja %.2f%%"
 
 #: ../gap/gap_morph_tween_dialog.c:200
-#, fuzzy, c-format
+#, c-format
 msgid "render tween via morphing algorithm %.2f%%"
 msgstr "Upodobi vmesne sličice prek algoritma preoblikovanja %.2f%%"
 
@@ -3224,7 +3193,6 @@ msgid "Morph Workpoint file:"
 msgstr "Datoteka delovne točke preoblikovanja:"
 
 #: ../gap/gap_morph_tween_dialog.c:399
-#, fuzzy
 #| msgid ""
 #| "Name of a Workpointfile created with the Morph feature\n"
 #| "(note that tweens are created via simple fade operations when no "
@@ -3233,11 +3201,10 @@ msgid ""
 "Name of a Workpointfile created with the Morph feature\n"
 "(note that tweens are created via simple fade operations when no workpointfile is available)"
 msgstr ""
-"Ime datoteke delovnih točk, ustvarjene s fulnkcijo preoblikovanja\n"
+"Ime datoteke delovnih točk, ustvarjene s funkcijo preoblikovanja\n"
 "(upoštevajte, da so vmesne vrednosti ustvarjene s preprostimi prelivnimi operacijami, če ni na voljo nobena datoteka delovnih točk)"
 
 #: ../gap/gap_morph_tween_dialog.c:445
-#| msgid "Create one tween"
 msgid "Create one tween as Layer"
 msgstr "Ustvari eno vmesno sličico kot plast"
 
@@ -3256,7 +3223,6 @@ msgid "Destination Layer:"
 msgstr "Ciljna plast:"
 
 #: ../gap/gap_morph_tween_dialog.c:660
-#| msgid "Morph Workpoint file:"
 msgid "Generate Workpointfiles"
 msgstr "Ustvari delovne točke preoblikovanja"
 
@@ -3268,7 +3234,6 @@ msgstr "Od:"
 
 #: ../gap/gap_morph_tween_dialog.c:702
 #: ../gap/gap_morph_tween_dialog.c:1173
-#| msgid "First handled frame"
 msgid "First processed frame"
 msgstr "Prva sličica za obdelavo"
 
@@ -3280,32 +3245,26 @@ msgstr "Do:"
 
 #: ../gap/gap_morph_tween_dialog.c:718
 #: ../gap/gap_morph_tween_dialog.c:1194
-#| msgid "Last handled frame"
 msgid "Last processed frame"
 msgstr "Zadnja sličica za obdelavo"
 
 #: ../gap/gap_morph_tween_dialog.c:730
-#| msgid "Morph Workpoint file:"
 msgid "Num Workpoints:"
 msgstr "Število delovnih točk:"
 
 #: ../gap/gap_morph_tween_dialog.c:733
-#| msgid "Number of workpoints to create when Shape button is pressed"
 msgid "Number of workpoints to be generated par processed frame"
 msgstr "Število delovnih točk, ki naj bodo ustvarjene na obdelano sličico"
 
 #: ../gap/gap_morph_tween_dialog.c:742
-#, fuzzy
 msgid "Num Outlinepoints:"
 msgstr "Št. orisnih točk:"
 
 #: ../gap/gap_morph_tween_dialog.c:745
-#, fuzzy
 msgid "Number of additional workpoints on the outline of opaque image area"
 msgstr "Število dodatnih delovnih točk na orisu prekrivnega področja slike"
 
 #: ../gap/gap_morph_tween_dialog.c:755
-#, fuzzy
 #| msgid "Tweensteps:"
 msgid "Tween Steps:"
 msgstr "Vmesni koraki:"
@@ -3315,7 +3274,6 @@ msgid "TWEEN-STEPS attribute value to be written to the generated workpoint file
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:769
-#| msgid "Border Radius:"
 msgid "Deform Radius:"
 msgstr "Polmer deformacije:"
 
@@ -3348,7 +3306,6 @@ msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:834
-#| msgid "Threshold:"
 msgid "Edge Threshold:"
 msgstr "Prag roba:"
 
@@ -3366,7 +3323,6 @@ msgstr ""
 
 #. the overwrite checkbutton
 #: ../gap/gap_morph_tween_dialog.c:896
-#, fuzzy
 #| msgid "Open"
 msgid "Append"
 msgstr "Dodaj"
@@ -3378,12 +3334,10 @@ msgstr ""
 #. the master progress bar
 #. master progress
 #: ../gap/gap_morph_tween_dialog.c:914
-#| msgid "Create Layers"
 msgid "Create File(s):"
 msgstr "Ustvari datoteke:"
 
 #: ../gap/gap_morph_tween_dialog.c:946
-#| msgid "ShapePoints:"
 msgid "Create Points:"
 msgstr "Ustvari točke:"
 
@@ -3398,7 +3352,6 @@ msgstr "Podatki:"
 
 #: ../gap/gap_morph_tween_dialog.c:1144
 #, c-format
-#| msgid "this operation creates %d mising frames between frame %d and %d"
 msgid "this operation creates %d missing frames between frame %d and %d"
 msgstr "Ta operacija ustvari %d manjkajočih sličic med sličicama %d in %d"
 
@@ -3412,7 +3365,6 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:1223
-#| msgid "Number of Colors"
 msgid "Number of Tweens:"
 msgstr "Število vmes. sličic:"
 
@@ -3436,7 +3388,6 @@ msgstr ""
 #. , NULL);
 #. label
 #: ../gap/gap_morph_tween_dialog.c:1253
-#| msgid "Predictor:"
 msgid "Subdirectory:"
 msgstr "Podmapa:"
 
@@ -3451,12 +3402,10 @@ msgstr ""
 #. the master progress bar
 #. master progress
 #: ../gap/gap_morph_tween_dialog.c:1304
-#| msgid "Create Tween Frames"
 msgid "Create Tweenfame(s):"
 msgstr "Ustvari vmesne sličice:"
 
 #: ../gap/gap_morph_tween_dialog.c:1319
-#| msgid "Jpeg Progressive:"
 msgid "Local Progress:"
 msgstr "Krajevni napredek:"
 
@@ -6054,7 +6003,6 @@ msgstr "Prekliči ustvarjanje slikovnega kazala. Ustvarjanje slikovnega kazala z
 
 #. the PLAY button
 #: ../gap/gap_player_dialog.c:8072
-#| msgid "Playing"
 msgid "Play"
 msgstr "Predvajaj"
 
@@ -6075,7 +6023,6 @@ msgstr "Prekinitev predvajanja (klik katerekoli tipke miške). Pojdi na začetek
 
 #. the PLAY_REVERSE button
 #: ../gap/gap_player_dialog.c:8095
-#| msgid "Loop Reverse"
 msgid "Reverse"
 msgstr "V nasprotni smeri"
 
@@ -6757,7 +6704,6 @@ msgstr "Število prekrivajočih se sličic na tej sledi"
 #. page size        for the from/to values
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2863
-#| msgid "ON: Enable opacity settings"
 msgid "ON: Enable rotation settings"
 msgstr "VKLJUČENO: Omogoči nastavitve sukanja"
 
@@ -6766,7 +6712,6 @@ msgid "rotation value in degree for the first handled frame "
 msgstr "vrednost sukanja v stopinjah za prvo obravnavano sličico"
 
 #: ../gap/gap_story_att_trans_dlg.c:2867
-#| msgid "optional filtermacro file to be performed on each handled frame "
 msgid "rotation value in degree for the last handled frame "
 msgstr "Vrednost sukanja v stopinjah za zadnjo obravnavano sličico"
 
@@ -6812,16 +6757,10 @@ msgid "ON: Enable move horizontal settings"
 msgstr "VKLJUČENO: Omogoči nastavitve vodoravnega premika"
 
 #: ../gap/gap_story_att_trans_dlg.c:2920
-#| msgid ""
-#| "move horizontal value for the first handled frame  where 0.0 is centered, "
-#| "100.0 is outside right, -100.0 is outside left)"
 msgid "move horizontal value for the first handled frame where 0.0 is centered, 100.0 is outside right, -100.0 is outside left"
 msgstr "Vrednost vodoravnega premika prve obravnavane sličice (0,0 je sredina, 100,0 desni rob, -100,0 pa levi rob)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2923
-#| msgid ""
-#| "move horizontal value for the last handled frame  where 0.0 is centered, "
-#| "100.0 is outside right, -100.0 is outside left)"
 msgid "move horizontal value for the last handled frame where 0.0 is centered, 100.0 is outside right, -100.0 is outside left"
 msgstr "Vrednost vodoravnega premika zadnje obravnavane sličice (0,0 je sredina, 100,0 desni rob, -100,0 pa levi rob)"
 
@@ -6844,16 +6783,10 @@ msgid "ON: Enable move vertical settings"
 msgstr "VKLJUČENO: Omogoči nastavitve navpičnega premika"
 
 #: ../gap/gap_story_att_trans_dlg.c:2949
-#| msgid ""
-#| "move vertical value for the first handled frame  where 0.0 is centered, "
-#| "100.0 is outside at bottom, -100.0 is outside at top)"
 msgid "move vertical value for the first handled frame where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top"
 msgstr "Vrednost navpičnega premika prve obravnavane sličice (0,0 je sredina, 100,0 spodnji rob, -100,0 pa zgornji rob)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2952
-#| msgid ""
-#| "move vertical value for the last handled frame  where 0.0 is centered, "
-#| "100.0 is outside at bottom, -100.0 is outside at top)"
 msgid "move vertical value for the last handled frame where 0.0 is centered, 100.0 is outside at bottom, -100.0 is outside at top"
 msgstr "Vrednost navpičnega premika zadnje obravnavane sličice (0,0 je sredina, 100,0 spodnji rob, -100,0 pa zgornji rob)"
 
@@ -7053,12 +6986,10 @@ msgid "GIMP-GAP is compiled without videoapi support. Therefore thumbnails for v
 msgstr "GIMP-GAP je preveden brez podpore za videoapi. Zato prikaz sličic za predogled ni podprt."
 
 #: ../gap/gap_story_dialog.c:5419
-#| msgid "Global Layout Properties dialog already open"
 msgid "Global Render Properties dialog already open"
 msgstr "Pogovorno okno Splošne lastnosti upodabljanja je že odprto"
 
 #: ../gap/gap_story_dialog.c:5429
-#| msgid "Videofile:"
 msgid "Max open Videofiles:"
 msgstr "Največ odprtih video datotek:"
 
@@ -7116,18 +7047,15 @@ msgid "ON: Video encoders shall use more than one processor where implemented. T
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:5535
-#| msgid "Use the standard built in layout settings"
 msgid "Use the standard built in storyboard render settings"
 msgstr "Uporabi običajne vgrajene nastavitve upodabljanja zgodborisa"
 
 #: ../gap/gap_story_dialog.c:5537
-#| msgid "Global Layout Properties"
 msgid "Global Storyboard Render Properties"
 msgstr "Splošne lastnosti upodabljanja zgodborisa"
 
 #: ../gap/gap_story_dialog.c:5538
 #: ../gap/gap_story_dialog.c:6172
-#| msgid "Convert Settings"
 msgid "Render Settings"
 msgstr "Nastavitve upodabljanja"
 
@@ -7158,7 +7086,6 @@ msgid "Global"
 msgstr "Splošno"
 
 #: ../gap/gap_story_dialog.c:6179
-#| msgid "Videothumbnails"
 msgid "Video thumbnails"
 msgstr "Video sličice za predogled"
 
@@ -7256,13 +7183,11 @@ msgid "Videoseek (decoder: %s)"
 msgstr "Slikovno iskanje (dekodirnik: %s)"
 
 #: ../gap/gap_story_dialog.c:6874
-#| msgid "videothumbnail cancelled"
 msgid "video thumbnail cancelled"
 msgstr "Sličica slikovnega predogleda preklicana"
 
 #: ../gap/gap_story_dialog.c:6900
 #, c-format
-#| msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgid "Fetching video thumbnail for clip: %d (out of %d)"
 msgstr "Pridobivanje slikovnega predogleda za posnetek: %d (od %d)"
 
@@ -7292,7 +7217,6 @@ msgid "Save cliplist to file"
 msgstr "Shrani seznam posnetkov v datoteko"
 
 #: ../gap/gap_story_dialog.c:7924
-#, fuzzy
 #| msgid "Show Section properites window"
 msgid "Show Section properties window"
 msgstr "Pokaži okno lastnosti odlomka"
@@ -7372,8 +7296,6 @@ msgstr "Prekliči"
 
 #: ../gap/gap_story_dialog.c:8740
 #: ../gap/gap_video_index_creator.c:1447
-#| msgid ""
-#| "Cancel video access if in progress and disable automatic videothumbnails"
 msgid "Cancel video access if in progress and disable automatic video thumbnails"
 msgstr "Prekliči dostop do slike, če je v teku, in onemogoči samodejne sličice za predogled"
 
@@ -7525,10 +7447,6 @@ msgstr "Zapis zunanje prosojnosti:"
 #. pixel
 #: ../gap/gap_story_dialog.c:9256
 #, c-format
-#| msgid ""
-#| "Format string for area replacement in movie clips. (e.g automatic logo "
-#| "insert)this string shall contain \\%s as placeholder for the basename of "
-#| "a videoclip and optional \\%06d as placeholder for the framenumber."
 msgid "Format string to provide external tranparency in movie clips. (e.g automatic alpha channel insertation)this string shall contain \\%s as placeholder for the basename of a videoclip and optional \\%06d as placeholder for the framenumber."
 msgstr "Oblikujte niz za zunanjo prosojnost v filmskih posnetkih (npr. samodejno vstavljen kanal alfa). Ta niz naj vsebuje \\%s kot ogrado za osnovno ime videoposnetka in neobvezno tudi \\%06d kot ogrado za številko sličice."
 
@@ -7644,9 +7562,6 @@ msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 msgstr "Samodejna razpoznava prizorov deluje le na vrsti posnetkov FILM in SLIČICE"
 
 #: ../gap/gap_story_properties.c:713
-#| msgid ""
-#| "Scene detection depends on video thumbnails. Please enable "
-#| "videothumbnails (in the Windows Menu)"
 msgid "Scene detection depends on video thumbnails. Please enable video thumbnails (in the Windows Menu)"
 msgstr "Razpoznava prizorov je odvisna od sličic slikovnega predogleda. Omogočite sličice slikovnega predogleda (v meniju Okna)."
 
@@ -7669,7 +7584,6 @@ msgid "Set Image or Frame Filename"
 msgstr "Določite ime datoteke slike ali sličice"
 
 #: ../gap/gap_story_properties.c:2489
-#, fuzzy
 #| msgid "Set Image or Frame Filename"
 msgid "Set Colormark Parmeter Filename"
 msgstr "Določite ime datoteke parametrov barvne oznake"
@@ -7986,23 +7900,19 @@ msgstr "Pripni masko v končni glavni velikosti slike na nespremenljivem položa
 
 #. radio button mask_anchor ColormaskClip
 #: ../gap/gap_story_properties.c:4721
-#, fuzzy
 msgid "ClipColormask"
 msgstr "Obreži barvno masko"
 
 #: ../gap/gap_story_properties.c:4730
-#| msgid "Attach mask to clip at clip position in clip size"
 msgid "Apply as colormask to clip at clip position in clip size"
 msgstr "Uporabi kot barvno masko posnetku na položaju posnetka v velikosti posnetka"
 
 #. the colormask parameter file label
 #: ../gap/gap_story_properties.c:4747
-#| msgid "Mask Name:"
 msgid "Mask Params:"
 msgstr "Parametri maske:"
 
 #: ../gap/gap_story_properties.c:4780
-#, fuzzy
 msgid "parameter file for the colormask filter"
 msgstr "Datoteka parametrov za filter barvne maske"
 
@@ -8025,10 +7935,6 @@ msgid "Filtermacro:"
 msgstr "Filtrski makro:"
 
 #: ../gap/gap_story_properties.c:4875
-#| msgid ""
-#| "filter macro to be performed when frames of this clips are rendered. A "
-#| "2nd macrofile is implicite referenced by naming convetion via the "
-#| "keyword .VARYING (as suffix or before the extension)"
 msgid "filter macro to be performed when frames of this clips are rendered. A 2nd macrofile is implicitly referenced by naming convention via the keyword .VARYING (as suffix or before the extension)"
 msgstr "Makro filtra, ki naj bo izveden, ko so sličice teh posnetkov upodobljene. Sklic na drugo datoteko makra je impliciten s konvencijo poimenovanja prek ključne besede .VARYING (kot pripona ali pred končnico)."
 
@@ -8388,9 +8294,6 @@ msgid "graymask"
 msgstr "Sivinska maska"
 
 #: ../gap/gap_vex_dialog.c:2535
-#| msgid ""
-#| "On: extract grayscale mask (generated by bluebox)\n"
-#| "Off: extract color frames 1.1"
 msgid ""
 "On: extract grayscale mask (generated by bluebox)\n"
 "Off: extract color frames 1:1"
@@ -8572,9 +8475,6 @@ msgstr ""
 "OPOZORILO: pozicioniranje prek domorodnega iskanja morda ne bo delovalo natančno, če kritični koraki časovne kode niso bili zaznani pri hitrih preizkusnih branjih."
 
 #: ../gap/gap_video_index_creator.c:935
-#| msgid ""
-#| "Create video index. Requires unconditional full scann of all frames."
-#| "Native seek is enabled only in case all timecodes are OK."
 msgid "Create video index. Requires unconditional full scan of all frames.Native seek is enabled only in case all timecodes are OK."
 msgstr "Ustvari slikovno kazalo. Zahteva brezpogojen poln pregled vseh sličic. Domorodno iskanje je omogočeno le v primeru, da so vse časovne kode v redu."
 
@@ -8603,9 +8503,6 @@ msgid "Percentage:"
 msgstr "Odstotek:"
 
 #: ../gap/gap_video_index_creator.c:994
-#| msgid ""
-#| "stop scann after percentage reached and no unplausible timecode was "
-#| "detected so far (only relevant in smart mode)"
 msgid "stop scan after percentage reached and no unplausible timecode was detected so far (only relevant in smart mode)"
 msgstr "Ustavi pregledovanje po doseženem odstotku brez otipljivo zaznane časovne kode (veljavno le v pametnem načinu)"
 
@@ -8694,52 +8591,45 @@ msgstr "Barvna uravnoteženost"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:596
-#| msgid "Set range to extract"
 msgid "Select Range to Adjust"
 msgstr "Določite obseg za prilagajanje"
 
 #. Transfer Mode the radio buttons
 #: ../gap/gap_wr_color_balance.c:615
-#| msgid "Show"
 msgid "Shadows"
 msgstr "Sence"
 
 #: ../gap/gap_wr_color_balance.c:620
-#, fuzzy
 #| msgid "Lines"
 msgid "Midtones"
-msgstr "Črte"
+msgstr "Srednje vrednosti"
 
 #: ../gap/gap_wr_color_balance.c:625
-#, fuzzy
 #| msgid "Hardlight"
 msgid "Highlights"
-msgstr "Ostra osvetlitev"
+msgstr "Svetla področja"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:633
-#| msgid "Color Levels"
 msgid "Adjust Color Levels"
 msgstr "Prilagodi ravni barv"
 
 #: ../gap/gap_wr_color_balance.c:658
-#| msgid "Cyan"
 msgid "Cyan/Red:"
 msgstr "Cianasta/rdeča:"
 
 #: ../gap/gap_wr_color_balance.c:672
-#| msgid "Magenta"
 msgid "Magenta/Green:"
 msgstr "Magenta/zelena:"
 
 #: ../gap/gap_wr_color_balance.c:690
-#| msgid "Yellow"
 msgid "Yellow/Blue:"
 msgstr "Rumena/modra:"
 
 #: ../gap/gap_wr_color_balance.c:708
+#, fuzzy
 msgid "Preserve luminosity"
-msgstr ""
+msgstr "Ohrani svetlost"
 
 #: ../gap/gap_wr_color_curve.c:916
 #, c-format
@@ -9897,9 +9787,6 @@ msgid "APP0 Marker:"
 msgstr "Označevalec APP0:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:562
-#| msgid ""
-#| "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated "
-#| "by some windows programs for AVIs)"
 msgid "Write APP0 Marker for each encoded frame. The APP0 marker is evaluated by some windows programs for AVIs but can cause playback with wrong colors on some players (in most cases you should NOT write the APP0 marker)"
 msgstr "Zapiše označevalnik APP0 za vsako kodirano sličico. Označevalnik APP0 ovrednotijo nekateri programi v okolju Windows za AVI-je, vendar lahko na nekaterih predvajalnikih povzroči predvajanje v napačnih barvah (v večini primerov ne zapišite označevalnika APP0)."
 
@@ -10886,7 +10773,6 @@ msgid "H264:"
 msgstr "H264:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2568
-#| msgid "Partitioning"
 msgid "Partition X264:"
 msgstr "Porazdeljevanje X264:"
 
@@ -10915,7 +10801,6 @@ msgid "I4x4"
 msgstr "I4x4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2614
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 4x4 partitions in I-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 4x4 v I-sličicah (za kodek H264)"
 
@@ -10943,7 +10828,6 @@ msgid "I8x8"
 msgstr "I8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2658
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8 partitions in I-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8 v I-sličicah (za kodek H264)"
 
@@ -10971,7 +10855,6 @@ msgid "P8x8"
 msgstr "P8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8, 16x8 and 8x16 partitions in P-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8, 16x8 in 8x16 v P-sličicah (za kodek H264)"
 
@@ -10994,7 +10877,6 @@ msgid "P4X4"
 msgstr "P4X4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2751
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 4x4, 8x4 and 4x8 partitions in P-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 4x4, 8x4 in 4x8 v P-sličicah (za kodek H264)"
 
@@ -11022,7 +10904,6 @@ msgid "B8x8"
 msgstr "B8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2795
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8 16x8 and 8x16 partitions in B-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8, 16x8 in 8x16 v B-sličicah (za kodek H264)"
 
@@ -11376,47 +11257,38 @@ msgid "** OOPS do not change any parameter **"
 msgstr "** OJOJ ne spreminjajte nobenega parametra **"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3950
-#| msgid "use DivX default presets"
 msgid "DivX default preset"
 msgstr "privzete prednastavitve DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3951
-#| msgid "use DivX high quality presets"
 msgid "DivX high quality preset"
 msgstr "visoko kakovostne prednastavitve DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3952
-#| msgid "use DivX low quality presets"
 msgid "DivX low quality preset"
 msgstr "nizko kakovostne prednastavitve DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3953
-#| msgid "use DivX WINDOWS presets"
 msgid "DivX WINDOWS preset"
 msgstr "prednastavitve WINDOWS DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3954
-#| msgid "use MPEG1 (VCD) presets"
 msgid "MPEG1 (VCD) preset"
 msgstr "prednastavitve MPEG1 (VCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3955
-#| msgid "use MPEG1 high quality presets"
 msgid "MPEG1 high quality preset"
 msgstr "visoko kakovostne prednastavitve MPEG2 (SVCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3956
-#| msgid "use MPEG2 (SVCD) presets"
 msgid "MPEG2 (SVCD) preset"
 msgstr "prednastavitve MPEG2 (SVCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3957
-#| msgid "use MPEG2 (DVD) presets"
 msgid "MPEG2 (DVD) preset"
 msgstr "prednastavitve MPEG2 (DVD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3958
-#| msgid "use REAL video presets"
 msgid "REAL video preset"
 msgstr "prednastavitve videa REAL"
 
