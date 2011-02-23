@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
-"POT-Creation-Date: 2011-01-29 19:15+0000\n"
-"PO-Revision-Date: 2011-01-30 23:52+0100\n"
-"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"POT-Creation-Date: 2011-02-03 07:45+0000\n"
+"PO-Revision-Date: 2011-02-20 14:43+0100\n"
+"Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -883,9 +883,8 @@ msgstr "Ohrani masko plasti"
 
 #. apply immediate checkbutton
 #: ../gap/gap_colormask_dialog.c:301
-#, fuzzy
 msgid "Apply Immediate"
-msgstr "Uveljavi takoj"
+msgstr "Uveljavi neposredno"
 
 #. show expert options checkbutton
 #: ../gap/gap_colormask_dialog.c:316
@@ -898,18 +897,15 @@ msgid "Filter Options"
 msgstr "Možnosti filtriranja"
 
 #: ../gap/gap_colormask_dialog.c:375
-#, fuzzy
 #| msgid "Radius:"
 msgid "Isle Radius:"
 msgstr "Polmer otočka:"
 
 #: ../gap/gap_colormask_dialog.c:378
-#, fuzzy
 msgid "Isle removal radius in pixels (use value 0 to disable removal of isolated pixels)"
 msgstr "Radij odstranjevanja otočkov v slikovnih točkah (uporabite vrednost 0 za izklop odstranjevanja izoliranih slik. točk)"
 
 #: ../gap/gap_colormask_dialog.c:389
-#, fuzzy
 msgid "Isle Area:"
 msgstr "Površina otočka:"
 
@@ -989,38 +985,34 @@ msgstr "Občutljivost barve ključenja:"
 #, fuzzy
 #| msgid "Common color threshold"
 msgid "Sig Colordiff Threshold:"
-msgstr "Skupni barvni prag"
+msgstr "Prag barvne razlike Sig:"
 
 #: ../gap/gap_colormask_dialog.c:680
 #, fuzzy
 msgid "Sig Brightness Threshold:"
-msgstr "Sig prag svetlosti:"
+msgstr "Prag svetlosti Sig:"
 
 #: ../gap/gap_colormask_dialog.c:695
 #, fuzzy
 #| msgid "Radius:"
 msgid "Sig Radius:"
-msgstr "Polmer:"
+msgstr "Polmer Sig:"
 
 #: ../gap/gap_colormask_dialog.c:712
-#, fuzzy
 #| msgid "Common color threshold"
 msgid "_Edge Colordiff threshold:"
-msgstr "Skupni barvni prag"
+msgstr "Prag barvne razlike _robov:"
 
 #: ../gap/gap_colormask_dialog.c:727
-#, fuzzy
 #| msgid "Common color threshold"
 msgid "_Area Colordiff threshold:"
-msgstr "Skupni barvni prag"
+msgstr "Prag barvne razlike po_vršine:"
 
 #: ../gap/gap_colormask_dialog.c:742
-#, fuzzy
 msgid "Small Area Diagonal:"
 msgstr "Diagonala majhne površine:"
 
 #: ../gap/gap_colormask_dialog.c:756
-#, fuzzy
 msgid "Small Area Pixelsize:"
 msgstr "Vel. slik. točk majhne površine:"
 
@@ -1037,13 +1029,11 @@ msgstr "Razlika občutljivosti:"
 
 #. connectByCorner checkbutton
 #: ../gap/gap_colormask_dialog.c:835
-#, fuzzy
 msgid "DEBUG Connect by corner (+ use RGB colordiff)"
 msgstr "RAZHROŠČEVANJE Poveži po vogalih (in uporabi barvno razliko RGB)"
 
 #. keep worklayer checkbutton
 #: ../gap/gap_colormask_dialog.c:851
-#, fuzzy
 msgid "DEBUG Keep worklayer"
 msgstr "RAZHROŠČEVANJE Obdrži delovno plast"
 
@@ -2919,10 +2909,6 @@ msgid "Shape"
 msgstr "Oblika"
 
 #: ../gap/gap_morph_dialog.c:3615
-#| msgid ""
-#| "Create N workpoints following the outline shape of the layer.(the shape "
-#| "detection is looking for non-transparent pixels).SHIFT-click: adds the "
-#| "new points and keeps the old points"
 msgid "Create N workpoints following the outline shape of the layer.the simple shape detection is looking for non-transparent pixels.CTRL-click uses an edge detection based shape detection algorithm that is capable to operate on opaque images.SHIFT-click: adds the new points and keeps the old points"
 msgstr "Ustvari N delovnih točk, ki sledijo orisni obliki plasti. Enostavna razpoznava oblik sledi neprosojnim slikovnim točkam. CTRL-klik uporablja na razpoznavi robov temelječ algoritem razpoznave oblik, ki lahko deluje tudi na prekrivnih slikah. SHIFT-klik: doda nove točke in obdrži stare."
 
@@ -3193,10 +3179,6 @@ msgid "Morph Workpoint file:"
 msgstr "Datoteka delovne točke preoblikovanja:"
 
 #: ../gap/gap_morph_tween_dialog.c:399
-#| msgid ""
-#| "Name of a Workpointfile created with the Morph feature\n"
-#| "(note that tweens are created via simple fade operations when no "
-#| "workpointfile is available))"
 msgid ""
 "Name of a Workpointfile created with the Morph feature\n"
 "(note that tweens are created via simple fade operations when no workpointfile is available)"
@@ -3265,7 +3247,6 @@ msgid "Number of additional workpoints on the outline of opaque image area"
 msgstr "Število dodatnih delovnih točk na orisu prekrivnega področja slike"
 
 #: ../gap/gap_morph_tween_dialog.c:755
-#| msgid "Tweensteps:"
 msgid "Tween Steps:"
 msgstr "Vmesni koraki:"
 
@@ -3286,20 +3267,18 @@ msgid "INTENSITY attribute value to be written to the generated workpoint file. 
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:804
-#, fuzzy
 #| msgid "Feather Radius:"
 msgid "Locate Move Radius:"
-msgstr "Polmer izginjanja:"
+msgstr "Polmer lociranja premika:"
 
 #: ../gap/gap_morph_tween_dialog.c:807
 msgid "Locate radius in pixels. The workpoint generation searches for corresponding points in the next frame within this radius"
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:818
-#, fuzzy
 #| msgid "Feather Radius:"
 msgid "Locate Shape Radius:"
-msgstr "Polmer izginjanja:"
+msgstr "Polmer lociranja lika:"
 
 #: ../gap/gap_morph_tween_dialog.c:824
 msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint to be compared  when loacting corresponding coordinate in the next frame."
@@ -3323,7 +3302,6 @@ msgstr ""
 
 #. the overwrite checkbutton
 #: ../gap/gap_morph_tween_dialog.c:896
-#| msgid "Open"
 msgid "Append"
 msgstr "Dodaj"
 
@@ -3370,7 +3348,7 @@ msgstr "Število vmes. sličic:"
 
 #: ../gap/gap_morph_tween_dialog.c:1226
 msgid "Number of tweens to be inserted between 2 frames. Value 0 renderes missing frames (via morping or fade)but does not create tweens where the next frame number is equal to the current processed frame number +1"
-msgstr ""
+msgstr "Število vmesnih sličic, vstavljenih med dve sličici. Vrednost 0 upodobi manjkajoče sličice (prek zlivanja ali prelivanja), vendar ne ustvari vmesnih sličic, kjer je številka naslednje sličice enaka številki trenutno obdelane sličice + 1"
 
 #. the create_tweens_in_subdir checkbutton
 #. checkbutton = gtk_check_button_new_with_label ( _("Subdirectory:"));
@@ -6012,10 +5990,9 @@ msgstr "Začni s predvajanjem. SHIFT: Zajemi sličice v večplastno sliko izvorn
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
-#, fuzzy
 #| msgid "Value"
 msgid "Pause"
-msgstr "Ustavi"
+msgstr "Prekini"
 
 #: ../gap/gap_player_dialog.c:8088
 msgid "Pause if playing (any mousebutton). Go to selection start/active/end (left/middle/right mousebutton) if not playing"
@@ -6998,7 +6975,6 @@ msgid "Maximum number of videofiles to be opened at same time while storyboard r
 msgstr "Največje število video datotek, odprtih naenkrat med upodabljanjem zgodborisa"
 
 #: ../gap/gap_story_dialog.c:5440
-#, fuzzy
 msgid "Framecache / open video:"
 msgstr "Medpomnilnik sličic / odprti video:"
 
@@ -7217,7 +7193,6 @@ msgid "Save cliplist to file"
 msgstr "Shrani seznam posnetkov v datoteko"
 
 #: ../gap/gap_story_dialog.c:7924
-#| msgid "Show Section properites window"
 msgid "Show Section properties window"
 msgstr "Pokaži okno lastnosti odlomka"
 
@@ -7439,10 +7414,9 @@ msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Glavna zvočna jakost, kjer 1,0 pomeni izvorno jakost"
 
 #: ../gap/gap_story_dialog.c:9254
-#, fuzzy
 #| msgid "Enable Transparency"
 msgid "Ext. Transparency Format:"
-msgstr "Zapis zunanje prosojnosti:"
+msgstr "Zunanji zapis prosojnosti:"
 
 #. pixel
 #: ../gap/gap_story_dialog.c:9256
@@ -7584,7 +7558,6 @@ msgid "Set Image or Frame Filename"
 msgstr "Določite ime datoteke slike ali sličice"
 
 #: ../gap/gap_story_properties.c:2489
-#| msgid "Set Image or Frame Filename"
 msgid "Set Colormark Parmeter Filename"
 msgstr "Določite ime datoteke parametrov barvne oznake"
 
@@ -8600,12 +8573,10 @@ msgid "Shadows"
 msgstr "Sence"
 
 #: ../gap/gap_wr_color_balance.c:620
-#| msgid "Lines"
 msgid "Midtones"
 msgstr "Srednje vrednosti"
 
 #: ../gap/gap_wr_color_balance.c:625
-#| msgid "Hardlight"
 msgid "Highlights"
 msgstr "Svetla področja"
 
@@ -8627,7 +8598,6 @@ msgid "Yellow/Blue:"
 msgstr "Rumena/modra:"
 
 #: ../gap/gap_wr_color_balance.c:708
-#, fuzzy
 msgid "Preserve luminosity"
 msgstr "Ohrani svetlost"
 
