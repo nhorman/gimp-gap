@@ -1,3 +1,79 @@
+2011-02-24 Wolfgang Hofer <hof@gimp.org>
+
+- added new plug-ins to render an animated water pattern and flame effect, 
+  based on the algorithms
+  by William Morrison (his original wave tank scripts sf-will-wavetank.scm
+  and sf-will-flames.scm can be found  in the plugin registry)
+  The GAP variant supports the GIMP-GAP typical iterator interface that
+  allows to apply the same effect on already existing multilayer images or frames.
+
+- fixed a bug in storyboard processor (processing failed in case
+  the processed layer_id was changed during filtermacro processing)
+
+- fixed bug in handling of persistent drawable ids.
+  Filtermacros that call filters with additional drawable references 
+  (such as the plug-in-bump-map that uses the bumpmap DRAWABLE
+   in addition to the input drawable) used a flattened copy of the
+   image that contained the refered additional drawable (e.g. the bumpmap)
+
+- filtermacro processing now can handle the case when one of the called
+  filters makes the processed layer invalid.
+  (this is typicall the case after merge operations 
+  where the merged reult gets a new drawable id)
+  The implemented new behavior checks for valid layer
+  after each single filtercall. In case the processed layer
+  gets invalid it tries to find a newly created layer_id,
+  preferrable at same stackposition. If such a newly created layer
+  is found the next filtercall (in the list of filters in the macro) 
+  will be executed on this newly created layer.
+
+- GIMP-GAP typical animated filtercalls now provide
+  information about total_steps and current step of the animated call
+  intended for query by the called plug-in where necessary.
+  (The new firepatern plug-in makes use of this feature
+  for varying colors when 2 gradients are used in aminated calls)
+  
+  This information is available during the call of the iterator procedure
+  and during the call of the filter via gimp_get_data
+  code example:
+  
+  //  typedef struct
+  //  {
+  //    gboolean  animatedCallInProgress;
+  //    gint32    total_steps; 
+  //    gdouble   current_step;            /* current step respecting acceleration characteristics */
+  //  } GapLastvalAnimatedCallInfo;
+  
+  #include "gimplastvalsdesc.h"
+  GapLastvalAnimatedCallInfo  animCallInfo;
+  gimp_get_data(GAP_LASTVAL_KEY_ANIMATED_CALL_INFO, &animCallInfo);
+
+ * NEWS  
+ * docs/reference/txt/Makefile.am
+ * docs/reference/txt/plug_in_filter_macro.txt
+ * docs/reference/txt/plug-in-firepattern.txt   # new file
+ * docs/reference/txt/plug-in-waterpattern.txt  # new file
+
+ * po/POTFILES.in
+ * gap/gap_filter_iterators.c  
+ * gap/gap_story_render_processor.c
+ * gap/gimplastvaldesc.h
+ * gap/Makefile.am
+ * gap/gap_fmac_base.c 
+ * gap/gap_filter_pdb.c
+ * gap/gap_pdb_calls.c [.h]
+ * gap/gap_layer_copy.c
+ * gap/gap_fire_pattern.c    # new file
+ * gap/gap_water_pattern.c   # new file
+
+
+2010-12-18 Wolfgang Hofer <hof@gimp.org>
+
+- storyboard rounding at offest calcultion 
+
+ *  gap/gap_story_file.c
+
+
 2010-12-14 Wolfgang Hofer <hof@gimp.org>
 
 - GIMP-GAP has swichted its main video encoder/decoder engine

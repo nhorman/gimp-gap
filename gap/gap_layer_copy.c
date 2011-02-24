@@ -78,7 +78,7 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
   l_name = gimp_drawable_get_name(src_layer_id);
 
   /* copy the layer */
-  l_new_layer_id = gap_pdb_gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
+  l_new_layer_id = gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
 
   if(l_new_layer_id >= 0)
   {

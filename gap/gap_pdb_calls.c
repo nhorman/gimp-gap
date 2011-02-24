@@ -254,42 +254,6 @@ gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
 
 
 
-/* ============================================================================
- * gap_pdb_gimp_layer_new_from_drawable
- *   
- * ============================================================================
- */
-
-gint32
-gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
-{
-   static char     *l_called_proc = "gimp_layer_new_from_drawable";
-   GimpParam       *return_vals;
-   int              nreturn_vals;
-   gint32           layer_id;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_DRAWABLE,  drawable_id,
-                                 GIMP_PDB_IMAGE,     dst_image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      layer_id = return_vals[1].data.d_int32;
-      gimp_destroy_params(return_vals, nreturn_vals);
-
-      return(layer_id);   /* return the resulting layer_id */
-   }
-   gimp_destroy_params(return_vals, nreturn_vals);
-   printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
-      , l_called_proc
-      , (int)return_vals[0].data.d_status
-      , gap_status_to_string(return_vals[0].data.d_status)
-      );
-
-   return(-1);
-}       /* end gap_pdb_gimp_layer_new_from_drawable */
 
 /* ============================================================================
  * gap_pdb_gimp_file_save_thumbnail
@@ -416,3 +380,126 @@ workaround:
       );
    return(FALSE);
 }       /* end gap_pdb_gimp_image_thumbnail */
+
+
+
+
+/* --------------------------------------
+ * gap_pdb_call_displace
+ * --------------------------------------
+ *  
+ */
+gboolean
+gap_pdb_call_displace(gint32 image_id, gint32 layer_id
+  ,gdouble amountX, gdouble amountY
+  ,gint32 doX, gint32 doY
+  ,gint32 mapXId, gint32 mapYId
+  ,gint32 displaceType)
+{
+   static char     *l_called_proc = "plug-in-displace";
+   GimpParam       *return_vals;
+   int              nreturn_vals;
+
+   return_vals = gimp_run_procedure (l_called_proc,
+                                 &nreturn_vals,
+                                 GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_IMAGE,     image_id,
+                                 GIMP_PDB_DRAWABLE,  layer_id,          /* input drawable (to be processed) */
+                                 GIMP_PDB_FLOAT,     amountX,           /* Displace multiplier for X or radial direction */
+                                 GIMP_PDB_FLOAT,     amountY,           /* Displace multiplier for Y or tangent (degrees) direction */
+                                 GIMP_PDB_INT32,     doX,               /* Displace in X or radial direction?  */
+                                 GIMP_PDB_INT32,     doY,               /* Displace in Y or tangential direction?  */
+                                 GIMP_PDB_DRAWABLE,  mapXId,            /* Displacement map for X or radial direction  */
+                                 GIMP_PDB_DRAWABLE,  mapYId,            /* Displacement map for Y or tangent direction  */
+                                 GIMP_PDB_INT32,     displaceType,      /* Edge behavior: WRAP (0), SMEAR (1), BLACK (2)  */
+                                 GIMP_PDB_END);
+
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
+   {
+      gimp_destroy_params(return_vals, nreturn_vals);
+      return (TRUE);   /* OK */
+   }
+   gimp_destroy_params(return_vals, nreturn_vals);
+   g_message("Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , gap_status_to_string(return_vals[0].data.d_status)
+      );
+   return(FALSE);
+} /* end gap_pdb_call_displace */
+
+
+/* --------------------------------------
+ * gap_pdb_call_solid_noise
+ * --------------------------------------
+ *  
+ */
+gboolean
+gap_pdb_call_solid_noise(gint32 image_id, gint32 layer_id
+   , gint32 tileable, gint32 turbulent, gint32 seed, gint32 detail, gdouble xsize, gdouble ysize)
+{
+   static char     *l_called_proc = "plug-in-solid-noise";
+   GimpParam       *return_vals;
+   int              nreturn_vals;
+
+   return_vals = gimp_run_procedure (l_called_proc,
+                                 &nreturn_vals,
+                                 GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_IMAGE,     image_id,
+                                 GIMP_PDB_DRAWABLE,  layer_id,          /* input drawable (to be processed) */
+                                 GIMP_PDB_INT32,     tileable,          /* create tileable output (0:no, 1:yes)  */
+                                 GIMP_PDB_INT32,     turbulent,         /* Make turbulent noise (0:no, 1:yes)  */
+                                 GIMP_PDB_INT32,     seed,              /* Random seed  */
+                                 GIMP_PDB_INT32,     detail,            /* detail level (0 - 15)  */
+                                 GIMP_PDB_FLOAT,     xsize,             /* texture size */
+                                 GIMP_PDB_FLOAT,     ysize,             /* texture size */
+                                 GIMP_PDB_END);
+
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
+   {
+      gimp_destroy_params(return_vals, nreturn_vals);
+      return (TRUE);   /* OK */
+   }
+   gimp_destroy_params(return_vals, nreturn_vals);
+   g_message("Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , gap_status_to_string(return_vals[0].data.d_status)
+      );
+   return(FALSE);
+} /* end gap_pdb_call_solid_noise */
+
+
+/* --------------------------------------
+ * gap_pdb_call_normalize
+ * --------------------------------------
+ *  
+ */
+gboolean
+gap_pdb_call_normalize(gint32 image_id, gint32 layer_id)
+{
+   static char     *l_called_proc = "plug-in-normalize";
+   GimpParam       *return_vals;
+   int              nreturn_vals;
+
+   return_vals = gimp_run_procedure (l_called_proc,
+                                 &nreturn_vals,
+                                 GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE,
+                                 GIMP_PDB_IMAGE,     image_id,
+                                 GIMP_PDB_DRAWABLE,  layer_id,          /* input drawable (to be processed) */
+                                 GIMP_PDB_END);
+
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
+   {
+      gimp_destroy_params(return_vals, nreturn_vals);
+      return (TRUE);   /* OK */
+   }
+   gimp_destroy_params(return_vals, nreturn_vals);
+   g_message("Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , gap_status_to_string(return_vals[0].data.d_status)
+      );
+   return(FALSE);
+} /* end gap_pdb_call_normalize */
+

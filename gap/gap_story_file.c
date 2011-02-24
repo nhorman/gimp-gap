@@ -9064,8 +9064,11 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     center_x_ofs = ((gdouble)vid_width/2.0) -  (result_width/2.0);
     center_y_ofs = ((gdouble)vid_height/2.0) - (result_height/2.0);
 
-    result_ofsx  = center_x_ofs + (((gdouble)result_attr->width / 2.0)  * move_x) + (((gdouble)vid_width / 2.0)  * move_x);
-    result_ofsy  = center_y_ofs + (((gdouble)result_attr->height / 2.0 ) * move_y) + (((gdouble)vid_height / 2.0 ) * move_y);
+//    result_ofsx  = center_x_ofs + (((gdouble)result_attr->width / 2.0)  * move_x) + (((gdouble)vid_width / 2.0)  * move_x);
+//    result_ofsy  = center_y_ofs + (((gdouble)result_attr->height / 2.0 ) * move_y) + (((gdouble)vid_height / 2.0 ) * move_y);
+    result_ofsx  = center_x_ofs + ((result_width / 2.0)  * move_x) + (((gdouble)vid_width / 2.0)  * move_x);
+    result_ofsy  = center_y_ofs + ((result_height / 2.0 ) * move_y) + (((gdouble)vid_height / 2.0 ) * move_y);
+
 
   }
 

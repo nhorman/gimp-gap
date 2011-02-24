@@ -121,6 +121,8 @@ libexec_PROGRAMS = \
 	gap_storyboard		\
 	$(GAP_VIDEO_EXTRACT)	\
 	$(GAP_VIDEO_INDEX)	\
+	gap_fire_pattern	\
+	gap_water_pattern	\
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
@@ -366,6 +368,18 @@ gap_video_index_SOURCES = \
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
+gap_fire_pattern_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_fire_pattern.c	\
+	gap_libgimpgap.h
+
+gap_water_pattern_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_water_pattern.c	\
+	gap_libgimpgap.h
+
 gap_wr_opacity_SOURCES = \
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
@@ -439,6 +453,8 @@ gap_onion_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
 gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
 gap_video_index_LDADD =      $(GAPVIDEOAPI) $(LIBGAPSTORY) $(LIBGAPBASE)  $(GIMP_LIBS)
+gap_fire_pattern_LDADD =     $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_water_pattern_LDADD =    $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_trans_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

@@ -2,36 +2,37 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
 -----------------------------------------------------
 (compared to gimp-gap release 2.6.0)
 
-- fixed a bug in the GAP ffmpeg encoder that resulted in lower quality
-  of the encoded video.
-  (disabled buggy pre conversion to yuv420P colormodel for the ffmpeg encoder.
-  now feeding RGB to the codec or convert with functions of the encoding engine)
+- New Plug-Ins added:
+
+  - plug-ins to render animated Water and Fire effects.
+
+  - New colormask plug-in added
+    The colormask filter can apply transparency for pixels matching the colormask image.
+    intended for processing frames where moving objects can be isolated
+    from the non-moving constant background by aplying the constant background
+    as colormask on all frames.
+    the colormask feature is also available as new mask anchor mode 
+    when processing stroyboard clips.
+    (anchor modes are: ClipColormask, Clip, Master)
+
+  - support to run gimp_color_balance tool as animated filter 
+    (added wrapper plug-in).
+
 
 - GIMP-GAP now supports speed control of movements and other transitions
-  via Acceleation characteristic presets. Those presets are available
+  via Acceleration characteristic presets. Those presets are available
   - in the MovePath tool
   - in Storyboard transitions
     and Storyboard filtemacro pair calls when applied with varying values.
   - in animated filter calls with varying values.
     relevant in Filter All Layers
-    and Modify Drames feature when applying a filter
+    and Modify Frames feature when applying a filter
     
     Th GAP dbbrowser now supports acceleration characteristic graph and spinbutton
     (that replaces the "Apply Varying" button of older GIMP_GAP releases)
 
-- New colormask plug-in added
-  The colormask filter can apply transparency for pixels matching the colormask image.
-  intended for processing frames where moving objects can be isolated
-  from the non-moving constant background by aplying the constant background
-  as colormask on all frames.
-  the colormask feature is also available as new mask anchor mode 
-  when processing stroyboard clips.
-  (anchor modes are: ClipColormask, Clip, Master)
 
-- The Storyboard now supports rotatation of the prcessed clips by any angle.
-  bugfixes in the storyboard processing now use less memory resources
-  and produces smoother movent.
-  (the old code did run out of memory when processing multiple HD videoclips)
+- The Storyboard now supports rotatation of the processed clips by any angle.
 
 - A new storyboard processing feature allows adding external transparency 
   for clip type movie. This is done via format string that refers to
@@ -54,12 +55,7 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
    individual workpointfiles per processed frame are located via
    name convention (extension .morphpoints) and used for morphing when they exist.
    (such files can be created with the help of the plug-in "Morph Workpoint Generator").
-/home/hof/gimp_devel/gap/gimp-gap-ffmpeg/master-patched/NEWS
-- support to run gimp_color_balance tool as animated filter 
-  (added wrapper plug-in).
 
-- significant better performance for ffmpeg based video encoder
-  on single and multiprocessor machines.
 
 - updated gimp-gap video API and ffmpeg-based video encoder
   to support the libraries provided with the ffmpeg-0.6.1 release
@@ -68,8 +64,25 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
   in videofiles that do not start with a keyframe).
   
   .. see ChangeLog for details,
+
+- better performance for ffmpeg based video encoder
+  on single and multiprocessor machines.
+
   
-- some bugfixes (See ChangeLog for details)
+- Major Bugfixes
+
+  - fixed a bug in the GAP ffmpeg video encoder that resulted in lower quality
+     of the encoded video.
+    (disabled buggy pre conversion to yuv420P colormodel for the ffmpeg encoder.
+     now feeding RGB to the codec or convert with functions of the encoding engine)
+
+  - fixed video encoder crash on 64bit Systems.
+
+  - bugfixes in the storyboard processing now use less memory resources
+    and produces smoother movent.
+    (the old code did run out of memory when processing multiple HD videoclips)
+
+    (See ChangeLog for details on further bugfixes)
 
 
 Here is a short overview whats new in GIMP-GAP-2.6.0:

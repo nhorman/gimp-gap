@@ -4506,6 +4506,10 @@ gap_story_render_open_vid_handle(GapLibTypeInputRange input_mode
  * - execute the (optional) filtermacro_file if not NULL
  *   (filtermacro_file is a set of one or more gimp_filter procedures
  *    with predefined parameter values)
+ * returns the resulting layer_id (this may be the same as the specified layer_id at calling time
+ *           but can change in case the called filter did add additional layers that were
+ *           merged to one resulting layer (either in the called filter or after the filtercall
+ *           by this procedure)
  */
 static gint32
 p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_file
@@ -4598,6 +4602,7 @@ p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_fil
        l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
        if(l_layers_list != NULL)
        {
+         l_rc_layer_id = l_layers_list[0];
          g_free (l_layers_list);
        }
        if(l_nlayers > 1 )
@@ -4606,6 +4611,18 @@ p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_fil
          l_rc_layer_id = gap_image_merge_visible_layers(image_id, GIMP_CLIP_TO_IMAGE);
        }
 
+    }
+  }
+  
+  if(gap_debug)
+  {
+    if(l_rc_layer_id != layer_id)
+    {
+      printf("p_exec_filtermacro: layer_id:%d HAS CHANGED to %d\n"
+        ,(int)layer_id
+        ,(int)l_rc_layer_id
+        );
+        
     }
   }
 
@@ -4717,6 +4734,7 @@ p_transform_and_add_layer( gint32 comp_image_id
   gint32 vid_height;
   gint32 l_new_layer_id;
   gint32 l_fsel_layer_id;
+  gint32 l_fmac_layer_id;
   GapStoryCalcAttr  calculate_attributes;
   GapStoryCalcAttr  *calculated;
 
@@ -4751,7 +4769,7 @@ p_transform_and_add_layer( gint32 comp_image_id
    *  is used to define fmac_current_step
    * (starts at 0)
    */
-  p_exec_filtermacro(tmp_image_id
+  l_fmac_layer_id = p_exec_filtermacro(tmp_image_id
                       , layer_id
                       , filtermacro_file
                       , frn_elem->filtermacro_file_to
@@ -4762,12 +4780,14 @@ p_transform_and_add_layer( gint32 comp_image_id
 
   if(gap_debug)
   {
-    printf("p_transform_and_add_layer: FILTERMACRO DONE at layer_id: %d, tmp_image_id:%d\n"
+    printf("p_transform_and_add_layer: FILTERMACRO DONE at layer_id: %d (l_fmac_layer_id:%d), tmp_image_id:%d\n"
       , (int)layer_id
-      ,(int)tmp_image_id );
+      , (int)l_fmac_layer_id
+      , (int)tmp_image_id
+      );
   }
 
-  layer_id = gap_layer_flip(layer_id, flip_request);
+  layer_id = gap_layer_flip(l_fmac_layer_id, flip_request);
 
 
   /* expand layer to tmp image size (before applying any scaling) */

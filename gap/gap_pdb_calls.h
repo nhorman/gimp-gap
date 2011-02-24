@@ -47,7 +47,6 @@ gint gap_pdb_procedure_available(char *proc_name);
 gint32 gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg);
 
 gboolean gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id);
-gint32   gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id);
 
 gboolean   gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename);
 
@@ -55,5 +54,20 @@ gboolean   gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 he
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
                               gint32 *th_data_count, unsigned char **th_data);
 gboolean   gap_pdb_procedure_name_available (const gchar *search_name);
+
+
+
+
+gboolean    gap_pdb_call_displace(gint32 image_id, gint32 layer_id
+                                 ,gdouble amountX, gdouble amountY
+                                 ,gint32 doX, gint32 doY
+                                 ,gint32 mapXId, gint32 mapYId
+                                 ,gint32 displaceType);
+
+gboolean    gap_pdb_call_solid_noise(gint32 image_id, gint32 layer_id
+                 , gint32 tileable, gint32 turbulent, gint32 seed
+                 , gint32 detail, gdouble xsize, gdouble ysize);
+
+gboolean    gap_pdb_call_normalize(gint32 image_id, gint32 layer_id);
 
 #endif

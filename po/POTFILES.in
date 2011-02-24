@@ -16,6 +16,7 @@ gap/gap_decode_mplayer.c
 gap/gap_decode_xanim.c
 gap/gap_filter_foreach.c
 gap/gap_filter_main.c
+gap/gap_fire_pattern.c
 gap/gap_fmac_base.c
 gap/gap_fmac_main.c
 gap/gap_frontends_main.c
@@ -58,6 +59,7 @@ gap/gap_vex_dialog.c
 gap/gap_vex_exec.c
 gap/gap_video_index_creator.c
 gap/gap_vex_main.c
+gap/gap_water_pattern.c
 gap/gap_wr_color_balance.c
 gap/gap_wr_color_curve.c
 gap/gap_wr_color_huesat.c

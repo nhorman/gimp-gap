@@ -596,6 +596,117 @@ p_fmac_execute_single_filter(GimpRunMode run_mode, gint32 image_id, gint32 drawa
 }  /* end p_fmac_execute_single_filter */
 
 
+/* ---------------------------------
+ * p_find_layer_for_next_processing
+ * ---------------------------------
+ * find a layer in the image that was newly created (e.g is not
+ * found in the old_layers_list snaphaot taken of the layerstack
+ * before the processing step)
+ * If there are more such new layers present, then pick the one
+ * that has same position as the ref_layer_id had in the old_layers_list
+ */
+static gint32
+p_find_layer_for_next_processing(gint32 image_id, gint32 ref_layer_id
+   , gint32 *old_layers_list, gint old_nlayers)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32        l_idx;
+  gint32        l_old_stackposition;
+  gint32        l_relevantLayer;
+
+  if(old_layers_list == NULL)
+  {
+    return (-1);
+  }
+  
+  if(gap_debug)
+  {
+    printf("OLD_layerstack:");
+    for(l_idx = 0; l_idx < old_nlayers; l_idx++)
+    {
+      printf(" ID(%d):%d"
+        ,(int)l_idx
+        ,(int)old_layers_list[l_idx]
+        );
+    }
+    printf("\n");
+  }
+  
+  
+  for(l_idx = 0; l_idx < old_nlayers; l_idx++)
+  {
+    if(old_layers_list[l_idx] == ref_layer_id)
+    {
+      l_old_stackposition = l_idx;
+      break;   
+    }
+  }
+
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  l_relevantLayer = -1;
+  
+  if(l_layers_list != NULL)
+  {
+    if(gap_debug)
+    {
+      printf("NEW_layerstack:");
+      for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+      {
+        printf(" ID(%d):%d"
+          ,(int)l_idx
+          ,(int)l_layers_list[l_idx]
+          );
+      }
+      printf("\n");
+    }
+
+
+    for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+    {
+      gint32        l_ii;
+      gboolean      l_found;
+
+      l_found = FALSE;
+      for(l_ii = 0; l_ii < l_nlayers; l_ii++)
+      {
+        if (l_layers_list[l_idx] == old_layers_list[l_ii])
+        {
+          l_found = TRUE;
+          break;
+        }
+      }
+      
+      if(l_found == FALSE)
+      {
+        /* we found a new layer that was created during last filtercall */
+        l_relevantLayer = l_layers_list[l_idx];
+        if(l_idx == l_old_stackposition)
+        {
+          /* the new layer has same stackposition */
+          break;
+        }
+      }
+    }
+    g_free (l_layers_list);
+  }
+
+  if(gap_debug)
+  {
+    printf("FIND_LAYER(2): ref_layer_id:%d l_old_stackposition:%d l_relevantLayer:%d\n"
+      ,(int)ref_layer_id
+      ,(int)l_old_stackposition
+      ,(int)l_relevantLayer
+      );
+  }
+
+  return (l_relevantLayer);
+  
+}  /* end p_find_layer_for_next_processing */
+
+
+
 /* ------------------------
  * p_fmac_execute
  * ------------------------
@@ -652,7 +763,9 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id
     FMacElem *fmac_elem;
     GapFmacContext theFmacContext;
     GapFmacContext *fmacContext;
+    gint32          l_drawable_id;
 
+    l_drawable_id = drawable_id;
     fmacContext = &theFmacContext;
 
     gap_fmct_setup_GapFmacContext(fmacContext
@@ -668,16 +781,44 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id
     }
     for(fmac_elem = fmac_root; fmac_elem != NULL; fmac_elem = (FMacElem *)fmac_elem->next)
     {
-      p_fmac_execute_single_filter(run_mode, image_id, drawable_id
-          , fmac_elem
-          , current_step
-          , total_steps
-          );
+      gint          l_nlayers;
+      gint32       *l_layers_list;
       
-      /* intermediate cleanup of temporary image duplicates that may have been
-       * created while iterating persistent drawable ids (by iterator sub-procedur p_delta_drawable)
-       */
-      gap_frame_fetch_delete_list_of_duplicated_images(fmacContext->ffetch_user_id);
+      l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+      if(l_layers_list != NULL)
+      {
+
+        if(gap_debug)
+        {
+          printf("p_fmac_execute: %s\n", fmac_elem->filtername);
+        }
+  
+        p_fmac_execute_single_filter(run_mode, image_id, l_drawable_id
+            , fmac_elem
+            , current_step
+            , total_steps
+            );
+      
+        /* intermediate cleanup of temporary image duplicates that may have been
+         * created while iterating persistent drawable ids (by iterator sub-procedur p_delta_drawable)
+         */
+        gap_frame_fetch_delete_list_of_duplicated_images(fmacContext->ffetch_user_id);
+
+        if(gimp_drawable_is_valid(l_drawable_id) != TRUE)
+        {
+          /* the filter ha made the processed drawable_id invalid
+           * (probably by merging with another layer)
+           * In this case we try to figure out the new layer id
+           * that can be used for the further filter calls to be done..
+           */
+          l_drawable_id = p_find_layer_for_next_processing(image_id
+                                                         , l_drawable_id
+                                                         , l_layers_list
+                                                         , l_nlayers
+                                                         );
+        }
+        g_free (l_layers_list);
+      }
     }
 
     /* disable the sessionwide filtermacro context */
