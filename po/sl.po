@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
-"POT-Creation-Date: 2011-02-03 07:45+0000\n"
-"PO-Revision-Date: 2011-02-20 14:43+0100\n"
+"POT-Creation-Date: 2011-02-24 19:35+0000\n"
+"PO-Revision-Date: 2011-04-01 01:04+0100\n"
 "Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -897,7 +897,6 @@ msgid "Filter Options"
 msgstr "Možnosti filtriranja"
 
 #: ../gap/gap_colormask_dialog.c:375
-#| msgid "Radius:"
 msgid "Isle Radius:"
 msgstr "Polmer otočka:"
 
@@ -999,12 +998,10 @@ msgid "Sig Radius:"
 msgstr "Polmer Sig:"
 
 #: ../gap/gap_colormask_dialog.c:712
-#| msgid "Common color threshold"
 msgid "_Edge Colordiff threshold:"
 msgstr "Prag barvne razlike _robov:"
 
 #: ../gap/gap_colormask_dialog.c:727
-#| msgid "Common color threshold"
 msgid "_Area Colordiff threshold:"
 msgstr "Prag barvne razlike po_vršine:"
 
@@ -1766,6 +1763,332 @@ msgstr "Filtriraj vse plasti ..."
 msgid "<Image>/Filters/"
 msgstr "<Image>/Filtri/"
 
+#: ../gap/gap_fire_pattern.c:1043
+#: ../gap/gap_water_pattern.c:430
+#, fuzzy, c-format
+msgid "drawable:%d is not a layer\n"
+msgstr "drawable:%d ni plast\n"
+
+#. The dialog1 and main vbox
+#: ../gap/gap_fire_pattern.c:1710
+#| msgid "Pattern:"
+msgid "Fire-Pattern"
+msgstr "Ognjeni vzorec"
+
+#. the frame
+#: ../gap/gap_fire_pattern.c:1746
+#: ../gap/gap_water_pattern.c:1072
+#| msgid "Audio Options"
+msgid "Animation options"
+msgstr "Možnosti animacije"
+
+#. createImage checkbutton
+#: ../gap/gap_fire_pattern.c:1767
+#: ../gap/gap_water_pattern.c:1093
+#| msgid "Create Layer:"
+msgid "Create Image:"
+msgstr "Ustvari sliko:"
+
+#: ../gap/gap_fire_pattern.c:1779
+#: ../gap/gap_water_pattern.c:1105
+msgid "ON: create a new image with n copies of the input drawable and render complete animation effect on those copies. OFF: render only one phase of the animation effect on the input drawable"
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:1792
+#: ../gap/gap_water_pattern.c:1115
+#| msgid "B-Frames:"
+msgid "N-Frames:"
+msgstr "N-sličice:"
+
+#: ../gap/gap_fire_pattern.c:1802
+#: ../gap/gap_water_pattern.c:1125
+msgid "Number of frames to be rendered as layer in the newly created image."
+msgstr "Število sličic, ki naj bodo upodobljene kot plast v novo ustvarjeni sliki."
+
+#. shiftPhaseY spinbutton
+#: ../gap/gap_fire_pattern.c:1816
+#| msgid "Paste After"
+msgid "Phase shift"
+msgstr "Fazni zamik"
+
+#: ../gap/gap_fire_pattern.c:1824
+#: ../gap/gap_water_pattern.c:1166
+msgid "Vertical shift phase where 1.0 refers to image height"
+msgstr "Navpični fazni zamik, kjer se 1,0 nanaša na višino slike"
+
+#. the frame
+#: ../gap/gap_fire_pattern.c:1837
+#: ../gap/gap_water_pattern.c:1179
+#| msgid "Filter Options"
+msgid "Pattern options"
+msgstr "Možnosti vzorca"
+
+#. use existing Patterns checkbutton
+#: ../gap/gap_fire_pattern.c:1860
+#: ../gap/gap_water_pattern.c:1202
+#| msgid "Create Layer:"
+msgid "Create Pattern:"
+msgstr "Ustvari vzorec:"
+
+#: ../gap/gap_fire_pattern.c:1871
+msgid "ON: create firepattern cloud layer according to options. OFF: Use external pattern layer. "
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:1883
+#, fuzzy
+msgid "vertical stretch factor for the fire pattern"
+msgstr "Faktor navpičnega raztega za ognjeni vzorec"
+
+#. scalex spinbutton
+#: ../gap/gap_fire_pattern.c:1896
+#: ../gap/gap_water_pattern.c:1276
+#, fuzzy
+#| msgid "Select Pattern:"
+msgid "Scale Pattern X:"
+msgstr "Spr. velikost vzorca X:"
+
+#: ../gap/gap_fire_pattern.c:1905
+msgid "Horizontal scaling of the random patterns that are created for rendering (cloud layer)"
+msgstr ""
+
+#. the y coordinate label
+#. Y
+#. table col, row
+#. shiftPhaseY spinbutton
+#: ../gap/gap_fire_pattern.c:1915
+#: ../gap/gap_morph_dialog.c:3225
+#: ../gap/gap_mov_dialog.c:4425
+#: ../gap/gap_name2layer_main.c:486
+#: ../gap/gap_resi_dialog.c:853
+#: ../gap/gap_water_pattern.c:1158
+#: ../gap/gap_water_pattern.c:1295
+msgid "Y:"
+msgstr "Y:"
+
+#: ../gap/gap_fire_pattern.c:1924
+msgid "Vertical scaling of the random patterns that are created for rendering (cloud layer)"
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:1937
+#, fuzzy
+#| msgid "Select Pattern:"
+msgid "Seed Pattern:"
+msgstr "Seme vzorca:"
+
+#: ../gap/gap_fire_pattern.c:1947
+#: ../gap/gap_water_pattern.c:1326
+msgid "Seed for creating random pattern (cloud1 layer) use 0 for random value."
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:1958
+#, fuzzy
+msgid "Detail:"
+msgstr "Podrobnost:"
+
+#: ../gap/gap_fire_pattern.c:1968
+#, fuzzy
+msgid "Detail level for creating random pattern (cloud layer)"
+msgstr "Raven podrobnosti za ustvarjanje naključnega vzorca (plast oblakov)"
+
+#. pattern
+#. the layer_pattern label
+#: ../gap/gap_fire_pattern.c:1980
+#: ../gap/gap_mod_layer_dialog.c:1336
+#: ../gap/gap_range_ops.c:758
+msgid "Layer Pattern:"
+msgstr "Vzorec plasti:"
+
+#: ../gap/gap_fire_pattern.c:1995
+#: ../gap/gap_water_pattern.c:1239
+#: ../gap/gap_water_pattern.c:1264
+msgid "Select an already existing pattern layer (from previous run)"
+msgstr ""
+
+#. the frame
+#: ../gap/gap_fire_pattern.c:2006
+#| msgid "Filter Options"
+msgid "Fireshape options"
+msgstr "Možnosti oblike plamena"
+
+#: ../gap/gap_fire_pattern.c:2026
+#| msgid "Create File(s):"
+msgid "Create Fireshape:"
+msgstr "Ustvari obliko plamena:"
+
+#: ../gap/gap_fire_pattern.c:2037
+msgid "ON: create fire shape layer according to options. OFF: Use external fire shape layer. "
+msgstr ""
+
+#. useTrapezoidShape checkbutton
+#: ../gap/gap_fire_pattern.c:2048
+#| msgid "Threshold:"
+msgid "Trapezoid:"
+msgstr "Trapezoid:"
+
+#: ../gap/gap_fire_pattern.c:2058
+msgid "ON: Render trapezoid shaped fire, OFF: render fire at full image width"
+msgstr ""
+
+#. flameHeight spinbutton
+#: ../gap/gap_fire_pattern.c:2072
+#| msgid "Scale Height:"
+msgid "Flame Height:"
+msgstr "Višina plamena:"
+
+#: ../gap/gap_fire_pattern.c:2081
+#| msgid "scale height of frame to fit master height"
+msgid "Height of the flame (1.0 refers to full image height)"
+msgstr "Višina plamena (1,0 ustreza polni višini slike)"
+
+#. flameBorder spinbutton
+#: ../gap/gap_fire_pattern.c:2092
+#| msgid "Frames Encoded:"
+msgid "Flame Border:"
+msgstr "Rob plamena:"
+
+#: ../gap/gap_fire_pattern.c:2101
+#| msgid "number of frames"
+msgid "border of the flame"
+msgstr "rob plamena"
+
+#. flameWidth checkbuttons
+#: ../gap/gap_fire_pattern.c:2114
+#| msgid "Width:"
+msgid "FlameWidth:"
+msgstr "Širina plamena:"
+
+#: ../gap/gap_fire_pattern.c:2123
+msgid "width of the flame at base line (1.0 for full image width)"
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:2132
+#, fuzzy
+#| msgid "To:"
+msgid "Top:"
+msgstr "Vrh:"
+
+#: ../gap/gap_fire_pattern.c:2142
+msgid "width of the flame at flame height (1.0 for full image width)"
+msgstr ""
+
+#. flameOffestX spinbutton
+#: ../gap/gap_fire_pattern.c:2154
+#| msgid "Frames Done:"
+msgid "Flame Center:"
+msgstr "Središče plamena:"
+
+#: ../gap/gap_fire_pattern.c:2163
+msgid "horizontal offset of the flame center (0 for center, -0.5 left border +0.5 at right border of the image)"
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:2175
+#| msgid "Shape"
+msgid "Fire Shape:"
+msgstr "Oblika ognja:"
+
+#: ../gap/gap_fire_pattern.c:2190
+msgid "Select an already existing fire shape layer (from previous run)"
+msgstr ""
+
+#. the frame
+#: ../gap/gap_fire_pattern.c:2200
+#: ../gap/gap_water_pattern.c:1358
+#| msgid "Render Settings"
+msgid "Render options"
+msgstr "Možnosti upodabljanja"
+
+#. createFireLayer checkbutton
+#: ../gap/gap_fire_pattern.c:2224
+#| msgid "Create Layer:"
+msgid "Create FireLayer:"
+msgstr "Ustvari ognjeno plast:"
+
+#: ../gap/gap_fire_pattern.c:2234
+msgid "ON: Render fire pattern effect as separate layer, OFF: merge rendered effect onto processed layer"
+msgstr ""
+
+#. Highlights blend mode
+#: ../gap/gap_fire_pattern.c:2248
+#: ../gap/gap_water_pattern.c:1427
+#, fuzzy
+#| msgid "Render Mode:"
+msgid "Blend Mode:"
+msgstr "Način upodabljanja:"
+
+#. Blend Mode the radio buttons
+#: ../gap/gap_fire_pattern.c:2266
+#: ../gap/gap_mod_layer_dialog.c:500
+#: ../gap/gap_mov_dialog.c:3015
+msgid "Burn"
+msgstr "Ožgi"
+
+#: ../gap/gap_fire_pattern.c:2277
+#: ../gap/gap_mod_layer_dialog.c:479
+#: ../gap/gap_mov_dialog.c:3022
+msgid "Subtract"
+msgstr "Odštej"
+
+#: ../gap/gap_fire_pattern.c:2288
+#: ../gap/gap_mod_layer_dialog.c:448
+#: ../gap/gap_mov_dialog.c:3010
+msgid "Multiply"
+msgstr "Pomnoži"
+
+#. useTransparentBg checkbutton
+#: ../gap/gap_fire_pattern.c:2304
+#| msgid "Ext. Transparency Format:"
+msgid "Transparent BG:"
+msgstr "Prosojno ozadje:"
+
+#: ../gap/gap_fire_pattern.c:2315
+msgid "ON: Render fire layer with transparent background, OFF: render with black background"
+msgstr ""
+
+#. the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
+#. * there is no need for the chainbutton to have its own callback procedure
+#.
+#. Opacity
+#. table col, row
+#. accelaration characteristic
+#. table col, row
+#: ../gap/gap_fire_pattern.c:2324
+#: ../gap/gap_mov_dialog.c:3888
+#: ../gap/gap_mov_dialog.c:4163
+#: ../gap/gap_onion_dialog.c:1130
+#: ../gap/gap_story_att_trans_dlg.c:2877
+#: ../gap/gap_water_pattern.c:1404
+#: ../gap/gap_wr_opacity.c:332
+msgid "Opacity:"
+msgstr "Prekrivnost:"
+
+#: ../gap/gap_fire_pattern.c:2335
+#| msgid "Descending opacity of the trace layer"
+msgid "The opacity of the flames"
+msgstr "Prekrivnost plamenov"
+
+#. reverseGradient checkbutton
+#: ../gap/gap_fire_pattern.c:2347
+#, fuzzy
+#| msgid "Inverse Order:"
+msgid "Reverse Gradient:"
+msgstr "Obratni vrstni red:"
+
+#: ../gap/gap_fire_pattern.c:2358
+msgid "ON: use reverse gradient colors, OFF: use gradient colors"
+msgstr ""
+
+#: ../gap/gap_fire_pattern.c:2524
+#| msgid "Frames Flatten..."
+msgid "Fire Pattern..."
+msgstr "Ognjeni vzorec ..."
+
+#. Menu names
+#: ../gap/gap_fire_pattern.c:2536
+#: ../gap/gap_water_pattern.c:1665
+#| msgid "<Image>/Video/Layer/Enhance/"
+msgid "<Image>/Video/Layer/Render/"
+msgstr "<Image>/Video/Plast/Upodobi/"
+
 #: ../gap/gap_fmac_base.c:205
 #, c-format
 msgid "filtermacro_file: '%s' is corrupted, could not scan databytes"
@@ -2195,11 +2518,6 @@ msgstr "Navadno"
 msgid "Dissolve"
 msgstr "Prelij"
 
-#: ../gap/gap_mod_layer_dialog.c:448
-#: ../gap/gap_mov_dialog.c:3010
-msgid "Multiply"
-msgstr "Pomnoži"
-
 #: ../gap/gap_mod_layer_dialog.c:453
 #: ../gap/gap_mov_dialog.c:3011
 msgid "Divide"
@@ -2207,11 +2525,14 @@ msgstr "Deli"
 
 #: ../gap/gap_mod_layer_dialog.c:458
 #: ../gap/gap_mov_dialog.c:3012
+#: ../gap/gap_water_pattern.c:1467
 msgid "Screen"
 msgstr "Zakrij"
 
+#. Blend Mode the radio buttons
 #: ../gap/gap_mod_layer_dialog.c:463
 #: ../gap/gap_mov_dialog.c:3013
+#: ../gap/gap_water_pattern.c:1445
 msgid "Overlay"
 msgstr "Prekrij"
 
@@ -2222,13 +2543,9 @@ msgstr "Razlika"
 
 #: ../gap/gap_mod_layer_dialog.c:474
 #: ../gap/gap_mov_dialog.c:3021
+#: ../gap/gap_water_pattern.c:1456
 msgid "Addition"
 msgstr "Dodaj"
-
-#: ../gap/gap_mod_layer_dialog.c:479
-#: ../gap/gap_mov_dialog.c:3022
-msgid "Subtract"
-msgstr "Odštej"
 
 #: ../gap/gap_mod_layer_dialog.c:484
 msgid "Darken only"
@@ -2240,13 +2557,9 @@ msgstr "Samo posvetli"
 
 #: ../gap/gap_mod_layer_dialog.c:495
 #: ../gap/gap_mov_dialog.c:3014
+#: ../gap/gap_water_pattern.c:1478
 msgid "Dodge"
 msgstr "Posvetli"
-
-#: ../gap/gap_mod_layer_dialog.c:500
-#: ../gap/gap_mov_dialog.c:3015
-msgid "Burn"
-msgstr "Ožgi"
 
 #: ../gap/gap_mod_layer_dialog.c:505
 msgid "Hardlight"
@@ -2633,12 +2946,6 @@ msgstr "Vsi vidni (ne upoštevaj vzorce)"
 msgid "Select all visible layers"
 msgstr "Izberi vse vidne plasti"
 
-#. the layer_pattern label
-#: ../gap/gap_mod_layer_dialog.c:1336
-#: ../gap/gap_range_ops.c:758
-msgid "Layer Pattern:"
-msgstr "Vzorec plasti:"
-
 #: ../gap/gap_mod_layer_dialog.c:1346
 msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr "Niz, ki določa ime plasti ali številko položaja v skladu plasti. Primer: 0, 3-5"
@@ -2834,16 +3141,6 @@ msgstr "X:"
 #: ../gap/gap_morph_dialog.c:3216
 msgid "Morphpoint X coordinate"
 msgstr "Koordinata X točke preoblikovanja"
-
-#. the y coordinate label
-#. Y
-#. table col, row
-#: ../gap/gap_morph_dialog.c:3225
-#: ../gap/gap_mov_dialog.c:4425
-#: ../gap/gap_name2layer_main.c:486
-#: ../gap/gap_resi_dialog.c:853
-msgid "Y:"
-msgstr "Y:"
 
 #: ../gap/gap_morph_dialog.c:3248
 msgid "Morphpoint Y coordinate"
@@ -3267,7 +3564,6 @@ msgid "INTENSITY attribute value to be written to the generated workpoint file. 
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:804
-#| msgid "Feather Radius:"
 msgid "Locate Move Radius:"
 msgstr "Polmer lociranja premika:"
 
@@ -3276,7 +3572,6 @@ msgid "Locate radius in pixels. The workpoint generation searches for correspond
 msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:818
-#| msgid "Feather Radius:"
 msgid "Locate Shape Radius:"
 msgstr "Polmer lociranja lika:"
 
@@ -4040,21 +4335,6 @@ msgstr "Spremeni merilo višine izvorne plasti v odstotkih"
 #: ../gap/gap_resi_dialog.c:812
 msgid "Constrain aspect ratio"
 msgstr "Ohrani razmerje stranic"
-
-#. the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
-#. * there is no need for the chainbutton to have its own callback procedure
-#.
-#. Opacity
-#. table col, row
-#. accelaration characteristic
-#. table col, row
-#: ../gap/gap_mov_dialog.c:3888
-#: ../gap/gap_mov_dialog.c:4163
-#: ../gap/gap_onion_dialog.c:1130
-#: ../gap/gap_story_att_trans_dlg.c:2877
-#: ../gap/gap_wr_opacity.c:332
-msgid "Opacity:"
-msgstr "Prekrivnost:"
 
 #. label text
 #. scalesize spinsize
@@ -5990,7 +6270,6 @@ msgstr "Začni s predvajanjem. SHIFT: Zajemi sličice v večplastno sliko izvorn
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
-#| msgid "Value"
 msgid "Pause"
 msgstr "Prekini"
 
@@ -7414,7 +7693,6 @@ msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Glavna zvočna jakost, kjer 1,0 pomeni izvorno jakost"
 
 #: ../gap/gap_story_dialog.c:9254
-#| msgid "Enable Transparency"
 msgid "Ext. Transparency Format:"
 msgstr "Zunanji zapis prosojnosti:"
 
@@ -7992,11 +8270,11 @@ msgstr "Analiziraj vrstico %d (od %d-ih)"
 msgid "No Frames or Images found ...."
 msgstr "Ni najdenih sličic ali slik ..."
 
-#: ../gap/gap_story_render_processor.c:6454
+#: ../gap/gap_story_render_processor.c:6474
 msgid "Seek Inputvideoframe..."
 msgstr "Poišči sličico vhodne slike ..."
 
-#: ../gap/gap_story_render_processor.c:6488
+#: ../gap/gap_story_render_processor.c:6508
 msgid "Continue Encoding..."
 msgstr "Nadaljuj s kodiranjem ..."
 
@@ -8544,6 +8822,94 @@ msgid ""
 msgstr ""
 "Izločanje slike ni na voljo, kajti GIMP-GAP je bil nastavljen in preveden z zastavico\n"
 " --disable-videoapi-support"
+
+#. The dialog1 and main vbox
+#: ../gap/gap_water_pattern.c:1036
+#| msgid "Layer Pattern:"
+msgid "Water-Pattern"
+msgstr "Vodni vzorec"
+
+#. shiftPhaseX spinbutton
+#: ../gap/gap_water_pattern.c:1139
+msgid "Phase shift X:"
+msgstr "Fazni zamik X:"
+
+#: ../gap/gap_water_pattern.c:1147
+msgid "Horizontal shift phase where 1.0 refers to image width"
+msgstr "Vodoravni fazni zamik, kjer se 1,0 nanaša na širino slike"
+
+#: ../gap/gap_water_pattern.c:1213
+msgid "ON: create waterpattern cloud layers according options. OFF: Use external pattern layers. "
+msgstr ""
+
+#. pattern
+#: ../gap/gap_water_pattern.c:1224
+#| msgid "Layer Pattern:"
+msgid "Layer Pattern 1:"
+msgstr "Vzorec plasti 1:"
+
+#: ../gap/gap_water_pattern.c:1249
+#| msgid "Layer Pattern:"
+msgid "Layer Pattern 2:"
+msgstr "Vzorec plasti 2:"
+
+#: ../gap/gap_water_pattern.c:1285
+msgid "Horizontal scaling of the random patterns that are created for rendering (cloud1 and cloud2 layers)"
+msgstr ""
+
+#: ../gap/gap_water_pattern.c:1304
+msgid "Vertical scaling of the random patterns that are created for rendering (cloud1 and cloud2 layers)"
+msgstr ""
+
+#: ../gap/gap_water_pattern.c:1316
+#, fuzzy
+#| msgid "Select Pattern:"
+msgid "Seed Pattern 1:"
+msgstr "Seme vzorca 1:"
+
+#: ../gap/gap_water_pattern.c:1346
+msgid "Seed for creating random pattern (cloud2 layer) use 0 for random value."
+msgstr ""
+
+#. useHighlights checkbutton
+#: ../gap/gap_water_pattern.c:1384
+#| msgid "Highlights"
+msgid "Use Highlights:"
+msgstr "Uporabi svetla področja:"
+
+#: ../gap/gap_water_pattern.c:1394
+#, fuzzy
+msgid "Render water pattern highlight effect"
+msgstr "Upodobi učinek svetlih tonov vodnega vzorca"
+
+#: ../gap/gap_water_pattern.c:1415
+#, fuzzy
+msgid "The highlight strength (e.g. opacity)"
+msgstr "Jakost svetlih tonov (npr. prekrivnost)"
+
+#. useDisplaceMap checkbutton
+#: ../gap/gap_water_pattern.c:1496
+msgid "Use Displace Map:"
+msgstr ""
+
+#: ../gap/gap_water_pattern.c:1507
+msgid "Render water pattern distortion effect (by applying a generated displace map)"
+msgstr ""
+
+#: ../gap/gap_water_pattern.c:1516
+#| msgid "Length:"
+msgid "Strength:"
+msgstr "Jakost:"
+
+#: ../gap/gap_water_pattern.c:1526
+#, fuzzy
+msgid "The distortion displace strength"
+msgstr "Jakost razmestitve distorzije"
+
+#: ../gap/gap_water_pattern.c:1653
+#| msgid "Layer Pattern:"
+msgid "Water Pattern..."
+msgstr "Vodni vzorec ..."
 
 #: ../gap/gap_wr_color_balance.c:231
 msgid "Color Balance..."
