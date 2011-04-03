@@ -9,9 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&component=general\n"
-"POT-Creation-Date: 2011-02-24 19:35+0000\n"
-"PO-Revision-Date: 2011-04-01 01:04+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-04-01 17:22+0000\n"
+"PO-Revision-Date: 2011-04-03 01:19+0100\n"
 "Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -866,7 +866,7 @@ msgstr "Prag barvnih razlik:"
 
 #: ../gap/gap_colormask_dialog.c:252
 msgid "Colordiff lower threshold. pixels that differ in color less than this value (compared with the corresponding pixel in the colormask) are set to lower opacity value (usually transparent)"
-msgstr ""
+msgstr "Spodnji prag barvne razlike. Slikovne točke, ki se v barvi razlikujejo za manj kot je ta vrednost (glede na ustrezno slikovno točko v barvni maski), se nastavijo na nižjo vrednost prekrivnosti (običajno prosojno)."
 
 #: ../gap/gap_colormask_dialog.c:266
 msgid "_HiColordiff threshold:"
@@ -874,7 +874,7 @@ msgstr "_Visoki prag barvnih razlik:"
 
 #: ../gap/gap_colormask_dialog.c:269
 msgid "Colordiff upper threshold. pixels that differ in color more than this value (compared with the corresponding pixel in the colormask) are set to upper opacity value (usually opaque)"
-msgstr ""
+msgstr "Zgornji prag barvne razlike. Slikovne točke, ki se v barvi razlikujejo za več kot je ta vrednost (glede na ustrezno slikovno točko v barvni maski), se nastavijo na višjo vrednost prekrivnosti (običajno prekrivno)."
 
 #. keep layermask checkbutton
 #: ../gap/gap_colormask_dialog.c:285
@@ -910,7 +910,7 @@ msgstr "Površina otočka:"
 
 #: ../gap/gap_colormask_dialog.c:392
 msgid "Isle Area size in pixels. small isolated opaque or transparent pixel areas below that size are removed (e.g toggled from opaque to transparent and vice versa)"
-msgstr ""
+msgstr "Površina otoka v slikovnih točkah. Manjša izolirana območja prekrivnih ali prosojnih slikovnih točk pod navedeno velikostjo so odstranjena (npr. preklopljena iz prekrivnih v prosojna in obratno)."
 
 #: ../gap/gap_colormask_dialog.c:410
 msgid "feather radius in pixels (use value 0 to disable feathering)"
@@ -927,7 +927,7 @@ msgstr "Spodnja prekrivnost:"
 
 #: ../gap/gap_colormask_dialog.c:471
 msgid "Lower opacity value is set for pixels with color difference less than Colordiff threshold (use value 0 for transparency)"
-msgstr ""
+msgstr "Nižja vrednost prekrivnosti je nastavljena za slikovne točke z barvno razliko, manjšo od praga barvne razlike (uporabite vrednost 0 za prosojnost)"
 
 #: ../gap/gap_colormask_dialog.c:485
 msgid "Upper opacity:"
@@ -935,7 +935,7 @@ msgstr "Gornja prekrivnost:"
 
 #: ../gap/gap_colormask_dialog.c:488
 msgid "Upper opacity is set for pixels with color difference greater than High Colordiff threshold (use value 1 for opacity)"
-msgstr ""
+msgstr "Zgornja vrednost prekrivnosti je nastavljena za slikovne točke z barvno razliko, večjo od praga barvne razlike (uporabite vrednost 1 za prekrivnost)"
 
 #: ../gap/gap_colormask_dialog.c:503
 msgid "Trigger alpha:"
@@ -1767,36 +1767,32 @@ msgstr "<Image>/Filtri/"
 #: ../gap/gap_water_pattern.c:430
 #, fuzzy, c-format
 msgid "drawable:%d is not a layer\n"
-msgstr "drawable:%d ni plast\n"
+msgstr "narisljivo:%d ni plast\n"
 
 #. The dialog1 and main vbox
 #: ../gap/gap_fire_pattern.c:1710
-#| msgid "Pattern:"
 msgid "Fire-Pattern"
 msgstr "Ognjeni vzorec"
 
 #. the frame
 #: ../gap/gap_fire_pattern.c:1746
 #: ../gap/gap_water_pattern.c:1072
-#| msgid "Audio Options"
 msgid "Animation options"
 msgstr "Možnosti animacije"
 
 #. createImage checkbutton
 #: ../gap/gap_fire_pattern.c:1767
 #: ../gap/gap_water_pattern.c:1093
-#| msgid "Create Layer:"
 msgid "Create Image:"
 msgstr "Ustvari sliko:"
 
 #: ../gap/gap_fire_pattern.c:1779
 #: ../gap/gap_water_pattern.c:1105
 msgid "ON: create a new image with n copies of the input drawable and render complete animation effect on those copies. OFF: render only one phase of the animation effect on the input drawable"
-msgstr ""
+msgstr "VKLJUČENO: ustvari novo sliko z n kopijami vhodnega risanega elementa in upodobi dokočan učinek animacije na teh kopijah. IZKLJUČENO: upodobi le eno fazo učinka animacije na vhornem risanem elementu."
 
 #: ../gap/gap_fire_pattern.c:1792
 #: ../gap/gap_water_pattern.c:1115
-#| msgid "B-Frames:"
 msgid "N-Frames:"
 msgstr "N-sličice:"
 
@@ -1807,7 +1803,6 @@ msgstr "Število sličic, ki naj bodo upodobljene kot plast v novo ustvarjeni sl
 
 #. shiftPhaseY spinbutton
 #: ../gap/gap_fire_pattern.c:1816
-#| msgid "Paste After"
 msgid "Phase shift"
 msgstr "Fazni zamik"
 
@@ -1819,23 +1814,20 @@ msgstr "Navpični fazni zamik, kjer se 1,0 nanaša na višino slike"
 #. the frame
 #: ../gap/gap_fire_pattern.c:1837
 #: ../gap/gap_water_pattern.c:1179
-#| msgid "Filter Options"
 msgid "Pattern options"
 msgstr "Možnosti vzorca"
 
 #. use existing Patterns checkbutton
 #: ../gap/gap_fire_pattern.c:1860
 #: ../gap/gap_water_pattern.c:1202
-#| msgid "Create Layer:"
 msgid "Create Pattern:"
 msgstr "Ustvari vzorec:"
 
 #: ../gap/gap_fire_pattern.c:1871
 msgid "ON: create firepattern cloud layer according to options. OFF: Use external pattern layer. "
-msgstr ""
+msgstr "VKLJUČENO: ustvari plast oblakov za vzorec ognja glede na možnosti. IZKLJUČENO: uporabi zunanjo plast vzorca."
 
 #: ../gap/gap_fire_pattern.c:1883
-#, fuzzy
 msgid "vertical stretch factor for the fire pattern"
 msgstr "Faktor navpičnega raztega za ognjeni vzorec"
 
@@ -1849,7 +1841,7 @@ msgstr "Spr. velikost vzorca X:"
 
 #: ../gap/gap_fire_pattern.c:1905
 msgid "Horizontal scaling of the random patterns that are created for rendering (cloud layer)"
-msgstr ""
+msgstr "Vodoravno spreminjanje velikosti za naključne vzorce, ustvarjene za upodabljanje (plast oblakov)"
 
 #. the y coordinate label
 #. Y
@@ -1867,10 +1859,9 @@ msgstr "Y:"
 
 #: ../gap/gap_fire_pattern.c:1924
 msgid "Vertical scaling of the random patterns that are created for rendering (cloud layer)"
-msgstr ""
+msgstr "Navpično spreminjanje velikosti za naključne vzorce, ustvarjene za upodabljanje (plast oblakov)"
 
 #: ../gap/gap_fire_pattern.c:1937
-#, fuzzy
 #| msgid "Select Pattern:"
 msgid "Seed Pattern:"
 msgstr "Seme vzorca:"
@@ -1878,15 +1869,13 @@ msgstr "Seme vzorca:"
 #: ../gap/gap_fire_pattern.c:1947
 #: ../gap/gap_water_pattern.c:1326
 msgid "Seed for creating random pattern (cloud1 layer) use 0 for random value."
-msgstr ""
+msgstr "Seme za ustvarjanje naključnega vzorca (plast oblak1), uporabite 0 za naključno vrednost."
 
 #: ../gap/gap_fire_pattern.c:1958
-#, fuzzy
 msgid "Detail:"
-msgstr "Podrobnost:"
+msgstr "Podrobno:"
 
 #: ../gap/gap_fire_pattern.c:1968
-#, fuzzy
 msgid "Detail level for creating random pattern (cloud layer)"
 msgstr "Raven podrobnosti za ustvarjanje naključnega vzorca (plast oblakov)"
 
@@ -1902,110 +1891,97 @@ msgstr "Vzorec plasti:"
 #: ../gap/gap_water_pattern.c:1239
 #: ../gap/gap_water_pattern.c:1264
 msgid "Select an already existing pattern layer (from previous run)"
-msgstr ""
+msgstr "Izberite že obstoječo plast vzorca (iz prejšnje rabe)"
 
 #. the frame
 #: ../gap/gap_fire_pattern.c:2006
-#| msgid "Filter Options"
 msgid "Fireshape options"
 msgstr "Možnosti oblike plamena"
 
 #: ../gap/gap_fire_pattern.c:2026
-#| msgid "Create File(s):"
 msgid "Create Fireshape:"
 msgstr "Ustvari obliko plamena:"
 
 #: ../gap/gap_fire_pattern.c:2037
 msgid "ON: create fire shape layer according to options. OFF: Use external fire shape layer. "
-msgstr ""
+msgstr "VKLJUČENO: ustvari plast oblike ognja glede na možnosti. IZKLJUČENO: uporabi zunanjo plast oblike ognja."
 
 #. useTrapezoidShape checkbutton
 #: ../gap/gap_fire_pattern.c:2048
-#| msgid "Threshold:"
 msgid "Trapezoid:"
 msgstr "Trapezoid:"
 
 #: ../gap/gap_fire_pattern.c:2058
 msgid "ON: Render trapezoid shaped fire, OFF: render fire at full image width"
-msgstr ""
+msgstr "VKLJUČENO: upodobi ogenj v obliki trapezoida, IZKLJUČENO: upodobi ogenj po polni širini slike"
 
 #. flameHeight spinbutton
 #: ../gap/gap_fire_pattern.c:2072
-#| msgid "Scale Height:"
 msgid "Flame Height:"
 msgstr "Višina plamena:"
 
 #: ../gap/gap_fire_pattern.c:2081
-#| msgid "scale height of frame to fit master height"
 msgid "Height of the flame (1.0 refers to full image height)"
 msgstr "Višina plamena (1,0 ustreza polni višini slike)"
 
 #. flameBorder spinbutton
 #: ../gap/gap_fire_pattern.c:2092
-#| msgid "Frames Encoded:"
 msgid "Flame Border:"
 msgstr "Rob plamena:"
 
 #: ../gap/gap_fire_pattern.c:2101
-#| msgid "number of frames"
 msgid "border of the flame"
 msgstr "rob plamena"
 
 #. flameWidth checkbuttons
 #: ../gap/gap_fire_pattern.c:2114
-#| msgid "Width:"
 msgid "FlameWidth:"
 msgstr "Širina plamena:"
 
 #: ../gap/gap_fire_pattern.c:2123
 msgid "width of the flame at base line (1.0 for full image width)"
-msgstr ""
+msgstr "Širina plamena na osnovnici (1,0 za polno širino slike)"
 
 #: ../gap/gap_fire_pattern.c:2132
-#, fuzzy
 #| msgid "To:"
 msgid "Top:"
 msgstr "Vrh:"
 
 #: ../gap/gap_fire_pattern.c:2142
 msgid "width of the flame at flame height (1.0 for full image width)"
-msgstr ""
+msgstr "Širina plamena na višini plamena (1,0 za polno širino slike)"
 
 #. flameOffestX spinbutton
 #: ../gap/gap_fire_pattern.c:2154
-#| msgid "Frames Done:"
 msgid "Flame Center:"
 msgstr "Središče plamena:"
 
 #: ../gap/gap_fire_pattern.c:2163
 msgid "horizontal offset of the flame center (0 for center, -0.5 left border +0.5 at right border of the image)"
-msgstr ""
+msgstr "Vodoravni odmik središča plamena (0 za središče, -0,5 za levi rob, +0,5 za desni rob slike)"
 
 #: ../gap/gap_fire_pattern.c:2175
-#| msgid "Shape"
 msgid "Fire Shape:"
 msgstr "Oblika ognja:"
 
 #: ../gap/gap_fire_pattern.c:2190
 msgid "Select an already existing fire shape layer (from previous run)"
-msgstr ""
+msgstr "Izberite že obstoječo plast oblike ognja (iz prejšnje rabe)"
 
 #. the frame
 #: ../gap/gap_fire_pattern.c:2200
 #: ../gap/gap_water_pattern.c:1358
-#| msgid "Render Settings"
 msgid "Render options"
 msgstr "Možnosti upodabljanja"
 
 #. createFireLayer checkbutton
 #: ../gap/gap_fire_pattern.c:2224
-#| msgid "Create Layer:"
 msgid "Create FireLayer:"
 msgstr "Ustvari ognjeno plast:"
 
 #: ../gap/gap_fire_pattern.c:2234
 msgid "ON: Render fire pattern effect as separate layer, OFF: merge rendered effect onto processed layer"
-msgstr ""
+msgstr "VKLJUČENO: upodobi učinek vzorca ognja kot ločeno plast, IZKLJUČENO: spoji upodobljeni učinek na obdelano plast"
 
 #. Highlights blend mode
 #: ../gap/gap_fire_pattern.c:2248
@@ -2013,7 +1989,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Render Mode:"
 msgid "Blend Mode:"
-msgstr "Način upodabljanja:"
+msgstr "Način zlivanja:"
 
 #. Blend Mode the radio buttons
 #: ../gap/gap_fire_pattern.c:2266
@@ -2036,13 +2012,12 @@ msgstr "Pomnoži"
 
 #. useTransparentBg checkbutton
 #: ../gap/gap_fire_pattern.c:2304
-#| msgid "Ext. Transparency Format:"
 msgid "Transparent BG:"
 msgstr "Prosojno ozadje:"
 
 #: ../gap/gap_fire_pattern.c:2315
 msgid "ON: Render fire layer with transparent background, OFF: render with black background"
-msgstr ""
+msgstr "VKLJUČENO: upodobi plast ognja s prosojnim ozadjem, IZKLJUČENO: upodobi s črnim ozadjem"
 
 #. the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
 #. * there is no need for the chainbutton to have its own callback procedure
@@ -2062,30 +2037,26 @@ msgid "Opacity:"
 msgstr "Prekrivnost:"
 
 #: ../gap/gap_fire_pattern.c:2335
-#| msgid "Descending opacity of the trace layer"
 msgid "The opacity of the flames"
 msgstr "Prekrivnost plamenov"
 
 #. reverseGradient checkbutton
 #: ../gap/gap_fire_pattern.c:2347
-#, fuzzy
 #| msgid "Inverse Order:"
 msgid "Reverse Gradient:"
-msgstr "Obratni vrstni red:"
+msgstr "Obratni preliv:"
 
 #: ../gap/gap_fire_pattern.c:2358
 msgid "ON: use reverse gradient colors, OFF: use gradient colors"
-msgstr ""
+msgstr "VKLJUČENO: uporabi obratne barve preliva, IZKLJUČENO: uporabi barve preliva"
 
 #: ../gap/gap_fire_pattern.c:2524
-#| msgid "Frames Flatten..."
 msgid "Fire Pattern..."
 msgstr "Ognjeni vzorec ..."
 
 #. Menu names
 #: ../gap/gap_fire_pattern.c:2536
 #: ../gap/gap_water_pattern.c:1665
-#| msgid "<Image>/Video/Layer/Enhance/"
 msgid "<Image>/Video/Layer/Render/"
 msgstr "<Image>/Video/Plast/Upodobi/"
 
@@ -3294,7 +3265,7 @@ msgstr "Lociraj:"
 
 #: ../gap/gap_morph_dialog.c:3929
 msgid "Locate radius in pixels. radius for automatically point locate feature  triggered by CTRL when setting workpoints.(Not relevant for rendering)"
-msgstr ""
+msgstr "Radij lociranja v slikovnih točkah. Radij za samodejno lociranje slikovnih točk, ki ga sproži tipka CTRL pri določanju delovnih točk. (Ni relevantno za upodabljanje.)"
 
 #: ../gap/gap_morph_dialog.c:3953
 msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint to be compared  when loacting corresponding coordinate(Not relevant for rendering)"
@@ -3302,7 +3273,7 @@ msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3979
 msgid "Edge detection threshold for automatically point locate feature  triggered by CTRL when setting workpoints.(Not relevant for rendering)"
-msgstr ""
+msgstr "Prag razpoznave robov za samodejno lociranje točk, ki ga sproži tipka CTRL pri določanju delovnih točk. (Ni relevantno za upodabljanje.)"
 
 #. the create tween checkbutton
 #: ../gap/gap_morph_dialog.c:3991
@@ -3569,7 +3540,7 @@ msgstr "Polmer lociranja premika:"
 
 #: ../gap/gap_morph_tween_dialog.c:807
 msgid "Locate radius in pixels. The workpoint generation searches for corresponding points in the next frame within this radius"
-msgstr ""
+msgstr "Radij lociranja v slikovnih točkah. Tvorba delovnih točk išče ustrezne točke v naslednji sličici v okviru tega radija."
 
 #: ../gap/gap_morph_tween_dialog.c:818
 msgid "Locate Shape Radius:"
@@ -3585,15 +3556,15 @@ msgstr "Prag roba:"
 
 #: ../gap/gap_morph_tween_dialog.c:837
 msgid "Edge detection threshold. Workpoints are generated on detected edges. Edges are detected on pixels where color or opacity differs significant from the neighbor pixel.(e.g. more than the specified edge detection threshold)."
-msgstr ""
+msgstr "Prag razpoznave robov. Delovne točke se tvorijo na razpoznanih robovih. Robove zazna na slikovnih točkah, kjer se barva ali prekrivnost občutno razlikuje glede na sosednjo slikovno točko (npr. več kot je naveden prag za razpoznavo robov)."
 
 #: ../gap/gap_morph_tween_dialog.c:852
 msgid "Locate ColordiffEdge Threshold:"
-msgstr ""
+msgstr "Prag lociranja roba barvne razlike:"
 
 #: ../gap/gap_morph_tween_dialog.c:890
 msgid "ON: overwrite existing workpointfiles.OFF: Skip workpoint generation or add new generated workpoints (see append checkbutton)."
-msgstr ""
+msgstr "VKLJUČENO: prepiši obstoječe datoteke delovnih točk. IZKLJUČENO: preskoči tvorbo delovnih točk ali dodaj novo ustvarjene delovne točke (glej potrditveno polje dodaj)."
 
 #. the overwrite checkbutton
 #: ../gap/gap_morph_tween_dialog.c:896
@@ -3602,7 +3573,7 @@ msgstr "Dodaj"
 
 #: ../gap/gap_morph_tween_dialog.c:905
 msgid "ON: add newly generated workpoints to existing workpointfiles.OFF: Skip workpoint generation for frames where workpointfile already exists."
-msgstr ""
+msgstr "VKLJUČENO: dodaj novo ustvarjene delovne točke obstoječim datotekam delovnih točk. IZKLJUČENO: preskoči tvorbo delovnih točk pri sličicah, kjer datoteka delovnih točk že obstaja."
 
 #. the master progress bar
 #. master progress
@@ -3670,7 +3641,7 @@ msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:1292
 msgid "ON: overwrite existing frames.OFF: skip processing when target frame/tween already exists."
-msgstr ""
+msgstr "VKLJUČENO: prepiši obstoječe sličice. IZKLJUČENO: preskoči obdelavo, če ciljna sličica/vmesna sličica že obstaja."
 
 #. the master progress bar
 #. master progress
@@ -6043,20 +6014,20 @@ msgstr "Dolžina videa:"
 #. Cahe size label
 #: ../gap/gap_player_dialog.c:7085
 msgid "Cache Size (MB):"
-msgstr "Velikost medpomnilnika (MB):"
+msgstr "Velikost predpomnilnika (MB):"
 
 #: ../gap/gap_player_dialog.c:7111
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
-msgstr "Največja velikost medpomnilnika sličic predvajalnika, v MB. Vrednost 0 izključi medpomnilnik."
+msgstr "Največja velikost predpomnilnika sličic predvajalnika, v MB. Vrednost 0 izključi predpomnilnik."
 
 #: ../gap/gap_player_dialog.c:7120
 msgid "Clear the frame cache"
-msgstr "Počisti medpomnilnik sličic"
+msgstr "Počisti predpomnilnik sličic"
 
 #. Chache Status (number of frames currently in the cache)
 #: ../gap/gap_player_dialog.c:7131
 msgid "Cached Frames:"
-msgstr "Medpomnjene sličice:"
+msgstr "Predpomnjene sličice:"
 
 #. Layout Options label
 #: ../gap/gap_player_dialog.c:7156
@@ -6096,7 +6067,7 @@ msgstr "Shrani nastavitve:"
 
 #: ../gap/gap_player_dialog.c:7216
 msgid "Save player cache and layout settings (as gimprc parameters)"
-msgstr "Shrani medpomnilnik predvajalnika in nastavitve postavitve (kot parametre gimprc)"
+msgstr "Shrani predpomnilnik predvajalnika in nastavitve postavitve (kot parametre gimprc)"
 
 #: ../gap/gap_player_dialog.c:7331
 msgid "Videoframe Playback"
@@ -7255,11 +7226,11 @@ msgstr "Največje število video datotek, odprtih naenkrat med upodabljanjem zgo
 
 #: ../gap/gap_story_dialog.c:5440
 msgid "Framecache / open video:"
-msgstr "Medpomnilnik sličic / odprti video:"
+msgstr "Predpomnilnik sličic / odprti video:"
 
 #: ../gap/gap_story_dialog.c:5441
 msgid "Maximum number of frames to be cached per open video (only relevant when video clips are rendered backwards)"
-msgstr ""
+msgstr "Največje število sličic, predpomnjenih na odprti video (velja le, če so posnetki upodobljeni v obratni smeri)"
 
 #: ../gap/gap_story_dialog.c:5454
 msgid "Max Image cache:"
@@ -7271,11 +7242,11 @@ msgstr "Največje število slik v predpomnilniku (v pomnilniku kot slike gimp br
 
 #: ../gap/gap_story_dialog.c:5467
 msgid "Resource Loginterval:"
-msgstr ""
+msgstr "Interval beleženja virov:"
 
 #: ../gap/gap_story_dialog.c:5468
 msgid "Value 0 turns off resource logging to stdout. Value n logs current resource usage afte each n processed frames to stdout (this includes the list of cached images and opened videofiles)"
-msgstr ""
+msgstr "Vrednost 0 izključi beleženje virov na standardni izhod. Vrednost n beleži trenutno rabo virov po vsakih n obdelanih sličicah na standardni izhod (to vključuje seznam predpomnjenih slik in odprtih video datotek)."
 
 #: ../gap/gap_story_dialog.c:5481
 msgid "Render preview at full size:"
@@ -7283,7 +7254,7 @@ msgstr "Upodobi predogled pri polni velikosti:"
 
 #: ../gap/gap_story_dialog.c:5482
 msgid "ON: Rendering of composite frames for preview purpose is done (slow) at full size.OFF: storyboard rendering for preview purpose is done at small size where possible.(typically faster but disables extraction of a composite frame at original size via click into the player preview)"
-msgstr ""
+msgstr "VKLJUČENO: upodabljanje sestavljenih sličic za namen predogleda je opravljeno (počasno) pri polni velikosti. IZKLJUČENO: upodabljanje zgodborisa za namen predogleda je opravljeno pri manjši velikosti, kjer je to možno (običajno hitrejše, vendar onemogoči izluščenje sestavljene sličice pri izvorni velikosti prek klika v predogledu predvajalnika)."
 
 #: ../gap/gap_story_dialog.c:5508
 msgid "Multiprocessor Storyboard Support:"
@@ -7291,7 +7262,7 @@ msgstr "Podpora več procesorjev za zgodboris:"
 
 #: ../gap/gap_story_dialog.c:5509
 msgid "ON: Rendering of composite storyboard frames uses more than one processor. (reading frames from videoclips is done by parallel running prefetch processing) OFF: Rendering of composite frames uses only one processor."
-msgstr ""
+msgstr "VKLJUČENO: upodabljanje sestavljenih sličic zgodborisa uporablja več kot en procesor (branje sličic iz posnetkov opravlja vzporedno potekajoče obdelovanje s predprevzemom). IZKLJUČENO: upodabljanje kompozitnih sličic uporablja le en procesor."
 
 #: ../gap/gap_story_dialog.c:5520
 msgid "Multiprocessor Encoder Support:"
@@ -7299,7 +7270,7 @@ msgstr "Podpora večprocesorskemu kodirniku:"
 
 #: ../gap/gap_story_dialog.c:5521
 msgid "ON: Video encoders shall use more than one processor where implemented. The ffmpeg based video encoder implementation supports parallel processing. OFF: Video encoders use only one processor."
-msgstr ""
+msgstr "VKLJUČENO: kodirniki videa naj uporabljajo več kot en procesor, kjer je to podprto. Kodirnik videa na temelju ffmpeg podpira vzporedno obdelovanje. IZKLJUČENO: kodirniki videa uporabljajo samo en procesor."
 
 #: ../gap/gap_story_dialog.c:5535
 msgid "Use the standard built in storyboard render settings"
@@ -8825,7 +8796,6 @@ msgstr ""
 
 #. The dialog1 and main vbox
 #: ../gap/gap_water_pattern.c:1036
-#| msgid "Layer Pattern:"
 msgid "Water-Pattern"
 msgstr "Vodni vzorec"
 
@@ -8840,74 +8810,65 @@ msgstr "Vodoravni fazni zamik, kjer se 1,0 nanaša na širino slike"
 
 #: ../gap/gap_water_pattern.c:1213
 msgid "ON: create waterpattern cloud layers according options. OFF: Use external pattern layers. "
-msgstr ""
+msgstr "VKLJUČENO: ustvari plasti oblakov vodnega vzorca glede na možnosti. IZKLJUČENO: uporabi zunanje plasti vzorca."
 
 #. pattern
 #: ../gap/gap_water_pattern.c:1224
-#| msgid "Layer Pattern:"
 msgid "Layer Pattern 1:"
 msgstr "Vzorec plasti 1:"
 
 #: ../gap/gap_water_pattern.c:1249
-#| msgid "Layer Pattern:"
 msgid "Layer Pattern 2:"
 msgstr "Vzorec plasti 2:"
 
 #: ../gap/gap_water_pattern.c:1285
 msgid "Horizontal scaling of the random patterns that are created for rendering (cloud1 and cloud2 layers)"
-msgstr ""
+msgstr "Vodoravno spreminjanje velikosti naključnih vzorcev, ustvarjenih za upodabljanje (plasti oblak1 in oblak2)"
 
 #: ../gap/gap_water_pattern.c:1304
 msgid "Vertical scaling of the random patterns that are created for rendering (cloud1 and cloud2 layers)"
-msgstr ""
+msgstr "Navpično spreminjanje velikosti naključnih vzorcev, ustvarjenih za upodabljanje (plasti oblak1 in oblak2)"
 
 #: ../gap/gap_water_pattern.c:1316
-#, fuzzy
 #| msgid "Select Pattern:"
 msgid "Seed Pattern 1:"
 msgstr "Seme vzorca 1:"
 
 #: ../gap/gap_water_pattern.c:1346
 msgid "Seed for creating random pattern (cloud2 layer) use 0 for random value."
-msgstr ""
+msgstr "Seme za ustvarjanje naključnega vzorca (plast oblak2), uporabite 0 za naključno vrednost."
 
 #. useHighlights checkbutton
 #: ../gap/gap_water_pattern.c:1384
-#| msgid "Highlights"
 msgid "Use Highlights:"
 msgstr "Uporabi svetla področja:"
 
 #: ../gap/gap_water_pattern.c:1394
-#, fuzzy
 msgid "Render water pattern highlight effect"
 msgstr "Upodobi učinek svetlih tonov vodnega vzorca"
 
 #: ../gap/gap_water_pattern.c:1415
-#, fuzzy
 msgid "The highlight strength (e.g. opacity)"
 msgstr "Jakost svetlih tonov (npr. prekrivnost)"
 
 #. useDisplaceMap checkbutton
 #: ../gap/gap_water_pattern.c:1496
 msgid "Use Displace Map:"
-msgstr ""
+msgstr "Uporabi zemljevid razmestitve:"
 
 #: ../gap/gap_water_pattern.c:1507
 msgid "Render water pattern distortion effect (by applying a generated displace map)"
-msgstr ""
+msgstr "Upodobi učinek distorzije vodnega vzorca (z uporabo ustvarjenega zemljevida razmestitve)"
 
 #: ../gap/gap_water_pattern.c:1516
-#| msgid "Length:"
 msgid "Strength:"
 msgstr "Jakost:"
 
 #: ../gap/gap_water_pattern.c:1526
-#, fuzzy
 msgid "The distortion displace strength"
 msgstr "Jakost razmestitve distorzije"
 
 #: ../gap/gap_water_pattern.c:1653
-#| msgid "Layer Pattern:"
 msgid "Water Pattern..."
 msgstr "Vodni vzorec ..."
 
@@ -10234,7 +10195,7 @@ msgstr "BGR (rgb):"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:918
 msgid "Check if you want to encode frames in BGR (prefered) or RGB colormodel (most players like WinDvD, VLC-player want BGR colormodel for RAW data) other players want RGB colromodel for RAW avi data)"
-msgstr ""
+msgstr "Potrdite, če želite sličice kodirati v barvnem modelu BGR (priporočeno) ali RGB (večina predvajalnikov, kot so WinDVD, VLC želijo za podatke RAW barni model BGR; drugi predvajalniki želijo barvni model RGB za podatke avi RAW)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:928
 msgid "XVID Codec Options"
@@ -11267,12 +11228,14 @@ msgstr "Optimalna raven MB za rezidualno preskakovanje v RD"
 
 #. the use_MB_Tree ratecontrol checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2848
+#, fuzzy
 msgid "MB-Tree RC"
-msgstr ""
+msgstr "Nadz. hitrosti MB-drevesa"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2854
+#, fuzzy
 msgid "use macroblock tree ratecontrol (x264 only)"
-msgstr ""
+msgstr "Uporabi nadzornika hitrosti drevesa makro bloka (samo x264)"
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2863
@@ -11295,11 +11258,11 @@ msgstr "Uporabi nelinearni kvantizator MPEG-2"
 #. the use_PSY checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2893
 msgid "PSY"
-msgstr ""
+msgstr "PSI"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2899
 msgid "use psycho visual optimizations"
-msgstr ""
+msgstr "Uporabi psiho-vizualne optimizacije"
 
 #. the use_bit_reservoir checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2908
