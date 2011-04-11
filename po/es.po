@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.gap-2-6\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
-"gap&component=general\n"
-"POT-Creation-Date: 2011-02-24 19:35+0000\n"
-"PO-Revision-Date: 2011-04-01 16:56+0200\n"
+"gap&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-04-02 11:15+0000\n"
+"PO-Revision-Date: 2011-04-11 16:48+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -844,16 +844,14 @@ msgstr "<Image>/Vídeo/"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:212
-#, fuzzy
 #| msgid "Basic Options"
 msgid "Base Options"
 msgstr "Opciones básicas"
 
 #: ../gap/gap_colormask_dialog.c:243
-#, fuzzy
 #| msgid "Color erase"
 msgid "Color mask:"
-msgstr "Borrado de color"
+msgstr "Máscara de color"
 
 #: ../gap/gap_colormask_dialog.c:249
 #, fuzzy
@@ -891,21 +889,19 @@ msgstr "Borrar máscara de capa"
 #. apply immediate checkbutton
 #: ../gap/gap_colormask_dialog.c:301
 msgid "Apply Immediate"
-msgstr ""
+msgstr "Aplicar inmediatamente"
 
 #. show expert options checkbutton
 #: ../gap/gap_colormask_dialog.c:316
-#, fuzzy
 #| msgid "RAW Options"
 msgid "Show All Options"
-msgstr "Opciones RAW"
+msgstr "Mostrar todas las opciones"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:349
-#, fuzzy
 #| msgid "Dither Options"
 msgid "Filter Options"
-msgstr "Opciones de tramado"
+msgstr "Opciones de filtrado"
 
 #: ../gap/gap_colormask_dialog.c:375
 #, fuzzy
@@ -938,10 +934,9 @@ msgstr "Radio de la cuña en píxeles (para suavizar selecciones)"
 
 #. the frame
 #: ../gap/gap_colormask_dialog.c:445
-#, fuzzy
 #| msgid "Basic Options"
 msgid "Opacity Options"
-msgstr "Opciones básicas"
+msgstr "Opciones de opacidad"
 
 #: ../gap/gap_colormask_dialog.c:468
 #, fuzzy
@@ -989,10 +984,9 @@ msgid "Expert Options"
 msgstr "Opciones avanzadas"
 
 #: ../gap/gap_colormask_dialog.c:567
-#, fuzzy
 #| msgid "Algorithms"
 msgid "_Algorithm:"
-msgstr "Algoritmos"
+msgstr "_Algoritmo:"
 
 #. --------------- start of keycolor widgets  -------------
 #. enableKeyColorThreshold checkbutton
@@ -1128,7 +1122,7 @@ msgstr "Color"
 
 #: ../gap/gap_colormask_dialog.c:945 ../gap/gap_colormask_dialog.c:959
 msgid "#.#####"
-msgstr ""
+msgstr "#.#####"
 
 #. the neighbor colordiff label
 #: ../gap/gap_colormask_dialog.c:954
@@ -1886,10 +1880,9 @@ msgstr "Opciones de sonido"
 
 #. createImage checkbutton
 #: ../gap/gap_fire_pattern.c:1767 ../gap/gap_water_pattern.c:1093
-#, fuzzy
 #| msgid "Create Layer:"
 msgid "Create Image:"
-msgstr "Crear capa:"
+msgstr "Crear imagen:"
 
 #: ../gap/gap_fire_pattern.c:1779 ../gap/gap_water_pattern.c:1105
 msgid ""
@@ -1985,7 +1978,7 @@ msgstr ""
 
 #: ../gap/gap_fire_pattern.c:1958
 msgid "Detail:"
-msgstr ""
+msgstr "Detalle:"
 
 #: ../gap/gap_fire_pattern.c:1968
 msgid "Detail level for creating random pattern (cloud layer)"
@@ -2071,10 +2064,9 @@ msgid "width of the flame at base line (1.0 for full image width)"
 msgstr ""
 
 #: ../gap/gap_fire_pattern.c:2132
-#, fuzzy
 #| msgid "To:"
 msgid "Top:"
-msgstr "A:"
+msgstr "Superior:"
 
 #: ../gap/gap_fire_pattern.c:2142
 msgid "width of the flame at flame height (1.0 for full image width)"
@@ -3781,10 +3773,9 @@ msgstr ""
 
 #. the overwrite checkbutton
 #: ../gap/gap_morph_tween_dialog.c:896
-#, fuzzy
 #| msgid "Open"
 msgid "Append"
-msgstr "Abrir"
+msgstr "Añadir"
 
 #: ../gap/gap_morph_tween_dialog.c:905
 msgid ""
@@ -3795,16 +3786,14 @@ msgstr ""
 #. the master progress bar
 #. master progress
 #: ../gap/gap_morph_tween_dialog.c:914
-#, fuzzy
 #| msgid "Create Layers"
 msgid "Create File(s):"
-msgstr "Crear capas:"
+msgstr "Crear archivo(s):"
 
 #: ../gap/gap_morph_tween_dialog.c:946
-#, fuzzy
 #| msgid "ShapePoints:"
 msgid "Create Points:"
-msgstr "ShapePoints:"
+msgstr "Crear puntos:"
 
 #: ../gap/gap_morph_tween_dialog.c:1095
 msgid "Create Tween Frames"
@@ -3860,10 +3849,9 @@ msgstr ""
 #. , NULL);
 #. label
 #: ../gap/gap_morph_tween_dialog.c:1253
-#, fuzzy
 #| msgid "Predictor:"
 msgid "Subdirectory:"
-msgstr "Predictor:"
+msgstr "Subcarpeta:"
 
 #: ../gap/gap_morph_tween_dialog.c:1268
 msgid ""
@@ -4985,18 +4973,17 @@ msgid "Acceleration"
 msgstr "Aceleración"
 
 #: ../gap/gap_mov_dialog.c:4617
-#, fuzzy
 #| msgid "Movement:"
 msgid "Segment:"
-msgstr "Movimiento:"
+msgstr "Segmento:"
 
 #: ../gap/gap_mov_dialog.c:4631
 msgid "Length:"
-msgstr ""
+msgstr "Longitud:"
 
 #: ../gap/gap_mov_dialog.c:4645
 msgid "Speed Min/Max:"
-msgstr ""
+msgstr "Velocidad min/máx:"
 
 #: ../gap/gap_mov_dialog.c:4680
 msgid "Pathline Color Picker"
@@ -6645,10 +6632,9 @@ msgstr ""
 
 #. the PLAY button
 #: ../gap/gap_player_dialog.c:8072
-#, fuzzy
 #| msgid "Playing"
 msgid "Play"
-msgstr "Reproduciendo"
+msgstr "Reproducir"
 
 #: ../gap/gap_player_dialog.c:8075
 msgid ""
@@ -6661,10 +6647,9 @@ msgstr ""
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
-#, fuzzy
 #| msgid "Value"
 msgid "Pause"
-msgstr "Valor"
+msgstr "Pausar"
 
 #: ../gap/gap_player_dialog.c:8088
 msgid ""
@@ -6677,10 +6662,9 @@ msgstr ""
 
 #. the PLAY_REVERSE button
 #: ../gap/gap_player_dialog.c:8095
-#, fuzzy
 #| msgid "Loop Reverse"
 msgid "Reverse"
-msgstr "Bucle invertido"
+msgstr "Invertir"
 
 #: ../gap/gap_player_dialog.c:8098
 msgid ""
@@ -9644,16 +9628,14 @@ msgstr ""
 
 #. pattern
 #: ../gap/gap_water_pattern.c:1224
-#, fuzzy
 #| msgid "Layer Pattern:"
 msgid "Layer Pattern 1:"
-msgstr "Patrón de capa:"
+msgstr "Patrón de capa 1:"
 
 #: ../gap/gap_water_pattern.c:1249
-#, fuzzy
 #| msgid "Layer Pattern:"
 msgid "Layer Pattern 2:"
-msgstr "Patrón de capa:"
+msgstr "Patrón de capa 1:"
 
 #: ../gap/gap_water_pattern.c:1285
 msgid ""
@@ -9720,7 +9702,7 @@ msgstr "Patrón de capa:"
 
 #: ../gap/gap_wr_color_balance.c:231
 msgid "Color Balance..."
-msgstr ""
+msgstr "Balance de color…"
 
 #. Menu names
 #: ../gap/gap_wr_color_balance.c:255 ../gap/gap_wr_color_curve.c:1364
@@ -9731,7 +9713,7 @@ msgstr "<Image>/Vídeo/Capa/Colores/"
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_balance.c:561
 msgid "Color-Balance"
-msgstr ""
+msgstr "Balance de color"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:596
@@ -9742,35 +9724,30 @@ msgstr "Establecer el rango a extraer"
 
 #. Transfer Mode the radio buttons
 #: ../gap/gap_wr_color_balance.c:615
-#, fuzzy
 #| msgid "Show"
 msgid "Shadows"
-msgstr "Mostrar"
+msgstr "Sombras"
 
 #: ../gap/gap_wr_color_balance.c:620
-#, fuzzy
 #| msgid "Lines"
 msgid "Midtones"
-msgstr "Líneas"
+msgstr "Tonos medios"
 
 #: ../gap/gap_wr_color_balance.c:625
-#, fuzzy
 #| msgid "Hardlight"
 msgid "Highlights"
-msgstr "Luz fuerte"
+msgstr "Puntos de luz"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:633
-#, fuzzy
 #| msgid "Color Levels"
 msgid "Adjust Color Levels"
-msgstr "Niveles de color"
+msgstr "Ajustar los niveles de color"
 
 #: ../gap/gap_wr_color_balance.c:658
-#, fuzzy
 #| msgid "Cyan"
 msgid "Cyan/Red:"
-msgstr "Cyan"
+msgstr "Cian/rojo:"
 
 #: ../gap/gap_wr_color_balance.c:672
 #, fuzzy
@@ -9786,7 +9763,7 @@ msgstr "Amarillo"
 
 #: ../gap/gap_wr_color_balance.c:708
 msgid "Preserve luminosity"
-msgstr ""
+msgstr "Conservar luminosidad"
 
 #: ../gap/gap_wr_color_curve.c:916
 #, c-format
@@ -11141,7 +11118,7 @@ msgstr ""
 #. the BGR label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:896
 msgid "BGR (rgb):"
-msgstr ""
+msgstr "BGR (rgb):"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:918
 msgid ""
@@ -12085,7 +12062,7 @@ msgstr ""
 #. the partition_X264_PART_I4X4 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2608
 msgid "I4x4"
-msgstr ""
+msgstr "I4x4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2614
 #, fuzzy
@@ -12116,7 +12093,7 @@ msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
 #. the partition_X264_PART_I8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2652
 msgid "I8x8"
-msgstr ""
+msgstr "I8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2658
 #, fuzzy
@@ -12149,7 +12126,7 @@ msgstr ""
 #. the partition_X264_PART_P8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2700
 msgid "P8x8"
-msgstr ""
+msgstr "P8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
 #, fuzzy
@@ -12173,7 +12150,7 @@ msgstr "perfil alto de transformación 8x8 (para el códec H264)"
 #. the partition_X264_PART_P4X4 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2745
 msgid "P4X4"
-msgstr ""
+msgstr "P4X4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2751
 #, fuzzy
@@ -12202,7 +12179,7 @@ msgstr "pskip rápido (para el codec H264)"
 #. the partition_X264_PART_B8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2789
 msgid "B8x8"
-msgstr ""
+msgstr "B8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2795
 #, fuzzy
@@ -12266,7 +12243,7 @@ msgstr "Usar el cuantizador no lineal de MPEG-2"
 #. the use_PSY checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2893
 msgid "PSY"
-msgstr ""
+msgstr "PSY"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2899
 msgid "use psycho visual optimizations"
