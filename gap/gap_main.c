@@ -137,31 +137,31 @@
 int gap_debug = 0;
 
 #define PLUGIN_NAME_GAP_NEXT                 "plug_in_gap_next"
-#define PLUGIN_NAME_GAP_PREV                 "plug_in_gap_prev" 
+#define PLUGIN_NAME_GAP_PREV                 "plug_in_gap_prev"
 #define PLUGIN_NAME_GAP_FIRST                "plug_in_gap_first"
-#define PLUGIN_NAME_GAP_LAST                 "plug_in_gap_last" 
+#define PLUGIN_NAME_GAP_LAST                 "plug_in_gap_last"
 #define PLUGIN_NAME_GAP_GOTO                 "plug_in_gap_goto"
 #define PLUGIN_NAME_GAP_DEL                  "plug_in_gap_del"
 #define PLUGIN_NAME_GAP_DUP                  "plug_in_gap_dup"
 #define PLUGIN_NAME_GAP_DENSITY              "plug_in_gap_density"
 #define PLUGIN_NAME_GAP_EXCHG                "plug_in_gap_exchg"
 #define PLUGIN_NAME_GAP_MOVE                 "plug_in_gap_move"
-#define PLUGIN_NAME_GAP_MOVE_PATH_EXT        "plug_in_gap_move_path_ext" 
+#define PLUGIN_NAME_GAP_MOVE_PATH_EXT        "plug_in_gap_move_path_ext"
 #define PLUGIN_NAME_GAP_MOVE_PATH_EXT2       "plug_in_gap_move_path_ext2"
 #define PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER  "plug_in_gap_range_to_multilayer"
-#define PLUGIN_NAME_GAP_RANGE_FLATTEN        "plug_in_gap_range_flatten" 
+#define PLUGIN_NAME_GAP_RANGE_FLATTEN        "plug_in_gap_range_flatten"
 #define PLUGIN_NAME_GAP_RANGE_LAYER_DEL      "plug_in_gap_range_layer_del"
-#define PLUGIN_NAME_GAP_RANGE_CONVERT        "plug_in_gap_range_convert" 
+#define PLUGIN_NAME_GAP_RANGE_CONVERT        "plug_in_gap_range_convert"
 #define PLUGIN_NAME_GAP_RANGE_CONVERT2       "plug_in_gap_range_convert2"
 #define PLUGIN_NAME_GAP_ANIM_RESIZE          "plug_in_gap_anim_resize"
-#define PLUGIN_NAME_GAP_ANIM_CROP            "plug_in_gap_anim_crop" 
+#define PLUGIN_NAME_GAP_ANIM_CROP            "plug_in_gap_anim_crop"
 #define PLUGIN_NAME_GAP_ANIM_SCALE           "plug_in_gap_anim_scale"
 #define PLUGIN_NAME_GAP_SPLIT                "plug_in_gap_split"
-#define PLUGIN_NAME_GAP_SHIFT                "plug_in_gap_shift" 
+#define PLUGIN_NAME_GAP_SHIFT                "plug_in_gap_shift"
 #define PLUGIN_NAME_GAP_REVERSE              "plug_in_gap_reverse"
 #define PLUGIN_NAME_GAP_RENUMBER             "plug_in_gap_renumber"
-#define PLUGIN_NAME_GAP_MODIFY               "plug_in_gap_modify" 
-#define PLUGIN_NAME_GAP_VIDEO_EDIT_COPY      "plug_in_gap_video_edit_copy"  
+#define PLUGIN_NAME_GAP_MODIFY               "plug_in_gap_modify"
+#define PLUGIN_NAME_GAP_VIDEO_EDIT_COPY      "plug_in_gap_video_edit_copy"
 #define PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE     "plug_in_gap_video_edit_paste"
 #define PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR     "plug_in_gap_video_edit_clear"
 #define PLUGIN_NAME_GAP_GET_ANIMINFO         "plug_in_gap_get_animinfo"
@@ -1045,8 +1045,9 @@ query ()
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_COPY,
                          "This plugin appends the selected framerange to the video paste buffer"
-                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         " the video paste buffer is a directory configured by gimprc (video-paste-dir )"
+                         " and a framefile basename configured by gimprc (video-paste-basename)"
+                         ,
                          "",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -1059,13 +1060,14 @@ query ()
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE,
                          "This plugin copies all frames from the video paste buffer"
-                         "to the current video. Depending on the paste_mode parameter"
-                         "the copied frames are replacing frames beginning at current frame"
-                         "or are inserted before or after the current frame"
-                         "the pasted frames are scaled to fit the current video size"
-                         "and converted in Imagetype (RGB,GRAY,INDEXED) if necessary"
-                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         " to the current video. Depending on the paste_mode parameter"
+                         " the copied frames are replacing frames beginning at current frame"
+                         " or are inserted before or after the current frame"
+                         " the pasted frames are scaled to fit the current video size"
+                         " and converted in Imagetype (RGB,GRAY,INDEXED) if necessary"
+                         " the video paste buffer is a directory configured by gimprc (video-paste-dir)"
+                         " and a framefile basename configured by gimprc (video-paste-basename)"
+                         ,
                          "",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -1077,9 +1079,10 @@ query ()
                          args_video_paste, return_std);
 
   gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR,
-                         "clear the video paste buffer by deleting all framefiles"
-                         "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
-                         "and a framefile basename configured by gimprc (video-paste-basename)",
+                         "Clear the video paste buffer by deleting all framefiles"
+                         " the video paste buffer is a directory configured by gimprc (video-paste-dir)"
+                         " and a framefile basename configured by gimprc (video-paste-basename)"
+                         ,
                          "",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -1128,10 +1131,10 @@ query ()
      /* Menu names */
      const char *menupath_image_video = N_("<Image>/Video/");
      const char *menupath_image_video_goto = N_("<Image>/Video/Go To/");
- 
+
      //gimp_plugin_menu_branch_register("<Image>", "Video");
      //gimp_plugin_menu_branch_register("<Image>/Video", "Go To");
-    
+
      gimp_plugin_menu_register (PLUGIN_NAME_GAP_NEXT, menupath_image_video_goto);
      gimp_plugin_menu_register (PLUGIN_NAME_GAP_PREV, menupath_image_video_goto);
      gimp_plugin_menu_register (PLUGIN_NAME_GAP_FIRST, menupath_image_video_goto);
@@ -1250,7 +1253,7 @@ run (const gchar *name
   image_id = param[1].data.d_image;
   if(!gap_image_is_alive(image_id))
   {
-     printf("GAP plug-in was called on INVALID IMAGE_ID:%d (terminating)\n", 
+     printf("GAP plug-in was called on INVALID IMAGE_ID:%d (terminating)\n",
                   (int)image_id);
      status = GIMP_PDB_EXECUTION_ERROR;
      values[0].data.d_status = status;
