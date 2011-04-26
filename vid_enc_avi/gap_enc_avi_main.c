@@ -224,7 +224,7 @@ query ()
 
 
   gimp_install_procedure(GAP_PLUGIN_NAME_AVI_PARAMS,
-                         _("Set Parameters for GAP avi video encoder Plugins"),
+                         _("Set parameters for GAP avi video encoder Plugins"),
                          _("This plugin sets avi specific video encoding parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -238,7 +238,7 @@ query ()
 
   l_ecp_key = g_strdup_printf("%s%s", GAP_QUERY_PREFIX_VIDEO_ENCODERS, GAP_PLUGIN_NAME_AVI_ENCODE);
   gimp_install_procedure(l_ecp_key,
-                         _("Get GUI Parameters for GAP avi video encoder"),
+                         _("Get GUI parameters for GAP avi video encoder"),
                          _("This plugin returns avi encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",

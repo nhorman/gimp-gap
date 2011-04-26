@@ -3184,7 +3184,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
     {
        char *l_errtxt;
 
-       l_errtxt = g_strdup_printf(_("Header not found!\n(line 1 must start with:  %s or %s")
+       l_errtxt = g_strdup_printf(_("Header not found!\n(line 1 must start with:  %s or %s)")
                                  ,  GAP_STBKEY_STB_HEADER
                                  ,  GAP_STBKEY_CLIP_HEADER
                                  );
@@ -3590,7 +3590,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
                 {
                    char *l_errtxt;
 
-                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: width, height, both, none")
+                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: width, height, both, none)")
                                              , l_from_ptr);
                    p_set_stb_error(stb, l_errtxt);
                    g_free(l_errtxt);
@@ -3617,7 +3617,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
             else
             {
                    char *l_errtxt;
-                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: keep, change")
+                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: keep, change)")
                                              , l_to_ptr);
                    p_set_stb_warning(stb, l_errtxt);
                    g_free(l_errtxt);

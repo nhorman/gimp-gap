@@ -932,7 +932,7 @@ p_vindex_dialog(VindexValues *val_ptr)
                                               "and no critical timecode steps are detected in the probereads so far.\n"
                                               "\nWARNING: positioning via native seek may not work exact in case critical "
                                               "timecode steps were not detected in the probereads.")
-                                         , N_("Create video index. Requires unconditional full scan of all frames."
+                                         , N_("Create video index. Requires unconditional full scan of all frames. "
                                               "Native seek is enabled only in case all timecodes are OK.")
                                          };
 

@@ -202,7 +202,7 @@ query ()
 
 
   gimp_install_procedure(GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS,
-                         _("Set Parameters for GAP singleframes video encoder Plugins"),
+                         _("Set parameters for GAP singleframes video encoder Plugins"),
                          _("This plugin sets singleframes specific video encoding parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -216,7 +216,7 @@ query ()
 
   l_ecp_key = g_strdup_printf("%s%s", GAP_QUERY_PREFIX_VIDEO_ENCODERS, GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE);
   gimp_install_procedure(l_ecp_key,
-                         _("Get GUI Parameters for GAP singleframes video encoder"),
+                         _("Get GUI parameters for GAP singleframes video encoder"),
                          _("This plugin returns singleframes encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -509,7 +509,7 @@ p_singleframe_init_default_params(GapGveSingleValues *epp)
 gint
 p_singleframe_encode_dialog(GapGveSingleGlobalParams *gpp)
 {
-  gap_arr_msg_popup(GIMP_RUN_INTERACTIVE, _("the Singleframe Encoder has no encoder specific Parameters"));
+  gap_arr_msg_popup(GIMP_RUN_INTERACTIVE, _("the Singleframe Encoder has no encoder specific parameters"));
   return 0;
 }  /* end p_singleframe_encode_dialog */
 

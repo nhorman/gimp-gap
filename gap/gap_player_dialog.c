@@ -8073,7 +8073,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_widget_show (play_button);
   gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), play_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (play_button, _("Start playback. "
-                                          "SHIFT: snapshot frames  in a multilayer image at original size "
+                                          "SHIFT: snapshot frames in a multilayer image at original size "
                                           "CTRL: snapshot at preview size "
                                           "ALT: force creation of new snapshot image"), NULL);
   g_signal_connect (G_OBJECT (play_button), "button_press_event",
@@ -8096,7 +8096,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_widget_show (back_button);
   gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), back_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (back_button, _("Start reverse playback. "
-                                          "SHIFT: snapshot frames  in a multilayer image at original size "
+                                          "SHIFT: snapshot frames in a multilayer image at original size "
                                           "CTRL: snapshot at preview size "
                                           "ALT: force creation of new snapshot image"), NULL);
   g_signal_connect (G_OBJECT (back_button), "button_press_event",

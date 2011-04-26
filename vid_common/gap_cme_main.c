@@ -151,7 +151,7 @@ query ()
                          " and passed to the selected videoencoder plug-in as temporary file."
                          " (or direct if format and samplerate already matches the desired target samplerate)."
                          " The videoformat is defined with vid_enc_plugin parameter. The specified plugin "
-                         " is called with the Parameters specified in the dialog. for noninteractive calls"
+                         " is called with the parameters specified in the dialog. for noninteractive calls"
                          " default values will be used. (you may call the desired plugin directly if you"
                          " want to specify non-interacive parameters"),
                          "Wolfgang Hofer (hof@gimp.org)",

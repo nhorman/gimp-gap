@@ -491,7 +491,7 @@ query ()
 
 
   gimp_install_procedure(GAP_PLUGIN_NAME_FFMPEG_PARAMS,
-                         _("Set Parameters for GAP ffmpeg video encoder Plugin"),
+                         _("Set parameters for GAP ffmpeg video encoder Plugin"),
                          _("This plugin sets ffmpeg specific video encoding parameters."
                            " Non-interactive callers must provide a parameterfile,"
                            " Interactive calls provide a dialog window to specify and optionally save the parameters."),
@@ -507,7 +507,7 @@ query ()
 
   l_ecp_key = g_strdup_printf("%s%s", GAP_QUERY_PREFIX_VIDEO_ENCODERS, GAP_PLUGIN_NAME_FFMPEG_ENCODE);
   gimp_install_procedure(l_ecp_key,
-                         _("Get GUI Parameters for GAP ffmpeg video encoder"),
+                         _("Get GUI parameters for GAP ffmpeg video encoder"),
                          _("This plugin returns ffmpeg encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",

@@ -1224,7 +1224,7 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
                                 mgpp->master_tween_steps, 0, 100, 1.0, 10.0, 0,
                                 TRUE, 0, 0,
                                 _("Number of tweens to be inserted between 2 frames. "
-                                  "Value 0 renderes missing frames (via morping or fade)"
+                                  "Value 0 renderes missing frames (via morphing or fade) "
                                   "but does not create tweens where the "
                                   "next frame number is equal to the current processed frame number +1"),
                                 NULL);
@@ -1245,7 +1245,7 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
 //     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgpp->create_tweens_in_subdir);
 //     gimp_help_set_help_data(checkbutton,
 //                          _("ON: copy processed frames to a subdirectory "
-//                            "and create tween frames in this subdirectory via morping."
+//                            "and create tween frames in this subdirectory via morphing."
 //                            "OFF: Render missing frames via moprhing. ")
 //                          , NULL);
 
