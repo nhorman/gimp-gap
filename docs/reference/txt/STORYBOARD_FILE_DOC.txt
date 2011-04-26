@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2010.11.02:
+STORYBOARD_FILES           2011.04.14:
 
 
 General
@@ -539,7 +539,7 @@ VID_SILENCE
                             DEFAULT: 0
 
 VID_ROTATE
-  This record is used to define rotate treansitions,
+  This record is used to define rotate transitions,
   by changing the rotation angle of the processed frames in the specified Videotrack slightly from one value
   to another.
   
@@ -695,8 +695,13 @@ VID_MOVE_X and VID_MOVE_Y
 
 
 VID_FIT_SIZE
-  Define how to match input framesize with the size of
-  the resulting video (VID_MASTER_SIZE).
+  Define how to match input framesize with the target size.
+  The target size is typically the size of the resulting video (VID_MASTER_SIZE).
+  except in scenarios where a movepath transistion is active.
+  In this special case the input frame is processed as moving object
+  of this transition and the target size refers to the scaled size 
+  (preScaleWidth, preScaleHeight) of the recorded moving object.
+  
 
   Notes:
   - The Input Frame is placed in the center of the 
@@ -704,6 +709,29 @@ VID_FIT_SIZE
     (unless VID_MOVE_X/Y define other offsets than 0.0)
   - Zooming may cause additional Scaling. The VID_FIT_SIZE record
     describes the normal Size (where zoom is set to 1.0)
+
+  - In case the input Frame is processed by a movepath transistion
+    the target size depends on the size of the moving object and the framesize
+    in the xml_paramfile and on the VID_MASTER_SIZE.
+    (see VID_MOVE_PATH below)
+        
+    Example:
+    in the xml_paramfile the frame size 640x400 pixels and the 
+    moving object size was 320x240 pixels.
+    
+       <frame_description width="640" height="400"
+       <moving_object     width="320" height="240" 
+
+    The actual rendering shall be done at double frame size VID_MASTER_SIZE 1280 x 800 pixels.
+    In this example the target size of the pre-scaled moving object is 640 x 480 pixels
+    
+    target size calculation:
+       preScaleWidth  = recordedMovingObjWidth * masterWidth / recordedFrameWidth
+           640        = 320  * 1280  / 640
+       preScaleHeight = recordedMovingObjHeight * masterHeight / recordedFrameWidth
+           480        = 240  * 800   / 400
+    
+
 
   - WARNING: settings that disable scaling 
     (e.g. use fixed width or height at original source image size)
@@ -727,9 +755,15 @@ VID_FIT_SIZE
   (2) track             ... integer tracknumer
   [3] mode              ... One of the Keywords "width" "height" "none" or "both"
                             width:  Scale that only width does exactly
-                                    fit to the resulting video, height is unchanged
+                                    fit to the resulting video,
+                                    height is unchanged original input frame height,
+                                    or adjusted to keep the proportions of the input frame
+                                    (depends on the proportions setting)
                             height: Scale that only height does exactly
-                                    fit to the resulting video, width  is unchanged
+                                    fit to the resulting video,
+                                    width  is unchanged original input frame width,
+                                    or adjusted to keep the proportions of the input frame
+                                    (depends on the proportions setting)
                             both:   Scale that both width and height do exactly
                                     fit to the resulting video 
                             none:   Do not Scale the input frame at all
@@ -747,10 +781,181 @@ VID_FIT_SIZE
                                     background if there no such frames.
                             change_proportions:
                                     allow proportion changes at scaling.
-                                    Stretch the image to fit the resulting
-                                    video.
                                     
                             DEFAULT: "change_proportions"
+
+
+   This Example shows how an Input Frame of size 400x400 pixel is automatically scaled
+   to fit into a video at size 1280 x 800
+
+       +------+
+       |######|   Input Frame width:      400
+       |######|   Input Frame height:     400
+       |######|
+       |######|
+       +------+
+ 
+ 
+  ==== scenarios that allow changing proportions of the moving object =====
+ 
+  o) VID_FIT_SIZE mode=both proportions=change_proportions
+ 
+    +-------------------------------------+
+    |#####################################|  scaled copy of input frame:  1280 x 800
+    |#####################################|  video size:                  1280 x 800                  
+    |#####################################| 
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|     
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    +-------------------------------------+
+
+  o) VID_FIT_SIZE mode=width proportions=change_proportions
+ 
+    +-------------------------------------+
+    |                                     |  scaled copy of input frame:  1280 x 400
+    |                                     |  video size:                  1280 x 800                  
+    |                                     | 
+    +-------------------------------------+
+    |#####################################|
+    |#####################################|
+    |#####################################|     
+    |#####################################|
+    +-------------------------------------+
+    |                                     |
+    |                                     |
+    |                                     |
+    +-------------------------------------+
+ 
+
+  o) VID_FIT_SIZE mode=height proportions=change_proportions
+ 
+    +--------------+------+---------------+
+    |              |######|               |  scaled copy of input frame:   400 x 800
+    |              |######|               |  video size:                  1280 x 800                  
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    |              |######|               | 
+    +--------------+------+---------------+
+
+ 
+  ==== scenarios that keep proportions of the moving object =====
+  
+  o) VID_FIT_SIZE mode=both proportions=keep_proportions
+  
+     The input frame is scaled to fit into video size rectangle
+     since the input frame has different proportions than the video size
+     there will be transparent borders. (where the black background
+     or clips of other tracks on lower stack position shows through)
+ 
+    +-------+---------------------+-------+
+    |       |#####################|       |  scaled copy of input frame:   800 x 800
+    |       |#####################|       |  video size:                  1280 x 800                  
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    +-------+---------------------+-------+
+
+ 
+  o) VID_FIT_SIZE mode=width proportions=keep_proportions
+    
+    The input frame is scaled to width 1280 pixels
+    and height 1280 pixels to keep the proportions.
+    But this cuts off the parts that do not fit into
+    the video height of 800 pixels.
+    
+
+
+    +-------------------------------------+
+    |.....................................| 
+    |.....................................| 
+    +-------------------------------------+
+    |#####################################|  scaled copy of input frame:  1280 x 1280
+    |#####################################|  video size:                  1280 x  800                  
+    |#####################################| 
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|     
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    |#####################################|
+    +-------------------------------------+
+    |.....................................| 
+    |.....................................| 
+    +-------------------------------------+
+
+  o) VID_FIT_SIZE mode=height proportions=keep_proportions
+
+     The input frame is scaled to height 800 pixels.
+     keeping the proportions of the input frame results in width of 800 pixels
+     that gives transparent stripes left and right.
+     
+ 
+    +-------+---------------------+-------+
+    |       |#####################|       |  scaled copy of input frame:   800 x 800
+    |       |#####################|       |  video size:                  1280 x 800                  
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    |       |#####################|       | 
+    +-------+---------------------+-------+
+
+
+
+  o) VID_FIT_SIZE mode=none
+   
+    No automatic scaling is done to fit into video size.
+    (the proportions seting is not relevant in this case)
+ 
+    +-------------------------------------+
+    |                                     |  scaled copy of input frame:   400 x 400
+    |                                     |  video size:                  1280 x 800                  
+    |                                     | 
+    |              +------+               |
+    |              |######|               |
+    |              |######|               |
+    |              |######|               |     
+    |              |######|               |
+    |              +------+               |
+    |                                     |
+    |                                     |
+    |                                     |
+    +-------------------------------------+
+ 
+
+  
+
+
+
+
 
 VID_OVERLAP
   Define overlapping frames within one track.
@@ -798,6 +1003,32 @@ VID_OVERLAP
   00102        B.mpg 000007 
   ...
   00195        B.mpg 000100 
+
+
+      
+VID_MOVE_PATH
+  This record is used to define a set of complex transformations on the current video track (layer)
+  Those transformations can include movement along a path, scaling, rotation, perspective transformation,
+  opacity changes ... (see the GIMP-GAP MovePath feature for more details)
+  
+  to another.
+  
+  (1) Record Key        ... VID_MOVE_PATH
+  (2) track             ... integer tracknumer
+  (3) frame_from        ... Start frame number specifies the phase
+                            where to start in the move path (typically start at 1)
+  (4) frame_to          ... End frame number  specifies the phase
+                            where to end in the move path
+  (5) nframes           ... duration of the effect
+                            in number of frames (integer)
+                            In case nframes is greater than total_frames
+                            the transistions of the end
+                            The duration Value 0 disables move transitions.
+  (6) accel             ... an integer value specifiying acceleration characteristic
+                            DEFAULT: 0  ** other values are currently ignored 
+                            
+  (7) xml_paramfile     ... name of the paramterfile for the move path plugin.
+
 
 
 AUD_PLAY_SOUND

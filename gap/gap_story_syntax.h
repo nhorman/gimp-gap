@@ -65,6 +65,7 @@
 #define GAP_STBKEY_VID_MOVE_Y               "VID_MOVE_Y"
 #define GAP_STBKEY_VID_FIT_SIZE             "VID_FIT_SIZE"
 #define GAP_STBKEY_VID_OVERLAP              "VID_OVERLAP"
+#define GAP_STBKEY_VID_MOVEPATH             "VID_MOVEPATH"
 
 #define GAP_STBKEY_MASK_IMAGE               "MASK_IMAGE"
 #define GAP_STBKEY_MASK_ANIMIMAGE           "MASK_ANIMIMAGE"

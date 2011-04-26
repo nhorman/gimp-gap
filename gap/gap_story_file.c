@@ -82,6 +82,7 @@ static const char *gtab_att_transition_key_words[GAP_STB_ATT_TYPES_ARRAY_MAX] =
        , GAP_STBKEY_VID_ZOOM_X
        , GAP_STBKEY_VID_ZOOM_Y
        , GAP_STBKEY_VID_ROTATE
+       , GAP_STBKEY_VID_MOVEPATH
        };
 
 
@@ -273,6 +274,10 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
             , (int)stb_elem->att_arr_value_accel[ii]
             );
         }
+      }
+      if(stb_elem->att_movepath_file_xml != NULL)
+      {
+        printf("   att_movepath_file_xml: %s\n", stb_elem->att_movepath_file_xml);
       }
       printf("   overlap: %d\n", (int)stb_elem->att_overlap);
     }
@@ -758,7 +763,9 @@ gap_story_new_elem(GapStoryRecordType record_type)
         stb_elem->att_arr_value_dur[ii] = 1;        /* number of frames to change from -> to value */
         stb_elem->att_arr_value_accel[ii] = 0;      /* per default use no acceleration characteristic */
       }
+      stb_elem->att_arr_value_to[GAP_STB_ATT_TYPE_MOVEPATH] = 100.0;
     }
+    stb_elem->att_movepath_file_xml = NULL;
 
     /* init members for Audio Record types */
     stb_elem->aud_filename = NULL;
@@ -1301,14 +1308,15 @@ gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
 static void
 p_free_stb_elem(GapStoryElem *stb_elem)
 {
-  if(stb_elem->orig_filename)     { g_free(stb_elem->orig_filename);}
-  if(stb_elem->orig_src_line)     { g_free(stb_elem->orig_src_line);}
-  if(stb_elem->basename)          { g_free(stb_elem->basename);}
-  if(stb_elem->ext)               { g_free(stb_elem->ext);}
-  if(stb_elem->filtermacro_file)  { g_free(stb_elem->filtermacro_file);}
-  if(stb_elem->colormask_file)    { g_free(stb_elem->colormask_file);}
-  if(stb_elem->preferred_decoder) { g_free(stb_elem->preferred_decoder);}
-  if(stb_elem->mask_name)         { g_free(stb_elem->mask_name);}
+  if(stb_elem->orig_filename)          { g_free(stb_elem->orig_filename);}
+  if(stb_elem->orig_src_line)          { g_free(stb_elem->orig_src_line);}
+  if(stb_elem->basename)               { g_free(stb_elem->basename);}
+  if(stb_elem->ext)                    { g_free(stb_elem->ext);}
+  if(stb_elem->filtermacro_file)       { g_free(stb_elem->filtermacro_file);}
+  if(stb_elem->colormask_file)         { g_free(stb_elem->colormask_file);}
+  if(stb_elem->preferred_decoder)      { g_free(stb_elem->preferred_decoder);}
+  if(stb_elem->mask_name)              { g_free(stb_elem->mask_name);}
+  if(stb_elem->att_movepath_file_xml)  { g_free(stb_elem->att_movepath_file_xml);}
 }  /* end p_free_stb_elem */
 
 
@@ -3327,13 +3335,14 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
   ||  (strcmp(l_record_key, GAP_STBKEY_VID_MOVE_X)   == 0)
   ||  (strcmp(l_record_key, GAP_STBKEY_VID_MOVE_Y)   == 0)
   ||  (strcmp(l_record_key, GAP_STBKEY_VID_FIT_SIZE) == 0)
+  ||  (strcmp(l_record_key, GAP_STBKEY_VID_MOVEPATH) == 0)
   ||  (strcmp(l_record_key, GAP_STBKEY_VID_OVERLAP)  == 0))
   {
-    char *l_track_ptr      = l_wordval[1];
-    char *l_from_ptr       = l_wordval[2];
-    char *l_to_ptr         = l_wordval[3];
-    char *l_dur_ptr        = l_wordval[4];
-    char *l_accel_ptr      = l_wordval[5];
+    char *l_track_ptr         = l_wordval[1];
+    char *l_from_ptr          = l_wordval[2];
+    char *l_to_ptr            = l_wordval[3];
+    char *l_dur_ptr           = l_wordval[4];
+    char *l_accel_ptr         = l_wordval[5];
 
     gint32 l_track_nr;
 
@@ -3343,6 +3352,38 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       l_track_nr = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb);
     }
 
+
+    /* ATTRIBUTE: GAP_STBKEY_VID_MOVEPATH */
+    if (strcmp(l_record_key, GAP_STBKEY_VID_MOVEPATH) == 0)
+    {
+      char *l_xml_ptr = l_wordval[6];
+      gboolean elem_already_in_the_list = FALSE;
+
+      ii = GAP_STB_ATT_TYPE_MOVEPATH;
+
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
+      if(stb_elem)
+      {
+        stb_elem->att_arr_enable[ii] = TRUE;
+        stb_elem->file_line_nr = longlinenr;
+        stb_elem->orig_src_line = g_strdup(multi_lines);
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii]  = p_scan_gdouble(l_from_ptr, 1.0, 10000.0, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]    = p_scan_gdouble(l_to_ptr,   0.0, 10000.0, stb); }
+        else                { stb_elem->att_arr_value_to[ii]    = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]   = p_scan_gint32(l_dur_ptr,  0, 10000, stb); }
+        if(*l_xml_ptr)      { stb_elem->att_movepath_file_xml   = g_strdup(l_xml_ptr); }
+        else                { stb_elem->att_arr_enable[ii] = FALSE; }
+
+        p_assign_accel_attr(stb_elem, stb, l_accel_ptr, ii);
+
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
+      }
+      goto cleanup;
+    }
 
     /* ATTRIBUTE: GAP_STBKEY_VID_OVERLAP */
     if (strcmp(l_record_key, GAP_STBKEY_VID_OVERLAP) == 0)
@@ -4848,7 +4889,20 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
 
   for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
   {
-    if(stb_elem->att_arr_enable[ii])
+    gboolean writeEnable;
+    
+    writeEnable = stb_elem->att_arr_enable[ii];
+    if((ii == GAP_STB_ATT_TYPE_MOVEPATH)
+    && (stb_elem->att_movepath_file_xml != NULL))
+    {
+      if(stb_elem->att_movepath_file_xml[0] == '\0')
+      {
+        /* disable movepath in case of empty filename */
+        writeEnable = FALSE;
+      }
+    }
+  
+    if(writeEnable)
     {
       gchar l_from_str[G_ASCII_DTOSTR_BUF_SIZE];
       gchar l_to_str[G_ASCII_DTOSTR_BUF_SIZE];
@@ -4866,16 +4920,20 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
                      ,stb_elem->att_arr_value_to[ii]
                      );
 
-      fprintf(fp, "%s         "
+      fprintf(fp, "%s        "
                  , gtab_att_transition_key_words[ii]
                  );
-      if(ii !=0 )
+      if(ii != 6)
       {
-        /* print one extra space
-         * VID_MOVE_X, VID_MOVE_Y, VID_ZOOM_X, VID_ZOOM_Y VID_ROTATE
-         * are 1 character shorter than VID_OPACITY
-         */
         fprintf(fp, " ");
+        if(ii != 0 )
+        {
+          /* print one extra space
+           * VID_MOVE_X, VID_MOVE_Y, VID_ZOOM_X, VID_ZOOM_Y VID_ROTATE
+           * are 1 character shorter than VID_OPACITY
+           */
+          fprintf(fp, " ");
+        }
       }
 
       fprintf(fp, "%s:%d %s:%s %s:%s %s:%d"
@@ -4888,6 +4946,13 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
       {
         fprintf(fp, " %s:%d"
                  , l_parnam_tab.parname[5]              , stb_elem->att_arr_value_accel[ii]
+                 );
+      }
+      if((ii == GAP_STB_ATT_TYPE_MOVEPATH)
+      && (stb_elem->att_movepath_file_xml != NULL))
+      {
+        fprintf(fp, " %s:\"%s\""
+                 , l_parnam_tab.parname[6]              , stb_elem->att_movepath_file_xml
                  );
       }
       fprintf(fp, "\n");
@@ -6119,6 +6184,7 @@ p_story_get_filename_from_elem (GapStoryElem *stb_elem, gint32 in_framenr)
 /* --------------------------------
  * gap_story_get_filename_from_elem
  * gap_story_get_filename_from_elem_nr
+ * gap_story_get_filename_from_elem_nr_anim
  * --------------------------------
  */
 char *
@@ -6132,6 +6198,39 @@ gap_story_get_filename_from_elem_nr (GapStoryElem *stb_elem, gint32 in_framenr)
 {
   return(p_story_get_filename_from_elem(stb_elem, in_framenr));
 }  /* end gap_story_get_filename_from_elem_nr */
+
+char *
+gap_story_get_filename_from_elem_nr_anim (GapStoryElem *stb_elem, gint32 in_framenr)
+{
+  char *filename;
+
+  filename = NULL;
+  if(stb_elem)
+  {
+    switch(stb_elem->record_type)
+    {
+      case GAP_STBREC_VID_MOVIE:
+      case GAP_STBREC_VID_ANIMIMAGE:
+      case GAP_STBREC_VID_IMAGE:
+        filename = g_strdup(stb_elem->orig_filename);
+        break;
+      case GAP_STBREC_VID_FRAMES:
+        if(in_framenr < 0)
+        {
+          in_framenr = stb_elem->from_frame;
+        }
+        filename = gap_lib_alloc_fname(stb_elem->basename
+                                      , in_framenr
+                                      , stb_elem->ext
+                                      );
+
+        break;
+      default:
+        break;
+    }
+  }
+  return(filename);
+}  /* end gap_story_get_filename_from_elem_nr_anim */
 
 
 
@@ -6876,6 +6975,7 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
     if(stb_elem->filtermacro_file)  stb_elem_dup->filtermacro_file  = g_strdup(stb_elem->filtermacro_file);
     if(stb_elem->colormask_file)    stb_elem_dup->colormask_file    = g_strdup(stb_elem->colormask_file);
     if(stb_elem->preferred_decoder) stb_elem_dup->preferred_decoder = g_strdup(stb_elem->preferred_decoder);
+    if(stb_elem->att_movepath_file_xml) stb_elem_dup->att_movepath_file_xml = g_strdup(stb_elem->att_movepath_file_xml);
     stb_elem_dup->seltrack        = stb_elem->seltrack;
     stb_elem_dup->exact_seek      = stb_elem->exact_seek;
     stb_elem_dup->delace          = stb_elem->delace;
@@ -7031,6 +7131,8 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
         stb_elem_dst->att_arr_value_accel[ii] = stb_elem->att_arr_value_accel[ii];
       }
     }
+    stb_elem_dst->att_movepath_file_xml  = NULL;
+    if(stb_elem->att_movepath_file_xml)  stb_elem_dst->att_movepath_file_xml  = g_strdup(stb_elem->att_movepath_file_xml);
 
     stb_elem_dst->flip_request            = stb_elem->flip_request;
     stb_elem_dst->att_overlap             = stb_elem->att_overlap;
@@ -8922,10 +9024,11 @@ gdouble
 gap_story_get_default_attribute(gint att_typ_idx)
 {
    if ((att_typ_idx == GAP_STB_ATT_TYPE_OPACITY)
+   ||  (att_typ_idx == GAP_STB_ATT_TYPE_MOVEPATH)
    ||  (att_typ_idx == GAP_STB_ATT_TYPE_ZOOM_X)
    ||  (att_typ_idx == GAP_STB_ATT_TYPE_ZOOM_Y))
    {
-     return (1.0);  /* 1.0 indicates fully opaque, or no scaling */
+     return (1.0);  /* 1.0 indicates fully opaque, or no scaling or frame 1 for movepath */
    }
    return (0.0);  /* indicates centerd positioning or rotate 0 degree */
 }  /* end gap_story_get_default_attribute */

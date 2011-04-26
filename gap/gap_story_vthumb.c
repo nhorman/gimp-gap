@@ -658,8 +658,11 @@ gap_story_vthumb_get_velem_no_movie(GapStbMainGlobalParams *sgpp
   velem->section_id = section_id;
   if(stb_elem->record_type == GAP_STBREC_VID_SECTION)
   {
-    velem->total_frames = stb_elem->nframes;
     velem->total_frames = gap_story_count_total_frames_in_section(referenced_section);
+  }
+  else
+  {
+    velem->total_frames = stb_elem->nframes;
   }
 
   velem->next = sgpp->video_list;

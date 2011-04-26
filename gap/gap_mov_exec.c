@@ -74,6 +74,7 @@
 #include "gap_pdb_calls.h"
 #include "gap_arr_dialog.h"
 #include "gap_accel_char.h"
+#include "gap_mov_xml_par.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -81,8 +82,19 @@ static void p_add_tween_and_trace(gint32 dest_image_id, GapMovData *mov_ptr, Gap
 static gint p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layerstack);
 static void p_mov_advance_src_layer(GapMovCurrent *cur_ptr, GapMovValues  *pvals);
 static void p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals);
-static long   p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query);
-static long   p_mov_execute(GapMovData *mov_ptr);
+
+static void     p_log_current_render_params(GapMovData *mov_ptr, GapMovCurrent *cur_ptr);
+static void     p_printf_log_parameters(GapMovData *mov_ptr);
+static void     gap_mov_exec_set_handle_offsets_singleframe(GapMovValues *val_ptr, GapMovCurrent *cur_ptr);
+static void     p_add_2nd_controlpoint(GapMovValues *val_ptr);
+static void     p_init_curr_ptr_with_1st_controlpoint(GapMovCurrent *cur_ptr, GapMovValues *val_ptr, GapMovSingleFrame *singleFramePtr);
+static gint32   p_duplicate_layer(gint32 layerId);
+
+static long     p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query);
+static gint32   p_mov_execute_singleframe(GapMovData *mov_ptr);
+
+
+static long     p_mov_execute(GapMovData *mov_ptr);
 static gdouble  p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y);
 static gdouble  p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns);
 
@@ -120,7 +132,10 @@ static gint     p_calculate_settings_for_current_FrameTween(
                    , gint     endOfSegmentIndex
                    , GapMovQuery *mov_query
                    );
-                    
+
+
+
+
 
 
 /* ============================================================================
@@ -243,11 +258,16 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
   int     l_rc;
   char    *l_fname;
   char    *l_name;
+  GapMovSingleFrame *singleFramePtr;
 
   l_rc = 0;
   ainfo_ptr = mov_ptr->dst_ainfo_ptr;
+  singleFramePtr = mov_ptr->singleFramePtr;
 
-  if(mov_ptr->val_ptr->twix > 0)
+  p_log_current_render_params(mov_ptr, cur_ptr);
+
+  if((mov_ptr->val_ptr->twix > 0)
+  && (singleFramePtr == NULL))
   {
     /* We are rendering a virtual frame (a tween) */
     /* ------------------------------------------ */
@@ -312,28 +332,44 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
         gimp_image_add_layer (mov_ptr->val_ptr->tween_image_id, l_new_layer_id, 0 /* top of layerstack */ );
       }
     }
-    else l_rc = -1;
+    else
+    {
+      l_rc = -1;
+    }
 
   }
   else
   {
     if(mov_ptr->val_ptr->apv_mlayer_image < 0)
     {
-      /* We are generating the Animation on the ORIGINAL FRAMES */
-      /* ------------------------------------------------------ */
-      if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-      ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
-                                        cur_ptr->dst_frame_nr,
-                                        ainfo_ptr->extension);
-      if(ainfo_ptr->new_filename == NULL)
-         return -1;
+      if(singleFramePtr == NULL)
+      {
+        /* We are generating the Animation on the ORIGINAL FRAMES */
+        /* ------------------------------------------------------ */
+        if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+        ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+                                          cur_ptr->dst_frame_nr,
+                                          ainfo_ptr->extension);
+        if(ainfo_ptr->new_filename == NULL)
+           return -1;
 
-      /* load next frame to render */
-      l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
-      if(l_tmp_image_id < 0)
-        return -1;
+        /* load next frame to render */
+        l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+        if(l_tmp_image_id < 0)
+        {
+          return -1;
+        }
 
-      gimp_image_undo_disable (l_tmp_image_id);
+        gimp_image_undo_disable (l_tmp_image_id);
+      }
+      else
+      {
+        l_tmp_image_id = mov_ptr->val_ptr->dst_image_id;
+	if (l_tmp_image_id < 0)
+	{
+          l_tmp_image_id = gimp_drawable_get_image(singleFramePtr->drawable_id);
+	}
+      }
 
 
       /* call render procedure for current image */
@@ -344,11 +380,19 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
          */
         p_add_tween_and_trace(l_tmp_image_id, mov_ptr, cur_ptr);
 
-        /* if OK: save the rendered frame back to disk */
-        if(gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename) < 0)
-          l_rc = -1;
+        if(singleFramePtr == NULL)
+        {
+          /* if OK: save the rendered frame back to disk (but not in singleframes mode) */
+          if(gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename) < 0)
+          {
+            l_rc = -1;
+          }
+        }
       }
-      else l_rc = -1;
+      else 
+      {
+        l_rc = -1;
+      }
     }
     else
     {
@@ -369,8 +413,10 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
                                            ainfo_ptr->extension);
          l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
          if(l_tmp_image_id < 0)
+         {
            return -1;
-
+         }
+         
          gimp_image_undo_disable (l_tmp_image_id);
 
          if((mov_ptr->val_ptr->apv_scalex != 100.0) || (mov_ptr->val_ptr->apv_scaley != 100.0))
@@ -462,9 +508,14 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
     }
   }
 
-
-  /* destroy the tmp image */
-  gimp_image_delete(l_tmp_image_id);
+  if(singleFramePtr == NULL)
+  {
+    /* destroy the tmp image 
+     * (but not in singleframes mode. Note that in singleframe mode l_tmp_image_id
+     * referes to the image from where we were invoked)
+     */
+    gimp_image_delete(l_tmp_image_id);
+  }
 
   return l_rc;
 }       /* end p_mov_call_render */
@@ -686,7 +737,7 @@ p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
  * IN points is the number of processing relevant controlpoints
  * returns the index of the last controlpoint in the path segment that starts at specified index
  * Note that path segment includes all controlpoints up to the next keyframe inclusive. If no keyframe
- * present ther is only one big segment from first to last controlpoint.
+ * present there is only one big segment from first to last controlpoint.
  */
 static gint
 p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames)
@@ -695,7 +746,7 @@ p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames)
   {
     return (1);
   }
-  
+
   if(index  < val_ptr->point_idx_max )
   {
     if (val_ptr->point[index].keyframe > 0)
@@ -713,7 +764,7 @@ p_calculate_relframe_nr_at_index(GapMovValues *val_ptr, gint index, gint frames)
  * p_findEndOfSegmentIndex
  * -----------------------------------
  * IN points is the number of processing relevant controlpoints
- * returns the index of the last controlpoint in the segment that starts 
+ * returns the index of the last controlpoint in the segment that starts
  * at specified startOfSegmentIndex.
  * the segment ends at next KEYFRAME or at the last controlpoint (that is an implicite keyframe)
  */
@@ -721,7 +772,7 @@ static gint
 p_findEndOfSegmentIndex(GapMovValues *val_ptr, gint startOfSegmentIndex, gint points)
 {
   gint ii;
-  
+
   for (ii= startOfSegmentIndex +1; ii < points; ii++)
   {
     if (val_ptr->point[ii].keyframe > 0)
@@ -730,7 +781,7 @@ p_findEndOfSegmentIndex(GapMovValues *val_ptr, gint startOfSegmentIndex, gint po
       return (ii);
     }
   }
-  
+
   return (points -1);
 }  /* end p_findEndOfSegmentIndex */
 
@@ -753,14 +804,14 @@ p_calculate_LineLength(GapMovValues *val_ptr, gint idx)
   {
     return (0.0);
   }
-  
+
   dx = abs (val_ptr->point[idx].p_x - val_ptr->point[idx +1].p_x);
   dy = abs (val_ptr->point[idx].p_y - val_ptr->point[idx +1].p_y);
-  
+
   len = sqrt((dx * dx) + (dy * dy));
-  
+
   return (len);
-  
+
 }  /* end p_calculate_LineLength */
 
 
@@ -775,7 +826,7 @@ p_calculate_path_segment_length(GapMovValues  *val_ptr
 {
   gint idx;
   gdouble lenSum;
-  
+
   lenSum = 0;
   for(idx=startOfSegmentIndex; idx < endOfSegmentIndex; idx++)
   {
@@ -788,14 +839,14 @@ p_calculate_path_segment_length(GapMovValues  *val_ptr
 /* -----------------------------------
  * p_pick_controlpoint_at_curr_length
  * -----------------------------------
- * returns the relevant controlpoint index 
+ * returns the relevant controlpoint index
  * at specified currentLen in pixels (eg. current position length within the specified
  * path segment that starts at controlpoint startOfSegmentIndex)
  *
  * IN:  startOfSegmentIndex
  * IN:  endOfSegmentIndex
  * IN:  pathSegmentLength length in pixels (0 at stastOfSegment, upto segment length)
- * IN:  
+ * IN:
  * OUT: flt_posfactor
  */
 static gint
@@ -814,20 +865,20 @@ p_pick_controlpoint_at_curr_length(GapMovValues  *val_ptr
    /* calculate length factor (0.0 to 1.0) respecting position specific acceleartion characteristic */
    lengthFactorAcc = gap_accelMixFactor(lengthFactorLinear, accelerationCharacteristic);
    currentLen = pathSegmentLength * lengthFactorAcc;
-   
-   
-   
-   
+
+
+
+
    lenSum = 0;
    lenSumPrev = 0;
-   
+
    for(idx = startOfSegmentIndex; idx <= endOfSegmentIndex; idx++)
    {
      gdouble lineLen;
-     
+
      lineLen = p_calculate_LineLength(val_ptr, idx);
      lenSum += lineLen;
- 
+
      if(lenSum >= currentLen)
      {
        gdouble l_flt_posfactor;
@@ -842,14 +893,14 @@ p_pick_controlpoint_at_curr_length(GapMovValues  *val_ptr
             ,(float) lengthFactorAcc
             );
        }
-      
-       
+
+
        *flt_posfactor =  CLAMP (l_flt_posfactor, 0.0, 1.0);
        return (idx);
      }
     lenSumPrev = lenSum;
   }
-   
+
   *flt_posfactor = 0;
   return (endOfSegmentIndex);
 
@@ -858,9 +909,9 @@ p_pick_controlpoint_at_curr_length(GapMovValues  *val_ptr
 /* --------------------------------------
  * p_calculate_posFactor_from_FrameTweens
  * --------------------------------------
- * returns the relevant positionFactor for the 
+ * returns the relevant positionFactor for the
  * specified currFrameTweenInSegment and frameTweensInSegment
- * respecting the specified acceleration characteristic 
+ * respecting the specified acceleration characteristic
  *
  */
 static gdouble
@@ -874,11 +925,11 @@ p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
 
   factorLinear = currFrameTweenInSegment / (MAX (1.0, frameTweensInSegment));
   factorLinear = CLAMP (factorLinear, 0.0, 1.0);
-  
+
   /* calculate length factor (0.0 to 1.0) respecting position specific acceleartion characteristic */
   posFactorAcc = gap_accelMixFactor(factorLinear, accelerationCharacteristic);
-   
-   
+
+
   return (posFactorAcc);
 
 }  /* end p_calculate_posFactor_from_FrameTweens */
@@ -889,7 +940,7 @@ p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
  * -------------------------------------------
  * calculate settings for the currently processed
  * Frame (or tween) according to the controlpoints.
- * supports older behavior of GIMP-GAP-2.6 and prior 
+ * supports older behavior of GIMP-GAP-2.6 and prior
  * and the extended variant with accerlaration characteristics
  * per path segment.
  * mode without acceleration characteristic (GIMP-GAP-2.6 behvior)
@@ -897,7 +948,7 @@ p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
  *   This mode is selected by acceleration characteristic value 0.
  *   In this mode the flt_posfactor specifies the position within one line
  *   between the controlpoints with index [l_ptidx -1] and [l_ptidx]
- *  
+ *
  * Mode with acceleration characteristic:
  * ========================================
  *   a Path segment includes all controlpoints between two keyframes
@@ -914,7 +965,7 @@ p_calculate_posFactor_from_FrameTweens(gdouble frameTweensInSegment
  *
  *   in case acceleration characteristic values != 0 are used for any other settings than position,
  *   then all controlpoints that are NON keyframes are ignored for other settings than position (x,y).
- *   Those settings (opacity, size ...) are then calculated from the 
+ *   Those settings (opacity, size ...) are then calculated from the
  *   controlpoint at start and end of the path segment.
  *   (note that first and last controlpoint are
  *    implicite keyframes and therefore always relevant)
@@ -945,7 +996,7 @@ p_calculate_settings_for_current_FrameTween(
   gdouble tweenMultiplicator;
   gdouble lengthFactorLinear;      /* 0.0 at begin of segment 1.0 at end of segment position */
   gdouble frameTweensInSegment;
-  gdouble currFrameTweenInSegment; /* frame number relative to 0 at each starting point of a new segment 
+  gdouble currFrameTweenInSegment; /* frame number relative to 0 at each starting point of a new segment
                                     * tweens can have non integer frame number like 1.5 or 1.3333 or 1.25 etc....
                                     */
   gdouble pathSegmentLength;
@@ -975,13 +1026,13 @@ p_calculate_settings_for_current_FrameTween(
                              - p_calculate_relframe_nr_at_index(val_ptr, startOfSegmentIndex, affectedFrames)
                              ) + 1;
   frameTweensInSegment *= tweenMultiplicator;
-  
-  
-  
-  currFrameTweenInSegment = 
-     tweenMultiplicator * (abs (currFrameIndex - val_ptr->point[startOfSegmentIndex].keyframe)); /// TODO check for reverse order processing ???
+
+
+
+  currFrameTweenInSegment =
+     tweenMultiplicator * (abs (currFrameIndex - val_ptr->point[startOfSegmentIndex].keyframe)); 
   currFrameTweenInSegment += (val_ptr->tween_steps - val_ptr->twix);
-  
+
   /* calculate length factor respecting position in the path segment where 0 is at begin 1 at end */
   lengthFactorLinear = currFrameTweenInSegment / MAX(frameTweensInSegment, 1);
 
@@ -997,7 +1048,13 @@ p_calculate_settings_for_current_FrameTween(
           );
   }
 
-  
+  cur_ptr->accPosition         = val_ptr->point[startOfSegmentIndex].accPosition;
+  cur_ptr->accOpacity          = val_ptr->point[startOfSegmentIndex].accOpacity;
+  cur_ptr->accSize             = val_ptr->point[startOfSegmentIndex].accSize;
+  cur_ptr->accRotation         = val_ptr->point[startOfSegmentIndex].accRotation;
+  cur_ptr->accPerspective      = val_ptr->point[startOfSegmentIndex].accPerspective;
+  cur_ptr->accSelFeatherRadius = val_ptr->point[startOfSegmentIndex].accSelFeatherRadius;
+
   /* calculate Movement settings for the currently processed Frame (or tween)
    * position dependent acceleration processing requires a path segment length > 0
    * AND accPosition != 0
@@ -1052,7 +1109,7 @@ p_calculate_settings_for_current_FrameTween(
   else
   {
     /* No acceleration characteristic specified for movement (compatible to GAP 2.6.x release behavior) */
-    if(gap_debug) 
+    if(gap_debug)
     {
       printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
            , (float)framesPerLine
@@ -1084,7 +1141,7 @@ p_calculate_settings_for_current_FrameTween(
       refPtidx = segmPtidx +1;
     }
 
-    if(gap_debug) 
+    if(gap_debug)
     {
       printf("p_mov_execute: pixelLengthInOneTweenStep=%f  pointIndexToQuery:%d  currPtidx:%d refPtidx:%d StartQuery:%d EndQuery:%d\n"
            , (float)pixelLengthInOneTweenStep
@@ -1102,7 +1159,7 @@ p_calculate_settings_for_current_FrameTween(
       if(mov_query->tweenCount == 0)
       {
         mov_query->tweenCount++;
-        if(gap_debug) 
+        if(gap_debug)
         {
           printf("p_mov_execute: SKIP max speed calculation at first frame of segment\n");
         }
@@ -1123,10 +1180,8 @@ p_calculate_settings_for_current_FrameTween(
     }
 
 
-      
+
   }
-
-
 
 
   /* calculate Opacity settings for the currently processed Frame (or tween) */
@@ -1155,7 +1210,6 @@ p_calculate_settings_for_current_FrameTween(
       cur_ptr->currOpacity  = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].opacity,  (gdouble)val_ptr->point[currPtidx].opacity);
     }
   }
-
 
 
   /* calculate Zoom (e.g. Size) settings for the currently processed Frame (or tween) */
@@ -1227,7 +1281,7 @@ p_calculate_settings_for_current_FrameTween(
     else
     {
       cur_ptr->currRotation = GAP_BASE_MIX_VALUE(flt_posfactor, (gdouble)val_ptr->point[currPtidx -1].rotation, (gdouble)val_ptr->point[currPtidx].rotation);
- 
+
       if(gap_debug)
       {
         printf("p_mov_execute: framesPerLine=%f, flt_posfactor=%f\n"
@@ -1310,22 +1364,315 @@ p_calculate_settings_for_current_FrameTween(
 }  /* end p_calculate_settings_for_current_FrameTween */
 
 
+/* --------------------------------
+ * p_log_current_render_params
+ * --------------------------------
+ * log current render parameters to stdout (for test and analyse purpose)
+ */
+static void
+p_log_current_render_params(GapMovData *mov_ptr, GapMovCurrent *cur_ptr)
+{
+  gboolean defaultFlag;
 
-/* ============================================================================
+  defaultFlag = FALSE;
+  if(gap_debug)
+  {
+    defaultFlag = TRUE;
+  }
+
+  if(gap_base_get_gimprc_gboolean_value(GAP_MOVEPATH_GIMPRC_LOG_RENDER_PARAMS, defaultFlag))
+  {
+    GapMovValues *val_ptr;
+
+    val_ptr = mov_ptr->val_ptr;
+
+    printf("\nCurrent Render Params: dst_frame_nr:%ld tweenIndex:%d src_layer_idx:%ld\n"
+                "       currX:%f currY:%f\n"
+                "       Width:%f Height:%f\n"
+                "       Opacity:%f  Rotate:%f  clip_to_img:%d force_visibility:%d\n"
+                "       src_stepmode:%d handleX:%d handleY:%d currSelFeatherRadius:%f\n",
+                     cur_ptr->dst_frame_nr, (int)val_ptr->twix, cur_ptr->src_layer_idx,
+                     cur_ptr->currX, cur_ptr->currY,
+                     cur_ptr->currWidth,
+                     cur_ptr->currHeight,
+                     cur_ptr->currOpacity,
+                     cur_ptr->currRotation,
+                     val_ptr->clip_to_img,
+                     val_ptr->src_force_visible,
+                     val_ptr->src_stepmode,
+                     cur_ptr->l_handleX,
+                     cur_ptr->l_handleY,
+                     cur_ptr->currSelFeatherRadius
+                     );
+
+    printf("       Perspective Factors: [0] %.3f %.3f  [1] %.3f %.3f  [2] %.3f %.3f  [3] %.3f %.3f\n"
+          ,(float)cur_ptr->currTTLX
+          ,(float)cur_ptr->currTTLY
+          ,(float)cur_ptr->currTTRX
+          ,(float)cur_ptr->currTTRY
+          ,(float)cur_ptr->currTBLX
+          ,(float)cur_ptr->currTBLY
+          ,(float)cur_ptr->currTBRX
+          ,(float)cur_ptr->currTBRY
+          );
+    printf("       accPosition:%d accOpacity:%d accSize:%d accRotation:%d accPerspective:%d accSelFeatherRadius:%d\n"
+          ,(int)cur_ptr->accPosition
+          ,(int)cur_ptr->accOpacity
+          ,(int)cur_ptr->accSize
+          ,(int)cur_ptr->accRotation
+          ,(int)cur_ptr->accPerspective
+          ,(int)cur_ptr->accSelFeatherRadius
+          );
+  }
+
+}  /* end p_log_current_render_params */
+
+
+/* --------------------------------
+ * p_printf_log_parameters
+ * --------------------------------
+ *
+ */
+static void
+p_printf_log_parameters(GapMovData *mov_ptr)
+{
+  gint l_idx;
+  
+  printf("apv_mlayer_image: %ld\n", (long)mov_ptr->val_ptr->apv_mlayer_image);
+  printf("apv_mode: %ld\n", (long)mov_ptr->val_ptr->apv_mode);
+  printf("apv_scale x: %f y:%f\n", (float)mov_ptr->val_ptr->apv_scalex, (float)mov_ptr->val_ptr->apv_scaley);
+  if(mov_ptr->val_ptr->apv_gap_paste_buff)
+  {
+    printf("apv_gap_paste_buf: %s\n", mov_ptr->val_ptr->apv_gap_paste_buff);
+  }
+  else
+  {
+    printf("apv_gap_paste_buf: ** IS NULL ** (do not copy to paste buffer)\n");
+  }
+  printf("src_image_id :%ld\n", (long)mov_ptr->val_ptr->src_image_id);
+  printf("src_layer_id :%ld\n", (long)mov_ptr->val_ptr->src_layer_id);
+  printf("src_handle :%d\n", mov_ptr->val_ptr->src_handle);
+  printf("src_stepmode :%d\n", mov_ptr->val_ptr->src_stepmode);
+  printf("src_paintmode :%d\n", mov_ptr->val_ptr->src_paintmode);
+  printf("clip_to_img :%d\n", mov_ptr->val_ptr->clip_to_img);
+  printf("dst_range_start :%d\n", (int)mov_ptr->val_ptr->dst_range_start);
+  printf("dst_range_end :%d\n", (int)mov_ptr->val_ptr->dst_range_end);
+  printf("dst_layerstack :%d\n", (int)mov_ptr->val_ptr->dst_layerstack);
+  for(l_idx = 0; l_idx <= mov_ptr->val_ptr->point_idx_max; l_idx++)
+  {
+    printf("p_x[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_x);
+    printf("p_y[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_y);
+    printf("opacity[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].opacity);
+    printf("w_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].w_resize);
+    printf("h_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].h_resize);
+    printf("rotation[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].rotation);
+    printf("ttlx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttlx);
+    printf("ttly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttly);
+    printf("ttrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttrx);
+    printf("ttry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttry);
+    printf("tblx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tblx);
+    printf("tbly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbly);
+    printf("tbrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbrx);
+    printf("tbry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbry);
+
+    printf("accPosition        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPosition);
+    printf("accOpacity         [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accOpacity);
+    printf("accSize            [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSize);
+    printf("accRotation        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accRotation);
+    printf("accPerspective     [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPerspective);
+    printf("accSelFeatherRadius[%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSelFeatherRadius);
+
+    printf("keyframe[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe);
+    printf("keyframe_abs[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe_abs);
+  }
+  printf("\n");
+
+}  /* end p_printf_log_parameters */
+
+
+/* -------------------------------------------
+ * gap_mov_exec_set_handle_offsets_singleframe
+ * -------------------------------------------
+ *
+ */
+static void
+gap_mov_exec_set_handle_offsets_singleframe(GapMovValues *val_ptr, GapMovCurrent *cur_ptr)
+{
+  guint    l_src_width, l_src_height;         /* dimensions of the source image */
+
+   /* get dimensions of source image (in single frame mode: same as frame image)  */
+   l_src_width  = gimp_image_width(cur_ptr->singleMovObjImageId);
+   l_src_height = gimp_image_height(cur_ptr->singleMovObjImageId);
+
+   cur_ptr->l_handleX = 0.0;
+   cur_ptr->l_handleY = 0.0;
+   switch(val_ptr->src_handle)
+   {
+      case GAP_HANDLE_LEFT_BOT:
+         cur_ptr->l_handleY += l_src_height;
+         break;
+      case GAP_HANDLE_RIGHT_TOP:
+         cur_ptr->l_handleX += l_src_width;
+         break;
+      case GAP_HANDLE_RIGHT_BOT:
+         cur_ptr->l_handleX += l_src_width;
+         cur_ptr->l_handleY += l_src_height;
+         break;
+      case GAP_HANDLE_CENTER:
+         cur_ptr->l_handleX += (l_src_width  / 2);
+         cur_ptr->l_handleY += (l_src_height / 2);
+         break;
+      case GAP_HANDLE_LEFT_TOP:
+      default:
+         break;
+   }
+}  /* end gap_mov_exec_set_handle_offsets_singleframe */
+
+
+
+/* --------------------------------
+ * p_add_2nd_controlpoint
+ * --------------------------------
+ *
+ */
+static void
+p_add_2nd_controlpoint(GapMovValues *val_ptr)
+{
+  /* copy point[0] to point [1] because we need at least 2
+   * points for the algorithms below to work.
+   * (simulates a line with length 0, to move along)
+   */
+  if(gap_debug)
+  {
+    printf("p_mov_execute: added a 2nd Point\n");
+  }
+  val_ptr->point[1].p_x = val_ptr->point[0].p_x;
+  val_ptr->point[1].p_y = val_ptr->point[0].p_y;
+  val_ptr->point[1].opacity = val_ptr->point[0].opacity;
+  val_ptr->point[1].w_resize = val_ptr->point[0].w_resize;
+  val_ptr->point[1].h_resize = val_ptr->point[0].h_resize;
+  val_ptr->point[1].rotation = val_ptr->point[0].rotation;
+  val_ptr->point[1].ttlx = val_ptr->point[0].ttlx;
+  val_ptr->point[1].ttly = val_ptr->point[0].ttly;
+  val_ptr->point[1].ttrx = val_ptr->point[0].ttrx;
+  val_ptr->point[1].ttry = val_ptr->point[0].ttry;
+  val_ptr->point[1].tblx = val_ptr->point[0].tblx;
+  val_ptr->point[1].tbly = val_ptr->point[0].tbly;
+  val_ptr->point[1].tbrx = val_ptr->point[0].tbrx;
+  val_ptr->point[1].tbry = val_ptr->point[0].tbry;
+  val_ptr->point[1].sel_feather_radius = val_ptr->point[0].sel_feather_radius;
+
+  val_ptr->point[1].accPosition         = val_ptr->point[0].accPosition;
+  val_ptr->point[1].accOpacity          = val_ptr->point[0].accOpacity;
+  val_ptr->point[1].accSize             = val_ptr->point[0].accSize;
+  val_ptr->point[1].accRotation         = val_ptr->point[0].accRotation;
+  val_ptr->point[1].accPerspective      = val_ptr->point[0].accPerspective;
+  val_ptr->point[1].accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
+
+}  /* end p_add_2nd_controlpoint */
+
+
+/* -------------------------------------
+ * p_init_curr_ptr_with_1st_controlpoint
+ * -------------------------------------
+ * init current values with settings from the 1st controlpoint
+ * in case of single frame processing mode (singleFramePtr != NULL)
+ * init the id of the relevant layer (singleMovObjLayerId) that may be
+ * already part of the processed frame or may be a layer in another image.
+ */
+static void
+p_init_curr_ptr_with_1st_controlpoint(GapMovCurrent *cur_ptr, GapMovValues *val_ptr, GapMovSingleFrame *singleFramePtr)
+{
+  cur_ptr->currX   = (gdouble)val_ptr->point[0].p_x;
+  cur_ptr->currY   = (gdouble)val_ptr->point[0].p_y;
+  cur_ptr->currOpacity  = (gdouble)val_ptr->point[0].opacity;
+  cur_ptr->currWidth    = (gdouble)val_ptr->point[0].w_resize;
+  cur_ptr->currHeight   = (gdouble)val_ptr->point[0].h_resize;
+  cur_ptr->currRotation = (gdouble)val_ptr->point[0].rotation;
+  cur_ptr->currTTLX = (gdouble)val_ptr->point[0].ttlx;
+  cur_ptr->currTTLY = (gdouble)val_ptr->point[0].ttly;
+  cur_ptr->currTTRX = (gdouble)val_ptr->point[0].ttrx;
+  cur_ptr->currTTRY = (gdouble)val_ptr->point[0].ttry;
+  cur_ptr->currTBLX = (gdouble)val_ptr->point[0].tblx;
+  cur_ptr->currTBLY = (gdouble)val_ptr->point[0].tbly;
+  cur_ptr->currTBRX = (gdouble)val_ptr->point[0].tbrx;
+  cur_ptr->currTBRY = (gdouble)val_ptr->point[0].tbry;
+  cur_ptr->currSelFeatherRadius = (gdouble)val_ptr->point[0].sel_feather_radius;
+
+  cur_ptr->accPosition         = val_ptr->point[0].accPosition;
+  cur_ptr->accOpacity          = val_ptr->point[0].accOpacity;
+  cur_ptr->accSize             = val_ptr->point[0].accSize;
+  cur_ptr->accRotation         = val_ptr->point[0].accRotation;
+  cur_ptr->accPerspective      = val_ptr->point[0].accPerspective;
+  cur_ptr->accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
+
+
+  cur_ptr->isSingleFrame = FALSE;
+  cur_ptr->processedLayerId = -1;
+  cur_ptr->singleMovObjLayerId = -1;
+  cur_ptr->singleMovObjImageId = -1;
+  cur_ptr->keep_proportions = FALSE;
+  cur_ptr->fit_width = FALSE;
+  cur_ptr->fit_height = FALSE;
+
+  if (singleFramePtr != NULL)
+  {
+    cur_ptr->isSingleFrame = TRUE;
+    cur_ptr->singleMovObjLayerId = singleFramePtr->drawable_id;
+    cur_ptr->singleMovObjImageId = gimp_drawable_get_image(cur_ptr->singleMovObjLayerId);
+    cur_ptr->keep_proportions = singleFramePtr->keep_proportions;
+    cur_ptr->fit_width = singleFramePtr->fit_width;
+    cur_ptr->fit_height = singleFramePtr->fit_height;
+  }
+
+  val_ptr->tween_image_id = -1;
+  val_ptr->tween_layer_id = -1;
+  val_ptr->trace_image_id = -1;
+  val_ptr->trace_layer_id = -1;
+
+}  /* end p_init_curr_ptr_with_1st_controlpoint */
+
+
+/* --------------------------------
+ * p_duplicate_layer
+ * --------------------------------
+ *
+ */
+static gint32
+p_duplicate_layer(gint32 layerId)
+{
+  gint32 dupLayerId;
+  gint32 imageId;
+
+
+  imageId = gimp_drawable_get_image(layerId);
+  gimp_image_set_active_layer(imageId, layerId);
+  dupLayerId = gimp_layer_copy(layerId);
+  gimp_image_add_layer(imageId, dupLayerId, -1 /* -1 place above active layer */);
+  
+  return(dupLayerId);
+  
+}  /* end p_duplicate_layer */
+
+
+
+
+/* -----------------------
  * p_mov_execute_or_query
+ * -----------------------
  * Copy layer(s) from Sourceimage to given destination frame range,
- * varying koordinates and opacity of the copied layer.
- * To each affected destination frame exactly one copy of a source layer is added.
+ * varying koordinates and opacity and perform other transformations
+ * according to controlpoint settings on the copied layer.
+ * To each affected destination frame one copy of a source layer is added.
+ * (more than one layer is added in case of tween processing and tracelayer processing)
  * The source layer is iterated through all layers of the sourceimage
  * according to stemmode parameter.
  * For the placement the layers act as if their size is equal to their
  * Sourceimages size.
- * ============================================================================
  */
 long
 p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
 {
-   gint l_idx;
    GapMovCurrent l_current_data;
    GapMovCurrent *cur_ptr;
    GapMovValues  *val_ptr;
@@ -1380,54 +1727,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
   if(gap_debug)
   {
     printf("p_mov_execute: values got from dialog:\n");
-    printf("apv_mlayer_image: %ld\n", (long)mov_ptr->val_ptr->apv_mlayer_image);
-    printf("apv_mode: %ld\n", (long)mov_ptr->val_ptr->apv_mode);
-    printf("apv_scale x: %f y:%f\n", (float)mov_ptr->val_ptr->apv_scalex, (float)mov_ptr->val_ptr->apv_scaley);
-    if(mov_ptr->val_ptr->apv_gap_paste_buff)
-    {
-      printf("apv_gap_paste_buf: %s\n", mov_ptr->val_ptr->apv_gap_paste_buff);
-    }
-    else
-    {
-      printf("apv_gap_paste_buf: ** IS NULL ** (do not copy to paste buffer)\n");
-    }
-    printf("src_image_id :%ld\n", (long)mov_ptr->val_ptr->src_image_id);
-    printf("src_layer_id :%ld\n", (long)mov_ptr->val_ptr->src_layer_id);
-    printf("src_handle :%d\n", mov_ptr->val_ptr->src_handle);
-    printf("src_stepmode :%d\n", mov_ptr->val_ptr->src_stepmode);
-    printf("src_paintmode :%d\n", mov_ptr->val_ptr->src_paintmode);
-    printf("clip_to_img :%d\n", mov_ptr->val_ptr->clip_to_img);
-    printf("dst_range_start :%d\n", (int)mov_ptr->val_ptr->dst_range_start);
-    printf("dst_range_end :%d\n", (int)mov_ptr->val_ptr->dst_range_end);
-    printf("dst_layerstack :%d\n", (int)mov_ptr->val_ptr->dst_layerstack);
-    for(l_idx = 0; l_idx <= mov_ptr->val_ptr->point_idx_max; l_idx++)
-    {
-      printf("p_x[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_x);
-      printf("p_y[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_y);
-      printf("opacity[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].opacity);
-      printf("w_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].w_resize);
-      printf("h_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].h_resize);
-      printf("rotation[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].rotation);
-      printf("ttlx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttlx);
-      printf("ttly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttly);
-      printf("ttrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttrx);
-      printf("ttry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttry);
-      printf("tblx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tblx);
-      printf("tbly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbly);
-      printf("tbrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbrx);
-      printf("tbry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbry);
-
-      printf("accPosition        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPosition);
-      printf("accOpacity         [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accOpacity);
-      printf("accSize            [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSize);
-      printf("accRotation        [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accRotation);
-      printf("accPerspective     [%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accPerspective);
-      printf("accSelFeatherRadius[%d] :%d\n", l_idx, (int)mov_ptr->val_ptr->point[l_idx].accSelFeatherRadius);
-      
-      printf("keyframe[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe);
-      printf("keyframe_abs[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe_abs);
-    }
-    printf("\n");
+    p_printf_log_parameters(mov_ptr);
   }
 
    l_rc    = 0;
@@ -1444,6 +1744,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
 
    val_ptr->tmpsel_image_id = -1;
    val_ptr->tmpsel_channel_id = -1;
+   val_ptr->twix = 0;
 
    /* set offsets (in cur_ptr)  according to handle mode and src_img dimension */
    gap_mov_exec_set_handle_offsets(val_ptr, cur_ptr);
@@ -1473,35 +1774,8 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
 
    if(l_points < 2)
    {
-      /* copy point[0] to point [1] because we need at least 2
-       * points for the algorithms below to work.
-       * (simulates a line with length 0, to move along)
-       */
-      if(gap_debug) printf("p_mov_execute: added a 2nd Point\n");
-      val_ptr->point[1].p_x = val_ptr->point[0].p_x;
-      val_ptr->point[1].p_y = val_ptr->point[0].p_y;
-      val_ptr->point[1].opacity = val_ptr->point[0].opacity;
-      val_ptr->point[1].w_resize = val_ptr->point[0].w_resize;
-      val_ptr->point[1].h_resize = val_ptr->point[0].h_resize;
-      val_ptr->point[1].rotation = val_ptr->point[0].rotation;
-      val_ptr->point[1].ttlx = val_ptr->point[0].ttlx;
-      val_ptr->point[1].ttly = val_ptr->point[0].ttly;
-      val_ptr->point[1].ttrx = val_ptr->point[0].ttrx;
-      val_ptr->point[1].ttry = val_ptr->point[0].ttry;
-      val_ptr->point[1].tblx = val_ptr->point[0].tblx;
-      val_ptr->point[1].tbly = val_ptr->point[0].tbly;
-      val_ptr->point[1].tbrx = val_ptr->point[0].tbrx;
-      val_ptr->point[1].tbry = val_ptr->point[0].tbry;
-      val_ptr->point[1].sel_feather_radius = val_ptr->point[0].sel_feather_radius;
-
-      val_ptr->point[1].accPosition         = val_ptr->point[0].accPosition;
-      val_ptr->point[1].accOpacity          = val_ptr->point[0].accOpacity;
-      val_ptr->point[1].accSize             = val_ptr->point[0].accSize;
-      val_ptr->point[1].accRotation         = val_ptr->point[0].accRotation;
-      val_ptr->point[1].accPerspective      = val_ptr->point[0].accPerspective;
-      val_ptr->point[1].accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
-
-      l_points = 2;
+     p_add_2nd_controlpoint(val_ptr);
+     l_points = 2;
    }
 
    startOfSegmentIndex = 0;
@@ -1509,7 +1783,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
 
    cur_ptr->dst_frame_nr = val_ptr->dst_range_start;
    cur_ptr->src_layers = NULL;
- 
+
    if(mov_query == NULL)
    {
      if(mov_ptr->val_ptr->src_stepmode < GAP_STEP_FRAME)
@@ -1574,35 +1848,8 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
      }
    }
 
-   cur_ptr->currX   = (gdouble)val_ptr->point[0].p_x;
-   cur_ptr->currY   = (gdouble)val_ptr->point[0].p_y;
-   cur_ptr->currOpacity  = (gdouble)val_ptr->point[0].opacity;
-   cur_ptr->currWidth    = (gdouble)val_ptr->point[0].w_resize;
-   cur_ptr->currHeight   = (gdouble)val_ptr->point[0].h_resize;
-   cur_ptr->currRotation = (gdouble)val_ptr->point[0].rotation;
-   cur_ptr->currTTLX = (gdouble)val_ptr->point[0].ttlx;
-   cur_ptr->currTTLY = (gdouble)val_ptr->point[0].ttly;
-   cur_ptr->currTTRX = (gdouble)val_ptr->point[0].ttrx;
-   cur_ptr->currTTRY = (gdouble)val_ptr->point[0].ttry;
-   cur_ptr->currTBLX = (gdouble)val_ptr->point[0].tblx;
-   cur_ptr->currTBLY = (gdouble)val_ptr->point[0].tbly;
-   cur_ptr->currTBRX = (gdouble)val_ptr->point[0].tbrx;
-   cur_ptr->currTBRY = (gdouble)val_ptr->point[0].tbry;
-   cur_ptr->currSelFeatherRadius = (gdouble)val_ptr->point[0].sel_feather_radius;
+   p_init_curr_ptr_with_1st_controlpoint(cur_ptr, val_ptr, NULL);
 
-   cur_ptr->accPosition         = val_ptr->point[0].accPosition;
-   cur_ptr->accOpacity          = val_ptr->point[0].accOpacity;
-   cur_ptr->accSize             = val_ptr->point[0].accSize;
-   cur_ptr->accRotation         = val_ptr->point[0].accRotation;
-   cur_ptr->accPerspective      = val_ptr->point[0].accPerspective;
-   cur_ptr->accSelFeatherRadius = val_ptr->point[0].accSelFeatherRadius;
-
-
-
-   val_ptr->tween_image_id = -1;
-   val_ptr->tween_layer_id = -1;
-   val_ptr->trace_image_id = -1;
-   val_ptr->trace_layer_id = -1;
 
    /* create temp images for tween processing and object tracing */
    if(mov_query == NULL)
@@ -1701,7 +1948,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
           (int)l_ptidx, (float)l_fpl);
      }
    }
-   
+
    /* in query mode: find start end end of segment that contains the pointIndexToQuery */
    if(mov_query != NULL)
    {
@@ -1717,16 +1964,16 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
            mov_query->segmentNumber++;
            mov_query->startOfSegmentIndexToQuery = l_ptidx;
          }
-         
+
          if (l_ptidx > mov_query->pointIndexToQuery)
          {
            mov_query->endOfSegmentIndexToQuery = l_ptidx;
            break;
          }
        }
-       
+
      }
-      
+
    }
 
    if(gap_debug)
@@ -1738,7 +1985,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
      }
    }
 
-  
+
   /* loop for each frame within the range (may step up or down) */
   l_ptidx = 1;
   cur_ptr->dst_frame_nr = val_ptr->dst_range_start;
@@ -1769,12 +2016,12 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
              startOfSegmentIndex = endOfSegmentIndex;
            }
          }
- 
+
          /* change deltas for next line of the move path */
          if(l_ptidx < l_points-1)
          {
            l_ptidx++;
-           
+
            if(gap_debug)
            {
               printf("p_mov_execute: advance to controlpoint l_ptidx=%d, l_flt_timing[l_ptidx]=%f  startOfSegmentIndex:%d endOfSegmentIndex:%d\n"
@@ -1805,7 +2052,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
       for (val_ptr->twix = val_ptr->tween_steps; val_ptr->twix >= 0; val_ptr->twix--)
       {
         gdouble l_flt_posfactor;
-        
+
         if(l_fpl != 0.0)
         {
             l_flt_posfactor  = (   (((gdouble)l_fridx * l_tw_cnt) - (gdouble)val_ptr->twix)
@@ -1817,9 +2064,9 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
             l_flt_posfactor = 1.0;
             if(gap_debug) printf("p_mov_execute: ** ERROR l_fpl is 0.0 frames per line\n");
         }
-        
+
         l_flt_posfactor = CLAMP (l_flt_posfactor, 0.0, 1.0);
-      
+
         endOfSegmentIndex = p_findEndOfSegmentIndex(val_ptr, startOfSegmentIndex, l_points);
         frameNrAtEndOfSegment = p_calculate_relframe_nr_at_index(val_ptr, endOfSegmentIndex, l_frames);
 
@@ -1836,20 +2083,20 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
              );
 
 
-        
+
         if(mov_query != NULL)
         {
           /* we run in query mode, just check if controlpoint for query is reached
            * and stop (without rendering)
            */
-          if(gap_debug) 
+          if(gap_debug)
           {
             printf("BREAK check: endOfSegmentIndexToQuery:%d  l_ptidx:%d\n"
                  , (int)mov_query->endOfSegmentIndexToQuery
                  , (int)l_ptidx
                  );
           }
-          
+
           if(l_ptidx > mov_query->endOfSegmentIndexToQuery)
           {
             return (l_rc);
@@ -1883,7 +2130,7 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
         }
 
       }  /* end tweenindex subloop */
-      
+
       /* advance to next path segment */
       if(l_fridx >= frameNrAtEndOfSegment)
       {
@@ -1934,6 +2181,429 @@ p_mov_execute_or_query(GapMovData *mov_ptr, GapMovQuery *mov_query)
    return l_rc;
 
 }       /* end p_mov_execute_or_query */
+
+
+
+/* ---------------------------
+ * p_mov_execute_singleframe
+ * ---------------------------
+ * transform and move layer (specified by mov_ptr->singleFramePtr->drawable_id)
+ * according to move path controlpoints in one destination frame
+ * at the specified pahse (e.g. frame number within a frame range)
+ *
+ * in case the  mov_ptr->singleFramePtr->drawable_id is NOT already part
+ * of the processed frame it will be copied to the frame and
+ * the transformation is done on the copy 
+ *  -- typical secnario when called from storyboard processor --
+ * Otherwise transformation is done on the original
+ *  -- typical scenario when called via PDB (as filter in the modify frames feature)
+ *
+ * return the layer_id of the processed resulting layer or -1 on error
+ * (note that additional layers will be created when tween processing is active)
+ */
+static gint32
+p_mov_execute_singleframe(GapMovData *mov_ptr)
+{
+   GapMovCurrent l_current_data;
+   GapMovCurrent *cur_ptr;
+   GapMovValues  *val_ptr;
+
+   gdouble  l_percentage;
+   gdouble  l_fpl;             /* frames_per_line */
+   long     l_frame_step;
+   gdouble  l_frames;
+   long     l_cnt;
+   long     l_points;
+   long     l_ptidx;
+   long     l_prev_keyptidx;
+   long     l_fridx;
+   gdouble  l_flt_count;
+   gint32   l_rc;
+   gint     l_idk;
+   gint     l_prev_keyframe;
+   gint     l_apv_layerstack;
+   gdouble  l_flt_timing[GAP_MOV_MAX_POINT];   /* timing table in relative frame numbers (0.0 == the first handled frame) */
+
+   gint startOfSegmentIndex;
+   gint endOfSegmentIndex;
+   gint frameNrAtEndOfSegment;
+   GapMovSingleFrame *singleFramePtr;
+   gint32            *tweenLayerIdTable;
+
+
+  tweenLayerIdTable = NULL;
+  singleFramePtr = mov_ptr->singleFramePtr;
+  if(singleFramePtr == NULL)
+  {
+    printf("ERROR p_mov_execute_singleframe must not be called wit singleFramePtr NULL!\n");
+  }
+
+
+  frameNrAtEndOfSegment = 0;
+  l_apv_layerstack = 0;
+  l_percentage = 0.0;
+
+  if(mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+  {
+    gimp_progress_init( _("Transforming layer according to move path frame_phase..."));
+  }
+
+  if(gap_debug)
+  {
+    printf("p_mov_execute_singleframe: values got from dialog:\n");
+    p_printf_log_parameters(mov_ptr);
+  }
+
+   l_rc    = 0;
+   cur_ptr = &l_current_data;
+   val_ptr = mov_ptr->val_ptr;
+
+   if(gap_image_is_alive(val_ptr->tmpsel_image_id))
+   {
+     gimp_image_delete(val_ptr->tmpsel_image_id);
+   }
+
+   val_ptr->tmpsel_image_id = -1;
+   val_ptr->tmpsel_channel_id = -1;
+   val_ptr->twix = 0;
+
+
+   /* only ascending range processing in single frames mode */
+   l_frame_step = 1;
+   if(singleFramePtr->total_frames > 0)
+   {
+     l_cnt = singleFramePtr->total_frames;
+   }
+   else
+   {
+     l_cnt = 1 + abs(val_ptr->dst_range_end - val_ptr->dst_range_start);
+   }
+
+   l_frames = (gdouble)l_cnt;              /* nr. of affected frames */
+   l_points = val_ptr->point_idx_max +1;   /* nr. of available points */
+
+   if(l_points > l_frames)
+   {
+      /* cut off some points if we got more than frames */
+      l_points = l_cnt;
+   }
+
+   if(l_points < 2)
+   {
+     p_add_2nd_controlpoint(val_ptr);
+     l_points = 2;
+   }
+
+   startOfSegmentIndex = 0;
+   endOfSegmentIndex = l_points -1;  /* initial value in case all points are in only 1 segment */
+
+   cur_ptr->dst_frame_nr = 1;
+   cur_ptr->src_layers = NULL;
+   cur_ptr->src_last_layer = -1;
+   p_init_curr_ptr_with_1st_controlpoint(cur_ptr, val_ptr, singleFramePtr);
+
+   /* set offsets (in cur_ptr)  according to handle mode and src_img dimension */
+   gap_mov_exec_set_handle_offsets_singleframe(val_ptr, cur_ptr);
+
+   /* mov_ptr->val_ptr->src_stepmode is ignored in singleframes mode
+    * (e.g. behaves like GAP_STEP_FRAME_NONE)
+    */
+   {
+     gint32        l_sel_channel_id;
+     gboolean      l_all_empty;
+
+     if(val_ptr->src_selmode != GAP_MOV_SEL_IGNORE)
+     {
+       l_all_empty = FALSE;
+       if(gimp_selection_is_empty(cur_ptr->singleMovObjImageId))
+       {
+         l_all_empty = TRUE;
+       }
+       l_sel_channel_id = gimp_image_get_selection(cur_ptr->singleMovObjImageId);
+       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, val_ptr, l_all_empty);
+     }
+
+   }
+
+
+   /* create duplicate layers for tween processing (or render first frame) */
+   {
+     gint32 iTween;
+
+
+     /* optional create tweens (n copies of the singleMovObjLayerId) */
+     if (singleFramePtr->frame_phase > 1)
+     {
+       tweenLayerIdTable = g_new(gint32, val_ptr->tween_steps +1);
+       tweenLayerIdTable[0] = cur_ptr->singleMovObjLayerId;
+       for(iTween = 1; iTween <= val_ptr->tween_steps; iTween++)
+       {
+         /* make copies of the cur_ptr->singleMovObjLayerId (one copy foreach tween) */
+         tweenLayerIdTable[iTween] = p_duplicate_layer(cur_ptr->singleMovObjLayerId);
+       }
+     }
+     else
+     {
+       /* RENDER the 1.st frame outside the frameindex loop,
+        * ------     ----
+        * without care about tweens
+        */
+       l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
+       if(l_rc >= 0)
+       {
+         l_rc = cur_ptr->processedLayerId;
+       }
+       return (l_rc);
+     }
+
+   }
+
+
+   /* how many frames are affected from one line of the moving path */
+   l_fpl = ((gdouble)l_frames - 1.0) / ((gdouble)(l_points -1));
+   if(gap_debug)
+   {
+     printf("p_mov_execute_singleframe: initial l_fpl=%f\n", l_fpl);
+   }
+
+   /* calculate l_flt_timing controlpoint timing table considering keyframes */
+   l_prev_keyptidx = 0;
+   l_prev_keyframe = 0;
+   l_flt_timing[0] = 0.0;
+   l_flt_timing[l_points -1] = l_frames -1;
+   l_flt_count = 0.0;
+   for(l_ptidx=1;  l_ptidx < l_points - 1; l_ptidx++)
+   {
+     /* search for keyframes */
+     if(l_ptidx > l_prev_keyptidx)
+     {
+       for(l_idk = l_ptidx; l_idk < l_points; l_idk++)
+       {
+          if(l_idk == l_points -1)
+          {
+            /* last point is always an implicite  keyframe */
+            l_fpl = ((gdouble)((l_frames -1) - l_prev_keyframe)) / ((gdouble)((l_idk -  l_ptidx) +1));
+            l_prev_keyframe = l_frames -1;
+
+            l_prev_keyptidx = l_idk;
+            if(gap_debug) printf("p_mov_execute_singleframe: last point is implicite keyframe l_fpl=%f\n", l_fpl);
+            break;
+          }
+          else
+          {
+            if (val_ptr->point[l_idk].keyframe > 0)
+            {
+              /* found a keyframe, have to recalculate frames_per_line */
+              l_fpl = ((gdouble)(val_ptr->point[l_idk].keyframe - l_prev_keyframe)) / ((gdouble)((l_idk -  l_ptidx) +1));
+              l_prev_keyframe = val_ptr->point[l_idk].keyframe;
+
+              l_prev_keyptidx = l_idk;
+              if(gap_debug) printf("p_mov_execute_singleframe: keyframe l_fpl=%f\n", l_fpl);
+              break;
+            }
+          }
+       }
+     }
+     l_flt_count += l_fpl;
+     l_flt_timing[l_ptidx] = l_flt_count;
+
+     if(l_fpl < 1.0)
+     {
+        printf("p_mov_execute_singleframe: ** Error frames per line at point[%d] = %f  (is less than 1.0 !!)\n",
+          (int)l_ptidx, (float)l_fpl);
+     }
+   }
+
+   if(gap_debug)
+   {
+     printf("p_mov_execute_singleframe: --- CONTROLPOINT relative frametiming TABLE -----\n");
+     for(l_ptidx=0;  l_ptidx < l_points; l_ptidx++)
+     {
+       printf("p_mov_execute_singleframe: l_flt_timing[%02d] = %f\n", (int)l_ptidx, (float)l_flt_timing[l_ptidx]);
+     }
+   }
+
+
+  /* loop for each frame within the range (may step up or down) */
+  l_ptidx = 1;
+  cur_ptr->dst_frame_nr = 1;
+
+  /* frameindex loop */
+  for(l_fridx = 1; l_fridx < l_cnt; l_fridx++)
+  {
+     gdouble  l_tw_cnt;   /* number of tweens (including the real frame) 1 if no tweens present */
+     gboolean isProcessingFramePhase;
+
+     isProcessingFramePhase = FALSE;
+     if((singleFramePtr->frame_phase == l_fridx +1)
+     || (l_fridx +1 == l_cnt))
+     {
+       isProcessingFramePhase = TRUE;
+     }
+
+     if(gap_debug)
+     {
+       printf("\np_mov_execute_singleframe: l_fridx=%ld, l_flt_timing[l_ptidx]=%f, l_rc=%d l_ptidx=%d, l_prev_keyptidx=%d\n",
+                           l_fridx, (float)l_flt_timing[l_ptidx], (int)l_rc, (int)l_ptidx, (int)l_prev_keyptidx);
+       if (isProcessingFramePhase)
+       {
+         printf("Now l_fridx is the frame index that triggers processing relevant Single Frame Phase\n");
+       }
+     }
+     if(l_rc != 0)
+     {
+       break;
+     }
+
+      /* advance frame_nr, (1st frame was done outside this loop) */
+      cur_ptr->dst_frame_nr += l_frame_step;  /* +1  or -1 */
+
+      if((gdouble)l_fridx > l_flt_timing[l_ptidx])
+      {
+         /*  fix for object jumps forth and back as reported in #607927 */
+         if(val_ptr->point[l_ptidx].keyframe > 0)
+         {
+           if((endOfSegmentIndex != l_points -1) && (endOfSegmentIndex > 0))
+           {
+             startOfSegmentIndex = endOfSegmentIndex;
+           }
+         }
+
+         /* change deltas for next line of the move path */
+         if(l_ptidx < l_points-1)
+         {
+           l_ptidx++;
+
+           if(gap_debug)
+           {
+              printf("p_mov_execute_singleframe: advance to controlpoint l_ptidx=%d, l_flt_timing[l_ptidx]=%f  startOfSegmentIndex:%d endOfSegmentIndex:%d\n"
+                     , (int)l_ptidx
+                     , (float)l_flt_timing[l_ptidx]
+                     , (int)startOfSegmentIndex
+                     , (int)endOfSegmentIndex
+                     );
+           }
+         }
+         else
+         {
+           if(gap_debug)
+           {
+             printf("p_mov_execute_singleframe: ** ERROR overflow l_ptidx=%d\n", (int)l_ptidx);
+           }
+         }
+      }
+
+      l_fpl = (l_flt_timing[l_ptidx] - l_flt_timing[l_ptidx -1]); /* float frames per line */
+
+      l_tw_cnt = (gdouble)(val_ptr->tween_steps +1);
+
+      /* loop for the tweens
+       * (tweens are virtual frames between the previous and the current frame)
+       * when val_ptr->twix is down to 0, the current real frame is reached
+       */
+      for (val_ptr->twix = val_ptr->tween_steps; val_ptr->twix >= 0; val_ptr->twix--)
+      {
+        gdouble l_flt_posfactor;
+
+        if(l_fpl != 0.0)
+        {
+            l_flt_posfactor  = (   (((gdouble)l_fridx * l_tw_cnt) - (gdouble)val_ptr->twix)
+                               - (l_flt_timing[l_ptidx -1] * l_tw_cnt)
+                             ) / (l_fpl * l_tw_cnt);
+        }
+        else
+        {
+            l_flt_posfactor = 1.0;
+            if(gap_debug) printf("p_mov_execute_singleframe: ** ERROR l_fpl is 0.0 frames per line\n");
+        }
+
+        l_flt_posfactor = CLAMP (l_flt_posfactor, 0.0, 1.0);
+
+        endOfSegmentIndex = p_findEndOfSegmentIndex(val_ptr, startOfSegmentIndex, l_points);
+        frameNrAtEndOfSegment = p_calculate_relframe_nr_at_index(val_ptr, endOfSegmentIndex, l_frames);
+
+        frameNrAtEndOfSegment = p_calculate_settings_for_current_FrameTween(val_ptr, cur_ptr
+             , l_fpl
+             , l_fridx
+             , l_ptidx
+             , l_flt_posfactor
+             , l_frames
+             , l_points
+             , startOfSegmentIndex
+             , endOfSegmentIndex
+             , NULL  /* mov_query */
+             );
+
+
+
+        if(l_frame_step < 0)
+        {
+            /* if we step down, we have to insert the layer
+             * as lowest layer in the existing layerstack
+             * of the animated preview multilayer image.
+             * (if we step up, we always use 0 as l_apv_layerstack,
+             *  that means always insert on top of the layerstack)
+             */
+            l_apv_layerstack++;
+        }
+
+        if (isProcessingFramePhase)
+        {
+          cur_ptr->singleMovObjLayerId = tweenLayerIdTable[val_ptr->twix];
+
+
+          /* RENDER add current src_layer to current frame */
+          l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
+        }
+
+      }  /* end tweenindex subloop */
+
+      if (isProcessingFramePhase)
+      {
+        /* returncode handling (id of the resulting processed layer) */
+        if(l_rc >= 0)
+        {
+          l_rc = cur_ptr->processedLayerId;
+        }
+        /* stop after the relevant single frame (and its tweens) was already processed */
+        break;
+      }
+
+      /* advance to next path segment */
+      if(l_fridx >= frameNrAtEndOfSegment)
+      {
+         startOfSegmentIndex = endOfSegmentIndex;
+      }
+
+      ///* show progress */  // TODO
+      //if((mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+      //&& (mov_query == NULL))
+      //{
+      //  l_percentage = (gdouble)l_fridx / (gdouble)(l_cnt -1);
+      //  gimp_progress_update (l_percentage);
+      //}
+
+   }  /* end frameindex loop */
+
+   /* delete the temp selection image */
+   if(gap_image_is_alive(val_ptr->tmpsel_image_id))
+   {
+     gimp_image_delete(val_ptr->tmpsel_image_id);
+   }
+
+   val_ptr->tmpsel_image_id = -1;
+   val_ptr->tmpsel_channel_id = -1;
+
+   if (tweenLayerIdTable != NULL)
+   {
+     g_free(tweenLayerIdTable);
+   }
+
+   return l_rc;
+
+}       /* end p_mov_execute_singleframe */
+
+
 
 /* ============================================================================
  * p_mov_execute
@@ -2275,7 +2945,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
        */
       if (pvals->point[l_idx].accPosition != 0)
       {
-        if (l_idx == 0) 
+        if (l_idx == 0)
         {
           writeAccelerationCharacteristics = TRUE;
         }
@@ -2287,7 +2957,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
             writeAccelerationCharacteristics = TRUE;
           }
         }
-        
+
         if (writeAccelerationCharacteristics == TRUE)
         {
           optional_params_indicator += 6;
@@ -2327,7 +2997,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       if(writeAccelerationCharacteristics == TRUE)
       {
         fprintf(l_fp, " %02d %02d %02d %02d %02d %02d"
-           , (int)pvals->point[l_idx].accPosition 
+           , (int)pvals->point[l_idx].accPosition
            , (int)pvals->point[l_idx].accOpacity
            , (int)pvals->point[l_idx].accSize
            , (int)pvals->point[l_idx].accRotation
@@ -2395,11 +3065,11 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
          l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
          l_i1 = (gint)l_farr[0];
          l_i2 = (gint)l_farr[1];
-         
+
          if(gap_debug)
          {
             gint ii;
-            
+
             printf("scanned %d numbers\n", l_cnt);
             for(ii=0; ii < l_cnt; ii++)
             {
@@ -2503,7 +3173,7 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
                    acc_idx = 8;
                    break;
                case 7:
-                   /* have six accelerate characteristic values 
+                   /* have six accelerate characteristic values
                     * and one keyframe value
                     */
                    acc_idx = 8;
@@ -2948,6 +3618,7 @@ gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pval
   if(ainfo_ptr != NULL)
   {
     l_mov_data.val_ptr = pvals;
+    l_mov_data.singleFramePtr = NULL;
     if(NULL != l_mov_data.val_ptr)
     {
       if (0 == gap_lib_dir_ainfo(ainfo_ptr))
@@ -3055,7 +3726,7 @@ gap_mov_exec_query(GapMovValues *val_ptr, GapAnimInfo *ainfo_ptr, GapMovQuery *m
 
   l_mov_ptr = &l_mov_data;
   l_pvals = &l_mov_vals;
-  
+
   if((mov_query != NULL) && (val_ptr != NULL))
   {
     /* init query results */
@@ -3077,7 +3748,7 @@ gap_mov_exec_query(GapMovValues *val_ptr, GapAnimInfo *ainfo_ptr, GapMovQuery *m
     l_pvals->cache_tmp_layer_id  = -1;
     l_pvals->cache_frame_number  = -1;
     l_pvals->cache_ainfo_ptr = NULL;
-    
+
     p_mov_execute_or_query(l_mov_ptr, mov_query);
     if(mov_query->minSpeedInPixelsPerFrame < 0)
     {
@@ -3085,6 +3756,9 @@ gap_mov_exec_query(GapMovValues *val_ptr, GapAnimInfo *ainfo_ptr, GapMovQuery *m
     }
   }
 }
+
+
+
 
 
 /* ============================================================================
@@ -3134,3 +3808,261 @@ void gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_p
    }
 }       /* end gap_mov_exec_set_handle_offsets */
 
+
+
+/* ------------------------------------
+ * gap_mov_exec_new_GapMovValues
+ * ------------------------------------
+ */
+GapMovValues *gap_mov_exec_new_GapMovValues()
+{
+  GapMovValues *pvals;
+
+  pvals = g_new (GapMovValues, 1);
+
+  pvals->version = GAP_MOV_INT_VERSION;
+  pvals->recordedFrameWidth = 0;     /* witdh of the frame (at recording time of the move path settings) */
+  pvals->recordedFrameHeight = 0;    /* height of the frame (at recording time of the move path settings) */
+  pvals->recordedObjWidth = 0;
+  pvals->recordedObjHeight = 0;
+  pvals->total_frames = 0;
+  pvals->src_layerstack = 0;
+  pvals->src_filename = NULL;
+
+
+
+  pvals->dst_image_id = -1;
+  pvals->tmp_image_id = -1;
+  pvals->tmpsel_image_id = -1;
+  pvals->tmpsel_channel_id = -1;
+  pvals->apv_mode = 0;
+  pvals->apv_src_frame = -1;
+  pvals->apv_mlayer_image =  -1;
+  pvals->apv_gap_paste_buff = NULL;
+  pvals->apv_framerate = 24;
+  pvals->apv_scalex = 100.0;
+  pvals->apv_scaley = 100.0;
+  pvals->cache_src_image_id = -1;
+  pvals->cache_tmp_image_id = -1;
+  pvals->cache_tmp_layer_id = -1;
+  pvals->cache_frame_number = -1;
+  pvals->cache_ainfo_ptr = NULL;
+  pvals->point_idx = 0;
+  pvals->point_idx_max = 0;
+  pvals->src_apply_bluebox  = 0;
+  pvals->bbp  = NULL;
+
+  pvals->step_speed_factor = 1.0;
+  pvals->tracelayer_enable = FALSE;
+  pvals->trace_opacity_initial = 100.0;
+  pvals->trace_opacity_desc = 80.0;
+  pvals->tween_steps = 0;
+  pvals->tween_opacity_initial = 80.0;
+  pvals->tween_opacity_desc = 80.0;
+
+  return(pvals);
+
+}  /* end gap_mov_exec_new_GapMovValues */
+
+
+/* ----------------------------------
+ * gap_mov_exec_move_path_singleframe
+ * ----------------------------------
+ * return image_id (of the new loaded current frame) on success
+ *        or -1 on errors
+ */
+gint32
+gap_mov_exec_move_path_singleframe(GimpRunMode run_mode, gint32 image_id
+   , GapMovValues *pvals, GapMovSingleFrame *singleFramePtr)
+{
+  gint32 l_rc;
+  GapAnimInfo *ainfo_ptr;
+  GapMovData  l_mov_data;
+
+  l_rc = -1;
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
+  if(ainfo_ptr != NULL)
+  {
+    l_mov_data.val_ptr = pvals;
+    l_mov_data.singleFramePtr = singleFramePtr;
+
+    if(NULL != l_mov_data.val_ptr)
+    {
+      l_mov_data.val_ptr->cache_src_image_id = -1;
+      l_mov_data.dst_ainfo_ptr = ainfo_ptr;
+
+      if (run_mode == GIMP_RUN_INTERACTIVE)
+      {
+         /* Dialog for singleframes mode
+          */
+         l_rc = gap_mov_dlg_move_dialog_singleframe (singleFramePtr);
+      }
+      else
+      {
+         l_rc = 0;
+      }
+
+
+      if(l_rc >= 0)
+      {
+         /* get parameters and controlpoints from xml_paramfile */
+         if (singleFramePtr->xml_paramfile != NULL)
+         {
+           gboolean  isXmlLoadOk;
+
+           isXmlLoadOk =  gap_mov_xml_par_load(singleFramePtr->xml_paramfile
+                                   , pvals
+                                     , gimp_image_width(image_id)
+                                     , gimp_image_height(image_id)
+                                     );
+
+
+           if (!isXmlLoadOk)
+           {
+             l_rc = -1;
+             if (run_mode != GIMP_RUN_NONINTERACTIVE)
+             {
+               g_message(("could not load MovePath settings from file: %s")
+                        , singleFramePtr->xml_paramfile);
+             }
+             printf("Execution Error: could not load MovePath settings from file: %s\n",
+                     singleFramePtr->xml_paramfile);
+           }
+           
+           //if(gap_debug)
+           //{
+           //  gap_mov_xml_par_save("pvals_after_load.xml", pvals);
+           //}
+
+         }
+
+      }
+
+
+      if(l_rc >= 0)
+      {
+          /* START of the singleframe PROCESSING */
+          l_rc = p_mov_execute_singleframe(&l_mov_data);
+      }
+
+      if(l_mov_data.val_ptr->cache_tmp_image_id >= 0)
+      {
+         if(gap_debug)
+         {
+            printf("gap_move: DELETE cache_tmp_image_id:%d\n",
+                     (int)l_mov_data.val_ptr->cache_tmp_image_id);
+         }
+         /* destroy the cached frame image */
+         gimp_image_delete(l_mov_data.val_ptr->cache_tmp_image_id);
+      }
+
+    }
+
+    gap_lib_free_ainfo(&ainfo_ptr);
+  }
+
+  if (l_rc < 0)
+  {
+    return -1;
+  }
+
+  return(l_rc);
+}       /* end gap_mov_exec_move_path_singleframe */
+
+
+/* --------------------------------------
+ * gap_mov_exec_check_valid_xml_paramfile
+ * --------------------------------------
+ * return TRUE on valid movepat xml parameterfile
+ */
+gboolean 
+gap_mov_exec_check_valid_xml_paramfile(const char *filename)
+{
+  gboolean  isXmlLoadOk;
+  GapMovValues *pvals;
+
+  isXmlLoadOk = FALSE;
+  pvals = gap_mov_exec_new_GapMovValues();
+  
+  if(filename != NULL)
+  {
+    if(*filename != '\0')
+    {
+      isXmlLoadOk =  gap_mov_xml_par_load(filename
+                                     , pvals
+                                     , 640 /* fake actual width */
+                                     , 480 /* fake actual height */
+                                     );
+    }
+  }
+  g_free(pvals);
+
+  return (isXmlLoadOk);
+
+}  /* end gap_mov_exec_check_valid_xml_paramfile */
+
+
+/* ---------------------------------------------
+ * gap_mov_exec_move_path_singleframe_directcall
+ * ---------------------------------------------
+ * this procedure renders one frame of a movepath sequence.
+ * it is typically called by the storyboard processor.
+ * return the processed layer id
+ */
+gint32
+gap_mov_exec_move_path_singleframe_directcall(gint32 frame_image_id
+       , gint32 drawable_id
+       , gboolean keep_proportions
+       , gboolean fit_width
+       , gboolean fit_height
+       , gint32 frame_phase
+       , const char *xml_paramfile)
+{
+  GapMovValues *pvals;
+  gint32        result_layer_id;
+  GapMovSingleFrame singleframevals;
+
+
+  result_layer_id = -1;
+
+  /* init pvals with default values (to provide defined settings
+   * for optional data that may not be present in the xml parameter file)
+   */
+  pvals = gap_mov_exec_new_GapMovValues();
+  pvals->dst_image_id = frame_image_id;
+  
+  
+  singleframevals.drawable_id = drawable_id;
+  singleframevals.frame_phase = frame_phase;
+  singleframevals.total_frames = -1;          /* get path length (total frames) from xml paramfile */
+  singleframevals.keep_proportions = keep_proportions;
+  singleframevals.fit_width = fit_width;
+  singleframevals.fit_height = fit_height;
+  g_snprintf(&singleframevals.xml_paramfile[0], sizeof(singleframevals.xml_paramfile), "%s", xml_paramfile);
+
+  if(gap_debug)
+  {
+    printf("\ngap_mov_exec_move_path_singleframe_directcall:"
+           " drawable_id:%d frame_image_id:%d frame_phase:%d\n"
+       ,(int)singleframevals.drawable_id
+       ,(int)frame_image_id
+       ,(int)singleframevals.frame_phase
+       );
+  }
+
+
+  result_layer_id = gap_mov_exec_move_path_singleframe(GIMP_RUN_NONINTERACTIVE
+                            , frame_image_id, pvals, &singleframevals);
+  if(gap_debug)
+  {
+    printf("gap_mov_exec_move_path_singleframe_directcall:"
+           " result_layer_id:%d orig_drawable_id:%d\n"
+       ,(int)result_layer_id
+       ,(int)drawable_id
+       );
+  }
+  
+  g_free(pvals);
+  return (result_layer_id);
+
+}  /* end gap_mov_exec_move_path_singleframe_directcall  */

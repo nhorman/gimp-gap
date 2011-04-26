@@ -204,6 +204,11 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    gint    rotate_accel;        /* acceleration characteristic for opacity transformation */
    gint32  rotate_frames_done;  /* already processed frames since begin of transition */
 
+   gdouble movepath_from;        /* 1.0 to path length in frames */
+   gdouble movepath_to;          /* 1.0 to path length in frames */
+   gint32  movepath_frames_done;
+   gint32  movepath_dur;         /* number of frames to change from -> to value */
+   char   *movepath_file_xml;    /* XML parameter file for movepath transitions */
 
    void   *next;
 } GapStoryRenderFrameRangeElem;  /* used for storyboard processing */
@@ -298,6 +303,12 @@ typedef struct GapStoryRenderVTrackAttrElem
    gint32  scale_x_frames_done;
    gint    scale_y_accel;
    gint32  scale_y_frames_done;
+
+   gdouble movepath_from;        /* 1.0 to path length in frames */
+   gdouble movepath_to;          /* 1.0 to path length in frames */
+   gint32  movepath_frames_done;
+   gint32  movepath_dur;         /* number of frames to change from -> to value */
+   char   *movepath_file_xml;    /* (dont g_free this) XML parameter file for movepath transitions */
 
 } GapStoryRenderVTrackAttrElem;  /* Video track attributes used for storyboard processing */
 

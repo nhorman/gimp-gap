@@ -494,6 +494,15 @@ p_create_syntax_list(void)
                ,"nframes"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_MOVEPATH
+               ,"track"
+               ,"frame_from"
+               ,"frame_to"
+               ,"nframes"
+               ,"accel"
+               ,"xml_paramfile"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_MASK_MOVIE
                ,"mask_name"
                ,"file"

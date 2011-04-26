@@ -30,6 +30,7 @@ gap/gap_morph_exec.c
 gap/gap_morph_main.c
 gap/gap_morph_shape.c
 gap/gap_morph_tween_dialog.c
+gap/gap_mov_main.c
 gap/gap_mov_dialog.c
 gap/gap_mov_exec.c
 gap/gap_mpege.c

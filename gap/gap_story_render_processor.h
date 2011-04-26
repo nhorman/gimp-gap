@@ -129,7 +129,7 @@ typedef struct GapStoryFetchResult {
   gboolean  force_keyframe;                 /* the calling encoder should encode an I-Frame when true */
   gint32    video_frame_chunk_size;         /* total size of frame (may include a videoformat specific frameheader) */
   gint32    video_frame_chunk_hdr_size;     /* size of videoformat specific frameheader (0 if has no hdr) */
-  unsigned  char *video_frame_chunk_data    /* copy of the already compressed video frame from source video */
+  unsigned  char *video_frame_chunk_data;   /* copy of the already compressed video frame from source video */
 
 } GapStoryFetchResult;
 
@@ -357,5 +357,21 @@ guchar *  gap_story_render_fetch_composite_vthumb(GapStoryRenderVidHandle *stb_c
                             , gint32 framenumber
                             , gint32 width, gint32 height
                             );
+
+gint32    gap_story_render_transform_with_movepath_processing(gint32 comp_image_id
+                         , gint32 tmp_image_id  /* must contain layer_id */
+                         , gint32 layer_id
+                         , gboolean keep_proportions
+                         , gboolean fit_width
+                         , gboolean fit_height
+                         , gdouble rotate     /* rotation in degree */
+                         , gdouble opacity    /* 0.0 upto 1.0 */
+                         , gdouble scale_x    /* 0.0 upto 10.0 where 1.0 = 1:1 */
+                         , gdouble scale_y    /* 0.0 upto 10.0 where 1.0 = 1:1 */
+                         , gdouble move_x     /* -1.0 upto +1.0 where 0 = no move, -1 is left outside */
+                         , gdouble move_y     /* -1.0 upto +1.0 where 0 = no move, -1 is top outside */
+                         , const char *movepath_file_xml
+                         , gdouble movepath_framePhase
+                         );
 
 #endif        /* GAP_STORY_RENDER_PROCESSOR_H */

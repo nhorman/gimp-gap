@@ -1694,13 +1694,15 @@ p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename)
                              ,pw->stb_refptr
                              ,pw->stb_elem_refptr
                              );
+        if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+        {
+          l_lower = 0;
+        }
         if(velem)
         {
-          l_upper = velem->total_frames;
-          if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+          if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_SECTION)
           {
-            l_lower = 0;
-            l_upper--;
+            l_upper = velem->total_frames;
           }
         }
       } 
@@ -2816,7 +2818,8 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
 {
   char    txt_buf[100];
   gdouble l_speed_fps;
-
+  gint32  l_framenr_zero;
+  
   if(pw == NULL) { return; }
   if(pw->stb_elem_refptr == NULL) { return; }
 
@@ -2827,6 +2830,15 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
   gtk_label_set_text ( GTK_LABEL(pw->pw_framenr_label), txt_buf);
 
   l_speed_fps = GAP_STORY_DEFAULT_FRAMERATE;
+  l_framenr_zero = framenr -1;
+  if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+  {
+    /* animimage framenr (e.g. layerstack position) starts at 0
+     * (other clips typically start with framenr 1)
+     */
+    l_framenr_zero = framenr;
+  }
+
   if(pw->stb_refptr)
   {
     if(pw->stb_refptr->master_framerate > 0)
@@ -2838,7 +2850,9 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
   // TODO: can not show the exact frametime for
   // clips that do not start at frame 1
 
-  gap_timeconv_framenr_to_timestr(framenr -1
+  
+
+  gap_timeconv_framenr_to_timestr(l_framenr_zero
                          , l_speed_fps
                          , txt_buf
                          , sizeof(txt_buf)

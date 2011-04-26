@@ -32,6 +32,10 @@
 #define GAP_BLUEBOX_DATA_KEY_VALS  "plug_in_bluebox"
 #define GAP_BLUEBOX_HELP_ID        "plug-in-bluebox"
 
+
+#include <gtk/gtk.h>
+#include "libgimp/gimp.h"
+
 typedef enum
 {
    GAP_BLUBOX_THRES_RGB        
@@ -40,7 +44,6 @@ typedef enum
   ,GAP_BLUBOX_THRES_ALL
 } GapBlueboxThresMode;
 
-#include "libgimp/gimp.h"
 typedef struct GapBlueboxVals {
   GimpRGB               keycolor;
   GapBlueboxThresMode   thres_mode;

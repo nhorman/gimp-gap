@@ -322,6 +322,9 @@ typedef struct GapStbAttrWidget  /* nickname: attw */
   GtkWidget  *button_overlap_dur;
 
   GtkWidget  *comment_entry;
+  GtkWidget  *movepath_file_entry;
+  GtkWidget  *movepath_filesel;
+  gboolean    movepath_file_xml_is_valid;
 
   struct GapStbAttrWidget *next;
 } GapStbAttrWidget;

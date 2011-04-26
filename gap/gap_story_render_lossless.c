@@ -339,31 +339,15 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
                     , GapStoryRenderFrameRangeElem **frn_elem  /* OUT: pointer to relevant frame range element */
                     )
 {
+  GapStbFetchData gapStbFetchData;
+  GapStbFetchData *gfd;
   gint32    l_track;
   gchar  *l_framename;
   gchar  *l_videofile;
-  gdouble l_rotate;
-  gdouble l_opacity;
-  gdouble l_scale_x;
-  gdouble l_scale_y;
-  gdouble l_move_x;
-  gdouble l_move_y;
-  GapStoryRenderFrameRangeElem *l_frn_elem_2;
 
-  gint32        l_localframe_index;
-  gint32        l_local_stepcount;
-  gdouble       l_localframe_tween_rest;
-  gboolean      l_keep_proportions;
-  gboolean      l_fit_width;
-  gboolean      l_fit_height;
-  GapStoryRenderFrameType   l_frn_type;
-  char            *l_trak_filtermacro_file;
-  gdouble l_red_f;
-  gdouble l_green_f;
-  gdouble l_blue_f;
-  gdouble l_alpha_f;
   gint    l_cnt_active_tracks;
 
+  gfd = &gapStbFetchData;
 
   *video_frame_nr   = -1;
   *frn_elem = NULL;
@@ -380,68 +364,51 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
     l_framename = p_fetch_framename(vidhand->frn_list
                  , master_frame_nr /* starts at 1 */
                  , l_track
-                 , &l_frn_type
-                 , &l_trak_filtermacro_file
-                 , &l_localframe_index   /* used for ANIMIMAGE and Videoframe Number, -1 for all other types */
-                 , &l_local_stepcount
-                 , &l_localframe_tween_rest
-                 , &l_keep_proportions
-                 , &l_fit_width
-                 , &l_fit_height
-                 , &l_red_f
-                 , &l_green_f
-                 , &l_blue_f
-                 , &l_alpha_f
-		 , &l_rotate
-                 , &l_opacity       /* output opacity 0.0 upto 1.0 */
-                 , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                 , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                 , &l_move_x        /* output -1.0 upto 1.0 where 0.0 is centered */
-                 , &l_move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
-                 , &l_frn_elem_2    /* output selected to the relevant framerange element */
+                 , gfd
                  );
 
      if(gap_debug)
      {
-       printf("l_track:%d  l_frn_type:%d\n", (int)l_track, (int)l_frn_type);
+       printf("l_track:%d  gfd->frn_type:%d\n", (int)l_track, (int)gfd->frn_type);
      }
 
-     if(l_frn_type != GAP_FRN_SILENCE)
+     if(gfd->frn_type != GAP_FRN_SILENCE)
      {
        l_cnt_active_tracks++;
      }
 
-     if((l_framename) || (l_frn_type == GAP_FRN_COLOR))
+     if((l_framename) || (gfd->frn_type == GAP_FRN_COLOR))
      {
        if(l_framename)
        {
-         if((l_frn_type == GAP_FRN_MOVIE)
-         || (l_frn_type == GAP_FRN_IMAGE)
-         || (l_frn_type == GAP_FRN_FRAMES))
+         if((gfd->frn_type == GAP_FRN_MOVIE)
+         || (gfd->frn_type == GAP_FRN_IMAGE)
+         || (gfd->frn_type == GAP_FRN_FRAMES))
          {
            if(l_cnt_active_tracks == 1)
            {
              /* check for transformations */
-             if((l_opacity == 1.0)
-             && (l_rotate == 0.0)
-             && (l_scale_x == 1.0)
-             && (l_scale_y == 1.0)
-             && (l_move_x == 0.0)
-             && (l_move_y == 0.0)
-             && (l_fit_width)
-             && (l_fit_height)
-             && (!l_keep_proportions)
-             && (l_frn_elem_2->flip_request == GAP_STB_FLIP_NONE)
-             && (l_frn_elem_2->mask_name == NULL)
-             && (l_trak_filtermacro_file == NULL))
+             if((gfd->opacity == 1.0)
+             && (gfd->rotate == 0.0)
+             && (gfd->scale_x == 1.0)
+             && (gfd->scale_y == 1.0)
+             && (gfd->move_x == 0.0)
+             && (gfd->move_y == 0.0)
+             && (gfd->fit_width)
+             && (gfd->fit_height)
+             && (!gfd->keep_proportions)
+             && (gfd->frn_elem->flip_request == GAP_STB_FLIP_NONE)
+             && (gfd->frn_elem->mask_name == NULL)
+             && (gfd->trak_filtermacro_file == NULL)
+             && (gfd->movepath_file_xml == NULL))
              {
                if(gap_debug)
                {
                  printf("gap_story_render_fetch_composite_image_or_chunk:  video:%s\n", l_framename);
                }
                l_videofile = g_strdup(l_framename);
-               *video_frame_nr = l_localframe_index;
-               *frn_elem = l_frn_elem_2;
+               *video_frame_nr = gfd->localframe_index;
+               *frn_elem = gfd->frn_elem;
              }
              else
              {

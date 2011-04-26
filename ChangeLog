@@ -1,5 +1,69 @@
 2011-04-26 Wolfgang Hofer <hof@gimp.org>
 
+- Storyboard render processor now supports processing
+  of new transition attribute record VID_MOVE_PATH
+   (based on the new singleframe mode of the move path feature)
+
+- Move Path now supports save of all settings (controlpoints and other relevant settings)
+  using a new XML stuctured fileformat.
+  Note that the old controlpoint file format is still supported both for load and save.
+  The new format is selected implicite by finename extension .xml 
+
+- New plug-in to call the MovePath for rendering only one frame where the
+  moving object is an already existing layer of the frame and all parameters
+  are provided via xml parameterfile
+  (this new feature is intended to be called as filter with the modify frames
+  feature)
+
+- The MovePath feature is still limited to process image types RGB 
+  (both for the frame and the moving object)
+  Therefore the PDB requstration was changed  
+   from "RGB*, INDEXED*, GRAY*"
+   to   "RGB*"
+
+  to disable the MovePath feature on unsupported frame types. 
+  (see also remarks at bugzilla #645303)
+  
+  
+- the MovePath feature now is built as separate plug-in with its own main
+  procedure to handle run and query.
+  
+- added a new gimprc parameter that enables logging of the
+  relevant render parameters each time the movePath feature
+  renders a frame. This parameter defaults to "no" in productive environment
+  and is intended for debug and analyse purpose.
+  This logging was used as base for regression tests on the current changes.
+  
+  (video-move-path-log-render-params "yes")
+
+
+ * NEWS  
+ * po/POTFILES.in
+ * gap/Makefile.am
+ * gap/gap_bluebox.h
+ * gap/gap_main.c
+ * gap/gap_mov_dialog.c  [.h]
+ * gap/gap_mov_exec.c    [.h]
+ * gap/gap_mov_main.c          # NEW FILE   
+ * gap/gap_mov_render.c  [.h]
+ * gap/gap_mov_xml_par.c [.h]  # NEW FILES    
+ * gap/gap_xml_util.c    [.h]  # NEW FILES    
+
+ * gap/gap_story_main.h
+ * gap/gap_story_file.c   [.h]
+ * gap/gap_story_render_processor.c [.h]
+ * gap/gap_story_render_lossless.c
+ * gap/gap_story_render_types.h
+ * gap/gap_story_syntax.c  [.h]
+ * gap/gap_story_vthumb.c
+ * gap/gap_story_properties.c
+ 
+ * gap/gap_story_att_trans_dlg.c
+ * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+
+ 
+2011-04-26 Wolfgang Hofer <hof@gimp.org>
+
 - applied patch that fixes string typos provided by Christian Kirbach at #648607
 
  * gap/gap_morph_tween_dialog.c

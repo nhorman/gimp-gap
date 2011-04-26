@@ -18,6 +18,10 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
   - support to run gimp_color_balance tool as animated filter 
     (added wrapper plug-in).
 
+  - new plug-in to apply the MovePath functionality 
+    (transitions and move object along path)
+    in a "process one frame per call" style, intended to be called as filter
+    with the modify frames feature.
 
 - GIMP-GAP now supports speed control of movements and other transitions
   via Acceleration characteristic presets. Those presets are available
@@ -32,7 +36,9 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
     (that replaces the "Apply Varying" button of older GIMP_GAP releases)
 
 
-- The Storyboard now supports rotatation of the processed clips by any angle.
+- The Storyboard now supports rotatation of the processed clips by any angle
+  and more complex transistions similar to the move path feature
+  (based on settings saved with the Movepath dialog as xml parameter file)
 
 - A new storyboard processing feature allows adding external transparency 
   for clip type movie. This is done via format string that refers to

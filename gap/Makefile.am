@@ -79,13 +79,28 @@ BASE_SOURCES = \
 	gap_timeconv.h		\
 	gap_stock.c		\
 	gap_stock.h		\
+	gap_xml_util.c		\
+	gap_xml_util.h		\
 	gap_vin.c		\
 	gap_vin.h
+
+
+MOVEPATH_SOURCES = \
+	gap_bluebox.c		\
+	gap_bluebox.h		\
+	gap_mov_dialog.c	\
+	gap_mov_dialog.h	\
+	gap_mov_exec.c		\
+	gap_mov_exec.h		\
+	gap_mov_render.c	\
+	gap_mov_render.h	\
+	gap_mov_xml_par.c	\
+	gap_mov_xml_par.h
 
 libgimpgap_a_SOURCES = $(BASE_SOURCES)
 
 
-libgapstory_a_SOURCES = $(BASE_SOURCES)	\
+libgapstory_a_SOURCES = $(BASE_SOURCES)	$(MOVEPATH_SOURCES) \
 	gap_frame_fetcher.c		\
 	gap_frame_fetcher.h		\
 	gap_fmac_name.c		\
@@ -108,6 +123,7 @@ libexec_PROGRAMS = \
 	gap_bluebox		\
 	gap_colormask		\
 	gap_plugins		\
+	gap_movepath		\
 	gap_filter		\
 	gap_fmac		\
 	gap_fmac_varying	\
@@ -164,12 +180,6 @@ gap_plugins_SOURCES = \
 	gap_mod_layer.h		\
 	gap_mod_layer_dialog.c	\
 	gap_mod_layer_dialog.h	\
-	gap_mov_dialog.c	\
-	gap_mov_dialog.h	\
-	gap_mov_exec.c		\
-	gap_mov_exec.h		\
-	gap_mov_render.c	\
-	gap_mov_render.h	\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
 	gap_range_ops.c		\
@@ -178,6 +188,14 @@ gap_plugins_SOURCES = \
 	gap_resi_dialog.h	\
 	gap_split.c		\
 	gap_split.h		\
+	gap_libgimpgap.h	
+
+gap_movepath_SOURCES =	$(MOVEPATH_SOURCES) \
+	gap_base_ops.c		\
+	gap_base_ops.h		\
+	gap_mov_main.c		\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
 	gap_libgimpgap.h	
 
 gap_filter_SOURCES = \
@@ -438,6 +456,7 @@ LDADD = $(GIMP_LIBS)
 
 
 gap_plugins_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_movepath_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_bluebox_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_colormask_LDADD =        $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_filter_LDADD =           $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

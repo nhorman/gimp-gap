@@ -39,13 +39,14 @@
 /* transition attribute types
  * (values are used as index for look-up tables)
  */
-#define GAP_STB_ATT_TYPES_ARRAY_MAX 6
+#define GAP_STB_ATT_TYPES_ARRAY_MAX 7
 #define GAP_STB_ATT_TYPE_OPACITY  0
 #define GAP_STB_ATT_TYPE_MOVE_X   1
 #define GAP_STB_ATT_TYPE_MOVE_Y   2
 #define GAP_STB_ATT_TYPE_ZOOM_X   3
 #define GAP_STB_ATT_TYPE_ZOOM_Y   4
 #define GAP_STB_ATT_TYPE_ROTATE   5
+#define GAP_STB_ATT_TYPE_MOVEPATH 6
 
 
 #define GAP_STB_MASK_SECTION_NAME  "Masks"
@@ -186,6 +187,7 @@
     gint32   att_arr_value_dur[GAP_STB_ATT_TYPES_ARRAY_MAX];        /* number of frames to change from -> to value */
     gint32   att_arr_value_accel[GAP_STB_ATT_TYPES_ARRAY_MAX];      /* acceleration characteristics */
     gint32   att_overlap;  /* number of overlapping frames (value > 0 will generate a shadow track) */
+    gchar   *att_movepath_file_xml;
 
     /* new members for Audio Record types */
     char     *aud_filename;
@@ -388,6 +390,7 @@ gint32              gap_story_get_framenr_by_story_id(GapStorySection  *section,
 gint32              gap_story_get_expanded_framenr_by_story_id(GapStorySection *section, gint32 story_id, gint32 in_track);
 char *              gap_story_get_filename_from_elem(GapStoryElem *stb_elem);
 char *              gap_story_get_filename_from_elem_nr(GapStoryElem *stb_elem, gint32 in_framenr);
+char *              gap_story_get_filename_from_elem_nr_anim(GapStoryElem *stb_elem, gint32 in_framenr);
 GapStoryElem *      gap_story_fetch_nth_active_elem(GapStoryBoard *stb
                                                      , gint32 seq_nr
                                                      , gint32 in_track
