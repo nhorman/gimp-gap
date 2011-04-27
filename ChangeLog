@@ -1,3 +1,11 @@
+2011-04-27 Wolfgang Hofer <hof@gimp.org>
+
+- fixed a bug in procedure gap_mov_xml_par_save that did write an invalid 
+  xml movepath parameter file
+  and added error handling in the xml parser.
+
+ * gap/gap_mov_xml_par.c
+
 2011-04-26 Wolfgang Hofer <hof@gimp.org>
 
 - Storyboard render processor now supports processing

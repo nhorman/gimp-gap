@@ -1222,6 +1222,56 @@ p_copy_transformed_values(GapMovValues *dstValues, GapMovValues *srcValues
 }  /* end p_copy_transformed_values */
 
 
+/* ------------------------------------
+ * p_xml_parser_error_handler
+ * ------------------------------------
+ */
+static void
+p_error_handler(GMarkupParseContext *context,
+                GError              *error,
+                gpointer             user_data)
+{
+
+  printf("p_xml_parser_error_handler START\n");
+  if(error)
+  {
+    printf("** Error code:%d message:%s\n"
+          ,(int)error->code
+          ,error->message
+          );
+    
+  }
+  
+  if(context != NULL)
+  {
+    gint line_number;
+    gint char_number;
+    
+    g_markup_parse_context_get_position (context, &line_number, &char_number);
+    
+    printf("context: line_number:%d char_number:%d element:%s\n"
+      ,(int)line_number
+      ,(int)char_number
+      ,g_markup_parse_context_get_element(context)
+      );
+  }
+  
+  if(user_data != NULL)
+  {
+    GapMovXmlUserData *userDataPtr;
+    userDataPtr = user_data;
+    
+    printf("userDataPtr: isParseOk:%d isScopeValid:%d errorLineNumber:%d\n"
+      ,(int)userDataPtr->isParseOk
+      ,(int)userDataPtr->isScopeValid
+      ,(int)userDataPtr->errorLineNumber
+      );
+  }
+  printf("p_xml_parser_error_handler DONE\n");
+
+}  /* end p_xml_parser_error_handler */
+
+
 /* ------------------------------------------
  * gap_mov_xml_par_load
  * ------------------------------------------
@@ -1240,7 +1290,7 @@ gap_mov_xml_par_load(const char *filename, GapMovValues *productiveValues
     p_end_xml_element,
     NULL,
     NULL,
-    NULL
+    p_error_handler
   };
 
   gint jj;
@@ -1249,8 +1299,10 @@ gap_mov_xml_par_load(const char *filename, GapMovValues *productiveValues
   gboolean isOk;
   GapMovValues   *tmpValues;
   GapMovXmlUserData *userDataPtr;
+  GError            *gError;
   
   isOk = TRUE;
+  gError = NULL;
   tmpValues = gap_mov_exec_new_GapMovValues();
   tmpValues->dst_image_id = productiveValues->dst_image_id;
   userDataPtr = g_new(GapMovXmlUserData, 1);
@@ -1260,6 +1312,7 @@ gap_mov_xml_par_load(const char *filename, GapMovValues *productiveValues
   
   userDataPtr->isScopeValid = FALSE;
   userDataPtr->isParseOk = TRUE;
+  userDataPtr->errorLineNumber = 0;
   
   for(jj=0; jmpTableElement[jj].name != NULL; jj++)
   {
@@ -1280,12 +1333,12 @@ gap_mov_xml_par_load(const char *filename, GapMovValues *productiveValues
   }
   
 
-  if (g_markup_parse_context_parse (context, textBuffer, lengthTextBuffer, NULL) != TRUE)
+  if (g_markup_parse_context_parse (context, textBuffer, lengthTextBuffer, &gError) != TRUE)
   {
     printf("Parse failed of file: %s\n", filename);
-    // g_markup_parse_context_parse returns FALSE even when parsing seems to be OK
-    // TODO: findout what makes g_markup_parse_context_parse work with proper returncode...
-    // return(FALSE);
+    p_error_handler(context, gError, userDataPtr);
+    
+    return(FALSE);
   }
   
   /* check for mandatory elements */
@@ -1374,7 +1427,7 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
     /* root */
     fprintf(l_fp, "<%s ", GAP_MOVPATH_XML_TOKEN_ROOT);
     gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_VERSION, pvals->version);
-    fprintf(l_fp, "/>\n");
+    fprintf(l_fp, ">\n");
     
     /* attributes for description of the processed frames */
     {
