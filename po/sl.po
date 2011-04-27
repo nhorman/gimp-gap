@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-01 17:22+0000\n"
-"PO-Revision-Date: 2011-04-03 01:19+0100\n"
-"Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
+"POT-Creation-Date: 2011-04-03 17:53+0000\n"
+"PO-Revision-Date: 2011-04-25 23:32+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -611,7 +611,7 @@ msgstr "Operjanje robov:"
 
 #: ../gap/gap_bluebox.c:384
 msgid "ON: Feather edges using feather radius"
-msgstr "VKLJUČENO: Izginjajoči robovi z uporabo polmera izginjanja"
+msgstr "VKLJUČENO: Izginjajoči robovi z uporabo polmera operjanja"
 
 #: ../gap/gap_bluebox.c:394
 #: ../gap/gap_colormask_dialog.c:407
@@ -943,7 +943,7 @@ msgstr "Prožilna alfa:"
 
 #: ../gap/gap_colormask_dialog.c:506
 msgid "Trigger alpha is only relevant in case the color mask has an alpha channel. All pixels where the alpha channel of the corresponding pixel in the color mask is below this trigger value are not changed (e.g. keep their original opacity)"
-msgstr ""
+msgstr "Prožilna alfa je relevantna le v primeru, da ima barvna maska kanal alfa. Vse slikovne točke, kjer je kanal alfa ustrezne slikovne točke v barvni maski pod to mejo proženja, niso spremenjene (t.j. ohranijo svojo izvorno prekrivnost)"
 
 #. the frame
 #. the notebook page label for expert encoder options
@@ -981,18 +981,15 @@ msgid "Key Color Sensitivity:"
 msgstr "Občutljivost barve ključenja:"
 
 #: ../gap/gap_colormask_dialog.c:666
-#, fuzzy
 #| msgid "Common color threshold"
 msgid "Sig Colordiff Threshold:"
 msgstr "Prag barvne razlike Sig:"
 
 #: ../gap/gap_colormask_dialog.c:680
-#, fuzzy
 msgid "Sig Brightness Threshold:"
 msgstr "Prag svetlosti Sig:"
 
 #: ../gap/gap_colormask_dialog.c:695
-#, fuzzy
 #| msgid "Radius:"
 msgid "Sig Radius:"
 msgstr "Polmer Sig:"
@@ -1019,7 +1016,6 @@ msgid "DEBUG Options"
 msgstr "Možnosti razhroščevanja"
 
 #: ../gap/gap_colormask_dialog.c:817
-#, fuzzy
 #| msgid "Density:"
 msgid "DiffSensitvity:"
 msgstr "Razlika občutljivosti:"
@@ -1765,7 +1761,7 @@ msgstr "<Image>/Filtri/"
 
 #: ../gap/gap_fire_pattern.c:1043
 #: ../gap/gap_water_pattern.c:430
-#, fuzzy, c-format
+#, c-format
 msgid "drawable:%d is not a layer\n"
 msgstr "narisljivo:%d ni plast\n"
 
@@ -1834,7 +1830,6 @@ msgstr "Faktor navpičnega raztega za ognjeni vzorec"
 #. scalex spinbutton
 #: ../gap/gap_fire_pattern.c:1896
 #: ../gap/gap_water_pattern.c:1276
-#, fuzzy
 #| msgid "Select Pattern:"
 msgid "Scale Pattern X:"
 msgstr "Spr. velikost vzorca X:"
@@ -1862,7 +1857,6 @@ msgid "Vertical scaling of the random patterns that are created for rendering (c
 msgstr "Navpično spreminjanje velikosti za naključne vzorce, ustvarjene za upodabljanje (plast oblakov)"
 
 #: ../gap/gap_fire_pattern.c:1937
-#| msgid "Select Pattern:"
 msgid "Seed Pattern:"
 msgstr "Seme vzorca:"
 
@@ -1943,7 +1937,6 @@ msgid "width of the flame at base line (1.0 for full image width)"
 msgstr "Širina plamena na osnovnici (1,0 za polno širino slike)"
 
 #: ../gap/gap_fire_pattern.c:2132
-#| msgid "To:"
 msgid "Top:"
 msgstr "Vrh:"
 
@@ -1986,7 +1979,6 @@ msgstr "VKLJUČENO: upodobi učinek vzorca ognja kot ločeno plast, IZKLJUČENO:
 #. Highlights blend mode
 #: ../gap/gap_fire_pattern.c:2248
 #: ../gap/gap_water_pattern.c:1427
-#, fuzzy
 #| msgid "Render Mode:"
 msgid "Blend Mode:"
 msgstr "Način zlivanja:"
@@ -2042,7 +2034,6 @@ msgstr "Prekrivnost plamenov"
 
 #. reverseGradient checkbutton
 #: ../gap/gap_fire_pattern.c:2347
-#| msgid "Inverse Order:"
 msgid "Reverse Gradient:"
 msgstr "Obratni preliv:"
 
@@ -3269,7 +3260,7 @@ msgstr "Radij lociranja v slikovnih točkah. Radij za samodejno lociranje slikov
 
 #: ../gap/gap_morph_dialog.c:3953
 msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint to be compared  when loacting corresponding coordinate(Not relevant for rendering)"
-msgstr ""
+msgstr "Radij lociranja lika v slikovnih točkah. Določa velikost lika kot površino okoli delovne točke, ki naj bo primerjana pri lociranju ustreznih koordinat (ni relevantno za upodabljanje)."
 
 #: ../gap/gap_morph_dialog.c:3979
 msgid "Edge detection threshold for automatically point locate feature  triggered by CTRL when setting workpoints.(Not relevant for rendering)"
@@ -3410,7 +3401,7 @@ msgstr "Preobliči eno vmesno sličico ..."
 
 #: ../gap/gap_morph_main.c:287
 msgid "Morph Workpoint Generator..."
-msgstr "Generator delovne točke preoblikovanja ..."
+msgstr "Tvorec delovne točke preoblikovanja ..."
 
 #. Menu names
 #: ../gap/gap_morph_main.c:298
@@ -3520,7 +3511,7 @@ msgstr "Vmesni koraki:"
 
 #: ../gap/gap_morph_tween_dialog.c:758
 msgid "TWEEN-STEPS attribute value to be written to the generated workpoint file. (Number of tweens to be inserted between 2 frames at tween morphprocessing) "
-msgstr ""
+msgstr "Vrednost atributa TWEEN-STEPS (vmesni koraki), ki bo zapisana v ustvarjeno datoteko delovnih točk. (Število vmesnih sličic, ki naj bodo vstavljene med dve sličici z obdelavo preoblikovanja vmesnih sličic)"
 
 #: ../gap/gap_morph_tween_dialog.c:769
 msgid "Deform Radius:"
@@ -3528,11 +3519,11 @@ msgstr "Polmer deformacije:"
 
 #: ../gap/gap_morph_tween_dialog.c:772
 msgid "AFFECT-RADIUS attribute value to be written to the generated workpoint file."
-msgstr ""
+msgstr "Vrednost atributa AFFECT-RADIUS (polmer učinkovanja), ki bo zapisana v ustvarjeno datoteko delovnih točk."
 
 #: ../gap/gap_morph_tween_dialog.c:789
 msgid "INTENSITY attribute value to be written to the generated workpoint file. value 0 turns off intensity desceding deformation, morph processing will use linear deform action inside the deform radius"
-msgstr ""
+msgstr "Vrednost atributa INTENSITY (intenzivnost), ki bo zapisan v ustvarjeno datoteko delovnih točk. Vrednost 0 izključi deformacijo intenzivnost, obdelava preoblikovanja bo uporabila linearno dejanje deformacije v okviru polmera deformacije"
 
 #: ../gap/gap_morph_tween_dialog.c:804
 msgid "Locate Move Radius:"
@@ -3548,7 +3539,7 @@ msgstr "Polmer lociranja lika:"
 
 #: ../gap/gap_morph_tween_dialog.c:824
 msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint to be compared  when loacting corresponding coordinate in the next frame."
-msgstr ""
+msgstr "Radij lociranja lika v slikovnih točkah. Določa velikost lika kot površino okoli delovne točke, ki naj bo primerjana pri lociranju ustrezne koordinate v naslednji sličici."
 
 #: ../gap/gap_morph_tween_dialog.c:834
 msgid "Edge Threshold:"
@@ -3607,6 +3598,11 @@ msgid ""
 "Provide workpointfiles (one per frame) for morphing based tween rendering\n"
 "(this can be done with the Morph Workpoint Generator)"
 msgstr ""
+"To dejanje ustvari kopije vseh sličic v navedenem obsegu\n"
+"in navedeno število vmesnih sličic kot dodatnih sličic\n"
+"med vsemi obdelanimi sličicami v navedeni podmapi.\n"
+"Zagotovite datoteke delovnih točk (eno na sličico) za upodabljanje vmesnih sličic na temelju preoblikovanja\n"
+"(to lahko opravite s Tvorcem delovne točke preoblikovanja)"
 
 #: ../gap/gap_morph_tween_dialog.c:1223
 msgid "Number of Tweens:"
@@ -3637,7 +3633,7 @@ msgstr "Podmapa:"
 
 #: ../gap/gap_morph_tween_dialog.c:1268
 msgid "Name of a (Sub)directoy to save copies of processed frames and generated tweens. Note that tweens are created via simple fade operations when no workpointfile for the processed frame is available. (individual workpointfiles per frame are refered by extension .morphpoints)"
-msgstr ""
+msgstr "Ime (pod)mape, kjer želite shraniti kopije obdelanih sličic in ustvarjenih vmesnih sličic. Upoštevajte, da so vmesne sličice ustvarjene z enostavnimi operacijami preliva, če za obdelano sličico ni na voljo datoteka delovnih točk. (Posamezne datoteke delovnih točk za sličico imajo končnico .morphpoints)"
 
 #: ../gap/gap_morph_tween_dialog.c:1292
 msgid "ON: overwrite existing frames.OFF: skip processing when target frame/tween already exists."
@@ -4572,7 +4568,7 @@ msgstr "značilnost pospeševanja za perspektivo (1 za konstantno hitrost, pozit
 #. table col, row
 #: ../gap/gap_mov_dialog.c:4240
 msgid "FeatherRadius:"
-msgstr "Polmer izginjanja:"
+msgstr "Polmer operjanja:"
 
 #. label text
 #. scalesize spinsize
@@ -8830,7 +8826,6 @@ msgid "Vertical scaling of the random patterns that are created for rendering (c
 msgstr "Navpično spreminjanje velikosti naključnih vzorcev, ustvarjenih za upodabljanje (plasti oblak1 in oblak2)"
 
 #: ../gap/gap_water_pattern.c:1316
-#| msgid "Select Pattern:"
 msgid "Seed Pattern 1:"
 msgstr "Seme vzorca 1:"
 
@@ -11228,14 +11223,12 @@ msgstr "Optimalna raven MB za rezidualno preskakovanje v RD"
 
 #. the use_MB_Tree ratecontrol checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2848
-#, fuzzy
 msgid "MB-Tree RC"
 msgstr "Nadz. hitrosti MB-drevesa"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2854
-#, fuzzy
 msgid "use macroblock tree ratecontrol (x264 only)"
-msgstr "Uporabi nadzornika hitrosti drevesa makro bloka (samo x264)"
+msgstr "Uporabi nadzo hitrosti drevesa makro bloka (samo x264)"
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2863
