@@ -478,8 +478,8 @@ p_is_debug_menu_enabled(void)
 /* ---------------------------------------
  * p_is_debug_feature_item_enabled
  * ---------------------------------------
- * print the list of video elements
- * to stdout (typical used for logging and debug purpose)
+ * return TRUE if the specified debug_item name
+ * is enabled (e.g. is present as text line in the debug configuration file)
  */
 static gboolean
 p_is_debug_feature_item_enabled(const char *debug_item)
@@ -500,10 +500,7 @@ p_is_debug_feature_item_enabled(const char *debug_item)
       FILE *l_fp;
       char         l_buf[400];
 
-      if(gap_debug)
-      {
-        printf("check for item:'%s'\n", debug_item);
-      }
+      printf("debug_item:'%s'", debug_item);
 
       l_fp = g_fopen(filename, "r");
       if(l_fp)
@@ -526,11 +523,20 @@ p_is_debug_feature_item_enabled(const char *debug_item)
         }
 
         fclose(l_fp);
+        if(enable)
+        {
+          printf(" IS ENABLED\n");
+        }
+        else
+        {
+          printf(" is disabled\n");
+        }
       }
 
     }
     g_free(filename);
   }
+
 
   return(enable);
 
@@ -2134,7 +2140,13 @@ static void
 p_tabw_process_undo(GapStbTabWidgets *tabw)
 {
   GapStoryBoard *stb;
+  GapStoryBoard *old_stb;
 
+  old_stb = p_tabw_get_stb_ptr(tabw);
+  if (old_stb)
+  {
+    p_tabw_destroy_all_popup_dlg(tabw);
+  }
   stb = gap_stb_undo_pop(tabw);
   if (stb)
   {
@@ -2150,6 +2162,13 @@ static void
 p_tabw_process_redo(GapStbTabWidgets *tabw)
 {
   GapStoryBoard *stb;
+  GapStoryBoard *old_stb;
+
+  old_stb = p_tabw_get_stb_ptr(tabw);
+  if (old_stb)
+  {
+    p_tabw_destroy_all_popup_dlg(tabw);
+  }
 
   stb = gap_stb_undo_redo(tabw);
   if (stb)
@@ -4020,6 +4039,12 @@ p_tabw_destroy_attw_dlg (GapStbTabWidgets *tabw, gboolean destroy_all)
 
         if(attw->attw_prop_dialog)
         {
+          if(attw->movepath_edit_dialog != NULL)
+          {
+            /* force close of the movepath edit dialog that is still open */
+            gtk_widget_destroy(attw->movepath_edit_dialog);
+            attw->movepath_edit_dialog = NULL;
+          }
           gtk_widget_destroy(attw->attw_prop_dialog);
         }
         if(attw_prev)
@@ -5380,8 +5405,8 @@ p_menu_win_debug_log_to_stdout_cb (GtkWidget *widget, GapStbMainGlobalParams *sg
     if (selection_found != TRUE)
     {
        printf("INFO p_menu_win_debug_log_to_stdout_cb:"
-              "The file: %s does not exist or does not contain"
-              "any valid selction what to print for debug purpose.\n"
+              " The file: %s does not exist or does not contain"
+              " any valid selction what to print for debug purpose.\n"
               , GAP_DEBUG_STORYBOARD_CONFIG_FILE);
     }
 
@@ -6104,7 +6129,7 @@ p_make_item_with_image(GtkWidget *parent, const gchar *stock_id,
    GtkWidget *item;
 
    item = gtk_image_menu_item_new_from_stock(stock_id
-                                            , NULL         // accelerator_group
+                                            , NULL /* accelerator_group */
                                             );
 
    gtk_menu_shell_append(GTK_MENU_SHELL(parent), item);

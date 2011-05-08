@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
@@ -42,6 +43,7 @@
 #include "gap_story_undo.h"
 #include "gap_story_dialog.h"
 #include "gap_story_file.h"
+#include "gap_libgapbase.h"
 
 
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
@@ -75,14 +77,33 @@ gap_stb_undo_debug_print_stack(GapStbTabWidgets *tabw)
 
   for(undo_elem = tabw->undo_stack_list; undo_elem != NULL; undo_elem = undo_elem->next)
   {
-    printf("  %d %s"
+    printf("  addr:%d fPtr:%d %s"
           , (int)undo_elem
+          , (int)undo_elem->filenamePtr
           , gap_stb_undo_feature_to_string(undo_elem->feature_id)
           );
     if(undo_elem == tabw->undo_stack_ptr)
     {
       printf(" <-- stack_ptr");
     }
+    
+    if(undo_elem->fileSnapshotBefore != NULL)
+    {
+      printf(" (BEFORE: fname:%s size:%d mtime:%d)"
+            ,undo_elem->fileSnapshotBefore->filename
+            ,(int)undo_elem->fileSnapshotBefore->filesize
+            ,(int)undo_elem->fileSnapshotBefore->mtimefile
+            );
+    }
+    if(undo_elem->fileSnapshotAfter != NULL)
+    {
+      printf(" (AFTER: fname:%s size:%d mtime:%d)"
+            ,undo_elem->fileSnapshotAfter->filename
+            ,(int)undo_elem->fileSnapshotAfter->filesize
+            ,(int)undo_elem->fileSnapshotAfter->mtimefile
+            );
+    }
+    
     printf("\n");
     fflush(stdout);
   }
@@ -121,6 +142,122 @@ gap_stb_undo_feature_to_string(GapStoryFeatureEnum feature_id)
   }
   return("unknown");
 }  /* end gap_stb_undo_feature_to_string */
+
+
+/* ---------------------------------------
+ * p_free_file_snapshot
+ * ---------------------------------------
+ */
+static void
+p_free_file_snapshot(GapStoryUndoFileSnapshot *fileSnapshot)
+{
+  if(fileSnapshot == NULL)
+  {
+    return;
+  }
+  if(fileSnapshot->filename)
+  {
+    g_free(fileSnapshot->filename);
+  }
+  if(fileSnapshot->filecontent)
+  {
+    g_free(fileSnapshot->filecontent);
+  }
+  g_free(fileSnapshot);
+
+}  /* end p_free_file_snapshot */
+
+
+/* -----------------------------------------
+ * p_create_file_snapshot
+ * -----------------------------------------
+ */
+static GapStoryUndoFileSnapshot*
+p_create_file_snapshot(char *filename)
+{
+  GapStoryUndoFileSnapshot *fileSnapshot;
+  const char               *filecontent;
+
+  fileSnapshot = NULL;
+  
+  if(g_file_test(filename, G_FILE_TEST_IS_REGULAR))
+  {
+    gint32 filesize;
+    
+    filecontent = gap_file_load_file_len(filename, &filesize);
+  
+    if(filecontent != NULL)
+    {
+      fileSnapshot = g_new(GapStoryUndoFileSnapshot, 1);
+      fileSnapshot->mtimefile   = gap_file_get_mtime(filename);
+      fileSnapshot->filename    = g_strdup(filename);
+      fileSnapshot->filecontent = filecontent;
+      fileSnapshot->filesize    = filesize;
+    }
+  }
+  
+  return (fileSnapshot);
+}  /* end p_create_file_snapshot */
+
+
+
+/* -----------------------------------------
+ * p_replace_file_from_snapshot
+ * -----------------------------------------
+ */
+static void
+p_replace_file_from_snapshot(GapStoryUndoFileSnapshot* fileSnapshot)
+{
+  FILE *fp;
+  
+  if(fileSnapshot == NULL)
+  {
+    return;
+  }
+  if(fileSnapshot->filename == NULL)
+  {
+    return;
+  }
+  
+  if(g_file_test(fileSnapshot->filename, G_FILE_TEST_IS_REGULAR))
+  {
+    if(fileSnapshot->mtimefile == gap_file_get_mtime(fileSnapshot->filename))
+    {
+      /* the file still exists with same mtime stamp
+       * no further action required in this case..
+       */
+      if(gap_debug)
+      {
+        printf("p_replace_file_from_snapshot:%s skipped due to EQUAL mtime:%d\n"
+            , fileSnapshot->filename
+            ,(int)fileSnapshot->mtimefile
+            );
+      }
+      return;
+    }
+  }
+  
+  if(gap_debug)
+  {
+    printf("p_replace_file_from_snapshot:%s\n", fileSnapshot->filename);
+  }
+
+  /* open write binary (create or replace) */
+  fp = g_fopen(fileSnapshot->filename, "wb");
+  if(fp != NULL)
+  {
+    fwrite(fileSnapshot->filecontent,  fileSnapshot->filesize, 1, fp);
+    fclose(fp);
+    /* refresh the modification timestamp after rewrite */
+    fileSnapshot->mtimefile = gap_file_get_mtime(fileSnapshot->filename);
+  }
+  
+
+}  /* end p_replace_file_from_snapshot */
+
+
+
+
 
 
 
@@ -188,6 +325,11 @@ gap_stb_undo_pop(GapStbTabWidgets *tabw)
 
   stb = gap_story_duplicate_full(tabw->undo_stack_ptr->stb);
   
+  if(tabw->undo_stack_ptr->fileSnapshotBefore != NULL)
+  {
+    p_replace_file_from_snapshot(tabw->undo_stack_ptr->fileSnapshotBefore);
+  }
+  
   if(gap_debug)
   {
     printf("gap_stb_undo_pop returning feature_id:%d %s grp_count:%.2f next:%d\n"
@@ -218,12 +360,20 @@ gap_stb_undo_pop(GapStbTabWidgets *tabw)
  * feature (that now shall be undone) was applied.
  *
  *           
- * stack_list -->latest                             latest 
- *               EEEE                               EEEE
- *               DDDD                               DDDD <--- stack_ptr after redo
- *               CCCC  <-- stack_ptr before redo    CCCC        returns (EEEE)
- *               BBBB                               BBBB 
- *               AAAA                               AAAA
+ * stack_list -->latest                                  latest 
+ *               EEEE                                    EEEE
+ *               DDDD                                    DDDD <--- stack_ptr after redo (DDDD)
+ *               CCCC  <-- stack_ptr before redo (DDDD)  CCCC        returns (EEEE)
+ *               BBBB                                    BBBB 
+ *               AAAA                                    AAAA
+ * --------------------------------------------------------------------------------
+ *
+ * Example with one feature AAAA on the stack
+ *
+ * stack_ptr is NULL before redo(AAAA)           
+ * stack_list -->latest                                  latest 
+ *               AAAA                                    AAAA <--- stack_ptr after redo  AAAA
+ *                                                                   returns (latest)
  * --------------------------------------------------------------------------------
  */
 GapStoryBoard *
@@ -256,6 +406,14 @@ gap_stb_undo_redo(GapStbTabWidgets *tabw)
   if (redo_elem != NULL)
   {
     stb = gap_story_duplicate_full(redo_elem->stb);
+    if(tabw->undo_stack_ptr != NULL)
+    {
+      if(tabw->undo_stack_ptr->fileSnapshotAfter != NULL)
+      {
+        p_replace_file_from_snapshot(tabw->undo_stack_ptr->fileSnapshotAfter);
+      }
+    }
+
     gap_story_dlg_tabw_undo_redo_sensitivity(tabw);
 
     if(gap_debug)
@@ -289,10 +447,27 @@ p_free_undo_elem(GapStoryUndoElem    *undo_elem)
 
   if(gap_debug)
   {
-    printf("p_free_undo_elem: %d %s\n"
+    printf("p_free_undo_elem: %d %s"
           , (int)undo_elem
           , gap_stb_undo_feature_to_string(undo_elem->feature_id)
           );
+    if(undo_elem->fileSnapshotBefore != NULL)
+    {
+      printf(" fileSnapshotBefore:%s filesize:%d mtime:%d"
+        ,undo_elem->fileSnapshotBefore->filename
+        ,(int)undo_elem->fileSnapshotBefore->filesize
+        ,(int)undo_elem->fileSnapshotBefore->mtimefile
+        );
+    }
+    if(undo_elem->fileSnapshotAfter != NULL)
+    {
+      printf(" fileSnapshotAfter:%s filesize:%d mtime:%d"
+        ,undo_elem->fileSnapshotAfter->filename
+        ,(int)undo_elem->fileSnapshotAfter->filesize
+        ,(int)undo_elem->fileSnapshotAfter->mtimefile
+        );
+    }
+    printf("\n");
     fflush(stdout);
   }
 
@@ -301,6 +476,18 @@ p_free_undo_elem(GapStoryUndoElem    *undo_elem)
   {
     gap_story_free_storyboard(&undo_elem->stb);
   }
+  
+  if(undo_elem->fileSnapshotBefore != NULL)
+  {
+    p_free_file_snapshot(undo_elem->fileSnapshotBefore);
+    undo_elem->fileSnapshotBefore = NULL;
+  }
+  if(undo_elem->fileSnapshotAfter != NULL)
+  {
+    p_free_file_snapshot(undo_elem->fileSnapshotAfter);
+    undo_elem->fileSnapshotAfter = NULL;
+  }
+  
   g_free(undo_elem);
   
 }  /* end p_free_undo_elem */
@@ -397,28 +584,71 @@ gap_stb_undo_destroy_undo_stack(GapStbTabWidgets *tabw)
 }  /* end gap_stb_undo_destroy_undo_stack */
 
 
-/* ---------------------------------------
- * gap_stb_undo_push_clip
- * ---------------------------------------
+/* -----------------------------------------
+ * gap_stb_undo_push_clip_with_file_snapshot
+ * -----------------------------------------
  * create a new undo element (according to specified parameters)
- * and place it at top (first) of the und stack.
+ * and place it at top (first) of the undo stack.
  * if the stackpointer is NOT equal to the stack_list root,
- * the delete all undo elements from stack_list up to stackpointer.
+ * then delete all undo elements from stack_list up to stackpointer.
  *
  * move the stackpointer to next element. (keep the element
- * on the stack for redo purpose)
+ * on the stack list for undo purpose)
+ *
+ * if *filenamePtr points to an existing readable file, this procedure 
+ * attaches a copy of the filename and its full content to the pushed element.
+ * (fileSnapshotBefore)
+ * Note that the current implementation keeps the filecontent in memory
+ * because it is intended to hold small parameterfiles (xml settings for movepath transistion)
+ * The filename Must NOT be used to store large data (as image or movie content)
+ *
+ * If the element at stack_ptr (that represents the previous procesing step)
+ * has a fileSnapshot attached then this is also recorded as fileSnapshotAfter
+ * 
+ * Example
+ * =======
+ *  push element EEEE,  *filenamePtr points to "a.xml"
  *           
  * stack_list -->DDDD                               
- *               CCCC                                   EEEE <--- stack_ptr after push (EEEE)
- *               BBBB  <-- stack_ptr before push(EEEE)  BBBB      (deletes CCCC, DDDD)
- *               AAAA                                   AAAA
+ *               CCCC                                          EEEE <--- stack_ptr after push (EEEE, a.xml)
+ *               BBBB  <-- stack_ptr before push(EEEE, a.xml)  BBBB      (deletes CCCC, DDDD)
+ *               AAAA                                          AAAA
  * --------------------------------------------------------------------------------
+ *
+ * content of elem EEEE after the push EEEE operation:
+ *
+ *  EEEE.fileSnapshotBefore holds filename and content of a.xml (before processing of step EEEE)
+ *  EEEE.fileSnapshotAfter is NULL
+ *  EEEE.filenamePtr holds addr of the pointer that points to filename "a.xml"
+ *
+ *
+ * Example continued: 
+ * ==================
+ *
+ *
+ *                                                             FFFF <--- stack_ptr after push (FFFF, NULL)
+ * stack_list -->EEEE  <-- stack_ptr before push(FFFF, NULL)   EEEE ..... updated fileSnapshotAfter                              
+ *               BBBB                                          BBBB                           
+ *               AAAA                                          AAAA
+ * --------------------------------------------------------------------------------
+ *
+ * content of elem EEEE after the push FFFF operation:
+ *
+ *  EEEE.fileSnapshotBefore holds filename and content of a.xml
+ *          (before processing of step EEEE, that is relevant for undo EEEE purpose)
+ *  EEEE.fileSnapshotAfter holds filename and content at time of push FFFF 
+ *          (e.g. after processing EEEE is finished, that is relevant for redo EEEE purpose)
+ *  EEEE.filenamePtr is rest to NULL
+ *
  */
 void
-gap_stb_undo_push_clip(GapStbTabWidgets *tabw, GapStoryFeatureEnum feature_id, gint32 story_id)
+gap_stb_undo_push_clip_with_file_snapshot(GapStbTabWidgets *tabw
+   , GapStoryFeatureEnum feature_id, gint32 story_id
+   , char **filenamePtr)
 {
   GapStoryBoard       *stb;
   GapStoryUndoElem    *new_undo_elem;
+  GapStoryUndoElem    *top_undo_elem;
 
 
   if(tabw == NULL)
@@ -478,6 +708,50 @@ gap_stb_undo_push_clip(GapStbTabWidgets *tabw, GapStoryFeatureEnum feature_id, g
   new_undo_elem = g_new(GapStoryUndoElem, 1);
   new_undo_elem->clip_story_id = story_id;
   new_undo_elem->feature_id = feature_id;
+
+  new_undo_elem->filenamePtr = NULL;
+  new_undo_elem->fileSnapshotBefore = NULL;
+  new_undo_elem->fileSnapshotAfter = NULL;
+  if(filenamePtr != NULL)
+  {
+    char *filename;
+    
+    new_undo_elem->filenamePtr = filenamePtr;
+    filename = *filenamePtr;
+    if(filename != NULL)
+    {
+      new_undo_elem->fileSnapshotBefore = p_create_file_snapshot(filename);
+    }
+  }
+  
+  top_undo_elem = tabw->undo_stack_list;
+  if (top_undo_elem != NULL)
+  {
+    if(top_undo_elem->filenamePtr != NULL)
+    {
+      char *filename;
+
+      /* at this point the top_undo_elem represents the previous step
+       * that just has been finished, since the next step (new_undo_elem)
+       * is ready to be pushed on the stack, and top_undo_elem->filenamePtr != NULL
+       * indicates that the previous step may have edited a file.
+       * now record this fileSnapshotAfter for redo purpose
+       * Note that both filename and content may have changed in the previous step
+       * since recording the fileSnapshotBefore.
+       */
+      filename = *top_undo_elem->filenamePtr;
+      if(filename != NULL)
+      {
+        top_undo_elem->fileSnapshotAfter = p_create_file_snapshot(filename);
+      }
+    }
+    /* clear the filenamePtr to disable multiple recording of fileSnapshotAfter
+     * Note that filenamePtr refers to a clip that may only exist until the next processing step
+     * that already can delete the clip (this can also happen in undo processing
+     * where the storyboard is replaced by a duplicate and the adress)
+     */
+    top_undo_elem->filenamePtr = NULL;
+  }
   
   new_undo_elem->next = tabw->undo_stack_list;
 
@@ -490,6 +764,32 @@ gap_stb_undo_push_clip(GapStbTabWidgets *tabw, GapStoryFeatureEnum feature_id, g
 
   gap_story_dlg_tabw_undo_redo_sensitivity(tabw);
   
+}  /* end gap_stb_undo_push_clip_with_file_snapshot */
+
+
+
+/* ---------------------------------------
+ * gap_stb_undo_push_clip
+ * ---------------------------------------
+ * create a new undo element (according to specified parameters)
+ * and place it at top (first) of the undo stack.
+ * if the stackpointer is NOT equal to the stack_list root,
+ * the delete all undo elements from stack_list up to stackpointer.
+ *
+ * move the stackpointer to next element. (keep the element
+ * on the stack for redo purpose)
+ *           
+ * stack_list -->DDDD                               
+ *               CCCC                                   EEEE <--- stack_ptr after push (EEEE)
+ *               BBBB  <-- stack_ptr before push(EEEE)  BBBB      (deletes CCCC, DDDD)
+ *               AAAA                                   AAAA
+ * --------------------------------------------------------------------------------
+ */
+void
+gap_stb_undo_push_clip(GapStbTabWidgets *tabw, GapStoryFeatureEnum feature_id, gint32 story_id)
+{
+  gap_stb_undo_push_clip_with_file_snapshot(tabw, feature_id, story_id, NULL);
+
 }  /* end gap_stb_undo_push_clip */
 
 

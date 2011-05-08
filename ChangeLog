@@ -1,3 +1,23 @@
+2011-05-08 Wolfgang Hofer <hof@gimp.org>
+
+- added edit button in the Storyboard attributes dialog
+  to pop up a movepath edit dialog window
+  for creation and edit of movepath settings.
+
+- handle undo / redo for edited movepath xml paramter file content
+  when edited via the new edit button in the Storyboard attributes dialog
+
+ * gap/gap_lib.c [.h]
+ * gap/gap_mov_dialog.c [.h]
+ * gap/gap_mov_exec.c
+ * gap/gap_story_att_trans_dlg.c
+ * gap/gap_story_main.h
+ * gap/gap_story_dialog.c
+ * gap/gap_story_undo.c [.h]
+ * gap/gap_story_undo_types.h
+ 
+
+
 2011-04-27 Wolfgang Hofer <hof@gimp.org>
 
 - fixed a bug in procedure gap_mov_xml_par_save that did write an invalid 

@@ -63,6 +63,7 @@ char*        gap_lib_alloc_basename(const char *imagename, long *number);
 char*        gap_lib_alloc_extension(const char *imagename);
 GapAnimInfo* gap_lib_alloc_ainfo_from_name(const char *imagename, GimpRunMode run_mode);
 GapAnimInfo* gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
+GapAnimInfo* gap_lib_alloc_ainfo_unsaved_image(gint32 image_id);
 int          gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr);
 int          gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr);
 int          gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr);

@@ -54,18 +54,32 @@ typedef enum
   } GapStoryFeatureEnum;
 
 
+/* storyboard undo file snapshot element
+ */
+typedef struct GapStoryUndoFileSnapshot {
+  char       *filename;
+  char       *filecontent;
+  gint32      filesize;
+  gint32      mtimefile;
+}  GapStoryUndoFileSnapshot;
+
+
+
 /* storyboard undo element
  */
 typedef struct GapStoryUndoElem {
-  GapStoryFeatureEnum  feature_id;     
+  GapStoryFeatureEnum  feature_id;
   gint32 clip_story_id;            /* -1 if feature modifies more than 1 clip */
-  GapStoryBoard       *stb;        /* storyboard backup before 
-                                    * feature with feature_id was applied 
+  GapStoryBoard       *stb;        /* storyboard backup before
+                                    * feature with feature_id was applied
                                     */
-  struct GapStoryUndoElem  *next;
+  GapStoryUndoFileSnapshot  *fileSnapshotBefore;
+  GapStoryUndoFileSnapshot  *fileSnapshotAfter;
+  char                     **filenamePtr;
+  struct GapStoryUndoElem   *next;
 }  GapStoryUndoElem;
 
 
 
 
-#endif 
+#endif

@@ -1353,6 +1353,46 @@ gap_lib_alloc_ainfo_from_name(const char *imagename, GimpRunMode run_mode)
 
 
 /* ============================================================================
+ * gap_lib_alloc_ainfo_unsaved_image
+ *
+ * allocate and init an ainfo structure from unsaved image.
+ * ============================================================================
+ */
+GapAnimInfo *
+gap_lib_alloc_ainfo_unsaved_image(gint32 image_id)
+{
+   GapAnimInfo   *l_ainfo_ptr;
+
+   l_ainfo_ptr = (GapAnimInfo*)g_malloc(sizeof(GapAnimInfo));
+   if(l_ainfo_ptr == NULL) return(NULL);
+
+   l_ainfo_ptr->basename = NULL;
+   l_ainfo_ptr->new_filename = NULL;
+   l_ainfo_ptr->extension = NULL;
+   l_ainfo_ptr->image_id = image_id;
+
+   l_ainfo_ptr->old_filename = NULL;
+
+   l_ainfo_ptr->ainfo_type = GAP_AINFO_IMAGE;
+   l_ainfo_ptr->extension = NULL;
+
+   l_ainfo_ptr->frame_nr = 0;
+   l_ainfo_ptr->curr_frame_nr = 0;
+   l_ainfo_ptr->first_frame_nr = -1;
+   l_ainfo_ptr->last_frame_nr = -1;
+   l_ainfo_ptr->frame_cnt = 0;
+   l_ainfo_ptr->run_mode = GIMP_RUN_NONINTERACTIVE;
+   l_ainfo_ptr->frame_nr_before_curr_frame_nr = -1;   /* -1 if no frame found before curr_frame_nr */
+   l_ainfo_ptr->frame_nr_after_curr_frame_nr = -1;    /* -1 if no frame found after curr_frame_nr */
+
+
+   return(l_ainfo_ptr);
+
+}    /* end gap_lib_alloc_ainfo_unsaved_image */
+
+
+
+/* ============================================================================
  * gap_lib_alloc_ainfo
  *
  * allocate and init an ainfo structure from the given image.

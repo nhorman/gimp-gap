@@ -296,13 +296,55 @@ typedef struct
   GtkWidget            *segLengthLabel;
   GtkWidget            *segSpeedLabel;
 
+  /* The movepath dialog has a RecordOnlyMode that is intended
+   * to edit and save parameter settings only.
+   *
+   * TRUE
+   *   (typically called from the storyboard for update xml file settings)
+   * - invoke from any image is tolerated
+   * - rendering of frames is DISABLED 
+   *   (Animated preview rendering is allowed)
+   * - frame range limits are 1 upto 999999.
+   * - the moving object (source image) is fixed by the caller,
+   *   stepmode is restricted to GAP_STEP_NONE
+   * - OK button triggers automatic save of the settings
+   *   to XML file in overwrite mode without confirm question
+   *   (but does not render anything)
+   *
+   * FALSE
+   *   (typically called as PDB procedure for productive render purpose)
+   * - invoke is limited to an image that represents a frame
+   *   (image with gap typical number part in the filename)
+   * - rendering of frames is enabled
+   * - frame range limits constraint to first and last frame number
+   *   found in frame imagefilenames on disc.
+   * - the moving object (source image) can be selected by the user
+   *   from the list of opened images in the current gimp session:
+   *   all stepmodes are available.
+   *
+   */
+  gboolean isRecordOnlyMode;
+  gboolean isStandaloneGui;
+  
+  t_close_movepath_edit_callback_fptr close_fptr;
+  gpointer callback_data;
+  
+  gchar        xml_paramfile[GAP_MOVPATH_XML_FILENAME_MAX_LENGTH];
+
 } t_mov_gui_stuff;
 
 
-/* Declare a local function.
+/* Declare local functions.
  */
-
-       long        gap_mov_dlg_move_dialog             (GapMovData *mov_ptr);
+static long        p_gap_mov_dlg_move_dialog(t_mov_gui_stuff *mgp
+                       , GapMovData *mov_ptr
+                       , gboolean isRecordOnlyMode
+                       , gboolean isStandaloneGui
+                       , t_close_movepath_edit_callback_fptr close_fptr
+                       , gpointer callback_data
+                       , gint32 nframes
+                       );
+static void        p_free_mgp_resources(t_mov_gui_stuff *mgp);
 static void        p_update_point_index_text (t_mov_gui_stuff *mgp);
 static void        p_set_sensitivity_by_adjustment(GtkAdjustment *adj, gboolean sensitive);
 static void        p_accel_widget_sensitivity(t_mov_gui_stuff *mgp);
@@ -479,31 +521,207 @@ static t_mov_interface mov_int =
 
 
 /* ============================================================================
- **********************
- *                    *
- *  Dialog interface  *
- *                    *
- **********************
+ ***********************
+ *                     *
+ *  Dialog interfaces  *
+ *                     *
+ ***********************
  * ============================================================================
  */
-
-long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
+long
+gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
 {
-  GimpDrawable *l_drawable_ptr;
-  gint       l_first, l_last;
-  char      *l_str;
   t_mov_gui_stuff *mgp;
+  gboolean isRecordOnlyMode;
+  gboolean isStandaloneGui;
+
 
   mgp = g_new( t_mov_gui_stuff, 1 );
+  mgp->shell = NULL;
+  mgp->pointfile_name = NULL;
+  
+  isRecordOnlyMode = FALSE;
+  isStandaloneGui = TRUE;
+  p_gap_mov_dlg_move_dialog(mgp, mov_ptr, isRecordOnlyMode, isStandaloneGui, NULL, NULL, 1);
+  p_free_mgp_resources(mgp);
+  g_free(mgp);
+
+  
+  if(mov_int.run == TRUE)
+  {
+    return 0;  /* OK */
+  }
+  return  -1;  /* Cancel or error occured */
+ 
+}
+
+
+/* ----------------------------------
+ * gap_mov_dlg_edit_movepath_dialog
+ * ----------------------------------
+ * This procedure creates and shows the movepath edit dialog as widget and returns
+ * the created widget.
+ * The caller shall provide close_fptr and callback_data. This function callback
+ * will be called on close of the widget.
+ * Note that resources refered by pvals, ainfo_ptr xml_paramfile
+ * must not be freed until the edit dialog is closed.
+ *
+ * This procedure is typically called be the Storyboard transition attributes dialog
+ */
+GtkWidget * 
+gap_mov_dlg_edit_movepath_dialog (gint32 frame_image_id, gint32 drawable_id
+   , const char *xml_paramfile
+   , GapAnimInfo *ainfo_ptr
+   , GapMovValues *pvals_edit
+   , t_close_movepath_edit_callback_fptr close_fptr
+   , gpointer callback_data
+   , gint32 nframes
+   )
+{
+  t_mov_gui_stuff *mgp;
+  gboolean isRecordOnlyMode;
+  gboolean isStandaloneGui;
+  GapMovData  l_mov_data;
+  gboolean isXmlLoadOk;
+  gboolean l_rc;
+
   if(gap_debug)
   {
-    printf("gap_mov_dlg_move_dialog START mgp:%d\n", (int)mgp);
+     printf("gap_mov_dlg_edit_movepath_dialog START frame_image_id:%d drawable_id:%d xml:%s\n"
+           " fptr:%d data:%d\n"
+      ,(int)frame_image_id
+      ,(int)drawable_id
+      ,xml_paramfile
+      ,(int)close_fptr
+      ,(int)callback_data
+      );
+  }
+
+  isRecordOnlyMode = TRUE;
+  isStandaloneGui = FALSE;
+
+
+  mgp = g_new( t_mov_gui_stuff, 1 );
+  mgp->shell = NULL;
+  mgp->pointfile_name = NULL;
+
+
+  pvals = pvals_edit;
+  
+  pvals->dst_image_id = frame_image_id;
+  pvals->bbp_pv = gap_bluebox_bbp_new(-1);
+
+  isXmlLoadOk = FALSE;
+  mgp->xml_paramfile[0] = '\0';
+  if(xml_paramfile[0] != '\0')
+  {
+    g_snprintf(mgp->xml_paramfile, sizeof(mgp->xml_paramfile), "%s", xml_paramfile);
+    mgp->pointfile_name  = g_strdup_printf("%s", xml_paramfile);
+ 
+    /* attempt to init settings in case the xml_paramfile
+     * already contains valid settings
+     */
+    isXmlLoadOk =  gap_mov_xml_par_load(xml_paramfile
+                                  , pvals
+                                  , gimp_image_width(frame_image_id)
+                                  , gimp_image_height(frame_image_id)
+                                  );
+  }
+
+  pvals->src_image_id = gimp_drawable_get_image(drawable_id);
+  pvals->src_layer_id = drawable_id;
+
+  if(isXmlLoadOk != TRUE)
+  {
+    pvals->src_handle = GAP_HANDLE_LEFT_TOP;
+    pvals->src_selmode = GAP_MOV_SEL_IGNORE;
+    pvals->src_paintmode = GIMP_NORMAL_MODE;
+    pvals->src_force_visible  = 1;
+    pvals->src_apply_bluebox  = 0;
+    pvals->bbp  = NULL;
+    pvals->bbp_pv  = NULL;
+    pvals->clip_to_img  = 0;
+    
+    pvals->step_speed_factor = 1.0;
+    pvals->tracelayer_enable = FALSE;
+    pvals->trace_opacity_initial = 100.0;
+    pvals->trace_opacity_desc = 80.0;
+    pvals->tween_steps = 0;
+    pvals->tween_opacity_initial = 80.0;
+    pvals->tween_opacity_desc = 80.0;
+
+    p_reset_points();
+  }
+
+
+  l_rc = FALSE;
+  if(ainfo_ptr != NULL)
+  {
+    l_mov_data.val_ptr = pvals_edit;
+    l_mov_data.singleFramePtr = NULL;
+    l_mov_data.val_ptr->cache_src_image_id = -1;
+    l_mov_data.dst_ainfo_ptr = ainfo_ptr;
+
+    p_gap_mov_dlg_move_dialog(mgp, &l_mov_data
+       , isRecordOnlyMode, isStandaloneGui
+       , close_fptr, callback_data
+       , nframes);
+  }
+
+  if(mgp->shell != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(mgp->shell));
+  }
+
+  if(gap_debug)
+  {
+    printf("gap_mov_dlg_edit_movepath_dialog DONE\n");
+  }
+
+  return(mgp->shell);
+
+}  /* end gap_mov_dlg_edit_movepath_dialog */
+
+
+/* ------------------------------------------
+ * p_gap_mov_dlg_move_dialog
+ * ------------------------------------------
+ *
+ */
+static long
+p_gap_mov_dlg_move_dialog(t_mov_gui_stuff *mgp
+   , GapMovData *mov_ptr
+   , gboolean isRecordOnlyMode
+   , gboolean isStandaloneGui
+   , t_close_movepath_edit_callback_fptr close_fptr
+   , gpointer callback_data
+   , gint32 nframes
+   )
+{
+  GimpDrawable *l_drawable_ptr;
+  gint       l_first;
+  gint       l_last;
+  gint       l_max;
+  gint       l_curr;
+  char      *l_str;
+
+  if(gap_debug)
+  {
+    printf("gap_mov_dlg_move_dialog START mgp:%d isRecordOnlyMode:%d isStandaloneGui:%d\n"
+      , (int)mgp
+      , (int)isRecordOnlyMode
+      , (int)isStandaloneGui
+      );
   }
   if(mgp == NULL)
   {
     printf("error can't alloc path_preview structure\n");
     return -1;
   }
+  mgp->close_fptr = close_fptr;
+  mgp->callback_data = callback_data;
+  mgp->isRecordOnlyMode = isRecordOnlyMode;
+  mgp->isStandaloneGui = isStandaloneGui;
   mgp->shell_initial_width = -1;
   mgp->shell_initial_height = -1;
   mgp->show_path = TRUE;
@@ -544,13 +762,47 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
 
   pvals = mov_ptr->val_ptr;
 
-  l_str = gap_base_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
-  mgp->pointfile_name  = g_strdup_printf("%s.path_points", l_str);
-  g_free(l_str);
+  
+  if(mgp->pointfile_name == NULL)
+  {
+    if(mov_ptr->dst_ainfo_ptr->basename != NULL)
+    {
+      l_str = gap_base_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
+      mgp->pointfile_name  = g_strdup_printf("%s.movepath.xml", l_str);
+      g_free(l_str);
+    }
+    else
+    {
+      mgp->pointfile_name = g_strdup("movepath.xml");
+    }
+  }
 
+  if(mgp->isRecordOnlyMode)
+  {
+    l_first = 1;
+    l_max  = 9999;
+    l_last = nframes;
+    l_curr  = 1;
 
-  l_first = mov_ptr->dst_ainfo_ptr->first_frame_nr;
-  l_last  = mov_ptr->dst_ainfo_ptr->last_frame_nr;
+    mov_ptr->dst_ainfo_ptr->first_frame_nr = 1;
+    mov_ptr->dst_ainfo_ptr->last_frame_nr = nframes;
+    mov_ptr->dst_ainfo_ptr->curr_frame_nr = 1;
+
+    pvals->src_stepmode = GAP_STEP_NONE;
+    pvals->src_selmode = GAP_MOV_SEL_IGNORE;
+  }
+  else
+  {
+    l_first = mov_ptr->dst_ainfo_ptr->first_frame_nr;
+    l_last  = mov_ptr->dst_ainfo_ptr->last_frame_nr;
+    l_curr  = mov_ptr->dst_ainfo_ptr->curr_frame_nr;
+    l_max   = l_last;
+    
+    pvals->src_image_id = -1;
+    pvals->src_layer_id = -1;
+    pvals->src_stepmode = GAP_STEP_LOOP;
+ 
+  }
 
   /* init parameter values */
   pvals->dst_image_id = mov_ptr->dst_ainfo_ptr->image_id;
@@ -561,25 +813,6 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   pvals->tmp_alt_framenr = -1;
   pvals->tween_image_id = -1;
   pvals->trace_image_id = -1;
-  pvals->src_image_id = -1;
-  pvals->src_layer_id = -1;
-  pvals->src_paintmode = GIMP_NORMAL_MODE;
-  pvals->src_handle = GAP_HANDLE_LEFT_TOP;
-  pvals->src_stepmode = GAP_STEP_LOOP;
-  pvals->src_selmode = GAP_MOV_SEL_IGNORE;
-  pvals->src_force_visible  = 1;
-  pvals->src_apply_bluebox  = 0;
-  pvals->bbp  = NULL;
-  pvals->bbp_pv  = NULL;
-  pvals->clip_to_img  = 0;
-
-  pvals->step_speed_factor = 1.0;
-  pvals->tracelayer_enable = FALSE;
-  pvals->trace_opacity_initial = 100.0;
-  pvals->trace_opacity_desc = 80.0;
-  pvals->tween_steps = 0;
-  pvals->tween_opacity_initial = 80.0;
-  pvals->tween_opacity_desc = 80.0;
 
   pvals->apv_mode  = GAP_APV_QUICK;
   pvals->apv_src_frame  = -1;
@@ -594,17 +827,37 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   pvals->cache_frame_number  = -1;
   pvals->cache_ainfo_ptr = NULL;
 
-  p_reset_points();
+  if(mgp->isRecordOnlyMode != TRUE)
+  {
+    pvals->src_handle = GAP_HANDLE_LEFT_TOP;
+    pvals->src_selmode = GAP_MOV_SEL_IGNORE;
+    pvals->src_paintmode = GIMP_NORMAL_MODE;
+    pvals->src_force_visible  = 1;
+    pvals->src_apply_bluebox  = 0;
+    pvals->bbp  = NULL;
+    pvals->bbp_pv  = NULL;
+    pvals->clip_to_img  = 0;
+    
+    pvals->step_speed_factor = 1.0;
+    pvals->tracelayer_enable = FALSE;
+    pvals->trace_opacity_initial = 100.0;
+    pvals->trace_opacity_desc = 80.0;
+    pvals->tween_steps = 0;
+    pvals->tween_opacity_initial = 80.0;
+    pvals->tween_opacity_desc = 80.0;
+
+    p_reset_points();
+  }
 
   /* pvals->point[1].p_x = 100; */  /* default: move from 0/0 to 100/0 */
 
-  pvals->dst_range_start = mov_ptr->dst_ainfo_ptr->curr_frame_nr;
+  pvals->dst_range_start = l_curr;
   pvals->dst_range_end   = l_last;
   pvals->dst_layerstack = 0;   /* 0 ... insert layer on top of stack */
 
   mgp->filesel = NULL;   /* fileselector is not open */
   mgp->ainfo_ptr            = mov_ptr->dst_ainfo_ptr;
-  mgp->preview_frame_nr     = mov_ptr->dst_ainfo_ptr->curr_frame_nr;
+  mgp->preview_frame_nr     = l_curr;
   mgp->old_preview_frame_nr = mgp->preview_frame_nr;
   mgp->point_index_frame = NULL;
 
@@ -625,14 +878,44 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   l_drawable_ptr = p_get_prevw_drawable(mgp);
 
   /* do DIALOG window */
-  mov_dialog(l_drawable_ptr, mgp, l_first, l_last);
-  p_points_to_tab(mgp);
+  mov_dialog(l_drawable_ptr, mgp, l_first, l_max);
 
+
+  if(gap_debug)
+  {
+    printf("GAP-DEBUG: END gap_mov_dlg_move_dialog\n");
+  }
+
+}  /* end p_gap_mov_dlg_move_dialog */
+
+
+/* --------------------------------
+ * p_free_mgp_resources
+ * --------------------------------
+ */
+static void
+p_free_mgp_resources(t_mov_gui_stuff *mgp)
+{
+  if(mgp == NULL)
+  {
+    return;
+  }
+  
+  if(gap_debug)
+  {
+    printf("p_free_mgp_resources START\n");
+  }
+  
   /* destroy the tmp image(s) */
-  gimp_image_delete(pvals->tmp_image_id);
+  if(pvals->tmp_image_id >= 0)
+  {
+    gimp_image_delete(pvals->tmp_image_id);
+    pvals->tmp_image_id = -1;
+  }
   if(pvals->tmp_alt_image_id >= 0)
   {
     gimp_image_delete(pvals->tmp_alt_image_id);
+    pvals->tmp_alt_image_id = -1;
   }
 
   /* delete the temp selection image */
@@ -644,17 +927,16 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   pvals->tmpsel_image_id = -1;
   pvals->tmpsel_channel_id = -1;
 
+  if(mgp->pointfile_name != NULL)
+  {
+    g_free(mgp->pointfile_name);
+    mgp->pointfile_name = NULL;
+  }
+
   /* remove timer if there is one */
   mov_remove_timer(mgp);
 
-  g_free(mgp);
-
-
-  if(gap_debug) printf("GAP-DEBUG: END gap_mov_dlg_move_dialog\n");
-
-  if(mov_int.run == TRUE)  return 0;
-  else                     return  -1;
-}
+}  /* end p_free_mgp_resources */
 
 
 /* ============================================================================
@@ -685,8 +967,11 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 
   if(gap_debug) printf("GAP-DEBUG: START mov_dialog\n");
 
-  gimp_ui_init ("gap_move", FALSE);
-  gap_stock_init();
+  if(mgp->isStandaloneGui)
+  {
+    gimp_ui_init ("gap_move", FALSE);
+    gap_stock_init();
+  }
 
 #ifdef MOVE_PATH_LAYOUT_BIG_PREVIEW
   vertical_layout = TRUE;
@@ -700,7 +985,14 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   mgp->first_nr = first_nr;
   mgp->last_nr = last_nr;
 
-  gtk_window_set_title (GTK_WINDOW (dlg), _("Move Path"));
+  if(mgp->isRecordOnlyMode)
+  {
+    gtk_window_set_title (GTK_WINDOW (dlg), _("Move Path Editor"));
+  }
+  else
+  {
+    gtk_window_set_title (GTK_WINDOW (dlg), _("Move Path"));
+  }
   gtk_window_set_position (GTK_WINDOW (dlg), GTK_WIN_POS_MOUSE);
   g_signal_connect (G_OBJECT (dlg), "destroy",
                     G_CALLBACK (mov_close_callback),
@@ -861,9 +1153,12 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                     G_CALLBACK (mov_shell_window_size_allocate),
                     mgp);
 
-  gtk_main ();
-  gdk_flush ();
-
+  if(mgp->isStandaloneGui)
+  {
+    gtk_main ();
+    gdk_flush ();
+  }
+  
   if(gap_debug) printf("GAP-DEBUG: END mov_dialog\n");
 
   return mov_int.run;
@@ -905,7 +1200,25 @@ mov_close_callback (GtkWidget *widget,
 {
   if(mgp)
   {
+    if(mgp->shell)
+    {
+      p_points_to_tab(mgp);
+      if(mgp->close_fptr != NULL)
+      {
+
+        if(gap_debug)
+        {
+          printf("calling close_fptr close notification\n");
+        }
+        /* run the callback procedure (that was provided by the caller)
+         * to notify the caller about closing of the movepath dialog
+         */
+        (*mgp->close_fptr)(mgp->callback_data);
+      }
+    }
+
     mov_remove_timer(mgp);
+
 
     if(mgp->shell)
     {
@@ -920,11 +1233,29 @@ mov_close_callback (GtkWidget *widget,
         * (for this reason the mgp->shell is set to NULL
         *  before the gtk_widget_destroy call)
         */
+      gtk_widget_hide (l_shell);
       gtk_widget_destroy (l_shell);
+      p_free_mgp_resources(mgp);
+    }
+    
+    if(mgp->isStandaloneGui)
+    {
+      if(gap_debug)
+      {
+        printf("mov_close_callback isStandaloneGui == TRUE, calling gtk_main_quit\n");
+      }
+      gtk_main_quit ();
     }
   }
-
-  gtk_main_quit ();
+  else
+  {
+    if(gap_debug)
+    {
+      printf("mov_close_callback mgp is NULL, calling gtk_main_quit\n");
+    }
+    gtk_main_quit ();
+  }
+  
 }  /* end mov_close_callback */
 
 
@@ -932,8 +1263,30 @@ static void
 mov_ok_callback (GtkWidget *widget,
                  t_mov_gui_stuff *mgp)
 {
+
   if(pvals != NULL)
   {
+    if(mgp != NULL)
+    {
+      if(mgp->isRecordOnlyMode == TRUE)
+      {
+        if(mgp->xml_paramfile[0] != '\0')
+        {
+          gint l_rc;
+          if(gap_debug)
+          {
+            printf("Saving xml_paramfile:%s\n", mgp->xml_paramfile);
+          }
+          l_rc = gap_mov_xml_par_save(mgp->xml_paramfile, pvals);
+          if(l_rc != 0)
+          {
+            printf("** Error failed to save xml_paramfile:%s\n", mgp->xml_paramfile);
+          }
+        }
+      }
+    }
+
+
     if(!mov_check_valid_src_layer(mgp))
     {
       return;
@@ -946,6 +1299,7 @@ mov_ok_callback (GtkWidget *widget,
   }
 
   mov_int.run = TRUE;
+
 
   if(pvals->point_idx_max == 0)
   {
@@ -973,23 +1327,51 @@ mov_upvw_callback (GtkWidget *widget,
   gint32              l_new_tmp_image_id;
   gint32              l_old_tmp_image_id;
 
-  if(gap_debug) printf("mov_upvw_callback nr: %d old_nr: %d\n",
-         (int)mgp->preview_frame_nr , (int)mgp->old_preview_frame_nr);
-
-  l_frame_nr = (long)mgp->preview_frame_nr;
-  l_filename = gap_lib_alloc_fname(mgp->ainfo_ptr->basename,
+  if(gap_debug)
+  {
+    printf("mov_upvw_callback nr: %d old_nr: %d\n"
+         , (int)mgp->preview_frame_nr
+         , (int)mgp->old_preview_frame_nr
+         );
+  }
+  l_filename = NULL;
+  
+  if(mgp->ainfo_ptr->ainfo_type == GAP_AINFO_FRAMES)
+  {
+    if(gap_debug)
+    {
+      printf("mov_upvw_callback ainfo_type == GAP_AINFO_FRAMES nr: %d old_nr: %d\n"
+           , (int)mgp->preview_frame_nr
+           , (int)mgp->old_preview_frame_nr
+           );
+    }
+    l_frame_nr = (long)mgp->preview_frame_nr;
+    l_filename = gap_lib_alloc_fname(mgp->ainfo_ptr->basename,
                              l_frame_nr,
                              mgp->ainfo_ptr->extension);
+  }
+  else
+  {
+    if(gap_debug)
+    {
+      printf("mov_upvw_callback ainfo_type != GAP_AINFO_FRAMES using image_id %d\n"
+           , (int)mgp->ainfo_ptr->image_id
+           );
+    }
+  }
+  
+  
+  if(!mgp->instant_apply)
+  {
+     /* dont show waiting cursor at instant_apply
+      * (cursor flickering is boring on fast machines,
+      *  and users with slow machines should not touch instant_apply at all)
+      */
+     mov_set_waiting_cursor(mgp);
+  }
+
   if(l_filename != NULL)
   {
-     if(!mgp->instant_apply)
-     {
-       /* dont show waiting cursor at instant_apply
-        * (cursor flickering is boring on fast machines,
-        *  and users with slow machines should not touch instant_apply at all)
-        */
-       mov_set_waiting_cursor(mgp);
-     }
      /* replace the temporary image */
      if(mgp->preview_frame_nr  == mgp->ainfo_ptr->curr_frame_nr)
      {
@@ -1022,34 +1404,47 @@ mov_upvw_callback (GtkWidget *widget,
      gimp_image_undo_disable(l_new_tmp_image_id);
 
      g_free(l_filename);
-     if (l_new_tmp_image_id >= 0)
-     {
-        /* use the new loaded temporary image */
-        l_old_tmp_image_id  = pvals->tmp_image_id;
-        pvals->tmp_image_id = l_new_tmp_image_id;
-
-        /* flatten image, and get the (only) resulting drawable */
-        mgp->drawable = p_get_prevw_drawable(mgp);
-
-        /* gimp_display_new(pvals->tmp_image_id); */ /* add a display for debugging only */
-
-        /* re initialize preview image */
-        mov_path_prevw_preview_init(mgp);
-        p_point_refresh(mgp);
-
-        mgp->old_preview_frame_nr = mgp->preview_frame_nr;
-
-        gtk_widget_queue_draw(mgp->pv_ptr->da_widget);
-        mov_path_prevw_draw ( mgp, CURSOR | PATH_LINE );
-        gdk_flush();
-
-        /* destroy the old tmp image */
-        gimp_image_delete(l_old_tmp_image_id);
-
-        mgp->instant_apply_request = FALSE;
-     }
-     mov_set_active_cursor(mgp);
   }
+  else
+  {
+    /* in case move path dialog was not called from a frame image
+     * always show up the image from where the dialog was invoked from
+     * as frame (and ignore the preview_frame_nr setting)
+     */
+    l_new_tmp_image_id = gimp_image_duplicate(mgp->ainfo_ptr->image_id);
+  }
+     
+     
+     
+  if (l_new_tmp_image_id >= 0)
+  {
+     /* use the new loaded temporary image */
+     l_old_tmp_image_id  = pvals->tmp_image_id;
+     pvals->tmp_image_id = l_new_tmp_image_id;
+
+     /* flatten image, and get the (only) resulting drawable */
+     mgp->drawable = p_get_prevw_drawable(mgp);
+
+     /* gimp_display_new(pvals->tmp_image_id); */ /* add a display for debugging only */
+
+     /* re initialize preview image */
+     mov_path_prevw_preview_init(mgp);
+     p_point_refresh(mgp);
+
+     mgp->old_preview_frame_nr = mgp->preview_frame_nr;
+
+     gtk_widget_queue_draw(mgp->pv_ptr->da_widget);
+     mov_path_prevw_draw ( mgp, CURSOR | PATH_LINE );
+     gdk_flush();
+
+     /* destroy the old tmp image */
+     gimp_image_delete(l_old_tmp_image_id);
+
+     mgp->instant_apply_request = FALSE;
+  }
+
+  mov_set_active_cursor(mgp);
+
 }  /* end mov_upvw_callback */
 
 
@@ -2201,7 +2596,10 @@ p_points_load_from_file (GtkWidget *widget,
 {
   const gchar        *filename;
 
-  if(gap_debug) printf("p_points_load_from_file\n");
+  if(gap_debug)
+  {
+    printf("p_points_load_from_file\n");
+  }
   if(mgp->filesel == NULL)
   {
     return;
@@ -2211,7 +2609,10 @@ p_points_load_from_file (GtkWidget *widget,
   g_free(mgp->pointfile_name);
   mgp->pointfile_name = g_strdup(filename);
 
-  if(gap_debug) printf("p_points_load_from_file %s\n", mgp->pointfile_name);
+  if(gap_debug)
+  {
+    printf("p_points_load_from_file %s\n", mgp->pointfile_name);
+  }
 
   gtk_widget_destroy(GTK_WIDGET(mgp->filesel));
   mgp->filesel = NULL;
@@ -2232,7 +2633,10 @@ p_points_save_to_file (GtkWidget *widget,
 {
   const gchar        *filename;
 
-  if(gap_debug) printf("p_points_save_to_file\n");
+  if(gap_debug)
+  {
+    printf("p_points_save_to_file\n");
+  }
   if(mgp->filesel == NULL)
   {
     return;  /* filesel is already open */
@@ -2242,7 +2646,10 @@ p_points_save_to_file (GtkWidget *widget,
   g_free(mgp->pointfile_name);
   mgp->pointfile_name = g_strdup(filename);
 
-  if(gap_debug) printf("p_points_save_to_file %s\n", mgp->pointfile_name);
+  if(gap_debug)
+  {
+    printf("p_points_save_to_file %s\n", mgp->pointfile_name);
+  }
 
   gtk_widget_destroy(GTK_WIDGET(mgp->filesel));
   mgp->filesel = NULL;
@@ -2694,6 +3101,11 @@ mov_install_timer(t_mov_gui_stuff *mgp)
 static void
 mov_remove_timer(t_mov_gui_stuff *mgp)
 {
+  if(mgp == NULL)
+  {
+    return;
+  }
+  
   if(mgp->instant_timertag >= 0)
   {
     g_source_remove(mgp->instant_timertag);
@@ -2873,7 +3285,22 @@ p_points_from_tab(t_mov_gui_stuff *mgp)
 static void
 p_points_to_tab(t_mov_gui_stuff *mgp)
 {
-  if(gap_debug) printf("p_points_to_tab: idx=%d, rotation=%f\n", (int)pvals->point_idx , (float)mgp->rotation);
+  if(mgp == NULL)
+  {
+    return;
+  }
+  if(pvals == NULL)
+  {
+    return;
+  }
+
+  if(gap_debug)
+  {
+    printf("p_points_to_tab: idx=%d, rotation=%f\n"
+       , (int)pvals->point_idx
+       , (float)mgp->rotation
+       );
+  }
 
   pvals->point[pvals->point_idx].p_x       = mgp->p_x;
   pvals->point[pvals->point_idx].p_y       = mgp->p_y;
@@ -3235,8 +3662,17 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 
   gtk_widget_show(combo);
   mgp->src_layer_combo = combo;
-  mov_refresh_src_layer_menu(mgp);
-  gtk_widget_show(combo);
+  
+  if(mgp->isRecordOnlyMode)
+  {
+    gtk_widget_hide(label);
+    gtk_widget_hide(combo);
+  }
+  else
+  {
+    mov_refresh_src_layer_menu(mgp);
+    gtk_widget_show(combo);
+  }
 
 
   /* Paintmode combo (menu) */
@@ -3246,7 +3682,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1, GTK_FILL, 0, 4, 0);
   gtk_widget_show(label);
 
-   combo = gimp_int_combo_box_new (_("Normal"),         GIMP_NORMAL_MODE,
+  combo = gimp_int_combo_box_new (_("Normal"),         GIMP_NORMAL_MODE,
                                    _("Dissolve"),       GIMP_DISSOLVE_MODE,
                                    _("Behind"),         GIMP_BEHIND_MODE,
                                    _("Multiply"),       GIMP_MULTIPLY_MODE,
@@ -3272,10 +3708,22 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                    _("Keep Paintmode"), GAP_MOV_KEEP_SRC_PAINTMODE,
                                    NULL);
 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
-                              GIMP_NORMAL_MODE,              /* initial int value */
+  {
+    gint initialValue;
+    initialValue = GIMP_NORMAL_MODE;
+    
+    if(pvals)
+    {
+      initialValue = pvals->src_paintmode;
+    }
+    
+    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              initialValue,
                               G_CALLBACK (mov_paintmode_menu_callback),
                               mgp);
+    
+  }
+
   gtk_table_attach(GTK_TABLE(table), combo, 3, 4, 0, 1,
                    GTK_EXPAND | GTK_FILL, 0, 0, 0);
   gimp_help_set_help_data(combo,
@@ -3323,7 +3771,17 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                     G_CALLBACK (gimp_double_adjustment_update),
                     &pvals->step_speed_factor);
   mgp->step_speed_factor_adj = GTK_ADJUSTMENT(adj);
-
+  
+  if(mgp->isRecordOnlyMode)
+  {
+    GtkWidget *widget;
+    
+    widget = g_object_get_data(G_OBJECT (adj), "label");
+    gtk_widget_hide(widget);
+    widget = g_object_get_data(G_OBJECT (adj), "spinbutton");
+    gtk_widget_hide(widget);
+    
+  }
 
 
   /* Loop Stepmode combo  */
@@ -3341,17 +3799,35 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                   _("Frame None"),           GAP_STEP_FRAME_NONE,
                                   NULL);
 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+  if(mgp->isRecordOnlyMode)
+  {
+    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              GAP_STEP_NONE,              /* initial int value */
+                              G_CALLBACK (mov_stepmode_menu_callback),
+                              mgp);
+  }
+  else
+  {
+    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_STEP_LOOP,              /* initial int value */
                               G_CALLBACK (mov_stepmode_menu_callback),
                               mgp);
-
+  }
+  
   gtk_table_attach(GTK_TABLE(sub_table), combo, 0, 1, 0, 1,
                    GTK_EXPAND | GTK_FILL, 0, 0, 0);
   gimp_help_set_help_data(combo,
                        _("How to fetch the next source layer at the next handled frame")
                        , NULL);
-  gtk_widget_show(combo);
+  if(mgp->isRecordOnlyMode)
+  {
+    gtk_widget_hide(label);
+    gtk_widget_hide(combo);
+  }
+  else
+  {
+    gtk_widget_show(combo);
+  }
   mgp->stepmode_combo = combo;
 
 
@@ -3369,11 +3845,30 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                   _("Center"),        GAP_HANDLE_CENTER,
                                   NULL);
 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
-                              GAP_HANDLE_LEFT_TOP,              /* initial int value */
+  
+  {
+    gint initialValue;
+
+    initialValue = GAP_HANDLE_LEFT_TOP;
+    if(pvals)
+    {
+      switch(pvals->src_handle)
+      {
+        case GAP_HANDLE_LEFT_TOP:
+        case GAP_HANDLE_LEFT_BOT:
+        case GAP_HANDLE_RIGHT_TOP:
+        case GAP_HANDLE_RIGHT_BOT:
+        case GAP_HANDLE_CENTER:
+          initialValue = pvals->src_handle;
+          break;
+      }
+    }
+    
+    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              initialValue,
                               G_CALLBACK (mov_handmode_menu_callback),
                               mgp);
-
+  }
 
   gtk_table_attach(GTK_TABLE(table), combo, 3, 4, 1, 2,
                    GTK_EXPAND | GTK_FILL, 0, 0, 0);
@@ -3393,7 +3888,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
  * Create set of widgets for the advanced Move Path features
  *   A frame that contains:
  *   in the 1.st row
- *   - 3x spionbutton  for tween_steps, tween_opacity_init, tween_opacity_desc
+ *   - 3x spinbutton  for tween_steps, tween_opacity_init, tween_opacity_desc
  *   in the 2.nd row
  *   - checkbutton  make_tracelayer
  *   - 2x spinbutton   for trace_opacity_initial, trace_opacity_desc
@@ -3902,7 +4397,6 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 {
   GtkWidget *master_table;
   GtkWidget *table;
-  //GtkObject *adj;
   GtkAdjustment *adj;
   GtkWidget *check_button;
   gint  master_rows;
@@ -5038,6 +5532,28 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                     G_CALLBACK (mov_instant_int_adjustment_update),
                     &mgp->preview_frame_nr);
   mgp->preview_frame_nr_adj = GTK_ADJUSTMENT(adj);
+  
+  if(mgp->ainfo_ptr->ainfo_type != GAP_AINFO_FRAMES)
+  {
+    GtkWidget *widget;
+
+    widget = GTK_WIDGET(g_object_get_data (G_OBJECT (adj), "label"));
+    if(widget)
+    {
+      gtk_widget_hide(widget);
+    }
+    widget = GTK_WIDGET(g_object_get_data (G_OBJECT (adj), "spinbutton"));
+    if(widget)
+    {
+      gtk_widget_hide(widget);
+    }
+    widget = GTK_WIDGET(g_object_get_data (G_OBJECT (adj), "scale"));
+    if(widget)
+    {
+      gtk_widget_hide(widget);
+    }
+    
+  }
 
 
   gtk_table_attach( GTK_TABLE(pv_table), pv_sub_table, 0, 1, 3, 4,
@@ -5825,6 +6341,7 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
   gint      l_nlayers;
 
   l_curr.isSingleFrame = FALSE;
+  l_curr.singleMovObjLayerId = pvals->src_layer_id;
 
   /* check if we have a source layer (to add to the preview) */
   if((pvals->src_layer_id >= 0) && (pvals->src_image_id >= 0))
@@ -5898,7 +6415,6 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
        gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, pvals, l_all_empty);
      }
     }
-
 
     /* set offsets (in cur_ptr)
      *  according to handle_mode and src_img dimension (pvals)

@@ -52,6 +52,8 @@
 #include "gap_timeconv.h"
 #include "gap_layer_copy.h"
 #include "gap_accel_da.h"
+#include "gap_mov_dialog.h"
+#include "gap_mov_exec.h"
 
 
 #include "gap-intl.h"
@@ -223,6 +225,11 @@ static void     p_attw_movepath_filesel_pw_close_cb ( GtkWidget *widget
                       , GapStbAttrWidget *attw);
 static void     p_attw_movepath_filesel_button_cb ( GtkWidget *w
                        , GapStbAttrWidget *attw);
+
+static void     p_create_movepath_edit_resources(GapStbAttrWidget *attw);
+static void     p_edit_movepath_closed_callback(gpointer ptr);
+static void     p_attw_movepath_edit_button_cb ( GtkWidget *w
+                       , GapStbAttrWidget *attw);
 static void     p_attw_movepath_file_validity_check(GapStbAttrWidget *attw);
 static void     p_attw_movepath_file_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw);
 static void     p_attw_comment_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw);
@@ -324,6 +331,13 @@ p_attw_prop_response(GtkWidget *widget
           /* force close in case file selection dialog is still open */
           p_attw_movepath_filesel_pw_close_cb(attw->movepath_filesel, attw);
         }
+        
+        if(attw->movepath_edit_dialog != NULL)
+        {
+          /* force close of the movepath edit dialog that is still open */
+          gtk_widget_destroy(attw->movepath_edit_dialog);
+          attw->movepath_edit_dialog = NULL;
+        }
       
         p_delete_gfx_images(attw);
         if(attw->go_timertag >= 0)
@@ -356,9 +370,10 @@ p_attw_push_undo_and_set_unsaved_changes(GapStbAttrWidget *attw)
   {
     if((attw->stb_elem_refptr != NULL) && (attw->stb_refptr != NULL))
     {
-      gap_stb_undo_push_clip(attw->tabw
+      gap_stb_undo_push_clip_with_file_snapshot(attw->tabw
           , GAP_STB_FEATURE_PROPERTIES_TRANSITION
           , attw->stb_elem_refptr->story_id
+          , &attw->stb_elem_refptr->att_movepath_file_xml
           );
 
       attw->stb_refptr->unsaved_changes = TRUE;
@@ -589,6 +604,17 @@ p_attw_update_sensitivity(GapStbAttrWidget *attw)
   sensitive = ((attw->stb_elem_refptr->att_fit_width == TRUE)
             || (attw->stb_elem_refptr->att_fit_height == TRUE));
   gtk_widget_set_sensitive(attw->keep_proportions_toggle, sensitive);
+  
+  sensitive = FALSE;
+  if(attw->stb_elem_refptr->att_movepath_file_xml != NULL)
+  {
+    if(attw->stb_elem_refptr->att_movepath_file_xml[0] != '\0')
+    {
+      sensitive = TRUE;
+    }
+  }
+
+  gtk_widget_set_sensitive(attw->movepath_edit_button, sensitive);
 
 }  /* end p_attw_update_sensitivity */
 
@@ -2758,7 +2784,15 @@ p_attw_movepath_filesel_button_cb ( GtkWidget *w
      gtk_window_present(GTK_WINDOW(attw->movepath_filesel));
      return;   /* filesel is already open */
   }
-  if(attw->stb_elem_refptr == NULL) { return; }
+  if(attw->movepath_edit_dialog != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(attw->movepath_edit_dialog));
+     return;   /* edit dialog is already open */
+  }
+  if(attw->stb_elem_refptr == NULL)
+  {
+    return;
+  }
 
   filesel = gtk_file_selection_new ( _("Set Movepath Parameterfile (XML)"));
   attw->movepath_filesel = filesel;
@@ -2786,6 +2820,204 @@ p_attw_movepath_filesel_button_cb ( GtkWidget *w
 
 
 /* ==================================================== END MOVEPATH FILESEL stuff ======  */
+
+/* -----------------------------------------
+ * p_create_movepath_edit_resources
+ * -----------------------------------------
+ * create frame_image, moving object image
+ * ainfo and pvals resources that are used
+ * to call the movepath edit dialog.
+ */
+static void
+p_create_movepath_edit_resources(GapStbAttrWidget *attw)
+{
+  gint32   image_id;
+  gint32   bg_layer_id;
+  gint32   origsize_layer_id;
+  
+  /* create the frame image */
+  image_id = gimp_image_new(attw->stb_refptr->master_width
+                           ,attw->stb_refptr->master_height
+                           ,GIMP_RGB
+                           );
+  attw->movepath_frame_image_id = image_id;
+  gimp_image_undo_disable (image_id);
+ 
+  /* add a transparent layer */ 
+  bg_layer_id = gimp_layer_new(image_id
+                  , "background"
+                  , gimp_image_width(image_id)
+                  , gimp_image_height(image_id)
+                  , GIMP_RGBA_IMAGE
+                  , 100.0   /* opacity */
+                  , 0       /* normal mode */
+                  );
+  gimp_image_add_layer (image_id, bg_layer_id, 0);
+  gap_layer_clear_to_color(bg_layer_id, 0.0, 0.0, 0.0, 0.0);
+  gimp_drawable_set_visible(bg_layer_id, TRUE);
+
+  // TODO: in case the storyboard has more tracks
+  // the frame image should be rendered by the storyboard processor at master size
+  // based on a modified storyboard that contains only tracks that render behind the current track 
+
+  
+  /* create an image that holds the moving object layer */
+  origsize_layer_id = attw->gfx_tab[0].orig_layer_id;
+  attw->movepath_obj_image_id = gimp_image_new( gimp_drawable_width(origsize_layer_id)
+                       , gimp_drawable_height(origsize_layer_id)
+                       , GIMP_RGB
+                       );
+  gimp_image_undo_disable (attw->movepath_obj_image_id);
+  attw->movepath_obj_layer_id = gimp_layer_new_from_drawable(origsize_layer_id, attw->movepath_obj_image_id);
+  gimp_image_add_layer (attw->movepath_obj_image_id, attw->movepath_obj_layer_id, 0);
+  gimp_drawable_set_visible(attw->movepath_obj_layer_id, TRUE);
+
+
+  /* create default values for movepath 
+   * (will be overwritten in case xml_paramfile contains already valid settings)
+   */
+  attw->pvals = gap_mov_exec_new_GapMovValues();
+  attw->pvals->dst_image_id = attw->movepath_frame_image_id;
+
+  attw->ainfo_ptr = gap_lib_alloc_ainfo_unsaved_image(attw->movepath_frame_image_id);
+  
+}  /* end p_create_movepath_edit_resources */
+
+
+/* -----------------------------------------
+ * p_edit_movepath_closed_callback
+ * -----------------------------------------
+ * is called on close of the movepath edit dialog
+ */
+static void
+p_edit_movepath_closed_callback(gpointer ptr)
+{
+  GapStbAttrWidget *attw;
+  
+  attw = (GapStbAttrWidget *)ptr;
+  
+  if(attw != NULL)
+  {
+    if(gap_debug)
+    {
+      printf("p_edit_movepath_closed_callback frame_image_id:%d obj_image_id:%d\n"
+        ,(int)attw->movepath_frame_image_id
+        ,(int)attw->movepath_obj_image_id
+	);
+    }
+    attw->movepath_edit_dialog = NULL;
+    
+    if(attw->pvals != NULL)
+    {
+      g_free(attw->pvals);
+      attw->pvals = NULL;
+    }
+    
+    if(attw->ainfo_ptr != NULL)
+    {
+      gap_lib_free_ainfo(&attw->ainfo_ptr);
+      attw->ainfo_ptr = NULL;
+    }
+    
+    if(attw->movepath_frame_image_id >= 0)
+    {
+      gimp_image_delete(attw->movepath_frame_image_id);
+      attw->movepath_frame_image_id = -1;
+    }
+
+    if(attw->movepath_obj_image_id >= 0)
+    {
+      gimp_image_delete(attw->movepath_obj_image_id);
+      attw->movepath_obj_image_id = -1;
+    }
+    p_attw_movepath_file_validity_check(attw);
+    p_update_full_preview_gfx(attw);
+    
+    /* make attributes dialog sensitive again (after movepath edit dialog was closed) */ 
+    gtk_widget_set_sensitive(attw->attw_prop_dialog, TRUE);
+
+  }
+  
+}  /* end p_edit_movepath_closed_callback */
+
+
+
+/* ---------------------------------
+ * p_attw_movepath_edit_button_cb
+ * ---------------------------------
+ * invoke the movepath editor dialog window
+ * (in case it is not yet open
+ * and the file selection dialog is not open)
+ */
+static void
+p_attw_movepath_edit_button_cb ( GtkWidget *w
+                       , GapStbAttrWidget *attw)
+{
+  gint32 nframes;
+  
+  if(attw->attw_prop_dialog == NULL)
+  {
+     return;
+  }
+
+  if(attw->movepath_filesel != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(attw->movepath_filesel));
+     return;   /* filesel is already open */
+  }
+  if(attw->stb_elem_refptr == NULL)
+  {
+    return;
+  }
+
+  if(attw->movepath_edit_dialog != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(attw->movepath_edit_dialog));
+     return;   /* edit dialog is already open */
+  }
+
+  if(attw->stb_elem_refptr->att_movepath_file_xml == NULL)
+  {
+    return;
+  }
+  if(attw->stb_elem_refptr->att_movepath_file_xml[0] == '\0')
+  {
+    return;
+  }
+
+  p_attw_push_undo_and_set_unsaved_changes(attw);
+  p_create_movepath_edit_resources(attw);
+
+  if(gap_debug)
+  {
+      printf("p_attw_movepath_edit_button_cb frame_image_id:%d obj_image_id:%d obj_layer_id:%d attw:%d\n"
+        ,(int)attw->movepath_frame_image_id
+        ,(int)attw->movepath_obj_image_id
+	,(int)attw->movepath_obj_layer_id
+	,(int)attw
+	);
+  }
+
+
+  /* make attributes dialog insensitive (while movepath edit dialog is open) */
+  gtk_widget_set_sensitive(attw->attw_prop_dialog, FALSE);
+
+  nframes = MAX(attw->stb_elem_refptr->att_arr_value_to[GAP_STB_ATT_TYPE_MOVEPATH]
+               ,attw->stb_elem_refptr->att_arr_value_from[GAP_STB_ATT_TYPE_MOVEPATH]);
+
+  attw->movepath_edit_dialog = gap_mov_dlg_edit_movepath_dialog(
+                                   attw->movepath_frame_image_id
+                                 , attw->movepath_obj_layer_id
+                                 , attw->stb_elem_refptr->att_movepath_file_xml
+                                 , attw->ainfo_ptr
+                                 , attw->pvals
+                                 , p_edit_movepath_closed_callback
+                                 ,(gpointer)attw
+                                 , nframes
+                                 );
+
+}  /* end p_attw_movepath_edit_button_cb */
+
 
 /* ------------------------------------
  * p_attw_movepath_file_validity_check
@@ -3283,6 +3515,12 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   if(tabw == NULL) { return (NULL); }
 
   attw->movepath_filesel = NULL;
+  attw->movepath_edit_dialog = NULL;
+  attw->ainfo_ptr = NULL;
+  attw->pvals = NULL;
+  attw->movepath_frame_image_id = -1;
+  attw->movepath_obj_image_id = -1;
+  attw->movepath_obj_layer_id = -1;
 
   if(attw->stb_elem_bck)
   {
@@ -3305,6 +3543,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
+  gtk_window_set_type_hint (dlg, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   attw->attw_prop_dialog = dlg;
 
@@ -3722,6 +3961,16 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     gtk_table_attach_defaults (GTK_TABLE(table), button, 8, 10, row, row+1);
     g_signal_connect(G_OBJECT(button), "clicked",
                      G_CALLBACK(p_attw_movepath_filesel_button_cb),
+                     attw);
+    gtk_widget_show (button);
+
+    
+    /* the movepath record/edit dialog invoker button */
+    button = gtk_button_new_with_label ("edit");
+    attw->movepath_edit_button = button;
+    gtk_table_attach_defaults (GTK_TABLE(table), button, 10, 11, row, row+1);
+    g_signal_connect(G_OBJECT(button), "clicked",
+                     G_CALLBACK(p_attw_movepath_edit_button_cb),
                      attw);
     gtk_widget_show (button);
     

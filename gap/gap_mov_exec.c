@@ -2632,6 +2632,16 @@ p_mov_execute(GapMovData *mov_ptr)
  * gap_mov_exec_anim_preview
  *   Generate an animated preview for the move path
  * ============================================================================
+ * the animate preview is rendered as new multilayer image
+ * where each processed frame results in one layer.
+ * processing can be done on empty frame, multiple copies of one frame
+ * or by reading all affected frames as input (from frame images on disc)
+ * Note that animated preview can be rendered at original size
+ * or downscaled to a percentage less than 100%
+ *
+ * In case ainfo_ptr refers to an image that is not part of a sequence
+ * of frameimages (stored on disc) a copy of the invoke image (ainfo_ptr->image_id)
+ * will be used as input instead of reading frame images from disc.
  */
 gint32
 gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint preview_frame_nr)
@@ -2774,23 +2784,56 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
            , (int) l_pvals->apv_mlayer_image);
   }
 
-  /* APV_MODE (Wich frames to use in the preview?)  */
-  switch(l_pvals->apv_mode)
+  l_tmp_frame_id = -1;
+
   {
     gchar *l_filename;
+    gboolean useOneFrame;
 
-    case GAP_APV_QUICK:
-      /* use an empty dummy frame for all frames */
-      l_tmp_frame_id = gimp_image_new(l_width, l_height,l_type);
-      gimp_image_set_resolution(l_tmp_frame_id, l_xresoulution, l_yresoulution);
-      gimp_image_undo_disable (l_tmp_frame_id);
-      break;
-    case GAP_APV_ONE_FRAME:
-      /* use only one frame in the preview */
-      l_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+    useOneFrame = FALSE;
+    l_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                  preview_frame_nr,
                                  ainfo_ptr->extension);
-      l_tmp_frame_id =  gap_lib_load_image(l_filename);
+
+    /* APV_MODE (Wich frames to use in the preview?)  */
+    switch(l_pvals->apv_mode)
+    {
+      case GAP_APV_QUICK:
+        /* use an empty dummy frame for all frames */
+        l_tmp_frame_id = gimp_image_new(l_width, l_height,l_type);
+        gimp_image_set_resolution(l_tmp_frame_id, l_xresoulution, l_yresoulution);
+        gimp_image_undo_disable (l_tmp_frame_id);
+        break;
+      case GAP_APV_ONE_FRAME:
+        /* use only one frame in the preview */
+        useOneFrame = TRUE;
+        break;
+      default:  /* GAP_APV_EXACT */
+        /* read the original frames for the preview (slow) */
+        l_tmp_frame_id = -1;
+        if(l_filename == NULL)
+        {
+          /* the frame for preview_frame_nr resulted in NULL filename
+           * in this case we assume that there will be no valid frames available
+           * and use only one frame (as copy of the invoker image)
+           * for rendering the animated preview
+           */
+          useOneFrame = TRUE;
+        }
+        break;
+    }
+    
+    if(useOneFrame)
+    {
+      if((l_filename != NULL)
+      && (preview_frame_nr  != ainfo_ptr->curr_frame_nr))
+      {
+        l_tmp_frame_id =  gap_lib_load_image(l_filename);
+      }
+      if(l_tmp_frame_id < 0)
+      {
+        l_tmp_frame_id = gimp_image_duplicate(ainfo_ptr->image_id);
+      }
       gimp_image_undo_disable (l_tmp_frame_id);
       if((l_pvals->apv_scalex != 100.0) || (l_pvals->apv_scaley != 100.0))
       {
@@ -2798,13 +2841,15 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
         l_size_y = (gimp_image_height(l_tmp_frame_id) * l_pvals->apv_scaley) / 100;
         gimp_image_scale(l_tmp_frame_id, l_size_x, l_size_y);
       }
+    }
+    
+    
+    if(l_filename != NULL)
+    {
       g_free(l_filename);
-      break;
-    default:  /* GAP_APV_EXACT */
-      /* read the original frames for the preview (slow) */
-      l_tmp_frame_id = -1;
-      break;
+    }
   }
+
   l_pvals->apv_src_frame = l_tmp_frame_id;
 
   if(gap_debug)
@@ -2854,11 +2899,11 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   return(l_mlayer_image_id);
 }       /* end gap_mov_exec_anim_preview */
 
+
 /* ============================================================================
- * p_con_keyframe
+ * p_conv_keyframe
  * ============================================================================
  */
-
 gint
 gap_mov_exec_conv_keyframe_to_rel(gint abs_keyframe, GapMovValues *pvals)
 {
@@ -3928,12 +3973,6 @@ gap_mov_exec_move_path_singleframe(GimpRunMode run_mode, gint32 image_id
              printf("Execution Error: could not load MovePath settings from file: %s\n",
                      singleFramePtr->xml_paramfile);
            }
-           
-           //if(gap_debug)
-           //{
-           //  gap_mov_xml_par_save("pvals_after_load.xml", pvals);
-           //}
-
          }
 
       }

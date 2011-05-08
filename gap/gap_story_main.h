@@ -36,6 +36,7 @@
 #include "gap_story_file.h"
 #include "gap_story_undo_types.h"
 #include "gap_player_main.h"
+#include "gap_mov_dialog.h"
 
 #define GAP_STORY_PLUG_IN_PROC            "plug_in_gap_storyboard_edit"
 #define GAP_STORYBOARD_EDIT_HELP_ID       "plug-in-gap-storyboard-edit"
@@ -321,10 +322,18 @@ typedef struct GapStbAttrWidget  /* nickname: attw */
   GtkWidget  *spinbutton_overlap_dur;
   GtkWidget  *button_overlap_dur;
 
-  GtkWidget  *comment_entry;
-  GtkWidget  *movepath_file_entry;
-  GtkWidget  *movepath_filesel;
-  gboolean    movepath_file_xml_is_valid;
+  GtkWidget   *comment_entry;
+  
+  GtkWidget   *movepath_edit_button;
+  GtkWidget   *movepath_file_entry;
+  GtkWidget   *movepath_filesel;
+  gboolean     movepath_file_xml_is_valid;
+  GtkWidget   *movepath_edit_dialog;
+  GapAnimInfo *ainfo_ptr;
+  GapMovValues *pvals;
+  gint32       movepath_frame_image_id;
+  gint32       movepath_obj_image_id;
+  gint32       movepath_obj_layer_id;
 
   struct GapStbAttrWidget *next;
 } GapStbAttrWidget;

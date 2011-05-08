@@ -298,8 +298,19 @@ typedef struct {
 } GapMovQuery;
 
 
+typedef void (*t_close_movepath_edit_callback_fptr)(gpointer callback_data);
+
 long  gap_mov_dlg_move_dialog (GapMovData *mov_ptr);
 gint  gap_mov_dlg_move_dialog_singleframe(GapMovSingleFrame *singleFramePtr);
+
+GtkWidget * gap_mov_dlg_edit_movepath_dialog (gint32 frame_image_id, gint32 drawable_id
+   , const char *xml_paramfile
+   , GapAnimInfo *ainfo_ptr
+   , GapMovValues *pvals
+   , t_close_movepath_edit_callback_fptr close_fptr
+   , gpointer callback_data
+   , gint32 nframes
+   );
 
 
 #endif

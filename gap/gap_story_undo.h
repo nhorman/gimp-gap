@@ -45,6 +45,10 @@ void                    gap_stb_undo_push_clip(GapStbTabWidgets *tabw
                            , GapStoryFeatureEnum feature_id
                            , gint32 story_id
                            );
+void                    gap_stb_undo_push_clip_with_file_snapshot(GapStbTabWidgets *tabw
+                           , GapStoryFeatureEnum feature_id, gint32 story_id
+                           , char **filenamePtr);
+
 void                    gap_stb_undo_push(GapStbTabWidgets *tabw, GapStoryFeatureEnum feature_id);
 void                    gap_stb_undo_group_begin(GapStbTabWidgets *tabw);
 void                    gap_stb_undo_group_end(GapStbTabWidgets *tabw);
