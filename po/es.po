@@ -1,33 +1,31 @@
 # translation of gimp-gap.master.po to Español
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
-# Jorge González <jorgegonz@svn.gnome.org>, 2008.
 # María Majadas <alixis82@gmail.com>, 2008.
-# Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010.
 # Omar Campagne <ocampagne@gmail.com>, 2010.
 # Francisco Vila <francisco.vila@hispalinux.es>, 2011.
-# Jorge González <jorgegonz@svn.gnome.org>, 2011.
 # Éste es el fichero con los mensajes en español de Gimp
 # (sección plug-in). Preguntas, consejos y correcciones
 # _constructivas_ son bienvenidos.
 # Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
 # Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-30 19:28+0000\n"
-"PO-Revision-Date: 2011-09-01 12:56+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-09-01 17:56+0000\n"
+"PO-Revision-Date: 2011-09-01 20:03+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
@@ -4385,8 +4383,8 @@ msgid ""
 msgstr ""
 "Borrar todos los puntos de control y reemplazarlos con una copia de todos "
 "los puntos de anclaje en la ruta actual, desde la imagen en la que se invocó "
-"«MovePath». Mantenga presionada la tecla «Mayús.» para crear puntos de control "
-"para cada fotograma manipulado, siguiendo la trayectoria bezier."
+"«MovePath». Mantenga presionada la tecla «Mayús.» para crear puntos de "
+"control para cada fotograma manipulado, siguiendo la trayectoria bezier."
 
 #: ../gap/gap_mov_dialog.c:4177
 msgid "Insert controlpoint. The current controlpoint is duplicated."
@@ -4400,8 +4398,8 @@ msgstr "Borrar punto de control actual"
 msgid ""
 "Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
-"Mostrar es punto de control anterior. Mantenga pulsada la tecla «Mayús.» para "
-"seguir los keyframes."
+"Mostrar es punto de control anterior. Mantenga pulsada la tecla «Mayús.» "
+"para seguir los keyframes."
 
 #: ../gap/gap_mov_dialog.c:4218
 msgid "Show next controlpoint. Hold down the shift key to follow keyframes."
@@ -4433,10 +4431,10 @@ msgid ""
 "and the last point into the other points inbetween."
 msgstr ""
 "Restablecer todos los puntos de control a los valores predefinidos sin "
-"cambiar la trayectoria (valores X/Y). Mantenga pulsada la tecla «Mayús.» para "
-"copiar los valores de punto1 al resto de puntos. Mantenga pulsada la tecla "
-"Control para propagar una mezcla de las opciones del punto1 y del punto "
-"último, entre el resto de puntos."
+"cambiar la trayectoria (valores X/Y). Mantenga pulsada la tecla «Mayús.» "
+"para copiar los valores de punto1 al resto de puntos. Mantenga pulsada la "
+"tecla Control para propagar una mezcla de las opciones del punto1 y del "
+"punto último, entre el resto de puntos."
 
 #: ../gap/gap_mov_dialog.c:4295
 msgid ""
@@ -6521,8 +6519,8 @@ msgstr ""
 #: ../gap/gap_player_dialog.c:7643
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr ""
-"Establecer el nº de fotograma actual como inicio de rango de selección «desde "
-"fotograma»"
+"Establecer el nº de fotograma actual como inicio de rango de selección "
+"«desde fotograma»"
 
 #: ../gap/gap_player_dialog.c:7659
 msgid ""
@@ -6663,9 +6661,9 @@ msgid ""
 "Start playback. SHIFT: snapshot frames in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr ""
-"Iniciar reproducción. «Mayús»: capturar fotogramas en una imagen multicapa al "
-"tamaño original. «Control»: capturar a tamaño de vista previa. «Alt»: forzar "
-"la creación de una nueva instantánea"
+"Iniciar reproducción. «Mayús»: capturar fotogramas en una imagen multicapa "
+"al tamaño original. «Control»: capturar a tamaño de vista previa. «Alt»: "
+"forzar la creación de una nueva instantánea"
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
@@ -7931,7 +7929,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:5545
 msgid "Multiprocessor Encoder Support:"
-msgstr ""
+msgstr "Soporte de codificación multiprocesador:"
 
 #: ../gap/gap_story_dialog.c:5546
 msgid ""
@@ -7953,7 +7951,6 @@ msgid "Global Storyboard Render Properties"
 msgstr "Propiedades de capa global"
 
 #: ../gap/gap_story_dialog.c:5563 ../gap/gap_story_dialog.c:6197
-#| msgid "Convert Settings"
 msgid "Render Settings"
 msgstr "Configuración del renderizado"
 
@@ -7984,7 +7981,6 @@ msgid "Global"
 msgstr "Global"
 
 #: ../gap/gap_story_dialog.c:6204
-#| msgid "Videothumbnails"
 msgid "Video thumbnails"
 msgstr "Miniaturas de vídeo"
 
@@ -8072,16 +8068,15 @@ msgid "Videoseek (decoder: %s)"
 msgstr "Búsqueda de vídeo (decodificador: %s)"
 
 #: ../gap/gap_story_dialog.c:6899
-#, fuzzy
 #| msgid "videothumbnail cancelled"
 msgid "video thumbnail cancelled"
-msgstr "Miniaturas de vídeo canceladas"
+msgstr "miniaturas de vídeo canceladas"
 
 #: ../gap/gap_story_dialog.c:6925
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgid "Fetching video thumbnail for clip: %d (out of %d)"
-msgstr "Obteniendo miniatura de vídeo para clip: %d (de %d)"
+msgstr "Obteniendo miniatura de vídeo para el clip: %d (de %d)"
 
 #: ../gap/gap_story_dialog.c:7770 ../gap/gap_story_section_properties.c:637
 msgid "MAIN"
@@ -8108,10 +8103,9 @@ msgid "Save cliplist to file"
 msgstr "Guardar lista de clips en un archivo"
 
 #: ../gap/gap_story_dialog.c:7949
-#, fuzzy
 #| msgid "Show Section properites window"
 msgid "Show Section properties window"
-msgstr "Mostrar ventana de propiedades de sección"
+msgstr "Mostrar ventana de Propiedades de sección"
 
 #. Track label
 #: ../gap/gap_story_dialog.c:7954 ../gap/gap_video_index_creator.c:970
@@ -8189,14 +8183,13 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: ../gap/gap_story_dialog.c:8765 ../gap/gap_video_index_creator.c:1447
-#, fuzzy
 #| msgid ""
 #| "Cancel video access if in progress and disable automatic videothumbnails"
 msgid ""
 "Cancel video access if in progress and disable automatic video thumbnails"
 msgstr ""
-"Cancela el acceso al vídeo si está en progreso y desactiva las miniaturas de "
-"video automáticas"
+"Cancelar el acceso al vídeo si está en progreso y desactivar las miniaturas "
+"de video automáticas"
 
 #: ../gap/gap_story_dialog.c:8823
 msgid ""
@@ -8338,10 +8331,10 @@ msgid ""
 "video frames)."
 msgstr ""
 "Selecciona la proporción de aspecto de los fotogramas de vídeo; introduzca "
-"una cadena tal como «4:3» o «16:9» para especificar el aspecto. No introduzca "
-"nada o déjelo vacío si no se va a usar ningún aspecto especial (en este caso "
-"los fotogramas de vídeo usan el tamaño de píxel maestro 1:1 para mostrar "
-"fotogramas de vídeo)."
+"una cadena tal como «4:3» o «16:9» para especificar el aspecto. No "
+"introduzca nada o déjelo vacío si no se va a usar ningún aspecto especial "
+"(en este caso los fotogramas de vídeo usan el tamaño de píxel maestro 1:1 "
+"para mostrar fotogramas de vídeo)."
 
 #. the (preferred) Decoder label
 #: ../gap/gap_story_dialog.c:9219 ../gap/gap_vex_dialog.c:2312
@@ -8457,7 +8450,7 @@ msgid "conflict: positional parameter shadows named parameter"
 msgstr "conflicto: el parámetro posicional oculta un parámetro con nombre"
 
 #: ../gap/gap_story_file.c:3195
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Header not found!\n"
 #| "(line 1 must start with:  %s or %s"
@@ -8465,25 +8458,25 @@ msgid ""
 "Header not found!\n"
 "(line 1 must start with:  %s or %s)"
 msgstr ""
-"Cabecera no encontrada\n"
-"(línea 1 debe empezar con:  %s o %s"
+"No se encontró la cabecera\n"
+"(la línea 1 debe comenzar con: %s o %s)"
 
 #: ../gap/gap_story_file.c:3634
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none)"
 msgstr ""
-"palabra clave no permitida: «%s» (palabras permitidas son: width, height, "
-"both, none"
+"palabra clave no permitida: «%s» (las palabras permitidas son: width, "
+"height, both, none)"
 
 #: ../gap/gap_story_file.c:3661
-#, fuzzy, c-format
+#, c-format
 #| msgid "illegal keyword: %s (expected keywords are: keep, change"
 msgid "illegal keyword: %s (expected keywords are: keep, change)"
 msgstr ""
-"palabra clave no permitida: %s (las palabras clave esperadas son: keep, "
-"change"
+"palabra clave no permitida: %s (las palabras clave permitidas son: keep, "
+"change)"
 
 #. unsupported lines raise an error for files without correct Header
 #.
@@ -8500,8 +8493,8 @@ msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
 msgstr ""
-"el archivo suministrado «%s» contiene información irrelevante o el analizador "
-"no pudo abrirlo"
+"el archivo suministrado «%s» contiene información irrelevante o el "
+"analizador no pudo abrirlo"
 
 #: ../gap/gap_story_main.c:180
 msgid "Storyboard..."
@@ -8772,8 +8765,8 @@ msgstr "Impares primero"
 #: ../gap/gap_story_properties.c:4400
 msgid "Apply odd-lines, switch to even lines on tween position >= 0.5"
 msgstr ""
-"Aplicar filtro «líneas impares», cambiar a «líneas pares» en la posición tween "
-">=0.5"
+"Aplicar filtro «líneas impares», cambiar a «líneas pares» en la posición "
+"tween >=0.5"
 
 #. radio button delace_mode even
 #: ../gap/gap_story_properties.c:4409
@@ -8783,8 +8776,8 @@ msgstr "Incluso la primera"
 #: ../gap/gap_story_properties.c:4418
 msgid "Apply even-lines, switch to even lines on tween position >= 0.5"
 msgstr ""
-"Aplicar filtro «líneas pares», cambiar a «líneas impares» en la posición tween "
-">=0.5"
+"Aplicar filtro «líneas pares», cambiar a «líneas impares» en la posición "
+"tween >=0.5"
 
 #: ../gap/gap_story_properties.c:4443
 msgid ""
@@ -8898,10 +8891,9 @@ msgstr "Adjuntar máscara al clip en la posición de clip con el tamaño de clip
 
 #. the colormask parameter file label
 #: ../gap/gap_story_properties.c:4761
-#, fuzzy
 #| msgid "Mask Name:"
 msgid "Mask Params:"
-msgstr "Nombre de máscara:"
+msgstr "Parámetros de máscara:"
 
 #: ../gap/gap_story_properties.c:4794
 msgid "parameter file for the colormask filter"
@@ -9776,7 +9768,6 @@ msgstr "Balance de color"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:596
-#| msgid "Set range to extract"
 msgid "Select Range to Adjust"
 msgstr "Seleccionar el rango que ajustar"
 
@@ -9803,12 +9794,10 @@ msgid "Cyan/Red:"
 msgstr "Cian/rojo:"
 
 #: ../gap/gap_wr_color_balance.c:672
-#| msgid "Magenta"
 msgid "Magenta/Green:"
 msgstr "Magenta/Verde:"
 
 #: ../gap/gap_wr_color_balance.c:690
-#| msgid "Yellow"
 msgid "Yellow/Blue:"
 msgstr "Amarillo/Azul:"
 
@@ -11317,8 +11306,8 @@ msgstr ""
 #, c-format
 msgid "ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d"
 msgstr ""
-"Error: Codificador AVI GAP. Códec %s entregó el búfer vacío en el fotograma %"
-"d"
+"Error: Codificador AVI GAP. Códec %s entregó el búfer vacío en el fotograma "
+"%d"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:151
 msgid "0 sad"
@@ -12380,8 +12369,8 @@ msgstr "qblur:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3067
 msgid ""
-"Video quantiser scale blur (VBR) amount of qscale smoothing over time (0.0-"
-"1.0)"
+"Video quantiser scale blur (VBR) amount of qscale smoothing over time "
+"(0.0-1.0)"
 msgstr ""
 "La cantidad de suavizado de qscale de la escala de blur del cuantizador de "
 "video (VBR) al lo largo del proceso (0.0-1.0)"
@@ -12617,47 +12606,38 @@ msgid "** OOPS do not change any parameter **"
 msgstr "** ¡Uy! no cambie ningún parámetro **"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3950
-#| msgid "use DivX default presets"
 msgid "DivX default preset"
 msgstr "Configuración preestablecida para DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3951
-#| msgid "use DivX high quality presets"
 msgid "DivX high quality preset"
 msgstr "Configuración preestablecida para DivX alta calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3952
-#| msgid "use DivX low quality presets"
 msgid "DivX low quality preset"
 msgstr "Configuración preestablecida para DivX baja calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3953
-#| msgid "use DivX WINDOWS presets"
 msgid "DivX WINDOWS preset"
 msgstr "Configuración preestablecida para WINDOWS DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3954
-#| msgid "use MPEG1 (VCD) presets"
 msgid "MPEG1 (VCD) preset"
 msgstr "Configuración preestablecida para MPEG1 (VCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3955
-#| msgid "use MPEG1 high quality presets"
 msgid "MPEG1 high quality preset"
 msgstr "Configuración preestablecida para MPEG1 alta calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3956
-#| msgid "use MPEG2 (SVCD) presets"
 msgid "MPEG2 (SVCD) preset"
 msgstr "Configuración preestablecida para MPEG2 (SVCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3957
-#| msgid "use MPEG2 (DVD) presets"
 msgid "MPEG2 (DVD) preset"
 msgstr "Configuración preestablecida para MPEG2 (DVD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3958
-#| msgid "use REAL video presets"
 msgid "REAL video preset"
 msgstr "Configuración preestablecida para REAL vídeo"
 
