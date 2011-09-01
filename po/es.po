@@ -1,32 +1,33 @@
 # translation of gimp-gap.master.po to Español
-# Éste es el fichero con los mensajes en español de Gimp
-# (sección plug-in). Preguntas, consejos y correcciones
-# _constructivas_ son bienvenidos.
-# Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
-# Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008.
 # María Majadas <alixis82@gmail.com>, 2008.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010.
 # Omar Campagne <ocampagne@gmail.com>, 2010.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Francisco Vila <francisco.vila@hispalinux.es>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2011.
+# Éste es el fichero con los mensajes en español de Gimp
+# (sección plug-in). Preguntas, consejos y correcciones
+# _constructivas_ son bienvenidos.
+# Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
+# Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-28 06:32+0000\n"
-"PO-Revision-Date: 2011-08-30 15:09Central4l\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-08-30 19:28+0000\n"
+"PO-Revision-Date: 2011-09-01 12:56+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
@@ -54,7 +55,7 @@ msgstr "Seleccionar"
 #: ../gap/gap_arr_dialog.c:1812
 #, c-format
 msgid "Directory '%s' already exists"
-msgstr "El directorio «%s» ya existe"
+msgstr "La carpeta «%s» ya existe"
 
 #: ../gap/gap_arr_dialog.c:1817
 #, c-format
@@ -85,7 +86,7 @@ msgstr "Mensaje de GAP"
 #: ../gap/gap_arr_dialog.c:1945
 #, c-format
 msgid "ERROR: could not create directory:'%s'%s"
-msgstr "Error: No se pudo crear directorio: «%s»%s"
+msgstr "Error: No se pudo crear la carpeta: «%s»%s"
 
 #: ../gap/gap_arr_dialog.c:1998
 #, c-format
@@ -193,7 +194,7 @@ msgstr ""
 "El archivo: %s\n"
 "tiene contenido inesperado que se ignorará.\n"
 "Debería especificar un archivo de sonido en formato RIFF WAVE\n"
-"o un archivo de texto que contenga los nombres de dichos  archivos de sonido"
+"o un archivo de texto que contenga los nombres de dichos archivos de sonido"
 
 #: ../gap/gap_audio_wav.c:625 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1865
 #, c-format
@@ -263,7 +264,7 @@ msgstr "Ir a fotograma (%ld/%ld)"
 #: ../gap/gap_base_ops.c:1080
 #, c-format
 msgid "Destination Frame Number (%ld - %ld)"
-msgstr "Número de fotograma destino (%ld  - %ld)"
+msgstr "Número de fotograma destino (%ld - %ld)"
 
 #: ../gap/gap_base_ops.c:1085 ../gap/gap_base_ops.c:1198
 #: ../gap/gap_base_ops.c:1642
@@ -1534,7 +1535,7 @@ msgid ""
 "could not create %s directory\n"
 "(that is required for mplayer frame export)"
 msgstr ""
-"No se pudo crear directorio «%s»\n"
+"No se pudo crear la carpeta «%s»\n"
 "(requerido para la exportación de fotogramas de MPlayer)"
 
 #: ../gap/gap_decode_mplayer.c:1553 ../gap/gap_decode_xanim.c:1133
@@ -1727,7 +1728,7 @@ msgid ""
 "The xanim program on your system \"%s\"\n"
 "does not support exporting of single frames"
 msgstr ""
-"El programa XAnim de su sistema, \"%s\",\n"
+"El programa XAnim de su sistema, «%s»,\n"
 "no soporta la exportación de fotogramas concretos"
 
 #: ../gap/gap_decode_xanim.c:1069
@@ -1741,7 +1742,7 @@ msgid ""
 "could not create %s directory\n"
 "(that is required for xanim frame export)"
 msgstr ""
-"no pude crear directorio %s\n"
+"no se pudo crear la carpeta %s\n"
 "(requerido para la exportación de fotogramas de XAnim)"
 
 #: ../gap/gap_decode_xanim.c:1158
@@ -1956,26 +1957,24 @@ msgstr "Patrón de capa:"
 #: ../gap/gap_fire_pattern.c:1995 ../gap/gap_water_pattern.c:1239
 #: ../gap/gap_water_pattern.c:1264
 msgid "Select an already existing pattern layer (from previous run)"
-msgstr ""
+msgstr "Seleccionar una capa de patrones existente (de una ejecución anterior)"
 
 #. the frame
 #: ../gap/gap_fire_pattern.c:2006
-#, fuzzy
-#| msgid "Dither Options"
 msgid "Fireshape options"
-msgstr "Opciones de tramado"
+msgstr "Opciones de la forma de fuego"
 
 #: ../gap/gap_fire_pattern.c:2026
-#, fuzzy
-#| msgid "Create Layer:"
 msgid "Create Fireshape:"
-msgstr "Crear capa:"
+msgstr "Crear forma de fuego:"
 
 #: ../gap/gap_fire_pattern.c:2037
 msgid ""
 "ON: create fire shape layer according to options. OFF: Use external fire "
 "shape layer. "
 msgstr ""
+"ACTIVADO: crear capa de forma de fuego según las opciones. DESACTIVADO: usar "
+"capa de forma de fuego externa. "
 
 #. useTrapezoidShape checkbutton
 #: ../gap/gap_fire_pattern.c:2048
@@ -1985,6 +1984,8 @@ msgstr "Trapezoidal:"
 #: ../gap/gap_fire_pattern.c:2058
 msgid "ON: Render trapezoid shaped fire, OFF: render fire at full image width"
 msgstr ""
+"ACTIVADO: renderizar fuego en forma de trapezoide, DESACTIVADO: renderizar "
+"fuego a la anchura completa de la imagen"
 
 #. flameHeight spinbutton
 #: ../gap/gap_fire_pattern.c:2072
@@ -1992,10 +1993,8 @@ msgid "Flame Height:"
 msgstr "Altura de la llama:"
 
 #: ../gap/gap_fire_pattern.c:2081
-#, fuzzy
-#| msgid "scale height of frame to fit master height"
 msgid "Height of the flame (1.0 refers to full image height)"
-msgstr "escalar la altura de los fotogramas para ajustarse a la altura maestra"
+msgstr "Altura de la llama (1.0 se refiere a la altura de la imagen completa)"
 
 #. flameBorder spinbutton
 #: ../gap/gap_fire_pattern.c:2092
@@ -2014,6 +2013,8 @@ msgstr "Anchura de la llama:"
 #: ../gap/gap_fire_pattern.c:2123
 msgid "width of the flame at base line (1.0 for full image width)"
 msgstr ""
+"Anchura de la llama en la línea de base (1.0 para la anchura de la imagen "
+"completa)"
 
 #: ../gap/gap_fire_pattern.c:2132
 msgid "Top:"
@@ -2022,6 +2023,8 @@ msgstr "Superior:"
 #: ../gap/gap_fire_pattern.c:2142
 msgid "width of the flame at flame height (1.0 for full image width)"
 msgstr ""
+"Anchura de la llama en la cota superior de la llama (1.0 para la anchura de "
+"la imagen completa)"
 
 #. flameOffestX spinbutton
 #: ../gap/gap_fire_pattern.c:2154
@@ -2033,6 +2036,8 @@ msgid ""
 "horizontal offset of the flame center (0 for center, -0.5 left border +0.5 "
 "at right border of the image)"
 msgstr ""
+"Desplazamiento horizontal del centro de la llama (0 para el centro, -0.5 en "
+"el borde izquierdo, +0.5 en el borde derecho de la imagen)"
 
 #: ../gap/gap_fire_pattern.c:2175
 msgid "Fire Shape:"
@@ -2041,6 +2046,7 @@ msgstr "Forma de la llama:"
 #: ../gap/gap_fire_pattern.c:2190
 msgid "Select an already existing fire shape layer (from previous run)"
 msgstr ""
+"Seleccionar una capa de forma de fuego existente (de una ejecución anterior)"
 
 #. the frame
 #: ../gap/gap_fire_pattern.c:2200 ../gap/gap_water_pattern.c:1358
@@ -2049,16 +2055,16 @@ msgstr "Opciones de renderización"
 
 #. createFireLayer checkbutton
 #: ../gap/gap_fire_pattern.c:2224
-#, fuzzy
-#| msgid "Create Layer:"
 msgid "Create FireLayer:"
-msgstr "Crear capa:"
+msgstr "Crear capa de fuego:"
 
 #: ../gap/gap_fire_pattern.c:2234
 msgid ""
 "ON: Render fire pattern effect as separate layer, OFF: merge rendered effect "
 "onto processed layer"
 msgstr ""
+"ACTIVADO: renderizar el patrón de efecto como una capa separada, "
+"DESACTIVADO: mezclar el efecto renderizado sobre la capa procesada"
 
 #. Highlights blend mode
 #: ../gap/gap_fire_pattern.c:2248 ../gap/gap_water_pattern.c:1427
@@ -2091,6 +2097,8 @@ msgid ""
 "ON: Render fire layer with transparent background, OFF: render with black "
 "background"
 msgstr ""
+"ACTIVADO: renderizar la capa de fuego con fondo transparente, DESACTIVADO: "
+"renderizar con fondo negro"
 
 #. the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
 #. * there is no need for the chainbutton to have its own callback procedure
@@ -2118,6 +2126,8 @@ msgstr "Grandiente inverso:"
 #: ../gap/gap_fire_pattern.c:2358
 msgid "ON: use reverse gradient colors, OFF: use gradient colors"
 msgstr ""
+"ACTIVADO: usar colores del degradado invertido, DESACTIVADO: usar los "
+"colores del degradado"
 
 #: ../gap/gap_fire_pattern.c:2524
 msgid "Fire Pattern..."
@@ -2125,10 +2135,8 @@ msgstr "Patrón del fuego…"
 
 #. Menu names
 #: ../gap/gap_fire_pattern.c:2536 ../gap/gap_water_pattern.c:1665
-#, fuzzy
-#| msgid "<Image>/Video/Layer/Enhance/"
 msgid "<Image>/Video/Layer/Render/"
-msgstr "<Image>/Vídeo/Capa/Realzar/"
+msgstr "<Imagen>/Vídeo/Capa/Renderizar/"
 
 #: ../gap/gap_fmac_base.c:205
 #, c-format
@@ -2415,7 +2423,7 @@ msgstr "Desplazamiento de la secuencia de fotogramas…"
 
 #: ../gap/gap_main.c:802
 msgid "Frame Sequence Reverse..."
-msgstr "Secuencia de fotogramas inversa..."
+msgstr "Secuencia de fotogramas inversa…"
 
 #: ../gap/gap_main.c:814
 msgid "Frames Renumber..."
@@ -2423,7 +2431,7 @@ msgstr "Renumerar fotogramas…"
 
 #: ../gap/gap_main.c:826
 msgid "Frames Modify..."
-msgstr "Modificar fotogramas..."
+msgstr "Modificar fotogramas…"
 
 #: ../gap/gap_main.c:919
 msgid "<Image>/Video/Go To/"
@@ -3220,11 +3228,6 @@ msgid "Shape"
 msgstr "Forma"
 
 #: ../gap/gap_morph_dialog.c:3615
-#, fuzzy
-#| msgid ""
-#| "Create N workpoints following the outline shape of the layer.(the shape "
-#| "detection is looking for non-transparent pixels).SHIFT-click: adds the "
-#| "new points and keeps the old points"
 msgid ""
 "Create N workpoints following the outline shape of the layer.the simple "
 "shape detection is looking for non-transparent pixels.CTRL-click uses an "
@@ -3232,8 +3235,10 @@ msgid ""
 "opaque images.SHIFT-click: adds the new points and keeps the old points"
 msgstr ""
 "Crear N puntos de trabajo siguiendo la forma del contorno de la capa. (la "
-"detección de la forma busca píxeles no transparentes) Mayús-pulsación: añade "
-"los puntos nuevos y mantiene los antiguos"
+"detección simple de la forma busca píxeles no transparentes). CTRL-pulsación "
+"usa un algoritmo de detección de forma basado en la detección de bordes que "
+"es capaz de operar sobre imágenes opacas. Mayús-pulsación: añade los puntos "
+"nuevos y mantiene los antiguos"
 
 #. the deform affect radius label
 #: ../gap/gap_morph_dialog.c:3648
@@ -3344,6 +3349,9 @@ msgid ""
 "Locate radius in pixels. radius for automatically point locate feature  "
 "triggered by CTRL when setting workpoints.(Not relevant for rendering)"
 msgstr ""
+"Radio de ubicación en píxeles. Radio de la funcionalidad de ubicación del "
+"punto automática disparada por CTRL cuando se están estableciendo los puntos "
+"de trabajo (no es relevante para la renderización)"
 
 #: ../gap/gap_morph_dialog.c:3953
 msgid ""
@@ -3351,24 +3359,30 @@ msgid ""
 "be compared  when loacting corresponding coordinate(Not relevant for "
 "rendering)"
 msgstr ""
+"Radio de localización de forma en píxeles. Define el tamaño de la forma como "
+"el área alrededor del punto de trabajo con que se compara cuando se está "
+"ubicando la coordenada correspondiente (no es relevante para el renderizado)"
 
 #: ../gap/gap_morph_dialog.c:3979
 msgid ""
 "Edge detection threshold for automatically point locate feature  triggered "
 "by CTRL when setting workpoints.(Not relevant for rendering)"
 msgstr ""
+"Umbral de detección de bordes para la funcionalidad de ubicación del punto "
+"automática disparada por CTRL cuando se están estableciendo los puntos de "
+"trabajo (no es relevante para el renderizado)"
 
 #. the create tween checkbutton
 #: ../gap/gap_morph_dialog.c:3991
 msgid "Create Layers"
-msgstr "Crear capas:"
+msgstr "Crear capas"
 
 #: ../gap/gap_morph_dialog.c:4001
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
 msgstr ""
-"Activado: Crea el número de capas tween especificado. Desactivado: Actua en "
+"ACTIVADO: crea el número de capas tween especificado. DESACTIVADO: actúa en "
 "las capas existentes bajo la capa destino"
 
 #. the use_quality_wp_selection checkbutton
@@ -3381,8 +3395,8 @@ msgid ""
 "ON: Use quality workpoint selection algorithm.OFF: Use fast workpoint "
 "selection algorithm."
 msgstr ""
-"ON: Usar el algoritmo de calidad de selección del punto de trabajo. OFF: "
-"Usar el algortimo rápido de selección del punto de trabajo"
+"ACTIVADO: usar el algoritmo de calidad de selección del punto de trabajo. "
+"DESACTIVADO: usar el algoritmo rápido de selección del punto de trabajo."
 
 #. the show lines checkbutton
 #: ../gap/gap_morph_dialog.c:4021
@@ -3391,7 +3405,7 @@ msgstr "Líneas"
 
 #: ../gap/gap_morph_dialog.c:4030
 msgid "Show movement vector lines in the destination preview"
-msgstr "Muestra líneas de movimiento vectorial en la vista previa de destino"
+msgstr "Muestra líneas del vector de movimiento en la vista previa de destino"
 
 #: ../gap/gap_morph_exec.c:371
 #, c-format
@@ -3400,7 +3414,7 @@ msgid ""
 " ==>is no workpointfile (header is missing)"
 msgstr ""
 "Archivo: %s\n"
-" ==>no es un punto de trabajo (cabecera ausente)"
+" ==>no es un archivo de puntos de trabajo (falta la cabecera)"
 
 #: ../gap/gap_morph_exec.c:399
 #, c-format
@@ -3462,12 +3476,13 @@ msgid "creating warp tween layers..."
 msgstr "creando capas tween warp…"
 
 #: ../gap/gap_morph_exec.c:3349
-#, fuzzy, c-format
-#| msgid "ERROR: could not create directory:'%s'%s"
+#, c-format
 msgid ""
 "Failed to create tween subdirectory: '%s':\n"
 "%s"
-msgstr "Error: No se pudo crear directorio: «%s»%s"
+msgstr ""
+"No se pudo crear la subcarpeta: «%s»:\n"
+"%s"
 
 #: ../gap/gap_morph_exec.c:3593 ../gap/gap_morph_exec.c:3809
 #, c-format
@@ -3488,28 +3503,24 @@ msgstr "El archivo: «%s» ya existe"
 
 #: ../gap/gap_morph_main.c:220
 msgid "Morph..."
-msgstr "Morph..."
+msgstr "Morph…"
 
 #: ../gap/gap_morph_main.c:243
 msgid "Morph Tweenframes..."
-msgstr "Morphing fotogramas tween…"
+msgstr "Morph fotogramas de tween…"
 
 #: ../gap/gap_morph_main.c:267
 msgid "Morph One Tween..."
-msgstr "Morph un tween..."
+msgstr "Morph un tween…"
 
 #: ../gap/gap_morph_main.c:287
-#, fuzzy
-#| msgid "Morph Workpoint file:"
 msgid "Morph Workpoint Generator..."
-msgstr "Archivo de puntos de trabajo de morphing:"
+msgstr "Generador de puntos de trabajo de Morph…"
 
 #. Menu names
 #: ../gap/gap_morph_main.c:298
-#, fuzzy
-#| msgid "<Image>/Video/Morph/"
 msgid "<Image>/Video/Morphing/"
-msgstr "<Imagen>/Vídeo/Morph/"
+msgstr "<Imagen>/Vídeo/Morphing/"
 
 #: ../gap/gap_morph_shape.c:224
 #, c-format
@@ -3519,17 +3530,17 @@ msgstr "generando punto de trabajo:%d (%d)"
 #: ../gap/gap_morph_tween_dialog.c:155
 #, c-format
 msgid "Tween %.0f / %.0f"
-msgstr ""
+msgstr "Tween %.0f / %.0f"
 
 #: ../gap/gap_morph_tween_dialog.c:194
 #, c-format
 msgid "render tween via fade algorithm %.2f%%"
-msgstr ""
+msgstr "Renderizar el tween por medio del algoritmo de desvanecimiento %.2f%%"
 
 #: ../gap/gap_morph_tween_dialog.c:200
 #, c-format
 msgid "render tween via morphing algorithm %.2f%%"
-msgstr ""
+msgstr "Renderizar el tween por medio del algoritmo de morphing %.2f%%"
 
 #: ../gap/gap_morph_tween_dialog.c:265
 msgid "Enter Morph Workpoint filename"
@@ -3541,25 +3552,18 @@ msgid "Morph Workpoint file:"
 msgstr "Archivo de puntos de trabajo de morphing:"
 
 #: ../gap/gap_morph_tween_dialog.c:399
-#, fuzzy
-#| msgid ""
-#| "Name of a Workpointfile created with the Morph feature\n"
-#| "(note that tweens are created via simple fade operations when no "
-#| "workpointfile is available))"
 msgid ""
 "Name of a Workpointfile created with the Morph feature\n"
 "(note that tweens are created via simple fade operations when no "
 "workpointfile is available)"
 msgstr ""
-"Nombre de un archivo de punto de trabajo creado con morphing\n"
-"(note que los tweens se crean con operaciones transición cuando no hay "
-"ningun punto de trabajo disponible)"
+"Nombre de un archivo de puntos de trabajo creado con morphing\n"
+"(tanga en cuenta que los tweens se crean con operaciones de transición "
+"simples cuando no hay ningún punto de trabajo disponible)"
 
 #: ../gap/gap_morph_tween_dialog.c:445
-#, fuzzy
-#| msgid "Create one tween"
 msgid "Create one tween as Layer"
-msgstr "Crear un tween"
+msgstr "Crear un tween como capa"
 
 #: ../gap/gap_morph_tween_dialog.c:478
 msgid "tween mix:"
@@ -3586,10 +3590,8 @@ msgstr "Desde:"
 
 # //R Humm
 #: ../gap/gap_morph_tween_dialog.c:702 ../gap/gap_morph_tween_dialog.c:1173
-#, fuzzy
-#| msgid "First handled frame"
 msgid "First processed frame"
-msgstr "Primer fotograma manipulado"
+msgstr "Primer fotograma procesado"
 
 #: ../gap/gap_morph_tween_dialog.c:715 ../gap/gap_morph_tween_dialog.c:1191
 #: ../gap/gap_story_properties.c:4184
@@ -3597,54 +3599,50 @@ msgid "To:"
 msgstr "A:"
 
 #: ../gap/gap_morph_tween_dialog.c:718 ../gap/gap_morph_tween_dialog.c:1194
-#, fuzzy
-#| msgid "Last handled frame"
 msgid "Last processed frame"
-msgstr "Último fotograma manipulado"
+msgstr "Último fotograma procesado"
 
 #: ../gap/gap_morph_tween_dialog.c:730
-#, fuzzy
-#| msgid "Morph Workpoint file:"
 msgid "Num Workpoints:"
-msgstr "Archivo de puntos de trabajo de morphing:"
+msgstr "Número de puntos de trabajo:"
 
 #: ../gap/gap_morph_tween_dialog.c:733
-#, fuzzy
-#| msgid "Number of workpoints to create when Shape button is pressed"
 msgid "Number of workpoints to be generated par processed frame"
-msgstr ""
-"Número de puntos de trabajo a crear cuando se presiona el botón de Forma"
+msgstr "Número de puntos de trabajo que crear por cada fotograma procesado"
 
 #: ../gap/gap_morph_tween_dialog.c:742
 msgid "Num Outlinepoints:"
-msgstr ""
+msgstr "Número de puntos de contorno:"
 
 #: ../gap/gap_morph_tween_dialog.c:745
 msgid "Number of additional workpoints on the outline of opaque image area"
 msgstr ""
+"Número de puntos de trabajo adicionales sobre el contorno del área opaca de "
+"la imagen"
 
 #: ../gap/gap_morph_tween_dialog.c:755
-#, fuzzy
-#| msgid "Tweensteps:"
 msgid "Tween Steps:"
-msgstr "Tweensteps:"
+msgstr "Pasos de tween:"
 
 #: ../gap/gap_morph_tween_dialog.c:758
 msgid ""
 "TWEEN-STEPS attribute value to be written to the generated workpoint file. "
 "(Number of tweens to be inserted between 2 frames at tween morphprocessing) "
 msgstr ""
+"Valor del atributo TWEEN-STEPS (pasos de tween) que escribir en el archivo "
+"de puntos de trabajo generado. (Número de tweens que insertar entre dos "
+"fotogramas en el procesado de morph de los tweens) "
 
 #: ../gap/gap_morph_tween_dialog.c:769
-#, fuzzy
-#| msgid "Border Radius:"
 msgid "Deform Radius:"
-msgstr "Radio de la cuña:"
+msgstr "Radio de deformación:"
 
 #: ../gap/gap_morph_tween_dialog.c:772
 msgid ""
 "AFFECT-RADIUS attribute value to be written to the generated workpoint file."
 msgstr ""
+"Valor del atributo AFFECT-RADIUS que escribir en el archivo de puntos de "
+"trabajo generado."
 
 #: ../gap/gap_morph_tween_dialog.c:789
 msgid ""
@@ -3652,36 +3650,38 @@ msgid ""
 "value 0 turns off intensity desceding deformation, morph processing will use "
 "linear deform action inside the deform radius"
 msgstr ""
+"Valor del atributo INTENSITY que escribir en el archivo de puntos de trabajo "
+"generado. El valor 0 desactiva la deformación de descenso de intensidad, el "
+"procesado de morph usará deformación lineal dentro del radio de deformación"
 
 #: ../gap/gap_morph_tween_dialog.c:804
-#, fuzzy
-#| msgid "Feather Radius:"
 msgid "Locate Move Radius:"
-msgstr "Radio de la cuña:"
+msgstr "Radio ubicación de mover:"
 
 #: ../gap/gap_morph_tween_dialog.c:807
 msgid ""
 "Locate radius in pixels. The workpoint generation searches for corresponding "
 "points in the next frame within this radius"
 msgstr ""
+"Radio de ubicación en píxeles. La generación de puntos de trabajo busca "
+"puntos correspondientes en el siguiente fotograma dentro de este radio"
 
 #: ../gap/gap_morph_tween_dialog.c:818
-#, fuzzy
-#| msgid "Feather Radius:"
 msgid "Locate Shape Radius:"
-msgstr "Radio de la cuña:"
+msgstr "Radio de ubicación de forma:"
 
 #: ../gap/gap_morph_tween_dialog.c:824
 msgid ""
 "Locate Shaperadius in pixels. Defines shape size as area around workpoint to "
 "be compared  when loacting corresponding coordinate in the next frame."
 msgstr ""
+"Radio de ubicación de forma en píxeles. Define el tamaño de la forma como un "
+"área alrededor del punto de trabajo que comparar cuando se está ubicando la "
+"coordenada correspondiente en el fotograma siguiente."
 
 #: ../gap/gap_morph_tween_dialog.c:834
-#, fuzzy
-#| msgid "Threshold:"
 msgid "Edge Threshold:"
-msgstr "Umbral:"
+msgstr "Umbral de borde:"
 
 #: ../gap/gap_morph_tween_dialog.c:837
 msgid ""
@@ -3689,16 +3689,24 @@ msgid ""
 "are detected on pixels where color or opacity differs significant from the "
 "neighbor pixel.(e.g. more than the specified edge detection threshold)."
 msgstr ""
+"Umbral de la detección de bordes. Los puntos de trabajo se generan sobre "
+"bordes detectados. Los bordes se detectan sobre los píxeles en que el color "
+"o la opacidad difieren significativamente del píxel vecino (por ejemplo, más "
+"que el umbral de detección de bordes especificado)."
 
 #: ../gap/gap_morph_tween_dialog.c:852
 msgid "Locate ColordiffEdge Threshold:"
-msgstr ""
+msgstr "Umbral de ubicación/borde de diferencia de colores:"
 
 #: ../gap/gap_morph_tween_dialog.c:890
 msgid ""
 "ON: overwrite existing workpointfiles.OFF: Skip workpoint generation or add "
 "new generated workpoints (see append checkbutton)."
 msgstr ""
+"ACTIVADO: sobreescribir los archivos de puntos de trabajo existentes. "
+"DESACTIVADO: saltar la generación de puntos de trabajo o añadir los nuevos "
+"puntos de trabajo generados (véase la casilla de selección de añadir al "
+"final)."
 
 #. the overwrite checkbutton
 #: ../gap/gap_morph_tween_dialog.c:896
@@ -3710,6 +3718,9 @@ msgid ""
 "ON: add newly generated workpoints to existing workpointfiles.OFF: Skip "
 "workpoint generation for frames where workpointfile already exists."
 msgstr ""
+"ACTIVADO: añadir puntos de trabajo generados a los archivos de puntos de "
+"trabajo existentes. DESACTIVADO: saltar la generación de puntos de trabajo "
+"para los fotogramas en que ya existe un archivo de puntos de trabajo."
 
 #. the master progress bar
 #. master progress
@@ -3731,11 +3742,10 @@ msgid "Information:"
 msgstr "Información:"
 
 #: ../gap/gap_morph_tween_dialog.c:1144
-#, fuzzy, c-format
-#| msgid "this operation creates %d mising frames between frame %d and %d"
+#, c-format
 msgid "this operation creates %d missing frames between frame %d and %d"
 msgstr ""
-"ésta operación genera %d fotogramas perdidos entre el fotograma %d y el %d"
+"esta operación genera %d fotogramas perdidos entre los fotogramas %d y %d"
 
 #: ../gap/gap_morph_tween_dialog.c:1155
 msgid ""
@@ -3745,12 +3755,16 @@ msgid ""
 "Provide workpointfiles (one per frame) for morphing based tween rendering\n"
 "(this can be done with the Morph Workpoint Generator)"
 msgstr ""
+"esta operación crea copias de todos los fotogramas en el rango especificado "
+"y el número de tweens especificado como fotogramas tween adicionales entre "
+"todos los fotogramas procesados en la subcarpeta especificada. Proporciona "
+"archivos de puntos de trabajo (uno por cada fotograma) para el renderizado "
+"de tweens basado en morph (esto se puede hacer con el Generador de puntos de "
+"trabajo de morph)"
 
 #: ../gap/gap_morph_tween_dialog.c:1223
-#, fuzzy
-#| msgid "Number of Colors"
 msgid "Number of Tweens:"
-msgstr "Número de colores"
+msgstr "Número de tweens:"
 
 #: ../gap/gap_morph_tween_dialog.c:1226
 msgid ""
@@ -3758,6 +3772,10 @@ msgid ""
 "frames (via morphing or fade) but does not create tweens where the next "
 "frame number is equal to the current processed frame number +1"
 msgstr ""
+"Número de tweens que insertar entre dos fotogramas. El valor 0 renderiza los "
+"fotogramas perdidos (por medio de morphing o de transición) pero no crea "
+"tweens en los que el número del siguiente fotograma es igual al número del "
+"fotograma en curso +1"
 
 #. the create_tweens_in_subdir checkbutton
 #. checkbutton = gtk_check_button_new_with_label ( _("Subdirectory:"));
@@ -3785,42 +3803,41 @@ msgid ""
 "workpointfile for the processed frame is available. (individual "
 "workpointfiles per frame are refered by extension .morphpoints)"
 msgstr ""
+"Nombre de un (sub)carpeta para guardar copias de fotogramas procesados y "
+"tweens generados. Observe que los tweens se crean por medio de operaciones "
+"de transición simple cuando no está disponible ningún archivo de puntos de "
+"trabajo para el fotograma procesado (los archivos de puntos de trabajo "
+"individuales por cada fotograma se denominan por la extensión .morphpoints)"
 
 #: ../gap/gap_morph_tween_dialog.c:1292
 msgid ""
 "ON: overwrite existing frames.OFF: skip processing when target frame/tween "
 "already exists."
 msgstr ""
+"ACTIVADO: sobreescribir los fotogramas existentes. DESACTIVADO: omitir el "
+"procesamiento cuando ya existen el fotograma o el tween de destino."
 
 #. the master progress bar
 #. master progress
 #: ../gap/gap_morph_tween_dialog.c:1304
-#, fuzzy
-#| msgid "Create Tween Frames"
 msgid "Create Tweenfame(s):"
-msgstr "Crear fotogramas tween"
+msgstr "Crear fotograma(s) tween:"
 
 #: ../gap/gap_morph_tween_dialog.c:1319
-#, fuzzy
-#| msgid "Jpeg Progressive:"
 msgid "Local Progress:"
-msgstr "JPEG progresivo:"
+msgstr "Progreso local:"
 
 #: ../gap/gap_mov_main.c:283
 msgid "Move Path..."
-msgstr "Mover ruta..."
+msgstr "Mover ruta…"
 
 #: ../gap/gap_mov_main.c:370
-#, fuzzy
-#| msgid "Converting frames..."
 msgid "Move Path Singleframe..."
-msgstr "Convirtiendo fotogramas…"
+msgstr "Fotograma único de ruta de movimiento…"
 
 #: ../gap/gap_mov_dialog.c:990
-#, fuzzy
-#| msgid "Move Path"
 msgid "Move Path Editor"
-msgstr "Camino de movimiento"
+msgstr "Editor de rutas de movimiento"
 
 #: ../gap/gap_mov_dialog.c:994
 msgid "Move Path"
@@ -3993,34 +4010,26 @@ msgid "Current Point: [ %3d ] of [ %3d ]"
 msgstr "Punto actual: [ %3d< ] de [ %3d ]"
 
 #: ../gap/gap_mov_dialog.c:3528
-#, fuzzy, c-format
-#| msgid ""
-#| "ERROR: Could not open controlpoints\n"
-#| "filename: '%s'\n"
-#| "%s"
+#, c-format
 msgid ""
 "ERROR: Could not open xml parameterfile\n"
 "filename: '%s'\n"
 "%s"
 msgstr ""
-"Error: No se pudieron abrir los puntos de control\n"
+"Error: no se pudo abrir el archivo de parámetros XML\n"
 "archivo: «%s»\n"
 "%s"
 
 #: ../gap/gap_mov_dialog.c:3534
-#, fuzzy, c-format
-#| msgid ""
-#| "ERROR: Could not read controlpoints\n"
-#| "filename: '%s'\n"
-#| "(Is not a valid controlpoint file)"
+#, c-format
 msgid ""
 "ERROR: Could not read parameterfile\n"
 "filename: '%s'\n"
 "(Is not a valid move path xml parameterfile file)"
 msgstr ""
-"Error: No se pudieron leer los puntos de control\n"
+"Error: no se pudo leer el archivo de parámetros\n"
 "archivo: '%s'\n"
-"(No es un archivo de puntos de control válido)"
+"(No es un archivo válido XML de parámetros de ruta de movimiento)"
 
 #: ../gap/gap_mov_dialog.c:3556
 #, c-format
@@ -4029,7 +4038,7 @@ msgid ""
 "filename: '%s'\n"
 "%s"
 msgstr ""
-"Error: No se pudieron abrir los puntos de control\n"
+"Error: no se pudieron abrir los puntos de control\n"
 "archivo: «%s»\n"
 "%s"
 
@@ -4040,7 +4049,7 @@ msgid ""
 "filename: '%s'\n"
 "(Is not a valid controlpoint file)"
 msgstr ""
-"Error: No se pudieron leer los puntos de control\n"
+"Error: no se pudieron leer los puntos de control\n"
 "archivo: '%s'\n"
 "(No es un archivo de puntos de control válido)"
 
@@ -4102,8 +4111,6 @@ msgid "Lighten Only"
 msgstr "Iluminar sólo"
 
 #: ../gap/gap_mov_dialog.c:3706
-#, fuzzy
-#| msgid "Color erase"
 msgid "Color Erase"
 msgstr "Borrado de color"
 
@@ -4319,10 +4326,10 @@ msgid ""
 "the tween step value is 0, no tweens are calculated and no tween layers are "
 "created"
 msgstr ""
-"Calcular n  pasos entre 2 fotogramas. El renderizado entre pasos se recoge "
-"en una capa tween que se añadirá a los fotogramas de destinos manipulados. "
-"Si el valor de los pasos tween es 0, no se calculan tweens y no se crean "
-"capas tween"
+"Calcular n pasos entre 2 fotogramas. El renderizado entre pasos se recoge en "
+"una capa tween que se añadirá a los fotogramas de destinos manipulados. Si "
+"el valor de los pasos tween es 0, no se calculan tweens y no se crean capas "
+"tween"
 
 #. TweenOpacityInitial
 #. table col, row
@@ -5051,36 +5058,34 @@ msgstr ""
 "%s"
 
 #: ../gap/gap_mov_dialog.c:6802
-#, fuzzy
-#| msgid "Move Path"
 msgid "MovePath xmlfile:"
-msgstr "Camino de movimiento"
+msgstr "Archivo XML de ruta de movimiento:"
 
 #: ../gap/gap_mov_dialog.c:6804
 msgid ""
 "Name of the file containing move path paramters and controlpoints in XML "
 "format"
 msgstr ""
+"Nombre del archivo que contiene los parámetros de ruta de movimiento y los "
+"puntos de control en formato XML"
 
 #: ../gap/gap_mov_dialog.c:6812 ../vid_common/gap_cme_gui.c:2820
 msgid "Total Frames:"
 msgstr "Fotogramas totales:"
 
 #: ../gap/gap_mov_dialog.c:6813
-#, fuzzy
-#| msgid "number of frames"
 msgid "Total number of frames"
-msgstr "número de fotogramas"
+msgstr "Número total de fotogramas"
 
 #: ../gap/gap_mov_dialog.c:6824
-#, fuzzy
-#| msgid "Current height:"
 msgid "Current Frame:"
-msgstr "Altura actual:"
+msgstr "Fotograma en curso:"
 
+# What??
 #: ../gap/gap_mov_dialog.c:6825
+#, fuzzy
 msgid "Curent Frame number (e.g. phase to be phase Total number of frames"
-msgstr ""
+msgstr "Número del fotograma en curso"
 
 #: ../gap/gap_mov_dialog.c:6833 ../gap/gap_player_dialog.c:478
 msgid "Copy Audiofile as Wavefile"
@@ -5106,7 +5111,7 @@ msgstr ""
 
 #: ../gap/gap_mov_exec.c:1719
 msgid "Copying layers into frames..."
-msgstr "Copiando capas en fotogramas   …"
+msgstr "Copiando capas en fotogramas…"
 
 #: ../gap/gap_mov_exec.c:1723
 msgid "Generating animated preview..."
@@ -5115,6 +5120,7 @@ msgstr "Generando vista previa animada…"
 #: ../gap/gap_mov_exec.c:2248
 msgid "Transforming layer according to move path frame_phase..."
 msgstr ""
+"Capa de transformación según la fase de fotograma de la ruta de movimiento…"
 
 #: ../gap/gap_mov_exec.c:3523
 #, c-format
@@ -5469,7 +5475,7 @@ msgstr ""
 
 #: ../gap/gap_name2layer_main.c:168
 msgid "Filename to Layer..."
-msgstr "Nombre de archivo a capa..."
+msgstr "Nombre de archivo a capa…"
 
 #: ../gap/gap_name2layer_main.c:445
 msgid "Modes to choose entire filename or just parts of the filename"
@@ -5583,7 +5589,7 @@ msgstr "Ir al último fotograma"
 
 #: ../gap/gap_navigator_dialog.c:546
 msgid "VCR Navigator..."
-msgstr "Navegador de VCR..."
+msgstr "Navegador de VCR…"
 
 #: ../gap/gap_navigator_dialog.c:611
 msgid "Cant open two or more video navigator windows."
@@ -6118,7 +6124,7 @@ msgstr ""
 "No hay soporte de sonido disponible\n"
 "el archivo ejecutable del servidor de sonido «%s» no se ha encontrado.\n"
 "Si ha instalado «%s»\n"
-"debería añadir el directorio de instalación a su variable PATH\n"
+"debería añadir la carpeta de instalación a su variable PATH\n"
 "o establecer la variable de entorno %s con el nombre del ejecutable\n"
 "antes de iniciar El GIMP"
 
@@ -6653,18 +6659,13 @@ msgid "Play"
 msgstr "Reproducir"
 
 #: ../gap/gap_player_dialog.c:8075
-#, fuzzy
-#| msgid ""
-#| "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
-#| "size CTRL: snapshot at preview size ALT: force creation of new snapshot "
-#| "image"
 msgid ""
 "Start playback. SHIFT: snapshot frames in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr ""
-"Iniciar reproducción. «Mayús» captura fotogramas en una imagen multicapa a "
-"tamaño original. «Control» captura a tamaño de vista previa. «Alt» fuerza la "
-"creación de una nueva instantánea"
+"Iniciar reproducción. «Mayús»: capturar fotogramas en una imagen multicapa al "
+"tamaño original. «Control»: capturar a tamaño de vista previa. «Alt»: forzar "
+"la creación de una nueva instantánea"
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
@@ -6686,19 +6687,14 @@ msgid "Reverse"
 msgstr "Invertir"
 
 #: ../gap/gap_player_dialog.c:8098
-#, fuzzy
-#| msgid ""
-#| "Start reverse playback. SHIFT: snapshot frames  in a multilayer image at "
-#| "original size CTRL: snapshot at preview size ALT: force creation of new "
-#| "snapshot image"
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
 "snapshot image"
 msgstr ""
-"Iniciar reproducción inversa. «Mayús.»: Captura fotogramas en una imagen "
-"multicapa a tamaño original. «Ctrl.»: captura a tamaño de vista previa. "
-"«Alt.»: fuerza la creación de una nueva instantánea"
+"Iniciar reproducción inversa. «Mayús.»: capturar fotogramas en una imagen "
+"multicapa a tamaño original. «Ctrl.»: capturar a tamaño de vista previa. "
+"«Alt.»: forzar la creación de una nueva instantánea"
 
 #: ../gap/gap_player_main.c:283
 msgid "Playback..."
@@ -7012,7 +7008,7 @@ msgstr "Fotograma específico"
 #: ../gap/gap_range_ops.c:673
 msgid "Pick layers at full size. Ignore all pixel selections in all frames"
 msgstr ""
-"Escoger capas a tamaño completo. Ignorar todas las selecciones de pixel en "
+"Escoger capas a tamaño completo. Ignorar todas las selecciones de píxel en "
 "todos los fotogramas."
 
 #: ../gap/gap_range_ops.c:675
@@ -7087,7 +7083,7 @@ msgstr "Usar todas las capas no seleccionadas:"
 
 #: ../gap/gap_range_ops.c:780
 msgid "Pixel Selection:"
-msgstr "Selección de pixel:"
+msgstr "Selección de píxel:"
 
 #: ../gap/gap_range_ops.c:794
 msgid ""
@@ -7363,7 +7359,7 @@ msgstr "Rotación de seguimiento"
 
 #: ../gap/gap_story_att_trans_dlg.c:2797
 msgid "Set Movepath Parameterfile (XML)"
-msgstr ""
+msgstr "Establecer archivo de parámetros de ruta de movimiento (XML)"
 
 #. auto update toggle  check button
 #: ../gap/gap_story_att_trans_dlg.c:3203
@@ -7468,22 +7464,16 @@ msgstr "Número de fotogramas que solapar en esta pista"
 #. page size        for the from/to values
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:3710
-#, fuzzy
-#| msgid "ON: Enable opacity settings"
 msgid "ON: Enable rotation settings"
-msgstr "Activado: Activar los parámetros de opacidad"
+msgstr "ACTIVADO: activar los ajustes de rotación"
 
 #: ../gap/gap_story_att_trans_dlg.c:3712
 msgid "rotation value in degree for the first handled frame "
-msgstr ""
+msgstr "valor de rotación en grados para el primer fotograma manejado"
 
 #: ../gap/gap_story_att_trans_dlg.c:3714
-#, fuzzy
-#| msgid "optional filtermacro file to be performed on each handled frame "
 msgid "rotation value in degree for the last handled frame "
-msgstr ""
-"archivo de macro de filtrado opcional a ser usado en cada fotograma "
-"manipulado"
+msgstr "valor de rotación en grados para el último fotograma manejado"
 
 #: ../gap/gap_story_att_trans_dlg.c:3716 ../gap/gap_story_att_trans_dlg.c:3744
 #: ../gap/gap_story_att_trans_dlg.c:3773 ../gap/gap_story_att_trans_dlg.c:3802
@@ -7500,7 +7490,7 @@ msgstr "número de fotogramas"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:3736
 msgid "ON: Enable opacity settings"
-msgstr "Activado: Activar los parámetros de opacidad"
+msgstr "Activado: activar los parámetros de opacidad"
 
 #: ../gap/gap_story_att_trans_dlg.c:3738
 msgid ""
@@ -7533,30 +7523,22 @@ msgid "ON: Enable move horizontal settings"
 msgstr "Activado: Activa los ajustes de movimiento horizontal"
 
 #: ../gap/gap_story_att_trans_dlg.c:3767
-#, fuzzy
-#| msgid ""
-#| "move horizontal value for the first handled frame  where 0.0 is centered, "
-#| "100.0 is outside right, -100.0 is outside left)"
 msgid ""
 "move horizontal value for the first handled frame where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left"
 msgstr ""
 "mover el valor horizontal para el primer fotograma manejado donde 0.0 es "
 "centrado, 100.0 es totalmente a la derecha y -100.0 es totalmente a la "
-"izquierda)"
+"izquierda"
 
 #: ../gap/gap_story_att_trans_dlg.c:3770
-#, fuzzy
-#| msgid ""
-#| "move horizontal value for the last handled frame  where 0.0 is centered, "
-#| "100.0 is outside right, -100.0 is outside left)"
 msgid ""
 "move horizontal value for the last handled frame where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left"
 msgstr ""
 "mover el valor horizontal para el último fotograma manejado donde 0.0 es "
 "centrado, 100.0 es totalmente a la derecha y -100.0 es totalmente a la "
-"izquierda)"
+"izquierda"
 
 #: ../gap/gap_story_att_trans_dlg.c:3775
 msgid ""
@@ -7578,31 +7560,23 @@ msgstr "Mover Y:"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:3794
 msgid "ON: Enable move vertical settings"
-msgstr "Activado: Activa los ajustes de movimiento vertical"
+msgstr "ACTIVADO: Activar los ajustes de movimiento vertical"
 
 #: ../gap/gap_story_att_trans_dlg.c:3796
-#, fuzzy
-#| msgid ""
-#| "move vertical value for the first handled frame  where 0.0 is centered, "
-#| "100.0 is outside at bottom, -100.0 is outside at top)"
 msgid ""
 "move vertical value for the first handled frame where 0.0 is centered, 100.0 "
 "is outside at bottom, -100.0 is outside at top"
 msgstr ""
 "mover el valor vertical para el primer fotograma manejado donde 0.0 es "
-"centrado, 100.0 en la parte inferior, y -100.0 en la parte superior)"
+"centrado, 100.0 en la parte inferior, y -100.0 en la parte superior"
 
 #: ../gap/gap_story_att_trans_dlg.c:3799
-#, fuzzy
-#| msgid ""
-#| "move vertical value for the last handled frame  where 0.0 is centered, "
-#| "100.0 is outside at bottom, -100.0 is outside at top)"
 msgid ""
 "move vertical value for the last handled frame where 0.0 is centered, 100.0 "
 "is outside at bottom, -100.0 is outside at top"
 msgstr ""
 "mover el valor vertical para el último fotograma manejado donde 0.0 es "
-"centrado, 100.0 en la parte inferior, -100.0 en la parte superior)"
+"centrado, 100.0 en la parte inferior, -100.0 en la parte superior"
 
 #: ../gap/gap_story_att_trans_dlg.c:3804
 msgid ""
@@ -7689,10 +7663,8 @@ msgstr ""
 "constante; positivo: aceleración; negativo: ralentización)"
 
 #: ../gap/gap_story_att_trans_dlg.c:3866
-#, fuzzy
-#| msgid "Move Path"
 msgid "Move Path:"
-msgstr "Camino de movimiento"
+msgstr "Ruta de movimiento:"
 
 #. lower constraint for the from/to values
 #. upper constraint for the from/to values
@@ -7705,6 +7677,8 @@ msgid ""
 "ON: Enable move path transistions using settings provided via a movepath "
 "parameter file"
 msgstr ""
+"ACTIVADO: activar las transiciones de ruta de movimiento utilizando ajustes "
+"proporcionados a través de un archivo de parámetros de rutas de movimiento"
 
 #: ../gap/gap_story_att_trans_dlg.c:3880
 msgid ""
@@ -7712,6 +7686,10 @@ msgid ""
 "handled frame where 1 is the begin of the path using settings of the 1st "
 "controlpoint in the movepath parameter file"
 msgstr ""
+"número del fotograma (fase) del movimiento o transición a lo largo de la "
+"ruta para el primer fotograma manejado donde 1 es el comienzo de la ruta "
+"utilizando los ajustes del primer punto de control dentro del archivo de "
+"parámetros de rutas de movimiento."
 
 #: ../gap/gap_story_att_trans_dlg.c:3884
 msgid ""
@@ -7720,17 +7698,20 @@ msgid ""
 "frames in the movepath parameter file uses settings of the last controlpoint "
 "in this file."
 msgstr ""
+"Número del fotograma (fase) del movimiento o transición a lo largo de la "
+"ruta para el último fotograma manejado. Observe que los números de fotograma "
+"iguales o mayores que el número total de fotogramas en el archivo de "
+"parámetros de rutas de movimiento utilizan los ajustes del último punto de "
+"control en este archivo."
 
 #: ../gap/gap_story_att_trans_dlg.c:3890
 msgid "acceleration characteristic (currently ignored)"
-msgstr ""
+msgstr "característica de aceleración (actualmente se ignora)"
 
 #. the movepath label
 #: ../gap/gap_story_att_trans_dlg.c:3936
-#, fuzzy
-#| msgid "Create File(s):"
 msgid "Movepath File:"
-msgstr "Crear archivo(s):"
+msgstr "Archivo de rutas de movimiento:"
 
 #. the comment label
 #. the Comment lable
@@ -7751,7 +7732,7 @@ msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
-"** Error: El parser del Storyboard informó:\n"
+"** Error: El analizador del Storyboard informó:\n"
 "%s\n"
 
 #: ../gap/gap_story_dialog.c:3053
@@ -7874,32 +7855,33 @@ msgstr ""
 "para los fotogramas de vídeo no pueden mostrarse."
 
 #: ../gap/gap_story_dialog.c:5444
-#, fuzzy
-#| msgid "Global Layout Properties dialog already open"
 msgid "Global Render Properties dialog already open"
-msgstr "La ventana de propiedades de la capa global ya está abierta"
+msgstr "El diálogo de propiedades de renderización globales ya está abierto"
 
 #: ../gap/gap_story_dialog.c:5454
-#, fuzzy
-#| msgid "Videofile:"
 msgid "Max open Videofiles:"
-msgstr "Archivo de vídeo:"
+msgstr "Número máximo de archivos de vídeo abiertos:"
 
 #: ../gap/gap_story_dialog.c:5455
 msgid ""
 "Maximum number of videofiles to be opened at same time while storyboard "
 "rendering"
 msgstr ""
+"Número máximo de archivos de vídeo abiertos al mismo tiempo mientras se "
+"renderiza el storyboard"
 
 #: ../gap/gap_story_dialog.c:5465
 msgid "Framecache / open video:"
-msgstr ""
+msgstr "Caché de fotogramas por cada vídeo abierto:"
 
 #: ../gap/gap_story_dialog.c:5466
 msgid ""
 "Maximum number of frames to be cached per open video (only relevant when "
 "video clips are rendered backwards)"
 msgstr ""
+"Número máximo de fotogramas que se guardan en la caché por cada vídeo "
+"abierto (sólo es relevante cuando los clips de vídeo se renderizan en "
+"sentido inverso)"
 
 #: ../gap/gap_story_dialog.c:5479
 msgid "Max Image cache:"
@@ -7910,6 +7892,8 @@ msgid ""
 "Maximum number of images to keep cached (in memory as gimp image without "
 "display) while storyboard rendering"
 msgstr ""
+"Número máximo de imágenes que conservar en la caché (en memoria como imagen "
+"de GIMP sin presentación) mientras se renderiza el storyboard"
 
 #: ../gap/gap_story_dialog.c:5492
 msgid "Resource Loginterval:"
@@ -7969,10 +7953,9 @@ msgid "Global Storyboard Render Properties"
 msgstr "Propiedades de capa global"
 
 #: ../gap/gap_story_dialog.c:5563 ../gap/gap_story_dialog.c:6197
-#, fuzzy
 #| msgid "Convert Settings"
 msgid "Render Settings"
-msgstr "Ajustes de conversión"
+msgstr "Configuración del renderizado"
 
 #: ../gap/gap_story_dialog.c:5661
 #, c-format
@@ -8001,7 +7984,6 @@ msgid "Global"
 msgstr "Global"
 
 #: ../gap/gap_story_dialog.c:6204
-#, fuzzy
 #| msgid "Videothumbnails"
 msgid "Video thumbnails"
 msgstr "Miniaturas de vídeo"
@@ -8571,7 +8553,7 @@ msgid ""
 "Error: the mask name:  \"%s\" is already in use\n"
 "please enter another name."
 msgstr ""
-"Error: el nombre de máscara:  «%s» ya está en uso,\n"
+"Error: el nombre de máscara: «%s» ya está en uso,\n"
 "seleccione otro nombre."
 
 #: ../gap/gap_story_properties.c:2368
@@ -9481,7 +9463,7 @@ msgstr ""
 
 #: ../gap/gap_video_index_creator.c:208
 msgid "Video Index Creation..."
-msgstr "Creación de índice de vídeo..."
+msgstr "Creación de índice de vídeo…"
 
 #. Menu names
 #: ../gap/gap_video_index_creator.c:218
@@ -9794,10 +9776,9 @@ msgstr "Balance de color"
 
 #. the frame
 #: ../gap/gap_wr_color_balance.c:596
-#, fuzzy
 #| msgid "Set range to extract"
 msgid "Select Range to Adjust"
-msgstr "Establecer el rango a extraer"
+msgstr "Seleccionar el rango que ajustar"
 
 #. Transfer Mode the radio buttons
 #: ../gap/gap_wr_color_balance.c:615
@@ -9822,16 +9803,14 @@ msgid "Cyan/Red:"
 msgstr "Cian/rojo:"
 
 #: ../gap/gap_wr_color_balance.c:672
-#, fuzzy
 #| msgid "Magenta"
 msgid "Magenta/Green:"
-msgstr "Magenta"
+msgstr "Magenta/Verde:"
 
 #: ../gap/gap_wr_color_balance.c:690
-#, fuzzy
 #| msgid "Yellow"
 msgid "Yellow/Blue:"
-msgstr "Amarillo"
+msgstr "Amarillo/Azul:"
 
 #: ../gap/gap_wr_color_balance.c:708
 msgid "Preserve luminosity"
@@ -9935,7 +9914,7 @@ msgstr "Niveles de color"
 #. the frame
 #: ../gap/gap_wr_color_levels.c:631
 msgid "Color Levels  Adjustments "
-msgstr "Niveles de color  Ajustes"
+msgstr "Ajustes de niveles de color"
 
 #. Channel the label
 #: ../gap/gap_wr_color_levels.c:647
@@ -9992,7 +9971,7 @@ msgstr "Eliminador de selección inteligente"
 
 #: ../gap/gap_wr_resynth.c:175
 msgid "Smart selection eraser..."
-msgstr "Eliminador de selección inteligente..."
+msgstr "Eliminador de selección inteligente…"
 
 #. Menu names
 #: ../gap/gap_wr_resynth.c:183
@@ -10686,7 +10665,7 @@ msgstr ""
 "Configuración de una herramienta de sonido (como sox en UNIX).\n"
 "\n"
 "$IN .. se reemplaza con el archivo de sonido de entrada\n"
-"$OUT .. se reemplaza con el archivo de sonido con sufijo  _tmp.wav\n"
+"$OUT .. se reemplaza con el archivo de sonido con sufijo _tmp.wav\n"
 "$RATE .. se reemplaza con la tasa de muestreo en bytes/s.\n"
 "\n"
 "Esta utilidad se llama para conversiones de sonido si\n"
@@ -10843,7 +10822,7 @@ msgstr "Inicar la codificación en este fotograma"
 
 #: ../vid_common/gap_cme_gui.c:3627
 msgid "Stop encoding at this frame"
-msgstr "Detener  la codificación en este fotograma"
+msgstr "Detener la codificación en este fotograma"
 
 #: ../vid_common/gap_cme_gui.c:3653
 msgid "Width of the output video (pixels)"
@@ -11430,7 +11409,7 @@ msgstr "Opciones básicas del codificador FFMpeg"
 #. the fileformat label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1205
 msgid "Fileformat:           "
-msgstr "Formato de archivo:    "
+msgstr "Formato de archivo:           "
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1221
 msgid "The output multimedia fileformat"
@@ -12638,58 +12617,49 @@ msgid "** OOPS do not change any parameter **"
 msgstr "** ¡Uy! no cambie ningún parámetro **"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3950
-#, fuzzy
 #| msgid "use DivX default presets"
 msgid "DivX default preset"
-msgstr "Usar la configuración preestablecida para DivX"
+msgstr "Configuración preestablecida para DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3951
-#, fuzzy
 #| msgid "use DivX high quality presets"
 msgid "DivX high quality preset"
-msgstr "usar opciones preestablecidas para DivX alta calidad"
+msgstr "Configuración preestablecida para DivX alta calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3952
-#, fuzzy
 #| msgid "use DivX low quality presets"
 msgid "DivX low quality preset"
-msgstr "usar opciones preestablecidas para DivX baja calidad"
+msgstr "Configuración preestablecida para DivX baja calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3953
-#, fuzzy
 #| msgid "use DivX WINDOWS presets"
 msgid "DivX WINDOWS preset"
-msgstr "usar opciones preestablecidas para WINDOWS DivX"
+msgstr "Configuración preestablecida para WINDOWS DivX"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3954
-#, fuzzy
 #| msgid "use MPEG1 (VCD) presets"
 msgid "MPEG1 (VCD) preset"
-msgstr "usar opciones preestablecidas para MPEG1 (VCD)"
+msgstr "Configuración preestablecida para MPEG1 (VCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3955
-#, fuzzy
 #| msgid "use MPEG1 high quality presets"
 msgid "MPEG1 high quality preset"
-msgstr "usar opciones preestablecidas para MPEG1 alta calidad"
+msgstr "Configuración preestablecida para MPEG1 alta calidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3956
-#, fuzzy
 #| msgid "use MPEG2 (SVCD) presets"
 msgid "MPEG2 (SVCD) preset"
-msgstr "usar opciones preestablecidas para MPEG2 (SVCD)"
+msgstr "Configuración preestablecida para MPEG2 (SVCD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3957
-#, fuzzy
 #| msgid "use MPEG2 (DVD) presets"
 msgid "MPEG2 (DVD) preset"
-msgstr "usar opciones preestablecidas para MPEG2 (DVD)"
+msgstr "Configuración preestablecida para MPEG2 (DVD)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3958
-#, fuzzy
 #| msgid "use REAL video presets"
 msgid "REAL video preset"
-msgstr "usar opciones preestablecidas para REAL video"
+msgstr "Configuración preestablecida para REAL vídeo"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3993
 msgid "Predefined encoder parameter settings"
