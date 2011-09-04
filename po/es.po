@@ -1,16 +1,15 @@
 # translation of gimp-gap.master.po to Español
-# Éste es el fichero con los mensajes en español de Gimp
-# (sección plug-in). Preguntas, consejos y correcciones
-# _constructivas_ son bienvenidos.
-# Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
-# Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
-#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
 # María Majadas <alixis82@gmail.com>, 2008.
 # Omar Campagne <ocampagne@gmail.com>, 2010.
 # Francisco Vila <francisco.vila@hispalinux.es>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
+# Éste es el fichero con los mensajes en español de Gimp
+# (sección plug-in). Preguntas, consejos y correcciones
+# _constructivas_ son bienvenidos.
+# Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
+# Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
@@ -18,8 +17,8 @@ msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 18:06+0000\n"
-"PO-Revision-Date: 2011-09-04 11:38+0200\n"
+"POT-Creation-Date: 2011-09-04 09:39+0000\n"
+"PO-Revision-Date: 2011-09-04 12:33+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -5082,7 +5081,6 @@ msgstr "Fotograma en curso:"
 
 # What??
 #: ../gap/gap_mov_dialog.c:6825
-#, fuzzy
 msgid "Curent Frame number (e.g. phase to be phase Total number of frames"
 msgstr "Número del fotograma en curso"
 
@@ -7959,16 +7957,13 @@ msgstr ""
 "un solo procesador."
 
 #: ../gap/gap_story_dialog.c:5560
-#, fuzzy
-#| msgid "Use the standard built in layout settings"
 msgid "Use the standard built in storyboard render settings"
-msgstr "Usar las opciones de capa incorporadas estándar"
+msgstr ""
+"Usar las opciones incorporadas estándar de renderización del storyboard"
 
 #: ../gap/gap_story_dialog.c:5562
-#, fuzzy
-#| msgid "Global Layout Properties"
 msgid "Global Storyboard Render Properties"
-msgstr "Propiedades de capa global"
+msgstr "Propiedades globales de renderización del storyboard"
 
 #: ../gap/gap_story_dialog.c:5563 ../gap/gap_story_dialog.c:6197
 msgid "Render Settings"
@@ -8379,28 +8374,22 @@ msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Volumen de sonido principal, donde 1.0 mantiene el volumen original"
 
 #: ../gap/gap_story_dialog.c:9279
-#, fuzzy
-#| msgid "Enable Transparency"
 msgid "Ext. Transparency Format:"
-msgstr "Activar transparencia"
+msgstr "Formato de transparencia externa:"
 
 #. pixel
 #: ../gap/gap_story_dialog.c:9281
-#, fuzzy, c-format
-#| msgid ""
-#| "Format string for area replacement in movie clips. (e.g automatic logo "
-#| "insert)this string shall contain \\%s as placeholder for the basename of "
-#| "a videoclip and optional \\%06d as placeholder for the framenumber."
+#, c-format
 msgid ""
 "Format string to provide external tranparency in movie clips. (e.g automatic "
 "alpha channel insertation)this string shall contain \\%s as placeholder for "
 "the basename of a videoclip and optional \\%06d as placeholder for the "
 "framenumber."
 msgstr ""
-"Formatear cadena para el reemplazo del área en clips de vídeo. (ej. "
-"inserción automática de un logotipo) esta cadena debe contener \\%s como "
-"marcador de posición para el nombre de un videoclip y un \\%06d opcional "
-"como marcador de posición para el número de fotograma."
+"Cadena de formato para proporcionar transparencia externa en clips de vídeo "
+"(ej. inserción automática de un canal alfa). Esta cadena debe contener \\%s "
+"como marcador de posición para el nombre base de un clip de vídeo y un \\"
+"%06d opcional como marcador de posición para el número de fotograma."
 
 #: ../gap/gap_story_dialog.c:9300
 msgid "AreaFormat:"
@@ -8529,10 +8518,6 @@ msgstr ""
 "«película» y «fotograma»"
 
 #: ../gap/gap_story_properties.c:713
-#, fuzzy
-#| msgid ""
-#| "Scene detection depends on video thumbnails. Please enable "
-#| "videothumbnails (in the Windows Menu)"
 msgid ""
 "Scene detection depends on video thumbnails. Please enable video thumbnails "
 "(in the Windows Menu)"
@@ -8563,10 +8548,8 @@ msgid "Set Image or Frame Filename"
 msgstr "Establecer imagen o nombre del fotograma"
 
 #: ../gap/gap_story_properties.c:2491
-#, fuzzy
-#| msgid "Set Image or Frame Filename"
 msgid "Set Colormark Parmeter Filename"
-msgstr "Establecer imagen o nombre del fotograma"
+msgstr "Establecer nombre del archivo de parámetros de marcas de color"
 
 #: ../gap/gap_story_properties.c:2591
 msgid "Set Filtermacro Filename"
@@ -8893,10 +8876,10 @@ msgid "ClipColormask"
 msgstr "Aplicar máscara de color al clip"
 
 #: ../gap/gap_story_properties.c:4744
-#, fuzzy
-#| msgid "Attach mask to clip at clip position in clip size"
 msgid "Apply as colormask to clip at clip position in clip size"
-msgstr "Adjuntar máscara al clip en la posición de clip con el tamaño de clip"
+msgstr ""
+"Aplicar al clip como máscara de color en la posición del clip y al tamaño "
+"del clip"
 
 #. the colormask parameter file label
 #: ../gap/gap_story_properties.c:4761
@@ -8932,19 +8915,15 @@ msgid "Filtermacro:"
 msgstr "Macro de filtrado:"
 
 #: ../gap/gap_story_properties.c:4889
-#, fuzzy
-#| msgid ""
-#| "filter macro to be performed when frames of this clips are rendered. A "
-#| "2nd macrofile is implicite referenced by naming convetion via the "
-#| "keyword .VARYING (as suffix or before the extension)"
 msgid ""
 "filter macro to be performed when frames of this clips are rendered. A 2nd "
 "macrofile is implicitly referenced by naming convention via the keyword ."
 "VARYING (as suffix or before the extension)"
 msgstr ""
-"macro que realizar cuando los fotogramas de estos clips se rendericen. Un "
-"segundo archivo de macro es referenciado implícitamente por nombre convenido "
-"a través de la palabra clave. VARIABLE (como sufijo o antes de la extensión)."
+"macro de filtrado que realizar cuando los fotogramas de estos clips se "
+"rendericen. Se referencia implícitamente un segundo archivo de macros por "
+"convención de nombres a través de la palabra clave .VARYING (como sufijo o "
+"antes de la extensión)."
 
 #: ../gap/gap_story_properties.c:4928
 msgid ""
@@ -9340,16 +9319,12 @@ msgid "graymask"
 msgstr "máscara de grises"
 
 #: ../gap/gap_vex_dialog.c:2535
-#, fuzzy
-#| msgid ""
-#| "On: extract grayscale mask (generated by bluebox)\n"
-#| "Off: extract color frames 1.1"
 msgid ""
 "On: extract grayscale mask (generated by bluebox)\n"
 "Off: extract color frames 1:1"
 msgstr ""
 "Activado: extrae la máscara de escala de grises (generada por bluebox)\n"
-"Desactivado: extrae los fotogramas con color 1.1"
+"Desactivado: extrae los fotogramas con color 1:1"
 
 #. the layermask checkbutton
 #: ../gap/gap_vex_dialog.c:2543
@@ -9540,17 +9515,13 @@ msgstr ""
 "sondeo."
 
 #: ../gap/gap_video_index_creator.c:935
-#, fuzzy
-#| msgid ""
-#| "Create video index. Requires unconditional full scann of all frames."
-#| "Native seek is enabled only in case all timecodes are OK."
 msgid ""
 "Create video index. Requires unconditional full scan of all frames. Native "
 "seek is enabled only in case all timecodes are OK."
 msgstr ""
-"Crear índice de vídeo. Requiere analizar de manera completa y sin "
-"condiciones todos los fotogramas. La búsqueda nativa está activada siempre y "
-"cuando los códigos de tiempo sean los correctos."
+"Crear índice de vídeo. Requiere analizar todos los fotogramas de manera "
+"completa y sin condiciones. La búsqueda nativa se activa siempre y cuando "
+"todos los códigos de tiempo sean los correctos."
 
 #: ../gap/gap_video_index_creator.c:944
 msgid "Videofile:"
@@ -9587,16 +9558,12 @@ msgid "Percentage:"
 msgstr "Porcentaje:"
 
 #: ../gap/gap_video_index_creator.c:994
-#, fuzzy
-#| msgid ""
-#| "stop scann after percentage reached and no unplausible timecode was "
-#| "detected so far (only relevant in smart mode)"
 msgid ""
 "stop scan after percentage reached and no unplausible timecode was detected "
 "so far (only relevant in smart mode)"
 msgstr ""
 "dejar de analizar tras alcanzar el porcentaje y tras no detectar ningún "
-"código de tiempo, inverosímil en la exploración (solamente útil en el modo "
+"código de tiempo inverosímil en la exploración (solamente útil en el modo "
 "inteligente)"
 
 #: ../gap/gap_video_index_creator.c:1012
@@ -9667,10 +9634,8 @@ msgstr ""
 
 #. The dialog1 and main vbox
 #: ../gap/gap_water_pattern.c:1036
-#, fuzzy
-#| msgid "Layer Pattern:"
 msgid "Water-Pattern"
-msgstr "Patrón de capa:"
+msgstr "Patrón de agua"
 
 #. shiftPhaseX spinbutton
 #: ../gap/gap_water_pattern.c:1139
@@ -9717,10 +9682,8 @@ msgstr ""
 "renderizado (capas nube1 y nube2)"
 
 #: ../gap/gap_water_pattern.c:1316
-#, fuzzy
-#| msgid "Select Pattern:"
 msgid "Seed Pattern 1:"
-msgstr "Seleccione patrón:"
+msgstr "Patrón de semilla 1:"
 
 #: ../gap/gap_water_pattern.c:1346
 msgid "Seed for creating random pattern (cloud2 layer) use 0 for random value."
@@ -9730,10 +9693,8 @@ msgstr ""
 
 #. useHighlights checkbutton
 #: ../gap/gap_water_pattern.c:1384
-#, fuzzy
-#| msgid "New Height:"
 msgid "Use Highlights:"
-msgstr "Nueva altura:"
+msgstr "Usar destacados:"
 
 #: ../gap/gap_water_pattern.c:1394
 msgid "Render water pattern highlight effect"
@@ -9756,20 +9717,16 @@ msgstr ""
 "un mapa de desplazamiento generado)"
 
 #: ../gap/gap_water_pattern.c:1516
-#, fuzzy
-#| msgid "Start:"
 msgid "Strength:"
-msgstr "Inicio:"
+msgstr "Fuerza:"
 
 #: ../gap/gap_water_pattern.c:1526
 msgid "The distortion displace strength"
 msgstr "Fuerza del desplazamiento de distorsión"
 
 #: ../gap/gap_water_pattern.c:1653
-#, fuzzy
-#| msgid "Layer Pattern:"
 msgid "Water Pattern..."
-msgstr "Patrón de capa:"
+msgstr "Patrón de agua…"
 
 #: ../gap/gap_wr_color_balance.c:231
 msgid "Color Balance..."
@@ -10972,18 +10929,6 @@ msgstr ""
 "Este complemento es la interfaz principal de codificación de vídeo y sonido"
 
 #: ../vid_common/gap_cme_main.c:148
-#, fuzzy
-#| msgid ""
-#| "This plugin is a common GUI for all available video + audio encoding "
-#| "plugins it operates on a selected range of animframes or storyboard "
-#| "files. The (optional) audio inputdata (param: audfile) is transformed to "
-#| "RIFF WAVE format (16Bit PCM) and passed to the selected videoencoder plug-"
-#| "in as temporary file. (or direct if format and samplerate already matches "
-#| "the desired target samplerate). The videoformat is defined with "
-#| "vid_enc_plugin parameter. The specified plugin  is called with the "
-#| "Parameters specified in the dialog. for noninteractive calls default "
-#| "values will be used. (you may call the desired plugin directly if you "
-#| "want to specify non-interacive parameters"
 msgid ""
 "This plugin is a common GUI for all available video + audio encoding plugins "
 "it operates on a selected range of animframes or storyboard files. The "
@@ -10996,17 +10941,17 @@ msgid ""
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
 msgstr ""
-"Este complemento es una GUI común para todos los complementos de "
+"Este complemento es una IGU común para todos los complementos de "
 "codificación de vídeo y sonido que trabaja en un rango seleccionado de "
 "fotogramas o de archivos de storyboard. La entrada (param: audfile) de "
-"sonido (opcional) se transforma a formato RIFF WAVE (16 bit PCM) y se pasa "
-"al codificador de vídeo seleccionado como archivo temporal (o directamente "
-"si el formato y tasa de muestreo coinciden con las deseadas). El formato de "
-"vídeo se define con el parámetro vid_enc_plugin. El complemento elegido se "
-"invoca con los parámetros establecidos en el diálogo. Para invocaciones no "
-"interactivas se usarán los valores predeterminados. (Puede invocar "
-"directamente el complemento deseado si quiere especificar parámetros no "
-"interactivos.)"
+"sonido (opcional) se transforma a formato RIFF WAVE (PCM de 16 bit) y se "
+"pasa al codificador de vídeo seleccionado como archivo temporal (o "
+"directamente si el formato y tasa de muestreo coinciden con las deseadas). "
+"El formato de vídeo se define con el parámetro vid_enc_plugin. El "
+"complemento elegido se invoca con los parámetros establecidos en el diálogo. "
+"Para invocaciones no interactivas se usarán los valores predeterminados "
+"(puede invocar directamente el complemento deseado si quiere especificar "
+"parámetros no interactivos)."
 
 #: ../vid_common/gap_cme_main.c:160
 msgid "Master Videoencoder..."
@@ -11045,17 +10990,15 @@ msgid "APP0 Marker:"
 msgstr "Marcador APP0:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:562
-#, fuzzy
-#| msgid ""
-#| "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated "
-#| "by some windows programs for AVIs)"
 msgid ""
 "Write APP0 Marker for each encoded frame. The APP0 marker is evaluated by "
 "some windows programs for AVIs but can cause playback with wrong colors on "
 "some players (in most cases you should NOT write the APP0 marker)"
 msgstr ""
-"Escribir marcador APP0 para cada fotograma codificado. (El marcador APP0 se "
-"evalúa en algunos programas de AVIs)"
+"Escribir marcador APP0 para cada fotograma codificado. El marcador APP0 se "
+"evalúa en algunos programas de AVI para Windows pero puede provocar una "
+"reproducción con colores erróneos en ciertos reproductores (en casi todos "
+"los casos NO debería escribir el marcador APP0)."
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:582
 msgid "JPEG / MJPG Codec Options"
@@ -11291,11 +11234,10 @@ msgstr ""
 "IMPORTANTE: primero deberías invocar \""
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:227
-#, fuzzy
-#| msgid "Set Parameters for GAP avi video encoder Plugins"
 msgid "Set parameters for GAP avi video encoder Plugins"
 msgstr ""
-"Establecer parámetros de los complementos GAP del codificador de vídeo AVI"
+"Establecer parámetros para los complementos del codificador de vídeo AVI del "
+"GAP"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:228
 msgid "This plugin sets avi specific video encoding parameters."
@@ -11303,10 +11245,8 @@ msgstr ""
 "Este complemento establece parámetros específicos de codificación de vídeo."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:241
-#, fuzzy
-#| msgid "Get GUI Parameters for GAP avi video encoder"
 msgid "Get GUI parameters for GAP avi video encoder"
-msgstr "Obtener parámetros GUI para el codificador de vídeo AVI de GAP"
+msgstr "Obtener parámetros de la IGU para el codificador de vídeo AVI del GAP"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:242
 msgid "This plugin returns avi encoder specific parameters."
@@ -12103,10 +12043,8 @@ msgid "H264:"
 msgstr "H264:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2568
-#, fuzzy
-#| msgid "Partitioning"
 msgid "Partition X264:"
-msgstr "Particionado"
+msgstr "Partición X264:"
 
 #. CHECKBUTTONS
 #. the Fast checkbutton
@@ -12129,7 +12067,7 @@ msgstr "Pirámide-B"
 msgid "allow B-frames to be used as references for predicting.(for H264 codec)"
 msgstr ""
 "Permitir que se usen fotogramas B como referencia para la predicción (para "
-"el codec H264)"
+"el códec H264)."
 
 #. the partition_X264_PART_I4X4 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2608
@@ -12137,10 +12075,8 @@ msgid "I4x4"
 msgstr "I4x4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2614
-#, fuzzy
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 4x4 partitions in I-frames.(for X264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr "activar particiones 4x4 en fotogramas I (para el códec X264)."
 
 #. the use_local_header checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2625
@@ -12156,11 +12092,11 @@ msgstr ""
 #. the use_wpred checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2638
 msgid "Weighted Biprediction"
-msgstr "Bipredicción efectiva"
+msgstr "Bipredicción ponderada"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2644
 msgid "weighted biprediction for B-frames (for H264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr "bipredicción ponderada para fotogramas B (para el códec H264)"
 
 #. the partition_X264_PART_I8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2652
@@ -12168,10 +12104,8 @@ msgid "I8x8"
 msgstr "I8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2658
-#, fuzzy
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8 partitions in I-frames.(for X264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr "activar particiones 8x8 en fotogramas I (para el códec X264)."
 
 #. the use_brdo checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2670
@@ -12193,7 +12127,7 @@ msgid ""
 "H264 codec)"
 msgstr ""
 "una referencia por partición, en oposición a una referencia por macrobloque "
-"(para el codec H264)"
+"(para el códec H264)"
 
 #. the partition_X264_PART_P8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2700
@@ -12201,10 +12135,9 @@ msgid "P8x8"
 msgstr "P8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
-#, fuzzy
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8, 16x8 and 8x16 partitions in P-frames.(for X264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr ""
+"activar particiones 8x8, 16x8 y 8x16 en fotogramas P (para el códec X264)."
 
 #. the use_ivlc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2717
@@ -12225,10 +12158,9 @@ msgid "P4X4"
 msgstr "P4X4"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2751
-#, fuzzy
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 4x4, 8x4 and 4x8 partitions in P-frames.(for X264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr ""
+"activar particiones 4x4, 8x4 y 4x8 en fotogramas P (para el códec X264)."
 
 #. the use_memc_only checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2761
@@ -12246,7 +12178,7 @@ msgstr "Pskip rápido"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2781
 msgid "fast pskip (for H264 codec)"
-msgstr "pskip rápido (para el codec H264)"
+msgstr "pskip rápido (para el códec H264)"
 
 #. the partition_X264_PART_B8X8 checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2789
@@ -12254,10 +12186,9 @@ msgid "B8x8"
 msgstr "B8x8"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2795
-#, fuzzy
-#| msgid "weighted biprediction for B-frames (for H264 codec)"
 msgid "enable 8x8 16x8 and 8x16 partitions in B-frames.(for X264 codec)"
-msgstr "bipredicción efectiva para fotogramas B (para el codec H264)"
+msgstr ""
+"activar particiones 8x8, 16x8 y 8x16 en fotogramas B (para el códec X264)."
 
 #. the use_drop_frame_timecode checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2806
@@ -12275,7 +12206,7 @@ msgstr "AccederUnidad"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2825
 msgid "use access unit delimiters (for H264 codec)"
-msgstr "usar delimitador de unidad de acceso (para el codec H264)"
+msgstr "usar delimitador de unidad de acceso (para el códec H264)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2841
 msgid "RD optimal MB level residual skipping"
@@ -12724,11 +12655,10 @@ msgstr ""
 "IMPORTANTE: Invocadores no interactivos deberían llamar primero \""
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:494
-#, fuzzy
-#| msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
 msgid "Set parameters for GAP ffmpeg video encoder Plugin"
 msgstr ""
-"Establecer parámetros para el complemento de codificación de vídeo GAP ffmpeg"
+"Establecer parámetros para el complemento de codificación de vídeo ffmpeg "
+"del GAP"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:495
 msgid ""
@@ -12742,10 +12672,9 @@ msgstr ""
 "diálogo para especificar y opcionalmente guardar, los parámetros."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:510
-#, fuzzy
-#| msgid "Get GUI Parameters for GAP ffmpeg video encoder"
 msgid "Get GUI parameters for GAP ffmpeg video encoder"
-msgstr "Obtener parámetros del GUI para el codificador GAP ffmpeg"
+msgstr ""
+"Obtener parámetros de la IGU para el codificador de vídeo ffmpeg del GAP"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:511
 msgid "This plugin returns ffmpeg encoder specific parameters."
@@ -12780,7 +12709,7 @@ msgstr "Códec de sonido desconocido: %s"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2675
 #, c-format
 msgid "CODEC: %s is no AUDIO CODEC!"
-msgstr "CÓDEC: %s no es un codec de sonido"
+msgstr "CÓDEC: %s no es un códec de sonido"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2737
 #, c-format
@@ -12873,12 +12802,10 @@ msgstr ""
 "Los datos de sonido se ignoran. Una invocación de\""
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:214
-#, fuzzy
-#| msgid "Set Parameters for GAP rawframes video encoder Plugins"
 msgid "Set parameters for GAP rawframes video encoder Plugins"
 msgstr ""
-"Establecer parámetros para los complementos GAP codificadores de vídeo de "
-"fotogramas individuales"
+"Establecer parámetros para los complementos del codificador de vídeo de "
+"fotogramas en bruto del GAP"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:215
 msgid "This plugin sets rawframes specific video encoding parameters."
@@ -12887,12 +12814,10 @@ msgstr ""
 "vídeo para fotogramas individuales"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:228
-#, fuzzy
-#| msgid "Get GUI Parameters for GAP rawframes video encoder"
 msgid "Get GUI parameters for GAP rawframes video encoder"
 msgstr ""
-"Obtener parámetros GUI para el codificador de vídeo de fotogramas "
-"individuales de GAP"
+"Obtener parámetros de la IGU para los complementos del codificador de vídeo "
+"de fotogramas en bruto del GAP"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:229
 msgid "This plugin returns rawframes encoder specific parameters."
@@ -12915,11 +12840,10 @@ msgstr ""
 "así: <nombre del vídeo>+<nº de 6 dígitos>+<extensión>"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:527
-#, fuzzy
-#| msgid "the rawframe Encoder has no encoder specific Parameters"
 msgid "the rawframe encoder has no encoder specific parameters"
 msgstr ""
-"el codificador de fotogramas individuales no tiene parámetros específicos."
+"el codificador de fotogramas en bruto no tiene parámetros específicos del "
+"codificador"
 
 #: ../vid_enc_rawframes/gap_enc_rawframes_main.c:893
 #: ../vid_enc_single/gap_enc_singleframes_main.c:732
@@ -12962,12 +12886,10 @@ msgstr ""
 "datos de sonido se ignoran. Una invocación de\""
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:205
-#, fuzzy
-#| msgid "Set Parameters for GAP singleframes video encoder Plugins"
 msgid "Set parameters for GAP singleframes video encoder Plugins"
 msgstr ""
-"Establecer parámetros para los complementos GAP de codificadores de vídeo de "
-"fotogramas individuales"
+"Establecer parámetros para los complementos del codificador de vídeo de "
+"fotogramas individuales del GAP"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:206
 msgid "This plugin sets singleframes specific video encoding parameters."
@@ -12976,12 +12898,10 @@ msgstr ""
 "vídeo para fotogramas individuales"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:219
-#, fuzzy
-#| msgid "Get GUI Parameters for GAP singleframes video encoder"
 msgid "Get GUI parameters for GAP singleframes video encoder"
 msgstr ""
-"Obtener parámetros GUI para el codificador de vídeo de fotogramas "
-"individuales de GAP"
+"Obtener parámetros de la IGU para el codificador de vídeo de fotogramas "
+"individuales del GAP"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:220
 msgid "This plugin returns singleframes encoder specific parameters."
@@ -13004,8 +12924,7 @@ msgstr ""
 "así: <nombre del vídeo>+<nº de 6 dígitos>+<extensión>"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:512
-#, fuzzy
-#| msgid "the Singleframe Encoder has no encoder specific Parameters"
 msgid "the Singleframe Encoder has no encoder specific parameters"
 msgstr ""
-"el codificador de fotogramas individuales no tiene parámetros específicos."
+"el Codificador de fotogramas individuales no tiene parámetros específicos "
+"del codificador"
