@@ -1,31 +1,32 @@
 # translation of gimp-gap.master.po to Español
-# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
-# Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
-# María Majadas <alixis82@gmail.com>, 2008.
-# Omar Campagne <ocampagne@gmail.com>, 2010.
-# Francisco Vila <francisco.vila@hispalinux.es>, 2011.
 # Éste es el fichero con los mensajes en español de Gimp
 # (sección plug-in). Preguntas, consejos y correcciones
 # _constructivas_ son bienvenidos.
 # Copyright (C) 1998-2005, 2006, 2008, 2011 Free Software Foundation, Inc.
 # Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+#
+# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
+# Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
+# María Majadas <alixis82@gmail.com>, 2008.
+# Omar Campagne <ocampagne@gmail.com>, 2010.
+# Francisco Vila <francisco.vila@hispalinux.es>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 17:56+0000\n"
-"PO-Revision-Date: 2011-09-01 20:03+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-09-01 18:06+0000\n"
+"PO-Revision-Date: 2011-09-04 11:38+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
@@ -524,7 +525,7 @@ msgstr ""
 
 #: ../gap/gap_base_ops.c:1931 ../gap/gap_base_ops.c:2040
 msgid "Renumber Frames"
-msgstr "Renumerar fotogramas…"
+msgstr "Renumerar fotogramas"
 
 #: ../gap/gap_base_ops.c:2080
 msgid "Renumber Frames 2nd Pass"
@@ -544,7 +545,7 @@ msgstr "Seleccionar por color"
 #. keycolor label
 #: ../gap/gap_bluebox.c:288 ../gap/gap_mov_dialog.c:3942
 msgid "Keycolor:"
-msgstr "Clave del color:"
+msgstr "Color de clave:"
 
 #. the keycolor button
 #: ../gap/gap_bluebox.c:294
@@ -568,7 +569,7 @@ msgid ""
 msgstr ""
 "Selección precisa de píxeles por color con 0.0. Valores mayores que 0 hacen "
 "la selección con más o menos valor alfa dependiendo de la diferencia con el "
-"color clave"
+"color de clave"
 
 #: ../gap/gap_bluebox.c:337
 msgid "Source Alpha:"
@@ -603,15 +604,15 @@ msgstr ""
 
 #: ../gap/gap_bluebox.c:373
 msgid "Feather Edges:"
-msgstr "Bordes de la cuña:"
+msgstr "Difuminado de los bordes:"
 
 #: ../gap/gap_bluebox.c:384
 msgid "ON: Feather edges using feather radius"
-msgstr "Activado: Bordes de la cuña usan radio de la cuña"
+msgstr "ACTIVADO: difuminar los bordes usando el radio de difuminado"
 
 #: ../gap/gap_bluebox.c:394 ../gap/gap_colormask_dialog.c:407
 msgid "Feather Radius:"
-msgstr "Radio de la cuña:"
+msgstr "Radio de difuminado:"
 
 #. lower/upper
 #. step, page
@@ -620,11 +621,11 @@ msgstr "Radio de la cuña:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:401
 msgid "Feather radius for smoothing the alpha channel"
-msgstr "Radio de la cuña para suavizar el canal alfa"
+msgstr "Radio de difuminado para suavizar el canal alfa"
 
 #: ../gap/gap_bluebox.c:411
 msgid "Shrink/Grow:"
-msgstr "Encoger/Estirar:"
+msgstr "Encoger/Agrandar:"
 
 #. lower/upper
 #. step, page
@@ -633,7 +634,7 @@ msgstr "Encoger/Estirar:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:418
 msgid "Grow selection in pixels (use negative values for shrink)"
-msgstr "Encoger selección en píxeles (usar valores negativos para encoger)"
+msgstr "Agrandar selección en píxeles (usar valores negativos para encoger)"
 
 #: ../gap/gap_bluebox.c:427
 msgid "Automatic Preview:"
@@ -641,7 +642,7 @@ msgstr "Vista previa automática:"
 
 #: ../gap/gap_bluebox.c:438
 msgid "ON: Keep preview image up to date"
-msgstr "Activar: Mantener la imagen de previsualización actualizada"
+msgstr "ACTIVADO: mantener actualizada la imagen de vista previa"
 
 #. button
 #. the preview frame
@@ -696,7 +697,7 @@ msgstr "VALOR"
 
 #: ../gap/gap_bluebox.c:920
 msgid "Use single threshold value"
-msgstr "Usar un valor umbral sencillo"
+msgstr "Usar un valor umbral único"
 
 #. radio button thres_mode ALL
 #: ../gap/gap_bluebox.c:931
@@ -796,20 +797,20 @@ msgstr "Umbral:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:1099
 msgid "Common color threshold"
-msgstr "Umbral para el color común"
+msgstr "Umbral común de color"
 
 #: ../gap/gap_bluebox.c:1511
 #, c-format
 msgid "Error: Image '%s' not found"
-msgstr "Error: La imagen «%s» no se encuentra"
+msgstr "Error: no es encuentra la imagen «%s»"
 
 #: ../gap/gap_bluebox.c:1519
 msgid "Error: Bluebox effect operates only on layers"
-msgstr "Error: El efecto bluebox opera sólo en capas"
+msgstr "Error: el efecto bluebox opera sólo en capas"
 
 #: ../gap/gap_bluebox.c:1528
 msgid "Error: Bluebox effect operates only on RGB layers"
-msgstr "Error: El efecto bluebox opera sólo en capas RGB"
+msgstr "Error: el efecto bluebox opera sólo en capas RGB"
 
 #: ../gap/gap_bluebox.c:1612
 msgid "BlueboxPreview.xcf"
@@ -995,25 +996,25 @@ msgstr "_Algoritmo:"
 #. enableKeyColorThreshold checkbutton
 #: ../gap/gap_colormask_dialog.c:586
 msgid "Enable individual color threshold for the key color"
-msgstr "Activar el umbral de color individual para el color de key"
+msgstr "Activar el umbral de color individual para el color de clave"
 
 #. the keycolor label
 #: ../gap/gap_colormask_dialog.c:604
 msgid "Key color:"
-msgstr "Color de key:"
+msgstr "Color de clave:"
 
 #. the keycolor button
 #: ../gap/gap_colormask_dialog.c:610
 msgid "Key color"
-msgstr "Color de key"
+msgstr "Color de clave"
 
 #: ../gap/gap_colormask_dialog.c:631
 msgid "Key Colordiff threshold:"
-msgstr "Umbral para la diferencia de colores de key:"
+msgstr "Umbral para la diferencia de colores de clave:"
 
 #: ../gap/gap_colormask_dialog.c:646
 msgid "Key Color Sensitivity:"
-msgstr "Sensibilidad del color de key:"
+msgstr "Sensibilidad del color de clave:"
 
 #: ../gap/gap_colormask_dialog.c:666
 msgid "Sig Colordiff Threshold:"
@@ -4243,18 +4244,18 @@ msgid ""
 "the keycolor transparent."
 msgstr ""
 "Aplicar el filtro blueboxx en los objetos en movimiento. El filtro bluebox "
-"hace el color clave transparente."
+"hace el color de clave transparente."
 
 #. keycolor button
 #: ../gap/gap_mov_dialog.c:3954
 msgid "Move Path Bluebox Keycolor"
-msgstr "Ruta de movimiento del color clave Bluebox"
+msgstr "Ruta de movimiento del color de clave de la Bluebox"
 
 #: ../gap/gap_mov_dialog.c:3971
 msgid ""
 "Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
-"Abrir la ventana de diálogo para establecer parámetros y clave de color para "
+"Abrir la ventana de diálogo para establecer parámetros y color de clave para "
 "el filtro bluebox"
 
 #. toggle Tracelayer
@@ -4926,7 +4927,7 @@ msgstr "Coordenada Y"
 #. table col, row
 #: ../gap/gap_mov_dialog.c:5192
 msgid "Keyframe:"
-msgstr "Keyframe:"
+msgstr "Fotograma clave:"
 
 #. label text
 #. scalesize spinsize
@@ -5050,7 +5051,7 @@ msgid ""
 "%s"
 msgstr ""
 "No se puede trabajar con la configuración actual\n"
-"del punto de control o del keyframe.\n"
+"del punto de control o del fotograma clave.\n"
 "\n"
 "Lista de errores:\n"
 "%s"
@@ -5127,7 +5128,7 @@ msgid ""
 "Error: Keyframe %d at point [%d] higher or equal than last handled frame"
 msgstr ""
 "\n"
-"Error: El keyframe %d en el punto [%d] es mayor o igual que el último "
+"Error: El fotograma clave %d en el punto [%d] es mayor o igual que el último "
 "fotograma manipulado"
 
 #: ../gap/gap_mov_exec.c:3531
@@ -5138,7 +5139,7 @@ msgid ""
 "for the previous controlpoints"
 msgstr ""
 "\n"
-"Error: El keyframe %d en el punto [%d] no deja el suficiente\n"
+"Error: El fotograma clave %d en el punto [%d] no deja el suficiente\n"
 "espacio (fotogramas) para los puntos de control anteriores"
 
 #: ../gap/gap_mov_exec.c:3541
@@ -5148,7 +5149,7 @@ msgid ""
 "Error: Keyframe %d is not in sequence at point [%d]"
 msgstr ""
 "\n"
-"Error: El keyframe %d no está en secuencia en el punto [%d]"
+"Error: El fotograma clave %d no está en secuencia en el punto [%d]"
 
 #: ../gap/gap_mov_exec.c:3559
 #, c-format
@@ -7895,7 +7896,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:5492
 msgid "Resource Loginterval:"
-msgstr ""
+msgstr "Intervalo de registro del recurso:"
 
 #: ../gap/gap_story_dialog.c:5493
 msgid ""
@@ -7903,6 +7904,10 @@ msgid ""
 "usage afte each n processed frames to stdout (this includes the list of "
 "cached images and opened videofiles)"
 msgstr ""
+"Un valor 0 desactiva el registro del recurso hacia stdout. Un valor «n» "
+"registra el uso actual del recurso a cada «n» fotogramas procesados, hacia "
+"stdout (incluye la lista de imágenes en caché y los archivos de vídeo "
+"abiertos)"
 
 #: ../gap/gap_story_dialog.c:5506
 msgid "Render preview at full size:"
@@ -7915,10 +7920,16 @@ msgid ""
 "where possible.(typically faster but disables extraction of a composite "
 "frame at original size via click into the player preview)"
 msgstr ""
+"ACTIVADO: se hace un renderizado (lento) de los fotogramas de composición "
+"destinado a vista previa, a tamaño completo. DESACTIVADO: se hace un "
+"renderizado del storyboard destinado a vista previa a tamaño pequeño, si es "
+"posible (normalmente es más rápido pero desactiva la extracción de un "
+"fotograma de composición al tamaño original por medio de una pulsación sobre "
+"la vista previa del reproductor)."
 
 #: ../gap/gap_story_dialog.c:5533
 msgid "Multiprocessor Storyboard Support:"
-msgstr ""
+msgstr "Soporte de multiprocesador para el storyboard:"
 
 #: ../gap/gap_story_dialog.c:5534
 msgid ""
@@ -7926,6 +7937,11 @@ msgid ""
 "(reading frames from videoclips is done by parallel running prefetch "
 "processing) OFF: Rendering of composite frames uses only one processor."
 msgstr ""
+"ACTIVADO: la renderización de los fotogramas de storyboard de composición "
+"usa más de un procesador (la lectura de fotogramas a partir de los clips de "
+"vídeo se hace mediante procesado de preadquisición en ejecución paralela). "
+"DESACTIVADO: la renderización de los fotogramas de composición utiliza un "
+"solo procesador."
 
 #: ../gap/gap_story_dialog.c:5545
 msgid "Multiprocessor Encoder Support:"
@@ -7937,6 +7953,10 @@ msgid ""
 "ffmpeg based video encoder implementation supports parallel processing. OFF: "
 "Video encoders use only one processor."
 msgstr ""
+"ACTIVADO: los codificadores de vídeo usarán más de un procesador cuando esté "
+"implementado. La implementación del codificador de vídeo basado en ffmpeg "
+"soporta el procesado paralelo. DESACTIVADO: los codificadores de vídeo usan "
+"un solo procesador."
 
 #: ../gap/gap_story_dialog.c:5560
 #, fuzzy
@@ -8068,13 +8088,11 @@ msgid "Videoseek (decoder: %s)"
 msgstr "Búsqueda de vídeo (decodificador: %s)"
 
 #: ../gap/gap_story_dialog.c:6899
-#| msgid "videothumbnail cancelled"
 msgid "video thumbnail cancelled"
 msgstr "miniaturas de vídeo canceladas"
 
 #: ../gap/gap_story_dialog.c:6925
 #, c-format
-#| msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgid "Fetching video thumbnail for clip: %d (out of %d)"
 msgstr "Obteniendo miniatura de vídeo para el clip: %d (de %d)"
 
@@ -8103,7 +8121,6 @@ msgid "Save cliplist to file"
 msgstr "Guardar lista de clips en un archivo"
 
 #: ../gap/gap_story_dialog.c:7949
-#| msgid "Show Section properites window"
 msgid "Show Section properties window"
 msgstr "Mostrar ventana de Propiedades de sección"
 
@@ -8183,8 +8200,6 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: ../gap/gap_story_dialog.c:8765 ../gap/gap_video_index_creator.c:1447
-#| msgid ""
-#| "Cancel video access if in progress and disable automatic videothumbnails"
 msgid ""
 "Cancel video access if in progress and disable automatic video thumbnails"
 msgstr ""
@@ -8451,9 +8466,6 @@ msgstr "conflicto: el parámetro posicional oculta un parámetro con nombre"
 
 #: ../gap/gap_story_file.c:3195
 #, c-format
-#| msgid ""
-#| "Header not found!\n"
-#| "(line 1 must start with:  %s or %s"
 msgid ""
 "Header not found!\n"
 "(line 1 must start with:  %s or %s)"
@@ -8463,8 +8475,6 @@ msgstr ""
 
 #: ../gap/gap_story_file.c:3634
 #, c-format
-#| msgid ""
-#| "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none)"
 msgstr ""
 "palabra clave no permitida: «%s» (las palabras permitidas son: width, "
@@ -8472,7 +8482,6 @@ msgstr ""
 
 #: ../gap/gap_story_file.c:3661
 #, c-format
-#| msgid "illegal keyword: %s (expected keywords are: keep, change"
 msgid "illegal keyword: %s (expected keywords are: keep, change)"
 msgstr ""
 "palabra clave no permitida: %s (las palabras clave permitidas son: keep, "
@@ -8881,7 +8890,7 @@ msgstr "Adjuntar máscara al vídeo maestro resultante en una posición fija"
 #. radio button mask_anchor ColormaskClip
 #: ../gap/gap_story_properties.c:4735
 msgid "ClipColormask"
-msgstr ""
+msgstr "Aplicar máscara de color al clip"
 
 #: ../gap/gap_story_properties.c:4744
 #, fuzzy
@@ -8891,13 +8900,12 @@ msgstr "Adjuntar máscara al clip en la posición de clip con el tamaño de clip
 
 #. the colormask parameter file label
 #: ../gap/gap_story_properties.c:4761
-#| msgid "Mask Name:"
 msgid "Mask Params:"
 msgstr "Parámetros de máscara:"
 
 #: ../gap/gap_story_properties.c:4794
 msgid "parameter file for the colormask filter"
-msgstr ""
+msgstr "archivo de parámetros para el filtro de máscaras de color"
 
 #: ../gap/gap_story_properties.c:4820
 msgid "Maskstepsize:"
@@ -9667,17 +9675,21 @@ msgstr "Patrón de capa:"
 #. shiftPhaseX spinbutton
 #: ../gap/gap_water_pattern.c:1139
 msgid "Phase shift X:"
-msgstr ""
+msgstr "Desplazamiento de fase en X:"
 
 #: ../gap/gap_water_pattern.c:1147
 msgid "Horizontal shift phase where 1.0 refers to image width"
 msgstr ""
+"Desplazamiento horizontal de fase donde 1.0 se refiere a la anchura de la "
+"imagen"
 
 #: ../gap/gap_water_pattern.c:1213
 msgid ""
 "ON: create waterpattern cloud layers according options. OFF: Use external "
 "pattern layers. "
 msgstr ""
+"ACTIVADO: crear capas de nube de patrón de agua según las opciones. "
+"DESACTIVADO: usar capas de patrones externos. "
 
 #. pattern
 #: ../gap/gap_water_pattern.c:1224
@@ -9693,12 +9705,16 @@ msgid ""
 "Horizontal scaling of the random patterns that are created for rendering "
 "(cloud1 and cloud2 layers)"
 msgstr ""
+"Escalado horizontal de los patrones aleatorios que se crean para el "
+"renderizado (capas nube1 y nube2)"
 
 #: ../gap/gap_water_pattern.c:1304
 msgid ""
 "Vertical scaling of the random patterns that are created for rendering "
 "(cloud1 and cloud2 layers)"
 msgstr ""
+"Escalado vertical de los patrones aleatorios que se crean para el "
+"renderizado (capas nube1 y nube2)"
 
 #: ../gap/gap_water_pattern.c:1316
 #, fuzzy
@@ -9709,6 +9725,8 @@ msgstr "Seleccione patrón:"
 #: ../gap/gap_water_pattern.c:1346
 msgid "Seed for creating random pattern (cloud2 layer) use 0 for random value."
 msgstr ""
+"Semilla para la creación del patrón aleatorio (capa nube2). Use 0 para valor "
+"aleatorio."
 
 #. useHighlights checkbutton
 #: ../gap/gap_water_pattern.c:1384
@@ -9719,21 +9737,23 @@ msgstr "Nueva altura:"
 
 #: ../gap/gap_water_pattern.c:1394
 msgid "Render water pattern highlight effect"
-msgstr ""
+msgstr "Renderizar efecto de destacado de patrón de agua"
 
 #: ../gap/gap_water_pattern.c:1415
 msgid "The highlight strength (e.g. opacity)"
-msgstr ""
+msgstr "Fuerza del destacado (ej. opacidad)"
 
 #. useDisplaceMap checkbutton
 #: ../gap/gap_water_pattern.c:1496
 msgid "Use Displace Map:"
-msgstr ""
+msgstr "Usar mapa de desplazamiento:"
 
 #: ../gap/gap_water_pattern.c:1507
 msgid ""
 "Render water pattern distortion effect (by applying a generated displace map)"
 msgstr ""
+"Renderizar efecto de distorsión de patrón de agua (mediante la aplicación de "
+"un mapa de desplazamiento generado)"
 
 #: ../gap/gap_water_pattern.c:1516
 #, fuzzy
@@ -9743,7 +9763,7 @@ msgstr "Inicio:"
 
 #: ../gap/gap_water_pattern.c:1526
 msgid "The distortion displace strength"
-msgstr ""
+msgstr "Fuerza del desplazamiento de distorsión"
 
 #: ../gap/gap_water_pattern.c:1653
 #, fuzzy
@@ -11170,6 +11190,10 @@ msgid ""
 "players like WinDvD, VLC-player want BGR colormodel for RAW data) other "
 "players want RGB colromodel for RAW avi data)"
 msgstr ""
+"Determine si quiere codificar los fotogramas en el modelo de color BGR "
+"(preferido) o RGB (la mayor parte de los reproductores como WinDvD o VLC-"
+"player prefieren el modelo de color BGR para datos RAW; otros reproductores "
+"prefieren el modelo de color RGB para datos avi RAW)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:928
 msgid "XVID Codec Options"
@@ -11241,7 +11265,7 @@ msgstr "Intervalo clave:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1159
 msgid "max distance for keyframes (I-frames)"
-msgstr "distancia máxima de keyframes (fotogramas-I)"
+msgstr "distancia máxima de fotogramas clave (fotogramas-I)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1189
 msgid "XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)"
@@ -12260,11 +12284,11 @@ msgstr "Omitir el residuo de RD de nivel óptimo de MB"
 #. the use_MB_Tree ratecontrol checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2848
 msgid "MB-Tree RC"
-msgstr ""
+msgstr "Control de tasa de árbol Macrobloque"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2854
 msgid "use macroblock tree ratecontrol (x264 only)"
-msgstr ""
+msgstr "usar control de tasa de árbol de macrobloque (sólo para x264)"
 
 #. the use_chunks checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2863
@@ -12295,7 +12319,7 @@ msgstr "PSY"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2899
 msgid "use psycho visual optimizations"
-msgstr ""
+msgstr "usar optimizaciones visuales psicológicas"
 
 #. the use_bit_reservoir checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2908
@@ -12309,11 +12333,13 @@ msgstr "Usar una reserva de archivos cuando la codificación sea posible"
 #. the compute_SSIM checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2922
 msgid "Compute SSIM"
-msgstr ""
+msgstr "Calcular SSIM"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2928
 msgid "Compute SSIM during encoding, error[] values are undefined."
 msgstr ""
+"Calcular el SSIM durante la codificación, los valores de error[] no están "
+"definidos."
 
 #. the use_gmc checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2939
@@ -12356,7 +12382,7 @@ msgid ""
 "frame boundaries"
 msgstr ""
 "El flujo de entrada de bits se puede truncar en un punto aleatorio, no "
-"limitandose a los bordes del fotograma."
+"limitándose a los bordes del fotograma."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3038
 msgid "FFMpeg Expert Encoder Options"
@@ -12395,7 +12421,7 @@ msgstr "rc-init-cplx:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3124
 msgid "Initial complexity for 1-pass encoding"
-msgstr "Complejidad inicial en codificación pase-1"
+msgstr "Complejidad inicial en codificación de una sola pasada"
 
 #. the b-qfactor label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3135
@@ -12436,7 +12462,7 @@ msgstr "desfase qp entre fotogramas p e i"
 #. the Bitrate Tolerance label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3242
 msgid "Bitrate Tol:"
-msgstr "Tasa de bits Tol:"
+msgstr "Tolerancia de la tasa de bits:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3258
 msgid "Set video bitrate tolerance (in kbit/s)"
@@ -12445,22 +12471,22 @@ msgstr "Establecer la tolerancia de la tasa de bits de vídeo (en Kbits/s.)"
 #. the Maxrate Tolerance label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3268
 msgid "Maxrate Tol:"
-msgstr "Tasa máx. Tol:"
+msgstr "Tolerancia de la tasa máx.:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3285
 msgid "Set max video bitrate tolerance (in kbit/s)"
 msgstr ""
-"Establecer la tolerancia máx. de la tasa de bits de vídeo (en Kbits/s.)"
+"Establecer la tolerancia de la tasa máxima de bits de vídeo (en Kbits/s.)"
 
 #. the Minrate Tolerance label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3297
 msgid "Minrate Tol:"
-msgstr "Tasa mín. Tol:"
+msgstr "Tolerancia de la tasa mín.:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3313
 msgid "Set min video bitrate tolerance (in kbit/s)"
 msgstr ""
-"Establecer la tolerancia mín. de la tasa de bits de vídeo (en Kbits/s.)"
+"Establecer la tolerancia de la tasa mínima de bits de vídeo (en Kbits/s.)"
 
 #. the Bufsize label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3324
@@ -12500,16 +12526,16 @@ msgstr "Escala máx. del cuantizador macrobloque (VBR)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3451
 msgid "FFMpeg 2 pass and multiplexer expert settings"
-msgstr "opciones avanzadas de FFMpeg pase 2 y multiplexor"
+msgstr "opciones avanzadas de FFMpeg de 2 pasadas y multiplexor"
 
 #. the pass_logfile checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3463
 msgid "2 Pass Encoding"
-msgstr "codificación pase 2"
+msgstr "codificación en dos pasadas"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3469
 msgid "Activate 2 pass encoding when set"
-msgstr "Activar la codificación pase 2 cuando se establezca"
+msgstr "Activar la codificación de dos pasadas cuando se establezca"
 
 #. the pass_logfile label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3478
@@ -12672,7 +12698,7 @@ msgstr "Opciones avanzadas 2"
 #. the notebook page label for 2 Pass Expert settings
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4113
 msgid "2Pass/Mux"
-msgstr "2Pass/Mux"
+msgstr "2 pasadas/multiplexor"
 
 #. the notebook page label for file comment settings
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4129
