@@ -268,7 +268,7 @@ run (const gchar *name,          /* name of plugin */
   GapGveAviValues *epp;
   GapGveAviGlobalParams *gpp;
 
-  static GimpParam values[1];
+  static GimpParam values[2];
   gint32     l_rc;
   const char *l_env;
   char       *l_ecp_key1;

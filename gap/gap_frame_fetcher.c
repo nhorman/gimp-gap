@@ -67,10 +67,7 @@
 //#include <dirent.h>
 
 
-// TODO add configure option to check for HAVE_SYSINFO
-#define HAVE_SYSINFO 0
-
-#ifdef HAVE_SYSINFO
+#ifdef GAP_HAVE_SYSINFO
 #include <sys/sysinfo.h>
 #endif
 
@@ -1173,12 +1170,20 @@ p_dump_resources_gvahand()
 /* ----------------------------------------------------
  * p_dump_process_resource_usage
  * ----------------------------------------------------
- * getrusage did not work in 1st test on linux (and is not available on windows)
+ * print memory resources used (in case sysinfo was available on compiletime)
+ *
+ * NOTE: 
+ *   getrusage did not work in 1st test on linux (and is not available on windows)
+ *   while  sysinfo worked on my linux development environment, but was not availabe
+ *   on Windows MinGW environment.
+ *   therefore the configure script cheks for the sysinfo header and
+ *   sets the GAP_HAVE_SYSINFO define constant to 1 when available.
+ *      
  */
 static void
 p_dump_process_resource_usage()
 {
-#ifdef HAVE_SYSINFO
+#ifdef GAP_HAVE_SYSINFO
 
   int rc;
   struct sysinfo info;
@@ -1208,12 +1213,13 @@ p_dump_process_resource_usage()
   }
   else
   {
-    printf("FrameFetcher getrusage failed with retcode:%d\n", rc);
+    printf("FrameFetcher sysinfo failed with retcode:%d\n", rc);
   }
 
 
 #else
-  printf("FrameFetcher compiled without sysinfo support (HAVE_SYSINFO not dfined)\n");
+  printf("** WARNING FrameFetcher sysinfo memory resource usage NOT available "
+         " because the FrameFetcher was compiled without sysinfo support (GAP_HAVE_SYSINFO not dfined)\n");
 #endif
 }
 

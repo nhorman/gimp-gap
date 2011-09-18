@@ -1,3 +1,26 @@
+2011-09-18 Wolfgang Hofer <hof@gimp.org>
+
+- fixed configure / compile problems in MinGW environment
+  Now the configure script is using a MinGW variant of ffmpeg_configure options
+  The configuration that built usable Winows video encoder plug-in.exe files im my tests
+  is now the default setting in MinGW environment.
+  see extern_libs/configure_options_ffmpeg_win32.txt for more details.
+
+- fixed "array subscript is above array bounds" error in run procedures of the video encoder plu-ins 
+
+ * configure.in
+ * autogen.sh
+ * extern_libs/configure_options_ffmpeg_win32.txt       #new file
+ * extern_libs/configure_options_ffmpeg.txt
+ * extern_libs/Makefile.am
+ * libgapbase/gap_base.c
+ * gap/gap_frame_fetcher.c
+ 
+ * vid_enc_single/gap_enc_singleframes_main.c
+ * vid_enc_rawframes/gap_enc_rawframes_main.c
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+ * vid_enc_avi/gap_enc_main_avi.c
+
 2011-05-08 Wolfgang Hofer <hof@gimp.org>
 
 - added edit button in the Storyboard attributes dialog

@@ -45,10 +45,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef GAP_HAVE_PTHREAD
-#include "pthread.h"
-#endif
-
 
 #include <glib/gstdio.h>
 
@@ -70,7 +66,12 @@
 
 
 #ifdef G_OS_WIN32
-#include <process.h>            /* For _getpid() */
+#include <process.h>             /* For _getpid() */
+#else
+#ifdef GAP_HAVE_PTHREAD
+#define USE_PTHREAD_FOR_LINUX_THREAD_ID 1
+#include "pthread.h"             /* for pthread_self() */
+#endif
 #endif
 
 /* GAP includes */
@@ -644,7 +645,7 @@ gap_base_thread_init()
 
 
 /* ---------------------------------
- * gap_timm_get_thread_id
+ * gap_base_get_thread_id
  * ---------------------------------
  * get id of the current thread.
  * gthread does not provide that feature.
@@ -652,6 +653,11 @@ gap_base_thread_init()
  * therefore use pthread implementation to get the current thread id.
  * In case pthread is not available at compiletime this procedure
  * will always return 0 and runtime.
+ *
+ * WARNING: This procedure shall NOT be used in productive features,
+ * because there is no working variant implemented on other OS than Linux.
+ * The main purpose is for logging and performance measure purposes
+ * while development on Linux
  */
 gint64
 gap_base_get_thread_id()
@@ -662,7 +668,7 @@ gap_base_get_thread_id()
 //  threadId = (gint64)gettid();
 //#endif
 
-#ifdef GAP_HAVE_PTHREAD
+#ifdef USE_PTHREAD_FOR_LINUX_THREAD_ID
   threadId = pthread_self();
   if(gap_debug)
   {

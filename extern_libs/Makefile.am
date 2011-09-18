@@ -70,6 +70,7 @@ endif
 install-data-hook:
 	rm -f $(DESTDIR)$(GAPLIBDIR)/libavformat.a \
 	rm -f $(DESTDIR)$(GAPLIBDIR)/libavcodec.a \
+	rm -f $(DESTDIR)$(GAPLIBDIR)/libavutil.a \
 	rm -f $(DESTDIR)$(GAPLIBDIR)/libmpeg3.a
 
 EXTRA_DIST = \

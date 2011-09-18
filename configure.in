@@ -151,7 +151,14 @@ and OLD mpeg encoders.
 
 AM_CONDITIONAL(GAP_UNIX_FRONTENDS, test "x$enable_unix_frontends" != "xno")
 
-
+dnl check for sysinfo header (optional for reporting resource usage in developer debug messages)
+dnl see gap_frame_fetcher.c procedure p_dump_process_resource_usage
+dnl the check result has no impact on productive features.
+no_sysinfo=""
+AC_CHECK_HEADER(sys/sysinfo.h,
+          AC_DEFINE(GAP_HAVE_SYSINFO, 1,
+              [Define to 1 if you have the <sys/sysinfo.h> header file.]),
+          no_sysinfo="optional sysinfo header file (sys/sysinfo.h) not found Not critical.")
 
 dnl check for pthread library (required for libmpeg3 and recent versions of the xvid library)
 dnl the check result does not matter unless libmpeg3 or xvid is linked or built later on.
@@ -167,19 +174,33 @@ AC_CHECK_LIB(pthread, pthread_create,
               [Define to 1 if you have the <pthread.h> header file.])
   fi
 
+
 dnl check for bzip2 library (for ffmpeg matroskadec )
 dnl the check result does not matter unless libavformat is linked or built later on.
+dnl note: the procedures (BZ2_bzDecompressInit) of the bzip2 lib have different number
+dnl of parameters when compiled in Windows environment, therefore the check via AC_CHECK_LIB
+dnl fails on MinGW Windows environment, even if libbzip2 is available and proper installed.
+dnl therfore i decided to skip this check on Win32 systems.
 FF_BZIP2=""
 ffbz2_warn=""
 AC_ARG_ENABLE(ff_libbz2,
               [  --disable-ff-libbz2          configure libavformat without libbz2 disables matroskadec bz2 support])
   if test "x$enable_ff_libbz2" != "xno"; then
-    AC_CHECK_LIB(bz2, BZ2_bzDecompressInit,
+    if test "x$os_win32" = "xyes"; then
+      AC_CHECK_HEADER(bzlib.h,
+          FF_BZIP2="-lbz2",
+          ffbz2_warn="$NEW_LINE ** bzip2 header file (bzlib.h) not found (limited support for ffmpeg matroskadec codec )")
+    else
+      AC_CHECK_LIB(bz2, BZ2_bzDecompressInit,
         [AC_CHECK_HEADER(bzlib.h,
           FF_BZIP2="-lbz2",
           ffbz2_warn="$NEW_LINE ** bzip2 header file (bzlib.h) not found (limited support for ffmpeg matroskadec codec )")],
       ffbz2_warn="bzip2 library (libbz2) not found (there will be limited support)")    
+    fi
   fi
+
+
+
 
 
 dnl ## libmp3lame lame/lame.h lame_init -lmp3lame -lm
@@ -498,7 +519,11 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
 
       dnl read configure options for the external lib from a file      
       dnl the current simple implementation requires all options in one line
-      FFMPEG_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_ffmpeg.txt" | grep -v '^#'`
+      if  test "x$os_win32" = "xyes"; then
+         FFMPEG_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_ffmpeg_win32.txt" | grep -v '^#'`
+      else
+         FFMPEG_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_ffmpeg.txt" | grep -v '^#'`
+      fi
       
       ff_pass_through_flags=""
       if test "x$prefix" != "x"; then
@@ -549,19 +574,13 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
 
       dnl configure ffmpeg libxvid usage (for optional open xvid codec support via libxvid)
       if test "x$FF_LIBXVID" != "x"; then
-      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-pthreads --enable-libxvid"
+      	 dnl  --enable-pthreads is no longer mandatory when libxvid is enabled
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libxvid"
       fi
 
       dnl in case nonfree libs are used ffmeg 0.6 configure requires --enable-nonfree
       FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS $FFMPEG_ENABLE_NONFREE"
       
-      if  test "x$os_win32" = "xyes"; then
-         dnl here we could check for required win32 api version on MonGW Win32 Systems.
-         dnl for now always disable devices on MinGW (that requires latest win32 api to compile)
-         dnl disabling devices is not critical since GIMP-GAP does not use ffmpeg features that
-         dnl require other access than plain videofile io.
-      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --disable-devices"
-      fi
 
       echo "================================="
       echo "Calling FFMPEG configure script options: $FFMPEG_CONFIGURE_OPTIONS"
@@ -1016,7 +1035,14 @@ dnl
 GTHREAD_LIBS=`$PKG_CONFIG --libs gthread-2.0`
 AC_SUBST(GTHREAD_LIBS)
 
-GAPVIDEOAPI_EXTLIBS="\$(GAP_VLIBS_FFMPEG) \$(GAP_VLIBS_MPEG3) -lpng -lz \$(GTHREAD_LIBS) \$(GAP_PTHREAD_LIB) -lm"
+PKGCONFIG=`type pkg-config`
+if test -x "$(PKGCONFIG)" ; then
+  GAP_VLIBS_PNG=`$(PKGCONFIG) --libs libpng`
+else
+  GAP_VLIBS_PNG="-lpng14"
+fi
+
+GAPVIDEOAPI_EXTLIBS="\$(GAP_VLIBS_FFMPEG) \$(GAP_VLIBS_MPEG3) \$(GAP_VLIBS_PNG) -lz \$(GTHREAD_LIBS) \$(GAP_PTHREAD_LIB) -lm"
 GAPVIDEOAPI_EXTINCS="\$(GAP_VINCS_FFMPEG) \$(GAP_VINCS_MPEG3)"
 AC_SUBST(GAPVIDEOAPI_EXTLIBS)
 AC_SUBST(GAPVIDEOAPI_EXTINCS)
@@ -1065,19 +1091,20 @@ AM_CONDITIONAL(BUILD_FFMPEG_LIBS, test "x$build_ffmpeg_libs_yesno" != "xno")
 AM_CONDITIONAL(BUILD_LIBMPEG3_LIB, test "x$build_libmpeg3_lib_yesno" != "xno")
 
 dnl
-dnl runtime recording is primary a developers feature
+dnl runtime recording is primary a developers feature 
 dnl for analyse and performance tuning purpose.
 dnl
-AC_ARG_ENABLE(runtime_recording,
+AC_ARG_ENABLE(runtime_recording_all,
               [  --enable-runtime-recording-all      enable runtime recording and logging of all procedures using GAP_TIMM macros (default is no for this debug feature)])
   if test "x$enable_runtime_recording_all" = "xyes"; then
     AC_DEFINE(GAP_RUNTIME_RECORDING_LOCK, 1,
               [use gap runtime recording and logging features (enables locking implementations GAP_TIMM_x_FUNCTION macros)])
     AC_DEFINE(GAP_RUNTIME_RECORDING_NOLOCK, 1,
               [use gap runtime recording and logging features (enables non-locking implementations GAP_TIMM_x_RECORD macros)])
+
   fi
 
-AC_ARG_ENABLE(runtime_recording,
+AC_ARG_ENABLE(runtime_recording_nolock,
               [  --enable-runtime-recording-nolock  enable runtime recording (only non-locking implementations, default is no for this debug feature)])
   if test "x$enable_runtime_recording_nolock" = "xyes"; then
     AC_DEFINE(GAP_RUNTIME_RECORDING_NOLOCK, 1,
