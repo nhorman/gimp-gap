@@ -51,8 +51,7 @@
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
-#include <libgimpwidgets/gimpwidgetstypes.h>
-#include <libgimpwidgets/gimphelpui.h>
+#include <libgimpwidgets/gimpwidgets.h>
 
 #ifdef G_OS_WIN32
 #include <io.h>

@@ -1862,9 +1862,15 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
         }
         else
         {
-          g_message(_("The file: %s\n"
+          g_message(ngettext("The file: %s\n"
                       "contains too many audio-input tracks\n"
-                      "(only %d tracks are used, the rest are ignored).")
+                      "(only %d track is used, the rest is ignored)."
+                      
+                     ,"The file: %s\n"
+                      "contains too many audio-input tracks\n"
+                      "(only %d tracks are used, the rest is ignored)."
+                      
+                     , (int) MAX_AUDIO_STREAMS)
                    , gpp->val.audioname1
                    , (int) MAX_AUDIO_STREAMS
                    );

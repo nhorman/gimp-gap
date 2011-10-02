@@ -975,7 +975,9 @@ p_update_aud_info (GapCmeGlobalParams *gpp
           * valid_playlist_references holds the number of valid tracks
           * (where samplerate matches the desired samplerate and bits == 16)
           */
-         g_snprintf(txt, sizeof(txt), _("List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d")
+         g_snprintf(txt, sizeof(txt), ngettext("List[%d] has [%d] valid track, Bit:%d Chan:%d Rate:%d"
+                                             , "List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d"
+                                             , (int)valid_playlist_references )
                                   , (int)all_playlist_references
                                   , (int)valid_playlist_references
                                   , (int)bits

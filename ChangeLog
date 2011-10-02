@@ -1,3 +1,26 @@
+2011-10-02 Wolfgang Hofer <hof@gimp.org>
+
+- explicitly link with libm (patch provided by Ismail Donmez <idonmez@suse.com>. #660443)
+- added plural handling for several strings as suggested in #659447 
+- include the public visible header (libgimpwidgets/gimpwidgets.h)
+  instead of the private headers gimpwidgetstypes.h gimphelpui.h
+  (this fix is required to build GIMP-GAP for GIMP-2.7.x or latest GIT versions
+  note that GIMP-GAP is still backwards compatible to GIMP-2.6.x versions)
+- Disabled Tween frame morphing in case called on a single frame image
+  (and show information "This operation requires more than one frame."
+  in the dialog window)
+
+
+ * libgapbase/gap_base.c
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+ * vid_common/gap_cme_gui.c
+ * gap/gap_morph_tween_dialog.c
+ * gap/Makefile.am
+
+
+
+
+
 2011-09-18 Wolfgang Hofer <hof@gimp.org>
 
 - fixed configure / compile problems in MinGW environment

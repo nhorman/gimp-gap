@@ -1059,6 +1059,8 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
   GtkWidget *progressBar;
   gint       row;
   gboolean   isFrameMissing;
+  gboolean   isOpertionPossible;
+  gint       missingFrames;
 
   mgpp->range_from = ainfo_ptr->curr_frame_nr;
   mgpp->range_to = ainfo_ptr->frame_nr_after_curr_frame_nr;
@@ -1068,6 +1070,7 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
   mtg->morph_filesel = NULL;
   mtg->ret = -1;
   isFrameMissing = FALSE;
+  isOpertionPossible = TRUE;
 
   p_check_workpoint_file_and_use_single_fade_if_missing(mgpp);
 
@@ -1075,6 +1078,12 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
   if(!isFrameMissing)
   {
     mgpp->range_to = ainfo_ptr->last_frame_nr;
+  }
+
+  missingFrames = (mgpp->range_to - mgpp->range_from) -1;
+  if (missingFrames < 0)
+  {
+    isOpertionPossible = FALSE;
   }
 
   if(gap_debug)
@@ -1092,7 +1101,9 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
 
   gimp_ui_init (GAP_MORPH_TWEEN_PLUGIN_NAME, TRUE);
 
-  dialog = gimp_dialog_new (_("Create Tween Frames"), GAP_MORPH_TWEEN_PLUGIN_NAME,
+  if (isOpertionPossible)
+  {
+    dialog = gimp_dialog_new (_("Create Tween Frames"), GAP_MORPH_TWEEN_PLUGIN_NAME,
                             NULL, 0,
                             gimp_standard_help_func, GAP_MORPH_TWEEN_HELP_ID,
 
@@ -1100,6 +1111,17 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
                             GTK_STOCK_OK,     GTK_RESPONSE_OK,
 
                             NULL);
+  }
+  else
+  {
+    dialog = gimp_dialog_new (_("Create Tween Frames"), GAP_MORPH_TWEEN_PLUGIN_NAME,
+                            NULL, 0,
+                            gimp_standard_help_func, GAP_MORPH_TWEEN_HELP_ID,
+
+                            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+
+                            NULL);
+  }
 
   mtg->shell = dialog;
 
@@ -1138,27 +1160,38 @@ gap_morph_frame_tweens_dialog(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp
                     GTK_FILL, GTK_FILL, 4, 0);
   gtk_widget_show (label);
 
-  if (isFrameMissing)
+  if (isOpertionPossible)
   {
-    char *msg;
-    msg = g_strdup_printf(_("this operation creates %d missing frames between frame %d and %d")
-                         ,(int)(mgpp->range_to - mgpp->range_from) -1
-                         ,(int)mgpp->range_from
-                         ,(int)mgpp->range_to
-                         );
-    label = gtk_label_new (msg);
-    g_free(msg);
-    mgpp->overwrite_flag = FALSE;
+    if (isFrameMissing)
+    {
+      char *msg;
+      msg = g_strdup_printf(ngettext("This operation creates %d missing frame between frame %d and %d"
+                                      ,"this operation creates %d missing frames between frame %d and %d"
+                                      ,(int)missingFrames)
+                             ,(int)missingFrames
+                             ,(int)mgpp->range_from
+                             ,(int)mgpp->range_to
+                             );
+      label = gtk_label_new (msg);
+      g_free(msg);
+      mgpp->overwrite_flag = FALSE;
+    }
+    else
+    {
+      label = gtk_label_new (_("This operation creates copies of all frames in the specified range\n"
+                               "and the specifed number of tweens as additional tween frames\n"
+                               "between all the processed frames in the specified subdirectory.\n"
+                               "Provide workpointfiles (one per frame) for morphing based tween rendering\n"
+                               "(this can be done with the Morph Workpoint Generator)"));
+      mgpp->overwrite_flag = TRUE;
+    }
   }
   else
   {
-    label = gtk_label_new (_("this operation creates copies of all frames in the specified range\n"
-                             "and the specifed number of tweens as additional tween frames\n"
-                             "between all the processed frames in the specified subdirectory.\n"
-                             "Provide workpointfiles (one per frame) for morphing based tween rendering\n"
-                             "(this can be done with the Morph Workpoint Generator)"));
-    mgpp->overwrite_flag = TRUE;
+      label = gtk_label_new (_("This operation requires more than one frame."));
+      mgpp->overwrite_flag = FALSE;
   }
+  
   gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 1, 3, row, row + 1,
                     GTK_FILL, GTK_FILL, 4, 0);
