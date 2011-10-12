@@ -1598,7 +1598,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   }
 
   /* info window of storyboard parsing report */
-  /* g_message(l_msg); */
+  /* g_message("%s", l_msg); */
   p_print_storyboard_text_label(gpp, l_msg);
 
   gstb->progress = 0.0;
@@ -2037,7 +2037,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
                          , (int)(gpp->val.vid_width / 16) * 16
                          , (int)(gpp->val.vid_height / 16) * 16
                          );
-      g_message(l_msg);
+      g_message("%s", l_msg);
       g_free(l_msg);
       return (FALSE);
     }
@@ -2060,7 +2060,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
                             , (int)bits
                             , gpp->val.audioname1
                             );
-         g_message(l_msg);
+         g_message("%s", l_msg);
          g_free(l_msg);
          return (FALSE);
        }
@@ -2079,7 +2079,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
                             "file: %s\n")
                             , gpp->val.audioname1
                             );
-         g_message(l_msg);
+         g_message("%s", l_msg);
          g_free(l_msg);
          return (FALSE);
     }
@@ -2103,7 +2103,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
                                 "supported rates: \n"
                                 " 22050, 24000, 32000, 44100, 48000")
                                 , (int)gpp->val.samplerate);
-             g_message(l_msg);
+             g_message("%s", l_msg);
              g_free(l_msg);
              return (FALSE);
              break;
@@ -2131,7 +2131,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
                                 "supported rates:\n"
                                 " 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000")
                                 , (int)gpp->val.samplerate);
-             g_message(l_msg);
+             g_message("%s", l_msg);
              g_free(l_msg);
              return (FALSE);
              break;
@@ -3931,7 +3931,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
      l_msg = g_strdup_printf(_("Required Plugin %s not available"), gpp->val.ecp_sel.vid_enc_plugin);
      if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
      {
-       g_message(l_msg);
+       g_message("%s", l_msg);
      }
      g_free(l_msg);
      return -1;
@@ -3983,7 +3983,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
      l_msg = g_strdup_printf(_("Call of Required Plugin %s failed"), gpp->val.ecp_sel.vid_enc_plugin);
      if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
      {
-       g_message(l_msg);
+       g_message("%s", l_msg);
      }
      g_free(l_msg);
   }

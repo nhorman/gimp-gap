@@ -912,7 +912,7 @@ on_mw__combo_preferred_decoder  (GtkWidget     *widget,
      break;
  }
  g_snprintf(gpp->val.preferred_decoder, sizeof(gpp->val.preferred_decoder)
-               , preferred_decoder
+	    , "%s", preferred_decoder
                );
  entry = GTK_ENTRY(gpp->mw__entry_preferred_decoder);
  if(entry)

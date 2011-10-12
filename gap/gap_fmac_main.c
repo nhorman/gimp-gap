@@ -366,7 +366,7 @@ p_print_and_free_msg(char *msg, GimpRunMode run_mode)
 {
   if(run_mode == GIMP_RUN_INTERACTIVE)
   {
-    g_message(msg);
+    g_message("%s", msg);
   }
   printf("%s\n", msg);
   g_free(msg);

@@ -202,7 +202,7 @@ p_error_message_with_filename(GimpRunMode run_mode, const char *msg_fmt, const c
   
   if(run_mode != GIMP_RUN_NONINTERACTIVE)
   {
-    g_message(l_msg);
+    g_message("%s", l_msg);
   }
   g_free(l_msg);
 

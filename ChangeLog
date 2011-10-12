@@ -1,3 +1,32 @@
+2011-10-12 Wolfgang Hofer <hof@gimp.org>
+
+
+- applied changes based on patche provided Thibaut Paumard 
+  to fix build problems with option -Werror=format-security #660250
+  
+  note that patch provided at #660262 was not applied 
+  because all the adresses issues for 64 bit environment
+  are already fixed in the main latest version.
+
+
+
+- fixed bug in the makefile for extern_lib (data hook for removing static libs)
+  as reported in #642512
+
+ * extern_libs/Makefile.am
+
+ * gap/gap_arr_dialog.c
+ * gap/gap_split.c
+ * gap/gap_fmac_base.c
+ * gap/gap_fmac_main.c
+ * gap/gap_morph_exec.c
+ * gap/gap_vex_dialog.c
+ * libgapvidutil/gap_gve_sox.c
+ * vid_common/gap_cme_gui.c
+
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+
+
 2011-10-02 Wolfgang Hofer <hof@gimp.org>
 
 - explicitly link with libm (patch provided by Ismail Donmez <idonmez@suse.com>. #660443)

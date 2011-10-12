@@ -153,7 +153,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
                            , cval->tmp_audfile);
         if(cval->run_mode == GIMP_RUN_INTERACTIVE)
         {
-          g_message(l_msg);
+          g_message("%s", l_msg);
             }
         return -1;
      }
@@ -175,7 +175,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
                        );
        if(cval->run_mode == GIMP_RUN_INTERACTIVE)
        {
-         g_message(l_msg);
+         g_message("%s", l_msg);
            }
        g_free(l_msg);
        return -1;

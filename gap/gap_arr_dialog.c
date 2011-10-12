@@ -1859,7 +1859,7 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
 
        if(run_mode == GIMP_RUN_INTERACTIVE)
        {
-         g_message (msg);
+         g_message ("%s", msg);
        }
     }
   }

@@ -96,7 +96,7 @@ on_ff_response (GtkWidget *widget,
         {
             l_msg = g_strdup_printf("Error:\nWidth (%d) must be an integer multiple of 2",
                                  (int)gpp->val.vid_width);
-           g_message(l_msg);
+           g_message("%s", l_msg);
            g_free(l_msg);
            return;
         }
@@ -104,7 +104,7 @@ on_ff_response (GtkWidget *widget,
         {
             l_msg = g_strdup_printf("Error:\nHeight (%d) must be an integer multiple of 2",
                                (int)gpp->val.vid_height);
-            g_message(l_msg);
+            g_message("%s", l_msg);
             g_free(l_msg);
             return;
         }

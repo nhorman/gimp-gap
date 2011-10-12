@@ -347,7 +347,7 @@ p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
                
                errMsg = g_strdup_printf(_("failed to overwrite %s (check permissions ?)")
                                       , l_sav_name);
-               g_message(errMsg);
+               g_message("%s", errMsg);
                g_free(errMsg);
                writePermission = FALSE;
              }
