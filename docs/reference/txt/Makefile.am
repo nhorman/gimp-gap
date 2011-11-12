@@ -9,6 +9,7 @@ EXTRA_DIST = \
 	plug-in-plug-in-colormask.txt.txt       \
 	plug-in-filter-macro.txt		\
 	plug-in-firepattern.txt 		\
+	plug-in-foreground-extract-matting.txt	\
 	plug-in-gap-anim-crop.txt		\
 	plug-in-gap-anim-resize.txt		\
 	plug-in-gap-anim-scale.txt		\

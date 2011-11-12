@@ -17,6 +17,11 @@ gap/gap_decode_xanim.c
 gap/gap_filter_foreach.c
 gap/gap_filter_main.c
 gap/gap_fire_pattern.c
+gap/gap_fg_matting_main.c
+gap/gap_fg_matting_exec.c
+gap/gap_fg_matting.c
+gap/gap_fg_matting_dialog.c
+gap/gap_fg_regions.c
 gap/gap_fmac_base.c
 gap/gap_fmac_main.c
 gap/gap_frontends_main.c

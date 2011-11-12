@@ -9,11 +9,17 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
   - New colormask plug-in added
     The colormask filter can apply transparency for pixels matching the colormask image.
     intended for processing frames where moving objects can be isolated
-    from the non-moving constant background by aplying the constant background
+    from the non-moving constant background by applying the constant background
     as colormask on all frames.
     the colormask feature is also available as new mask anchor mode 
     when processing stroyboard clips.
     (anchor modes are: ClipColormask, Clip, Master)
+
+  - Foreground Extraction based on the alpha matting algorithm.
+    This plug-in uses a tri-map provided by the user
+    where pixels are marked as FORGROUND, BACKGROUND or UNDEFINED
+    and renders transpareny and color for all UNDEFINED pixels.
+    
 
   - support to run gimp_color_balance tool as animated filter 
     (added wrapper plug-in).
@@ -23,6 +29,7 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
     in a "process one frame per call" style, intended to be called as filter
     with the modify frames feature.
 
+ 
 - GIMP-GAP now supports speed control of movements and other transitions
   via Acceleration characteristic presets. Those presets are available
   - in the MovePath tool
@@ -70,6 +77,9 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
   in videofiles that do not start with a keyframe).
   
   .. see ChangeLog for details,
+
+- added preset for HD video encoding with H264 codec.
+  (GIMP-GAP must be built with libx264 to use that preset)
 
 - better performance for ffmpeg based video encoder
   on single and multiprocessor machines.

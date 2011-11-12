@@ -231,6 +231,13 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # in case num-processors is configured with value 1 the default is "no" (otherwise "yes")
 (video-enoder-ffmpeg-multiprocessor-enable "no")
 
+  
+# the boolean parameter video-enoder-ffmpeg-show-expert-settings
+# defines the initial mode of the FFMPEG based videoencoder Parameter dialog window.
+# where value "no" hides all notebook tabs with details video encoder
+# parameters. In this mode the user can set the parameters
+# by selecting one of the preset names via a combo box.
+(video-enoder-ffmpeg-show-expert-settings "no")
 
 
 

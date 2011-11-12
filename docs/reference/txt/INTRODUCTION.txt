@@ -1,4 +1,4 @@
-Project gap "GIMP Animation Package"   08. Dec. 2004  (pre)release 2.1.0
+Project gap "GIMP Animation Package"   10. Oct. 2011  (pre)release 2.6.1
 
 --------------------------------------------------------------------
 Introduction
@@ -77,7 +77,7 @@ Input from videofile:
 	- mplayer
 	- xanim
 	those players are capable to extract frames from
-	common videofiel formats (avi, mpeg, quicktime, ....) .
+	common videofile formats (avi, mpeg, quicktime, ....) .
 	Please note that xanim is old unmaintained software.
 	The frontend for xanim is still there and may even work if
 	you still have xanim exporting edition.
@@ -321,7 +321,7 @@ Internal PDB names and menu names of GIMP-GAP plug-ins
   plug_in_gap_videoframes_player      "<Image>/Video/Playback"
 
   plug-in-layer-set-alpha-by-colormask "<Image>/Video/Layer/Attributes/"
-
+  plug-in-foreground-extract-matting   "<Image>/Video/Layer/Attributes/"
 
   plug-in-gap-vid-encode-master       "<Image>/Video/Encode/Master Videoencoder"
   plug_in_gap_mpeg2encode             "<Image>/Video/Encode/MPEG2 (mpeg2encode)"

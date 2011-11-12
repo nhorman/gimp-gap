@@ -1126,6 +1126,23 @@ static void
 p_initPresetFromPresetIndex(GapGveFFMpegValues *epp, gint presetId)
 {
   GapGveFFMpegValues *eppAtId;
+  GapGveFFMpegValues  eppBackup;
+  GapGveFFMpegValues *eppBck;
+
+  eppBck = &eppBackup;
+  memcpy(eppBck, epp, sizeof(GapGveFFMpegValues));
+
+
+  if(gap_debug)
+  {
+    printf("p_initPresetFromPresetIndex: name:%s title:%s bckTitle:%s size:%d\n"
+      ,epp->presetName
+      ,epp->title
+      ,eppBck->title
+      ,sizeof(epp->title)
+      );
+  }
+
 
   for(eppAtId = gap_ffpar_getPresetList(); eppAtId != NULL; eppAtId = eppAtId->next)
   {
@@ -1138,6 +1155,26 @@ p_initPresetFromPresetIndex(GapGveFFMpegValues *epp, gint presetId)
   if(eppAtId != NULL)
   {
     memcpy(epp, eppAtId, sizeof(GapGveFFMpegValues));
+
+    /* restore original title, author, copyright and comment
+     * where present.
+     */  
+    if(eppBck->title[0] != '\0')
+    {
+      memcpy(epp->title, eppBck->title, sizeof(epp->title));
+    }
+    if(eppBck->author[0] != '\0')
+    {
+      memcpy(epp->author, eppBck->author, sizeof(epp->author));
+    }
+    if(eppBck->copyright[0] != '\0')
+    {
+      memcpy(epp->copyright, eppBck->copyright, sizeof(epp->copyright));
+    }
+    if(eppBck->comment[0] != '\0')
+    {
+      memcpy(epp->comment, eppBck->comment, sizeof(epp->comment));
+    }
   }
 
 }  /* end p_initPresetFromPresetIndex */
@@ -1159,72 +1196,81 @@ p_initPresetFromPresetIndex(GapGveFFMpegValues *epp, gint presetId)
  * 8 .. Real Video default
  *
  * Higher IDs may be available when preset files are installed.
+ *
+ * NOTE: the hardcoded presets are not used since standard presets are 
+ * now part of the installation.
+ * BUT: preset with index 0 is still relevant to init default settings
+ * for parameters that are NOT available in the preset files.
+ * (this is important when updates to newer ffmpeg releases introduce new params
+ * that are not present in private preset files created by users)
  */
 void
 gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
 {
+#define GAP_FFPRESET_TABSIZE     10  /* GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS  */
+
   gint l_idx;
-  /*                                                                        DivX def      best       low   MS-def         VCD   MPGbest      SVCD       DVD      Real */
-  static gint32 tab_ntsc_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
-  static gint32 tab_ntsc_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,        240,        0,      480,      480,        0 };
+  /*                                                          DivX def      best       low   MS-def         VCD   MPGbest      SVCD       DVD      Real */
+  static gint32 tab_ntsc_width[GAP_FFPRESET_TABSIZE]        =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
+  static gint32 tab_ntsc_height[GAP_FFPRESET_TABSIZE]       =  {     0,        0,        0,       0,        240,        0,      480,      480,        0 };
 
-  static gint32 tab_pal_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
-  static gint32 tab_pal_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,       0,        288,        0,      576,      576,        0 };
+  static gint32 tab_pal_width[GAP_FFPRESET_TABSIZE]         =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
+  static gint32 tab_pal_height[GAP_FFPRESET_TABSIZE]        =  {     0,        0,        0,       0,        288,        0,      576,      576,        0 };
 
-  static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,      192,       96,     160,        224,      192,      224,      192,      160 };
-  static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   200,     1500,      150,     200,       1150,     6000,     2040,     6000,     1200 };
-  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,      12,         18,       12,       18,       18,       18 };
-  static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_audio_bitrate[GAP_FFPRESET_TABSIZE]     =  {   160,      192,       96,     160,        224,      192,      224,      192,      160 };
+  static gint32 tab_video_bitrate[GAP_FFPRESET_TABSIZE]     =  {   200,     1500,      150,     200,       1150,     6000,     2040,     6000,     1200 };
+  static gint32 tab_gop_size[GAP_FFPRESET_TABSIZE]          =  {    12,       12,       96,      12,         18,       12,       18,       18,       18 };
+  static gint32 tab_intra[GAP_FFPRESET_TABSIZE]             =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
 
-  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,       2,          1,        1,        1,        1,        2 };
+  static float  tab_qscale[GAP_FFPRESET_TABSIZE]            =  {     2,        1,        6,       2,          1,        1,        1,        1,        2 };
 
-  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
-  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,        8,       31,      31,         31,        8,       16,        8,       31 };
-  static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,        2,        9,       3,          3,        2,        2,        2,        3 };
+  static gint32 tab_qmin[GAP_FFPRESET_TABSIZE]              =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
+  static gint32 tab_qmax[GAP_FFPRESET_TABSIZE]              =  {    31,        8,       31,      31,         31,        8,       16,        8,       31 };
+  static gint32 tab_qdiff[GAP_FFPRESET_TABSIZE]             =  {     3,        2,        9,       3,          3,        2,        2,        2,        3 };
 
-  static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
-  static float  tab_qcomp[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
-  static float  tab_rc_init_cplx[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
-  static float  tab_b_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
-  static float  tab_i_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  -0.8,      -0.8,     -0.8,   -0.8,       -0.8,     -0.8,     -0.8,     -0.8,     -0.8 };
-  static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
-  static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
+  static float  tab_qblur[GAP_FFPRESET_TABSIZE]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
+  static float  tab_qcomp[GAP_FFPRESET_TABSIZE]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
+  static float  tab_rc_init_cplx[GAP_FFPRESET_TABSIZE]      =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
+  static float  tab_b_qfactor[GAP_FFPRESET_TABSIZE]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
+  static float  tab_i_qfactor[GAP_FFPRESET_TABSIZE]         =  {  -0.8,      -0.8,     -0.8,   -0.8,       -0.8,     -0.8,     -0.8,     -0.8,     -0.8 };
+  static float  tab_b_qoffset[GAP_FFPRESET_TABSIZE]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
+  static float  tab_i_qoffset[GAP_FFPRESET_TABSIZE]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
 
-  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,       1150,     4000,     2000,     2000,     5000 };
-  static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,     2516,     9000,        0 };
-  static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,        0,        0,        0 };
-  static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,       0,         40,        0,      224,      224,        0 };
+  static gint32 tab_bitrate_tol[GAP_FFPRESET_TABSIZE]       =  {  4000,     6000,     2000,    4000,       1150,     4000,     2000,     2000,     5000 };
+  static gint32 tab_maxrate_tol[GAP_FFPRESET_TABSIZE]       =  {     0,        0,        0,       0,       1150,        0,     2516,     9000,        0 };
+  static gint32 tab_minrate_tol[GAP_FFPRESET_TABSIZE]       =  {     0,        0,        0,       0,       1150,        0,        0,        0,        0 };
+  static gint32 tab_bufsize[GAP_FFPRESET_TABSIZE]           =  {     0,        0,        0,       0,         40,        0,      224,      224,        0 };
 
-  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,        5,        5,       5,          5,        5,        5,        5,        5 };
+  static gint32 tab_motion_estimation[GAP_FFPRESET_TABSIZE] =  {     5,        5,        5,       5,          5,        5,        5,        5,        5 };
 
-  static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
-  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,       18,       31,      31,         31,       18,       31,       31,       31 };
-  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_dct_algo[GAP_FFPRESET_TABSIZE]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_idct_algo[GAP_FFPRESET_TABSIZE]         =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_strict[GAP_FFPRESET_TABSIZE]            =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_mb_qmin[GAP_FFPRESET_TABSIZE]           =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
+  static gint32 tab_mb_qmax[GAP_FFPRESET_TABSIZE]           =  {    31,       18,       31,      31,         31,       18,       31,       31,       31 };
+  static gint32 tab_mb_decision[GAP_FFPRESET_TABSIZE]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_aic[GAP_FFPRESET_TABSIZE]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_umv[GAP_FFPRESET_TABSIZE]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,        2,        4,       0,          0,        0,        2,        2,        0 };
-  static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
-  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,        1,        1,       1,          1,        1,        1,        1,        1 };
-  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,      0.0,      0.0,     0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
+  static gint32 tab_b_frames[GAP_FFPRESET_TABSIZE]          =  {     2,        2,        4,       0,          0,        0,        2,        2,        0 };
+  static gint32 tab_mv4[GAP_FFPRESET_TABSIZE]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_partitioning[GAP_FFPRESET_TABSIZE]      =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_packet_size[GAP_FFPRESET_TABSIZE]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_bitexact[GAP_FFPRESET_TABSIZE]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_aspect[GAP_FFPRESET_TABSIZE]            =  {     1,        1,        1,       1,          1,        1,        1,        1,        1 };
+  static gint32 tab_aspect_fact[GAP_FFPRESET_TABSIZE]       =  {   0.0,      0.0,      0.0,     0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
 
-  static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",    "avi",    "avi",     "avi",     "vcd",   "mpeg",   "svcd",    "vob",     "rm" };
-  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "mpeg4", "mpeg4", "msmpeg4", "mpeg1video", "mpeg1video", "mpeg2video", "mpeg2video", "rv10" };
-  static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",     "mp2",   "mp2",     "mp2",      "mp2",    "mp2",    "mp2",   "ac3",    "ac3" };
+  static char*  tab_format_name[GAP_FFPRESET_TABSIZE]       =  { "avi",    "avi",    "avi",     "avi",     "vcd",   "mpeg",   "svcd",    "vob",     "rm" };
+  static char*  tab_vcodec_name[GAP_FFPRESET_TABSIZE]       =  { "mpeg4", "mpeg4", "mpeg4", "msmpeg4", "mpeg1video", "mpeg1video", "mpeg2video", "mpeg2video", "rv10" };
+  static char*  tab_acodec_name[GAP_FFPRESET_TABSIZE]       =  { "mp2",     "mp2",   "mp2",     "mp2",      "mp2",    "mp2",    "mp2",   "ac3",    "ac3" };
 
-  static gint32 tab_mux_rate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,         0,        0,      0,     1411200,       0,       0,   10080000,        0 };
-  static gint32 tab_mux_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]   =  {     0,         0,        0,      0,        2324,    2324,    2324,       2048,        0 };
-  static float  tab_mux_preload[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.5,       0.5,      0.5,    0.5,        0.44,     0.5,     0.5,        0.5,      0.5 };
-  static float  tab_mux_max_delay[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   0.7,       0.7,      0.7,    0.7,         0.7,     0.7,     0.7,        0.7,      0.7 };
-  static gint32 tab_use_scann_offset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]  =  {     0,         0,        0,      0,           0,       0,       1,          0,        0 };
+  static gint32 tab_mux_rate[GAP_FFPRESET_TABSIZE]          =  {     0,         0,        0,      0,     1411200,       0,       0,   10080000,        0 };
+  static gint32 tab_mux_packet_size[GAP_FFPRESET_TABSIZE]   =  {     0,         0,        0,      0,        2324,    2324,    2324,       2048,        0 };
+  static float  tab_mux_preload[GAP_FFPRESET_TABSIZE]       =  {   0.5,       0.5,      0.5,    0.5,        0.44,     0.5,     0.5,        0.5,      0.5 };
+  static float  tab_mux_max_delay[GAP_FFPRESET_TABSIZE]     =  {   0.7,       0.7,      0.7,    0.7,         0.7,     0.7,     0.7,        0.7,      0.7 };
+  static gint32 tab_use_scann_offset[GAP_FFPRESET_TABSIZE]  =  {     0,         0,        0,      0,           0,       0,       1,          0,        0 };
 
-  static char*  tab_presetName[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] = {
+  static char*  tab_presetName[GAP_FFPRESET_TABSIZE] = {
       "DivX default preset"
      ,"DivX high quality preset"
      ,"DivX low quality preset"
@@ -1237,7 +1283,10 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   };
 
   l_idx = preset_idx -1;
-  if ((preset_idx < 1) || (preset_idx >= GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS))
+  if ((preset_idx < 1) 
+  || (preset_idx >= GAP_FFPRESET_TABSIZE)
+  || (preset_idx >= GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS)
+  )
   {
     /* use hardcoded preset 0 as base initialisation for non-hardcoded Id presets 
      */

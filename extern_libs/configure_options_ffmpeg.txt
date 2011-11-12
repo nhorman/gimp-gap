@@ -1,4 +1,4 @@
---disable-shared --enable-static --enable-gpl --enable-mmx --enable-mmx2 
+--disable-shared --enable-static --enable-gpl --enable-mmx --enable-mmx2 --disable-vaapi
 #
 # This file provides configuration options for ffmpeg
 # and is included while GIMP-GAP configure script runs the ffmpeg configuration.

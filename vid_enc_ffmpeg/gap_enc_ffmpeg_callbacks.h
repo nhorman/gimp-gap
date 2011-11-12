@@ -44,6 +44,8 @@
 
 #include <gtk/gtk.h>
 
+void
+gap_ffcb_set_widget_sensitivity  (GapGveFFMpegGlobalParams *gpp);
 
 void
 on_ff_response (GtkWidget *widget,

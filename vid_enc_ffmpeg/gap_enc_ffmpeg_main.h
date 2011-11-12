@@ -68,16 +68,23 @@
 #define GAP_FFMPEG_CURRENT_VID_EXTENSION  "plug-in-gap-enc-ffmpeg-CURRENT-VIDEO-EXTENSION"
 
 #define GAP_GVE_FFMPEG_PRESET_00_NONE           0
-#define GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT   1
-#define GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST      2
-#define GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW       3
-#define GAP_GVE_FFMPEG_PRESET_04_DIVX_MS        4
-#define GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD      5
-#define GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST     6
-#define GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD     7
-#define GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD      8
-#define GAP_GVE_FFMPEG_PRESET_09_REAL           9
-#define GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS      10
+// #define GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT   1
+// #define GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST      2
+// #define GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW       3
+// #define GAP_GVE_FFMPEG_PRESET_04_DIVX_MS        4
+// #define GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD      5
+// #define GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST     6
+// #define GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD     7
+// #define GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD      8
+// #define GAP_GVE_FFMPEG_PRESET_09_REAL           9
+// #define GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS      10
+
+/* NOTE:
+ * since 2011.10.29 gimp-gap is shiped with preset files that are installed
+ * automatically and checked for valid codecs at runtime.
+ * therefore all the hardcoded presets are disabled.
+ */
+#define GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS      1
 
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_00_32   0
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_01_40   1
@@ -194,6 +201,9 @@
 #define GAP_GVE_FF_QP2LAMBDA   FF_QP2LAMBDA
 #define GAP_ENCODER_PRESET_NAME_MAX_LENGTH 60
 #define GAP_ENCODER_PRESET_FILENAME_MAX_LENGTH 1024
+
+#define GAP_GVE_FFMPEG_SHOW_EXPERT_SETTINGS "video-enoder-ffmpeg-show-expert-settings"
+
 
 
 /* GapGveFFMpegValues ffmpeg specific encoder params */
@@ -445,10 +455,14 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *shell_window;
   gboolean   startup;
   gboolean   ffpar_save_flag;
+  gboolean   show_expert_settings;
   char       ffpar_filename[1024];
   GtkWidget *ffpar_fileselection;   /* ffmpeg video encoder parameter file */
   GtkWidget *fsb__fileselection;    /* passlog file */
 
+  GtkWidget *main_notebook;
+  GtkWidget *show_expert_settings_checkbutton;
+  
   GtkWidget *ff_aspect_combo;
   GtkWidget *ff_aud_bitrate_combo;
   GtkWidget *ff_aud_bitrate_spinbutton;

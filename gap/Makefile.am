@@ -137,6 +137,7 @@ libexec_PROGRAMS = \
 	gap_storyboard		\
 	$(GAP_VIDEO_EXTRACT)	\
 	$(GAP_VIDEO_INDEX)	\
+	gap_fg_matting		\
 	gap_fire_pattern	\
 	gap_water_pattern	\
 	gap_wr_color_curve	\
@@ -386,6 +387,20 @@ gap_video_index_SOURCES = \
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
+gap_fg_matting_SOURCES = \
+	gap_fg_matting_main.c	\
+	gap_fg_matting_main.h	\
+	gap_fg_matting_exec.c	\
+	gap_fg_matting_exec.h	\
+	gap_fg_matting.c	\
+	gap_fg_matting.h	\
+	gap_fg_matting_dialog.c	\
+	gap_fg_matting_dialog.h	\
+	gap_fg_regions.c	\
+	gap_fg_regions.h	\
+	gap_fg_tile_manager.h
+
+
 gap_fire_pattern_SOURCES = \
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
@@ -472,6 +487,7 @@ gap_onion_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
 gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
 gap_video_index_LDADD =      $(GAPVIDEOAPI) $(LIBGAPSTORY) $(LIBGAPBASE)  $(GIMP_LIBS)
+gap_fg_matting_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS) -lm
 gap_fire_pattern_LDADD =     $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_water_pattern_LDADD =    $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

@@ -3659,12 +3659,16 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the Frame width/height scale combo (for picking common used video sizes) */
-  combo = gimp_int_combo_box_new (_("Framesize (1:1)"),     GAP_CME_STANDARD_SIZE_IMAGE,
+  combo = gimp_int_combo_box_new (_("keep"),                GAP_CME_STANDARD_SIZE_KEEP,
+                                  _("Framesize (1:1)"),     GAP_CME_STANDARD_SIZE_IMAGE,
                                   _("320x240 NTSC"),        GAP_CME_STANDARD_SIZE_320x240,
                                   _("320x288 PAL"),         GAP_CME_STANDARD_SIZE_320x288,
                                   _("640x480"),             GAP_CME_STANDARD_SIZE_640x480,
                                   _("720x480 NTSC"),        GAP_CME_STANDARD_SIZE_720x480,
                                   _("720x576 PAL"),         GAP_CME_STANDARD_SIZE_720x576,
+                                  _("1280x720 HD"),         GAP_CME_STANDARD_SIZE_1280x720,
+                                  _("1920x1080 FullHD"),    GAP_CME_STANDARD_SIZE_1920x1080,
+                                  _("1920x1088 EosHD"),     GAP_CME_STANDARD_SIZE_1920x1088,
                                   NULL);
 
   gpp->cme__combo_scale            = combo;
@@ -3734,7 +3738,8 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the framerate combo (to select common used video framerates) */
-  combo = gimp_int_combo_box_new (_("unchanged"),   GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,
+  combo = gimp_int_combo_box_new (_("keep"),        GAP_CME_STANDARD_FRAMERATE_KEEP,
+                                  _("original"),    GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,
                                   "23.98",          GAP_CME_STANDARD_FRAMERATE_01_23_98,
                                   "24",             GAP_CME_STANDARD_FRAMERATE_02_24,
                                   "25",             GAP_CME_STANDARD_FRAMERATE_03_25,

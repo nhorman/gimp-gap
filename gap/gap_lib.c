@@ -157,13 +157,19 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* forward  working procedures */
 /* ------------------------------------------ */
 
-gboolean            p_set_active_layer_by_pos(gint32 image_id
+static gint32       p_set_or_pick_active_layer_by_pos(gint32 image_id
                          ,gint32 ref_layer_stackpos
+                         ,gboolean setActiveLayer
+			 ,gboolean ignoreOnionLayers
                          );
-gboolean            p_set_active_layer_by_name(gint32 image_id
+static gint32       p_set_or_pick_active_layer_by_name(gint32 image_id
                           ,const gchar *ref_layer_name
                           ,gint32 ref_layer_stackpos
+                          ,gboolean setActiveLayer
+                          ,gboolean ignoreOnionLayers
                           );
+                          
+
 static gchar *      p_get_active_layer_name(gint32 image_id
                        ,gint32 *active_layer
                        ,gint32 *stack_pos
@@ -190,30 +196,90 @@ static char*        p_gzip (char *orig_name, char *new_name, char *zip);
 
 
 
+/* ------------------------------------
+ * gap_lib_layer_tracking
+ * ------------------------------------
+ * try to locate the specified reference layer within the image by name or stack position.
+ * this procedure is typically used to find a corresponding layer while
+ * processing a sequence of frames or when stepping to another frame with
+ * the "Active Layer Tracking" feature enabled.
+ *
+ * setActiveLayer: TRUE set the corresponding layer as active layer (when present)
+ *                 FALSE do not change the active layer
+ *
+ * ignoreOnionLayers: TRUE ignore onion skin layers when present (useful for AL tracking)
+ *                    FALSE do not ccare about onion skin layers.
+ *
+ * return the corresponding layer id  (that is part of to the target image_id)
+ *        or -1 in case no corresponding layer was found.
+ */
+gint32
+gap_lib_layer_tracking(gint32 image_id
+                    , gchar *ref_layer_name
+                    , gint32 ref_layer_stackpos
+                    , gboolean setActiveLayer
+                    , gboolean ignoreOnionLayers
+                    , gboolean trackByName
+                    , gboolean trackByStackPosition
+                    )
+{
+  gint32 l_matching_layer_id;
+  
+  l_matching_layer_id = -1;
+  if (trackByName)
+  {
+    l_matching_layer_id = p_set_or_pick_active_layer_by_name(image_id
+                            ,ref_layer_name
+                            ,ref_layer_stackpos
+                            ,setActiveLayer
+                            ,ignoreOnionLayers
+                            );
+    if (l_matching_layer_id >= 0)
+    {
+      return(l_matching_layer_id);
+    }
+  }
+  
+  if (trackByStackPosition)
+  {
+    l_matching_layer_id = p_set_or_pick_active_layer_by_pos(image_id
+                            ,ref_layer_stackpos
+                            ,setActiveLayer
+                            ,ignoreOnionLayers
+                            );
+  }
+
+  return(l_matching_layer_id);
+  
+}  /* end gap_lib_layer_tracking */
+
+
 /* ---------------------------------
- * p_set_active_layer_by_pos
+ * p_set_or_pick_active_layer_by_pos
  * ---------------------------------
  * set the layer with same stackposition as ref_layer_stackpos
  * as the active layer, where stackpositions of onionskin layers are not counted.
  * if the image has less layers than ref_layer_stackpos
  * then pick the top-most layer, that is no onionskin layer
  */
-gboolean
-p_set_active_layer_by_pos(gint32 image_id
+static gint32
+p_set_or_pick_active_layer_by_pos(gint32 image_id
                          ,gint32 ref_layer_stackpos
+                         ,gboolean setActiveLayer
+			 ,gboolean ignoreOnionLayers
                          )
 {
   gint32     *l_layers_list;
   gint        l_nlayers;
   gint        l_idx;
-  gboolean    l_is_onion;
+  gboolean    l_is_layer_ignored;
   gint32      l_layer_id;
   gint32      l_matching_layer_id;
   gint        l_pos;
 
   if(gap_debug)
   {
-    printf("p_set_active_layer_by_pos START\n");
+    printf("p_set_or_pick_active_layer_by_pos START\n");
   }
   l_pos = 0;
   l_matching_layer_id = -1;
@@ -223,9 +289,16 @@ p_set_active_layer_by_pos(gint32 image_id
     for(l_idx=0;l_idx < l_nlayers;l_idx++)
     {
       l_layer_id = l_layers_list[l_idx];
-      l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
+      if (ignoreOnionLayers == TRUE)
+      {
+        l_is_layer_ignored = gap_onion_base_check_is_onion_layer(l_layer_id);
+      }
+      else
+      {
+        l_is_layer_ignored = FALSE;
+      }
 
-      if(!l_is_onion)
+      if(!l_is_layer_ignored)
       {
         l_matching_layer_id = l_layer_id;
         if(l_pos == ref_layer_stackpos)
@@ -241,49 +314,64 @@ p_set_active_layer_by_pos(gint32 image_id
   
   if(l_matching_layer_id >= 0)
   {
-    gimp_image_set_active_layer(image_id, l_matching_layer_id);
+    if(setActiveLayer == TRUE)
+    {
+      gimp_image_set_active_layer(image_id, l_matching_layer_id);
+    }
 
     if(gap_debug)
     {
       char       *l_name;
      
       l_name = gimp_drawable_get_name(l_matching_layer_id);
-      printf("p_set_active_layer_by_pos SET layer_id %d '%s' as ACTIVE\n"
+      if(setActiveLayer == TRUE)
+      {
+        printf("p_set_or_pick_active_layer_by_pos SET layer_id %d '%s' as ACTIVE\n"
             , (int)l_matching_layer_id
             , l_name
             );
+      }
+      else
+      {
+        printf("p_set_or_pick_active_layer_by_pos layer_id %d '%s' was PICKED\n"
+            , (int)l_matching_layer_id
+            , l_name
+            );
+      }
       if(l_name)
       {
         g_free(l_name);
       }     
     }
-    return (TRUE);
+    return (l_matching_layer_id);
   }
   
-  return (FALSE);
+  return (-1);
   
-}  /* end p_set_active_layer_by_pos */
+}  /* end p_set_or_pick_active_layer_by_pos */
 
 
 
-/* ---------------------------------
- * p_set_active_layer_by_name
- * ---------------------------------
+/* ----------------------------------
+ * p_set_or_pick_active_layer_by_name
+ * ----------------------------------
  * set active layer by picking the layer
- * whos name matches best with ref_layer_name.
+ * who's name matches best with ref_layer_name.
  * ref_layer_stackpos is the 2nd criterium
  * restriction: works only for utf8 compliant layernames.
  */
-gboolean
-p_set_active_layer_by_name(gint32 image_id
+static gint32
+p_set_or_pick_active_layer_by_name(gint32 image_id
                           ,const gchar *ref_layer_name
                           ,gint32 ref_layer_stackpos
+                          ,gboolean setActiveLayer
+                          ,gboolean ignoreOnionLayers
                           )
 {
   gint32     *l_layers_list;
   gint        l_nlayers;
   gint        l_idx;
-  gboolean    l_is_onion;
+  gboolean    l_is_layer_ignored;
   gint32      l_layer_id;
   gint32      l_matching_layer_id;
   gint        l_pos;
@@ -296,7 +384,7 @@ p_set_active_layer_by_name(gint32 image_id
 
   if(gap_debug)
   {
-    printf("p_set_active_layer_by_name START\n");
+    printf("p_set_or_pick_active_layer_by_name START\n");
   }
   l_pos = 0;
   l_max_score = 0;
@@ -304,12 +392,12 @@ p_set_active_layer_by_name(gint32 image_id
   
   if(ref_layer_name == NULL)
   {
-    return(p_set_active_layer_by_pos(image_id, ref_layer_stackpos));
+    return(p_set_or_pick_active_layer_by_pos(image_id, ref_layer_stackpos, setActiveLayer, ignoreOnionLayers));
   }
   
   if(!g_utf8_validate(ref_layer_name, -1, NULL))
   {
-    return(p_set_active_layer_by_pos(image_id, ref_layer_stackpos));
+    return(p_set_or_pick_active_layer_by_pos(image_id, ref_layer_stackpos, setActiveLayer, ignoreOnionLayers));
   }
   
   l_ref_len = g_utf8_strlen(ref_layer_name, -1);
@@ -387,8 +475,17 @@ p_set_active_layer_by_name(gint32 image_id
          * (score +1) in case there are more names matching
          * in the same number of characters
          */
-        l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
-        if(!l_is_onion)
+        if (ignoreOnionLayers == TRUE)
+        {
+          l_is_layer_ignored = gap_onion_base_check_is_onion_layer(l_layer_id);
+        }
+        else
+        {
+          l_is_layer_ignored = FALSE;
+        }
+        
+        
+        if(!l_is_layer_ignored)
         {
           if(l_pos == ref_layer_stackpos)
           {
@@ -409,29 +506,40 @@ p_set_active_layer_by_name(gint32 image_id
   
   if(l_matching_layer_id >= 0)
   {
-    gimp_image_set_active_layer(image_id, l_matching_layer_id);
+    if (setActiveLayer == TRUE)
+    {
+      gimp_image_set_active_layer(image_id, l_matching_layer_id);
+    }
 
     if(gap_debug)
     {
       char       *l_name;
      
       l_name = gimp_drawable_get_name(l_matching_layer_id);
-      printf("p_set_active_layer_by_name SET layer_id %d '%s' as ACTIVE\n"
+      if (setActiveLayer == TRUE)
+      {
+        printf("p_set_or_pick_active_layer_by_name SET layer_id %d '%s' as ACTIVE\n"
             , (int)l_matching_layer_id
             , l_name
             );
+      }
+      else
+      {
+        printf("p_set_or_pick_active_layer_by_name layer_id %d '%s' was PICKED\n"
+            , (int)l_matching_layer_id
+            , l_name
+            );
+      }
       if(l_name)
       {
         g_free(l_name);
       }     
     }
-    return (TRUE);
+    return (l_matching_layer_id);
   }
   
-  return (FALSE);
-}  /* end p_set_active_layer_by_name */
-
-
+  return (-1);
+}  /* end p_set_or_pick_active_layer_by_name */
 
 
 /* ---------------------------------
@@ -512,17 +620,25 @@ p_do_active_layer_tracking(gint32 image_id
   switch(vin_ptr->active_layer_tracking)
   {
     case GAP_ACTIVE_LAYER_TRACKING_BY_NAME:
-      p_set_active_layer_by_name(image_id, ref_layer_name, ref_layer_stackpos);
+      gap_lib_layer_tracking(image_id, ref_layer_name, ref_layer_stackpos
+                            , TRUE  /* setActiveLayer */
+                            , TRUE  /* ignoreOnionLayers */
+                            , TRUE  /* trackByName */
+                            , TRUE  /* trackByStackPosition */
+                            );
       break;
     case GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS:
-      p_set_active_layer_by_pos(image_id, ref_layer_stackpos);
+      gap_lib_layer_tracking(image_id, ref_layer_name, ref_layer_stackpos
+                            , TRUE  /* setActiveLayer */
+                            , TRUE  /* ignoreOnionLayers */
+                            , FALSE /* trackByName */
+                            , TRUE  /* trackByStackPosition */
+                            );
       break;
     default: /* GAP_ACTIVE_LAYER_TRACKING_OFF */
       break;
   }
 }  /* end p_do_active_layer_tracking */
-
-
                 
 
 /* ============================================================================

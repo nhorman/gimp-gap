@@ -55,6 +55,18 @@
 
 
 /* procedures used in other gap*.c files */
+
+gint32      gap_lib_layer_tracking(gint32 image_id
+                    , gchar *ref_layer_name
+                    , gint32 ref_layer_stackpos
+                    , gboolean setActiveLayer
+                    , gboolean ignoreOnionLayers
+                    , gboolean trackByName
+                    , gboolean trackByStackPosition
+                    );
+
+
+
 int          gap_lib_file_exists(const char *fname);
 char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
 int          gap_lib_file_copy(char *fname, char *fname_copy);
@@ -81,7 +93,6 @@ gboolean gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_di
 long  gap_lib_get_frame_nr(gint32 image_id);
 long  gap_lib_get_frame_nr_from_name(char *fname);
 int   gap_lib_image_file_copy(char *fname, char *fname_copy);
-
 
 gchar *gap_lib_get_video_paste_name(void);
 gint32 gap_vid_edit_clear(void);

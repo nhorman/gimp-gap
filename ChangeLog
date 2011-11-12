@@ -1,3 +1,89 @@
+2011-11-12 Wolfgang Hofer <hof@gimp.org>
+
+- added implementation of the foreground extraction via alpha matting algorithm
+  as plug-in.
+  The code is a modificated copy of the implementation as
+  GIMP-tool originally done by Jan Ruegg.
+  (you can find the original at the un-official GIT repository:
+        https://github.com/rggjan/Gimp-Matting
+        IMPORTANT:  be sure to check out the "new_layer" branch...)
+
+  The quality of the alpha matting results are more promising than the
+  offical GIMP foreground extraction ( based on the  SIOX algorthm)
+  and may be a base for future GAP features to add 
+  transparency for video frames.
+
+- using --disable-vaapi option to configure ffmpeg
+  to avoid linking problems on platforms where libva
+  based video acceleration is installd.
+  (thanks to AndrzejL.PCLinuxOS@gmx.com for pointig out
+  this kind of problems on the PCLinuxOS platform)
+  Note that gimp-gap and the FFmpeg project, does not support VA-API, 
+  but libavcodec (also part of the FFmpeg project) does contain code 
+  that other applications use to support hardware accelerated decoding, including VA API."
+
+- added HD video sizes entries to the combo box
+  in the master video encoder dialog.
+
+- ffmpeg encoder parameter dialog hides the complex settings by default
+  and shows only the presets, aspect and comment that is sufficient for
+  the most users.
+
+- keep title,author,copyright an comment when load / select another preset.
+ 
+- added video encoder preset for HD video encoding with the x264 codec.
+  the ffmpeg based encoder now checks for preset in the systemwide gimp_data_diretory
+  and the user specific gimp_directory
+
+- disabled all hardcoded presets and installed same presets as preset file.
+
+
+  NOTE: presets that refere to invalid codecs are no longer shown in the dialog.
+  e.g. the new HD x264 preset is not shown in case GIMP-GAP is compiled without
+  libx64 support for the ffmpeg encode engine.
+
+ * NEWS  
+ * po/POTFILES.in
+
+ * gap/Makefile.am
+ * gap/gap_fg_matting_main.c [.h]    # new files
+ * gap/gap_fg_matting_exec.c [.h]    # new files
+ * gap/gap_fg_matting.c	[.h]         # new files
+ * gap/gap_fg_matting_dialog.c [.h]  # new files
+ * gap/gap_fg_regions.c [.h]         # new files
+ * gap/gap_fg_tile_manager.h         # new file
+
+ * vid_enc_ffmpeg/Makefile.am
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c [.h]
+ * vid_enc_ffmpeg/ff_divx_hq.preset         # new file
+ * vid_enc_ffmpeg/ff_divx_low.preset        # new file
+ * vid_enc_ffmpeg/ff_divx_standard.preset   # new file
+ * vid_enc_ffmpeg/ff_divx_win.preset        # new file
+ * vid_enc_ffmpeg/ff_mpeg1_hq.preset        # new file
+ * vid_enc_ffmpeg/ff_mpeg1_vcd.preset       # new file
+ * vid_enc_ffmpeg/ff_mpeg2_dvd.preset       # new file
+ * vid_enc_ffmpeg/ff_mpeg2_svcd.preset      # new file
+ * vid_enc_ffmpeg/ff_real_standard.preset   # new file
+ * vid_enc_ffmpeg/ff_x264_hq.preset         # new file
+ * vid_common/gap_cme_main.h
+ * vid_common/gap_cme_gui.c
+ * vid_common/gap_cme_callbacks.c
+ * extern_libs/configure_options_ffmpeg_win32.txt
+ * extern_libs/configure_options_ffmpeg.txt
+
+
+ * gap/gap_lib.c [.h]
+ * gap/gap_layer_copy.c
+ * docs/reference/txt/Makefile.am  
+ * docs/reference/txt/INTRODUCTION.txt  
+ * docs/reference/txt/gap_gimprc_params.txt  
+ * docs/reference/txt/plug-in-foreground-extract-matting.txt            #new file 
+
+
+
 2011-10-12 Wolfgang Hofer <hof@gimp.org>
 
 
