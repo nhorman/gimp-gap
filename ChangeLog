@@ -1,3 +1,23 @@
+2011-11-23 Wolfgang Hofer <hof@gimp.org>
+
+- Foreground selection: fixed parameters for non interactive calls.
+
+- new feature: foreground extraction from current selection.
+  This feature generates the tri map by filling shrinked and expanded
+  variants of the current selection, and uses the alpha matting algoritm
+  to create a duplicate of the layer. Transparency of the duplicate
+  is automatically trimmed to the foreground object shape in the range
+  between shrinked and expanded selections variants.
+
+ * po/POTFILES.in
+ * gap/Makefile.am
+ * gap/gap_fg_matting_exec.c [.h]
+ * gap/gap_fg_matting_main.c [.h]
+ * gap/gap_fg_from_sel_dialog.c [.h]                             # new files
+ * docs/reference/txt/plug-in-selection-to-foreground-layer.txt  # new file
+ * docs/reference/txt/Makefile.am
+
+
 2011-11-12 Wolfgang Hofer <hof@gimp.org>
 
 - added implementation of the foreground extraction via alpha matting algorithm

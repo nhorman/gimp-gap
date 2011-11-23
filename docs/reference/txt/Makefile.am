@@ -45,6 +45,7 @@ EXTRA_DIST = \
 	plug-in-gap-videoframes-player.txt	\
 	plug-in-gap-xanim-decode.txt		\
 	plug-in-name2layer.txt			\
+	plug-in-selection-to-foreground-layer.txt \
 	plug-in-waterpattern.txt		\
 	plug-in-wr-color-levels.txt		\
 	plug-in-wr-curves.txt			\

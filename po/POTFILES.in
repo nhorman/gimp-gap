@@ -21,6 +21,7 @@ gap/gap_fg_matting_main.c
 gap/gap_fg_matting_exec.c
 gap/gap_fg_matting.c
 gap/gap_fg_matting_dialog.c
+gap/gap_fg_from_sel_dialog.c
 gap/gap_fg_regions.c
 gap/gap_fmac_base.c
 gap/gap_fmac_main.c

@@ -53,10 +53,6 @@
 static gboolean globalDoProgress;
 
 
-static GimpDrawable *globalDrawable = NULL;
-
-
-
 static gint32 gap_drawable_foreground_extract (GimpDrawable              *drawable,
                                  GimpDrawable              *maskDrawable,
                                  GapFgExtractValues        *fgValPtr
@@ -569,4 +565,145 @@ gap_drawable_foreground_extract_matting_done (GappMattingState *state)
 
 
 
+/* --------------------------------------------
+ * gap_fg_from_selection_exec_apply_run
+ * --------------------------------------------
+ * generate a tri map from the current selection by filling the shrinked
+ * shape with white, the expanded shape with black and the borderline
+ * between shrinked and expanded selection with medium gray.
+ * the trimap is attached as layermask to the input drawable,
+ * and used as input for the foreground selection via alpha matting algorithm,
+ * that creates a resulting layer with trimmed selection.
+ *
+ */
+gint
+gap_fg_from_selection_exec_apply_run (gint32 image_id, gint32 drawable_id
+                             , gboolean doProgress, gboolean doFlush
+                             , GapFgSelectValues *fsValPtr)
+{
+  GimpRGB   color;
+  gint32    activeSelection;
+  gint32    shrinkedSelection;
+  gint32    trimap;
+  gboolean  hadSelection;
+  gint      rc;
 
+  rc = 0;
+  trimap = -1;
+  activeSelection = -1;
+  shrinkedSelection = -1;
+  hadSelection = FALSE;
+  
+  gimp_context_push();
+  gimp_image_undo_group_start(image_id);
+  
+
+  if (gimp_selection_is_empty(image_id) == TRUE)
+  {
+     if (gimp_drawable_has_alpha(drawable_id) == FALSE)
+     {
+       /* if the layer has no alpha select all */
+       gimp_selection_all(image_id);
+     }
+     else
+     {
+       gimp_selection_layer_alpha(drawable_id);
+     }
+     activeSelection = gimp_selection_save(image_id);
+  }
+  else
+  {
+    activeSelection = gimp_selection_save(image_id);
+    hadSelection = TRUE;
+  }
+
+
+  trimap = gimp_layer_get_mask(drawable_id);
+  if (trimap < 0)
+  {
+    /* create trimap as new layermask */
+    trimap = gimp_layer_create_mask(drawable_id, GIMP_ADD_BLACK_MASK);
+    gimp_layer_add_mask(drawable_id, trimap);
+  }
+  else
+  {
+    /* use BLACK color to fill the already existing layermask
+     * (note that gimp_drawable_fill is used to fill the entire mask
+     * regardless to the current selection)
+     */
+    color.r = 0.0;
+    color.g = 0.0;
+    color.b = 0.0;
+    color.a = 1.0;
+    gimp_context_set_background (&color);
+    gimp_drawable_fill(trimap, GIMP_BACKGROUND_FILL);
+  }
+  
+  gimp_selection_sharpen(image_id);
+  if (fsValPtr->innerRadius > 0)
+  {
+    gimp_selection_shrink(image_id, fsValPtr->innerRadius);
+  }
+  shrinkedSelection = gimp_selection_save(image_id);
+  
+  
+  /* use WHITE color to mark foreground regions
+   */
+  color.r = 1.0;
+  color.g = 1.0;
+  color.b = 1.0;
+  color.a = 1.0;
+  gimp_context_set_background (&color);
+  gimp_edit_fill(trimap, GIMP_BACKGROUND_FILL);
+  
+  gimp_selection_load(activeSelection);
+  gimp_selection_sharpen(image_id);
+  if (fsValPtr->outerRadius > 0)
+  {
+    gimp_selection_grow(image_id, fsValPtr->outerRadius);
+  }
+  gimp_selection_combine(shrinkedSelection, GIMP_CHANNEL_OP_SUBTRACT);
+
+  /* use medium GRAY to mark undefined regions
+   */
+  color.r = 0.5;
+  color.g = 0.5;
+  color.b = 0.5;
+  color.a = 1.0;
+  gimp_context_set_background (&color);
+  gimp_edit_fill(trimap, GIMP_BACKGROUND_FILL);
+
+  gimp_selection_none(image_id);
+
+  /* perform the foreground selection (that creates the resulting layer) */
+  {
+    GapFgExtractValues fgExtractValues;
+    GapFgExtractValues *fgValPtr;
+    
+    fgValPtr = &fgExtractValues;
+    fgValPtr->input_drawable_id = drawable_id;
+    fgValPtr->tri_map_drawable_id = trimap;
+    fgValPtr->create_result = TRUE;
+    fgValPtr->create_layermask = fsValPtr->create_layermask;
+    fgValPtr->lock_color = fsValPtr->lock_color;
+    fgValPtr->colordiff_threshold = fsValPtr->colordiff_threshold;
+
+    rc = gap_fg_matting_exec_apply_run (image_id, drawable_id
+                                 , doProgress, doFlush
+                                 , fgValPtr
+                                 );
+  }
+  
+  
+  /* restore original selection */
+  if (hadSelection == TRUE)
+  {
+    gimp_selection_load(activeSelection);
+  }
+
+  gimp_image_undo_group_end(image_id);
+  gimp_context_pop();
+  
+  return (rc);
+
+}  /* end gap_fg_from_selection_exec_apply_run */

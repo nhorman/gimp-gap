@@ -4,7 +4,7 @@ libexecdir = $(GIMP_PLUGIN_DIR)/plug-ins
 
 scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
-scriptdata_DATA = sel-to-anim-img.scm  gap-dup-continue.scm
+scriptdata_DATA = sel-to-anim-img.scm gap-dup-continue.scm
 
 if GAP_UNIX_FRONTENDS
 GAP_FRONTENDS = gap_frontends
@@ -396,6 +396,8 @@ gap_fg_matting_SOURCES = \
 	gap_fg_matting.h	\
 	gap_fg_matting_dialog.c	\
 	gap_fg_matting_dialog.h	\
+	gap_fg_from_sel_dialog.c	\
+	gap_fg_from_sel_dialog.h	\
 	gap_fg_regions.c	\
 	gap_fg_regions.h	\
 	gap_fg_tile_manager.h

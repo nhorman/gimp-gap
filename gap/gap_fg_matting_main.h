@@ -44,10 +44,16 @@
 #define PLUG_IN_COPYRIGHT   "Jan Ruegg / Wolfgang Hofer"
 #define PLUG_IN_HELP_ID     "plug-in-foreground-extract-matting"
 
+#define PLUG_IN2_NAME        "plug-in-selection-to-foreground-layer"
+#define PLUG_IN2_PRINT_NAME  "Selection To Foreground Extract"
+#define PLUG_IN2_IMAGE_TYPES "RGB*"
+#define PLUG_IN2_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
+#define PLUG_IN2_COPYRIGHT   "Wolfgang Hofer"
+#define PLUG_IN2_HELP_ID     "plug-in-selection-to-foreground-layer"
 
 
 
-typedef struct GapFgExtractValues {
+typedef struct GapFgExtractValues {  /* fgValPtr */
   gint32 input_drawable_id;
   gint32 tri_map_drawable_id;
   gboolean create_result;
@@ -56,6 +62,19 @@ typedef struct GapFgExtractValues {
   gdouble  colordiff_threshold;
 
 } GapFgExtractValues;
+
+
+
+typedef struct GapFgSelectValues {  /* fsValPtr */
+  gint32 input_drawable_id;
+  gint32 tri_map_drawable_id;
+  gint     innerRadius;
+  gint     outerRadius;
+  gboolean create_layermask;
+  gboolean lock_color;
+  gdouble  colordiff_threshold;
+
+} GapFgSelectValues;
 
 
 #endif /* GAP_FG_MATTING_MAIN_H */

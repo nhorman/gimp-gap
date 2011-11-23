@@ -43,4 +43,9 @@ gap_fg_matting_exec_apply_run (gint32 image_id, gint32 drawable_id
                              , gboolean doProgress, gboolean doFlush
                              , GapFgExtractValues *fgValPtr);
 
+gint
+gap_fg_from_selection_exec_apply_run (gint32 image_id, gint32 drawable_id
+                             , gboolean doProgress, gboolean doFlush
+                             , GapFgSelectValues *fsValPtr);
+
 #endif /* GAP_FG_MATTING_EXEC_H */
