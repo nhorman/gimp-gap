@@ -123,6 +123,7 @@
 #define GAP_MOVPATH_XML_TOKEN_PX                     "px"
 #define GAP_MOVPATH_XML_TOKEN_PY                     "py"
 #define GAP_MOVPATH_XML_TOKEN_KEYFRAME               "keyframe"
+#define GAP_MOVPATH_XML_TOKEN_KEYFRAME_ABS           "keyframe_abs"
 #define GAP_MOVPATH_XML_TOKEN_SEL_FEATHER_RADIUS     "sel_feather_radius"
 #define GAP_MOVPATH_XML_TOKEN_W_RESIZE               "width_resize"
 #define GAP_MOVPATH_XML_TOKEN_H_RESIZE               "height_resize"
@@ -925,6 +926,15 @@ p_xml_parse_element_controlpoint(const gchar         *element_name,
       userDataPtr->pvals->point[count].keyframe_abs = gap_mov_exec_conv_keyframe_to_abs(keyframe, userDataPtr->pvals);
 
     }
+    else if (strcmp (*name_cursor, GAP_MOVPATH_XML_TOKEN_KEYFRAME_ABS) == 0)
+    {
+      gint keyframe_abs;
+      
+      userDataPtr->isParseOk = gap_xml_parse_value_gint(*value_cursor, &keyframe_abs);
+      userDataPtr->pvals->point[count].keyframe_abs = keyframe_abs;
+      userDataPtr->pvals->point[count].keyframe = gap_mov_exec_conv_keyframe_to_rel(keyframe_abs, userDataPtr->pvals);
+
+    }
     else if (strcmp (*name_cursor, GAP_MOVPATH_XML_TOKEN_SEL_FEATHER_RADIUS) == 0)
     {
       userDataPtr->isParseOk = gap_xml_parse_value_gdouble(*value_cursor, &userDataPtr->pvals->point[count].sel_feather_radius);
@@ -1588,7 +1598,9 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
       gdouble  px;
       gdouble  py;
       gboolean writeAccelerationCharacteristics;
+      gboolean keyframeInNewLine;
       
+      keyframeInNewLine = FALSE;
       px = pvals->point[l_idx].p_x;
       py = pvals->point[l_idx].p_y;
       
@@ -1626,6 +1638,7 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
             || pvals->point[l_idx].tbry != 1.0
             )
       {
+        keyframeInNewLine = TRUE;
         fprintf(l_fp, "\n      ");
         gap_xml_write_gdouble_value(l_fp, GAP_MOVPATH_XML_TOKEN_TTLX, pvals->point[l_idx].ttlx, 2, 3);
         gap_xml_write_gdouble_value(l_fp, GAP_MOVPATH_XML_TOKEN_TTLY, pvals->point[l_idx].ttly, 2, 3);
@@ -1666,6 +1679,7 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
       
       if (writeAccelerationCharacteristics == TRUE)
       {
+        keyframeInNewLine = TRUE;
         fprintf(l_fp, "\n      ");
         gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_ACC_POSITION, pvals->point[l_idx].accPosition);
         gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_ACC_OPACITY, pvals->point[l_idx].accOpacity);
@@ -1674,19 +1688,31 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
         gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_ACC_PERSPECTIVE, pvals->point[l_idx].accPerspective);
         gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_ACC_SEL_FEATHER_RADIUS, pvals->point[l_idx].accSelFeatherRadius);
       }
+
+      if(gap_debug)
+      {
+        printf("idx:%d point_idx_max:%d keyframe:%d keyframe_abs:%d to_keyframe:%d\n"
+          ,l_idx
+          ,pvals->point_idx_max
+          ,pvals->point[l_idx].keyframe
+          ,pvals->point[l_idx].keyframe_abs
+          ,gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
+          );
+      }
       
       /* check for writing keyframe
        * (the implicite keyframes at first and last controlpoints are not written to file)
        */
       if((l_idx > 0)
       && (l_idx < pvals->point_idx_max)
-      && ((int)pvals->point[l_idx].keyframe > 0))
-      {
-        int keyframe;
-        
-        fprintf(l_fp, "\n      ");
-        keyframe = gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals);
-        gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_KEYFRAME, keyframe);
+      && ((int)pvals->point[l_idx].keyframe_abs > 0))
+      { 
+        if(keyframeInNewLine == TRUE)
+        {
+          fprintf(l_fp, "\n      ");
+        }
+        gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_KEYFRAME_ABS, 
+                                pvals->point[l_idx].keyframe_abs);
       
       }
 

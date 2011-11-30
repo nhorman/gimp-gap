@@ -8832,6 +8832,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
          && (gfd->frn_elem->mask_name == NULL)
          && (gfd->trak_filtermacro_file == NULL)
          && (gfd->frn_type != GAP_FRN_ANIMIMAGE)
+         && (gfd->movepath_file_xml == NULL)
          )
          {
            GAP_TIMM_START_FUNCTION(funcIdDirect);

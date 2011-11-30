@@ -1,3 +1,53 @@
+2011-11-30 Wolfgang Hofer <hof@gimp.org>
+
+- added option to merge visible layers
+  in the frames convert plug-in
+  This option merges the visible layers (and removes
+  the invisible layers) in the converted copy
+  to keep transparency before calling the file save plug-in.
+  This is useful for formats like PNG that can handle transparency,
+  but can not handle multiple layers.
+  (this feature was suggested in #665142)
+
+
+- Increased limits for animated filter apply last values buffer size
+  allow filtermacro with last values buffer larger than 255 bytes.
+  Note that current processing is still limited by intrnal buffer size for
+  reading one line via gap_val_file procedures.
+
+  gap_val file increased internal buffer to handle line length upto 16000 bytes
+  (old limit was 4000 bytes) GAP_VAL_MAX_BYTES_PER_LINE
+
+  
+- bugfix  Storyboard render processor ignored the move-path transformation
+  in case of processing a frame image in the 1st track 
+  when the move-path was the only transformation.
+
+
+- bugfix  MovePath xml paramfile.
+  Keyframe information was not saved to XML file in case the keyframe number
+  is lower or equal to the lower frame number of the specified frame range.
+  This unexpected behavior is caused by checking for valid relative keyframe number.
+  The save procedure was changed to save the absolute keyframe numbers
+  this fixes the problem and makes the xml file content easier to understand.
+  Note that loading now supports both relative <keyframe nn> and absolute <keyframe_abs nn>
+  to ensure compatibility with already existing move path xml files.
+
+  note that the same problem occurs with the old controlpoint format
+  but will not be fixed there becuse the change would break backwards compatibility
+  -- backwards compatibility is the only reason why the old format is still supported --
+
+ * libgapbase/gap_val_file.c [.h]
+ * gap/gap_fmac_base.c
+
+ * gap/gap_mov_xml_par.c
+ * gap/gap_story_render_processor.c
+
+ * gap/gap_main.c
+ * gap/gap_range_ops.c
+ * gap/gap_image.c [.h]
+
+
 2011-11-23 Wolfgang Hofer <hof@gimp.org>
 
 - Foreground selection: fixed parameters for non interactive calls.

@@ -159,7 +159,7 @@ p_scan_fmac_line(GapValTextFileLines *txf_ptr, GimpRunMode run_mode, const char 
     /* scan plugin-name */
     l_scan_ptr=&l_buf[0];
     l_plugin_name = &l_buf[1];
-    for(l_idx=1; l_idx < 4000;l_idx++)
+    for(l_idx=1; l_idx < GAP_VAL_MAX_BYTES_PER_LINE;l_idx++)
     {
       if (l_buf[l_idx] == '"')
       {
@@ -199,7 +199,7 @@ p_scan_fmac_line(GapValTextFileLines *txf_ptr, GimpRunMode run_mode, const char 
           l_data_byte = strtol(l_scan_ptr, &l_scan_ptr2, 16);
           /* if(gap_debug) printf("p_fmac_execute: l_data_byte:%d\n", (int)l_data_byte); */
 
-          if ((l_data_byte < 0) || (l_data_byte > 255) || (l_scan_ptr == l_scan_ptr2))
+          if ((l_data_byte < 0) || (l_scan_ptr == l_scan_ptr2))
           {
             p_free_fmac_line(fmac_line);
             l_msg = g_strdup_printf (_("filtermacro_file: '%s' is corrupted, could not scan databytes")

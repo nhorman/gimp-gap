@@ -428,3 +428,29 @@ gap_image_set_selection_from_selection_or_drawable(gint32 image_id, gint32 ref_d
 
 }  /* end gap_image_set_selection_from_selection_or_drawable */
 
+
+/* ---------------------------------------
+ * gap_image_remove_invisble_layers
+ * ---------------------------------------
+ */
+void
+gap_image_remove_invisble_layers(gint32 image_id)
+{
+  gint    l_nlayers;
+  gint32 *l_layers_list;
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    int ii;
+    
+    for(ii=0; ii < l_nlayers; ii++)
+    {
+      if (gimp_drawable_get_visible(l_layers_list[ii]) != TRUE)
+      {
+        gimp_image_remove_layer(image_id, l_layers_list[ii]);
+      }
+    }
+    g_free (l_layers_list);
+  }
+}  /* end gap_image_remove_invisble_layers */

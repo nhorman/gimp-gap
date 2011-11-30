@@ -181,7 +181,7 @@ gap_val_load_textfile(const char *filename)
   GapValTextFileLines *txf_ptr;
   GapValTextFileLines *txf_ptr_prev;
   GapValTextFileLines *txf_ptr_root;
-  char         l_buf[4000];
+  char         l_buf[GAP_VAL_MAX_BYTES_PER_LINE +1];
   int   line_nr;
   
   line_nr = 0;
@@ -190,7 +190,7 @@ gap_val_load_textfile(const char *filename)
   l_fp = g_fopen(filename, "r");
   if(l_fp)
   {
-    while(NULL != fgets(l_buf, 4000-1, l_fp))
+    while(NULL != fgets(l_buf, GAP_VAL_MAX_BYTES_PER_LINE, l_fp))
     {
       line_nr++;
       txf_ptr = g_malloc0(sizeof(GapValTextFileLines));

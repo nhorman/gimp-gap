@@ -29,6 +29,8 @@
 
 #include "libgimp/gimp.h"
 
+#define GAP_VAL_MAX_BYTES_PER_LINE 16000
+
 
 typedef struct GapValTextFileLines {
    char    *line;

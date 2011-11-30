@@ -112,6 +112,11 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 #define GAP_HELP_ID_CONVERT          "plug-in-gap-range-convert"
 #define GAP_HELP_ID_TO_MULTILAYER    "plug-in-gap-range-to-multilayer"
 
+
+#define FLATTEN_MODE_NONE           0
+#define FLATTEN_MODE_FLATTEN        1
+#define FLATTEN_MODE_MERGE_VISIBLE  2
+
 /* ============================================================================
  * p_anim_sizechange_dialog
  *   dialog window with 2 (or 4) entry fields
@@ -377,13 +382,14 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
                                   , N_("Positioned Color Dithering")
                                   , N_("No Color Dithering")
                                   };
-  static int gettextize_loop = 0;
+  static int gettextize_paltype = 0;
+  static int gettextize_dither = 0;
 
-  for (;gettextize_loop < 4; gettextize_loop++)
-    radio_paltype[gettextize_loop] = gettext(radio_paltype[gettextize_loop]);
+  for (;gettextize_paltype < 4; gettextize_paltype++)
+    radio_paltype[gettextize_paltype] = gettext(radio_paltype[gettextize_paltype]);
 
-  for (;gettextize_loop < 4; gettextize_loop++)
-    radio_dither[gettextize_loop] = gettext(radio_dither[gettextize_loop]);
+  for (;gettextize_dither < 4; gettextize_dither++)
+    radio_dither[gettextize_dither] = gettext(radio_dither[gettextize_dither]);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_RADIO);
   argv[0].label_txt = _("Palette Type");
@@ -495,10 +501,36 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
     N_("Convert to Gray"),
     N_("Convert to Indexed")
   };
-  static int gettextize_loop = 0;
+  static char *radio_flatten_modes[3]  = {
+    N_("None"),
+    N_("Flatten"),
+    N_("Merge Visible Layers")
+  };
+  static char *radio_flatten_modes_help[3] = {
+    N_("Do not merge layers before save to the selected fileformat. "
+       "Example: use this when converting to XCF that can handle transparency and multiple layers."),
+    N_("Flatten all resulting frames. Most fileformats can not handle multiple layers "
+       "and need flattened frames (flattening does melt down all layers to one composite layer)."
+       "Example: JPEG can not handle multiple layers and requires flattened frames."),
+    N_("Merge resulting frame down to one layer. This keeps transparency information "
+       "Example: use this for PNG fileformat that can handle transpararency (alpha channel) "
+       "but is limited to one layer)") 
+  };
+    
+  static int gettext_cnt1 = 0;
+  static int gettext_cnt2 = 0;
+  static int gettext_cnt3 = 0;
 
-  for (;gettextize_loop < 4; gettextize_loop++)
-    radio_args[gettextize_loop] = gettext(radio_args[gettextize_loop]);
+
+  for (;gettext_cnt1 < 4; gettext_cnt1++)
+    radio_args[gettext_cnt1] = gettext(radio_args[gettext_cnt1]);
+
+  for (;gettext_cnt2 < 3; gettext_cnt2++)
+    radio_flatten_modes[gettext_cnt2] = gettext(radio_flatten_modes[gettext_cnt2]);
+
+  for (;gettext_cnt3 < 3; gettext_cnt3++)
+    radio_flatten_modes_help[gettext_cnt3] = gettext(radio_flatten_modes_help[gettext_cnt3]);
+
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].constraint = TRUE;
@@ -546,12 +578,15 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   argv[5].radio_argv = radio_args;
   argv[5].radio_ret  = 0;
 
-  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
-  argv[6].label_txt = _("Flatten:");
+  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_RADIO);
+  argv[6].label_txt = _("Merge Layers:");
   argv[6].help_txt  = _("Flatten all resulting frames. Most fileformats can not handle multiple layers "
                         "and need flattened frames (flattening does melt down all layers to one composite layer)."
                         "Example: JPEG can not handle multiple layers and requires flattened frames.");
-  argv[6].int_ret   = 1;
+  argv[6].radio_argc  = 3;
+  argv[6].radio_argv = radio_flatten_modes;
+  argv[6].radio_help_argv = radio_flatten_modes_help;
+  argv[6].radio_ret  = 1;
 
   gap_arr_arg_init(&argv[7], GAP_ARR_WGT_HELP_BUTTON);
   argv[7].help_id = GAP_HELP_ID_CONVERT;
@@ -579,7 +614,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
           *dest_type = 9444;   /*  huh ??  */
            break;
       }
-      *flatten     = (long)(argv[6].int_ret);
+      *flatten     = (long)(argv[6].radio_ret);
 
       *dest_colors = 255;
       *dest_dither = 0;
@@ -1428,7 +1463,21 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
 
 
        /* flatten current frame image (reduce to single layer) */
-       gimp_image_flatten (l_tmp_image_id);
+       if (flatten == FLATTEN_MODE_MERGE_VISIBLE)
+       {
+         gimp_image_merge_visible_layers (l_tmp_image_id, GIMP_CLIP_TO_IMAGE);
+         /* remove the remaining invisible layers because saving to
+          * imageformats that can not handle multiple layers would
+          * trigger the gimp export dialog (that is not desired
+          * for processing multiple frames) on attempt to save
+          * an image with more than 1 layer.
+          */
+         gap_image_remove_invisble_layers(l_tmp_image_id);
+       }
+       else
+       {
+         gimp_image_flatten (l_tmp_image_id);
+       }
 
        /* save back the current frame with same name */
        if(save_proc_name == NULL)

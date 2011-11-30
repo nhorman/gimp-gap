@@ -308,7 +308,9 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
-    {GIMP_PDB_INT32, "flatten", "0 .. dont flatten image before save"},
+    {GIMP_PDB_INT32, "flatten", "0 .. dont flatten image before save, "
+                                "1 .. flatten before save,"
+                                "2 .. merge visible layers (cliped to image) and remove invisible layers before save"},
     {GIMP_PDB_INT32, "dest_type", "0=RGB, 1=GRAY, 2=INDEXED"},
     {GIMP_PDB_INT32, "dest_colors", "1 upto 256 (used only for dest_type INDEXED)"},
     {GIMP_PDB_INT32, "dest_dither", "0=no, 1=floyd-steinberg  2=fs/low-bleed, 3=fixed (used only for dest_type INDEXED)"},
@@ -324,7 +326,9 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
-    {GIMP_PDB_INT32, "flatten", "0 .. dont flatten image before save"},
+    {GIMP_PDB_INT32, "flatten", "0 .. dont flatten image before save, "
+                                "1 .. flatten before save,"
+                                "2 .. merge visible layers (cliped to image) and remove invisible layers before save"},
     {GIMP_PDB_INT32, "dest_type", "0=RGB, 1=GRAY, 2=INDEXED"},
     {GIMP_PDB_INT32, "dest_colors", "1 upto 256 (used only for dest_type INDEXED)"},
     {GIMP_PDB_INT32, "dest_dither", "0=no, 1=floyd-steinberg 2=fs/low-bleed, 3=fixed(used only for dest_type INDEXED)"},
@@ -1457,7 +1461,7 @@ run (const gchar *name
         image_id    = param[1].data.d_image;
         range_from  = param[3].data.d_int32;  /* frame nr to start */
         range_to    = param[4].data.d_int32;  /* frame nr to stop  */
-        nr          = param[5].data.d_int32;  /* flatten (0 == no , 1 == flatten) */
+        nr          = param[5].data.d_int32;  /* flatten (0 == no , 1 == flatten, 2 == merge visible) */
         dest_type   = param[6].data.d_int32;
         dest_colors = param[7].data.d_int32;
         dest_dither = param[8].data.d_int32;
