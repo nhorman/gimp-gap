@@ -147,6 +147,8 @@ query (void)
     GIMP_LASTVALDEF_GINT32          (GIMP_ITER_TRUE,  glob_vals.seed,                  "seed")
   };
 
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
+  
   /* registration for last values buffer structure (useful for animated filter apply) */
   gimp_lastval_desc_register(PLUG_IN_PROC,
                              &glob_vals,

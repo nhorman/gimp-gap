@@ -157,6 +157,8 @@ query ()
 
   INIT_I18N();
 
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
+
   gimp_install_procedure (GAP_VEX_PLUG_IN_NAME,
                           "Extract frames from videofiles into animframes or multilayer image",
                           "The specified range of frames (params: begin_pos upto end_pos) is extracted from"
