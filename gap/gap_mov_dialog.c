@@ -4983,7 +4983,7 @@ mov_acc_tab_create (t_mov_gui_stuff *mgp)
 
   /*  accelaration characteristic for feather radius */
   adj = p_mov_acc_spinbutton_new( GTK_TABLE (table), 6, 1,        /* table col, row */
-                          _("FeatherRadius:"),                /* label text */
+                          _("Feather Radius:"),                /* label text */
                           SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
                           (gdouble)mgp->accSelFeatherRadius,  /* initial value */
                           (gdouble)ACC_MIN, (gdouble)ACC_MAX, /* lower, upper */
