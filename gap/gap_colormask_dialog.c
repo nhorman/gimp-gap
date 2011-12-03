@@ -240,13 +240,13 @@ p_create_base_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
                               preview);
 
   gimp_table_attach_aligned (GTK_TABLE (table), 0, row++,
-                             _("Color mask:"), 0.0, 0.5, combo, 2, FALSE);
+                             _("Color Mask:"), 0.0, 0.5, combo, 2, FALSE);
 
 
 
   /* loColorThreshold for colordiffence range */
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,
-                              _("Colordiff threshold:"), SCALE_WIDTH, 6,
+                              _("Colordiff Threshold:"), SCALE_WIDTH, 6,
                               cmaskvals->loColorThreshold, 0.0, 1.0, 0.01, 0.1, 4,
                               TRUE, 0, 0,
                               _("Colordiff lower threshold. "
@@ -263,7 +263,7 @@ p_create_base_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
   /* hiColorThreshold for colordiffence range */
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,
-                              _("_HiColordiff threshold:"), SCALE_WIDTH, 6,
+                              _("_HiColordiff Threshold:"), SCALE_WIDTH, 6,
                               cmaskvals->hiColorThreshold, 0.0, 1.0, 0.01, 0.1, 4,
                               TRUE, 0, 0,
                               _("Colordiff upper threshold. "
@@ -282,7 +282,7 @@ p_create_base_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
 
   /* keep layermask checkbutton */
-  button = gtk_check_button_new_with_mnemonic (_("Keep layermask"));
+  button = gtk_check_button_new_with_mnemonic (_("Keep Layer Mask"));
   gtk_table_attach_defaults (GTK_TABLE (table), button, 0, 3, row, row + 1);
   gtk_widget_show (button);
   row++;
@@ -298,7 +298,7 @@ p_create_base_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
 
   /* apply immediate checkbutton */
-  button = gtk_check_button_new_with_mnemonic (_("Apply Immediate"));
+  button = gtk_check_button_new_with_mnemonic (_("Apply Immediately"));
   gtk_table_attach_defaults (GTK_TABLE (table), button, 0, 3, row, row + 1);
   gtk_widget_show (button);
   row++;
@@ -465,7 +465,7 @@ p_create_opacity_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
   /* lowerOpacity for colordiffence range */
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
-                              _("Lower opacity:"), SCALE_WIDTH, 6,
+                              _("Lower Opacity:"), SCALE_WIDTH, 6,
                               cmaskvals->lowerOpacity, 0.0, 1.0, 0.01, 0.1, 4,
                               TRUE, 0, 0,
                               _("Lower opacity value is set for pixels with color difference "
@@ -482,7 +482,7 @@ p_create_opacity_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
   /* upperOpacity for colordiffence range */
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
-                              _("Upper opacity:"), SCALE_WIDTH, 6,
+                              _("Upper Opacity:"), SCALE_WIDTH, 6,
                               cmaskvals->upperOpacity, 0.0, 1.0, 0.01, 0.1, 4,
                               TRUE, 0, 0,
                               _("Upper opacity is set for pixels with color difference "
@@ -500,7 +500,7 @@ p_create_opacity_options(GapColormaskValues *cmaskvals, GtkWidget *preview)
 
   /* trigger alpha (only relevant if colormask has alpha channel) */
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
-                              _("Trigger alpha:"), SCALE_WIDTH, 6,
+                              _("Trigger Alpha:"), SCALE_WIDTH, 6,
                               cmaskvals->triggerAlpha, 0.0, 1.0, 0.1, 0.1, 4,
                               TRUE, 0, 0,
                               _("Trigger alpha is only relevant in case the color mask has an alpha channel. "
