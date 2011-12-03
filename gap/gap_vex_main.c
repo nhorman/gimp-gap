@@ -155,7 +155,7 @@ query ()
   };
   static int next_args = sizeof (ext_args) / sizeof (ext_args[0]);
 
-  INIT_I18N();
+  /* INIT_I18N(); */
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
@@ -233,6 +233,8 @@ run (const gchar *name,          /* name of plugin */
   const char   *l_env;
 
   gpp = &global_pars;
+
+  INIT_I18N();
 
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
