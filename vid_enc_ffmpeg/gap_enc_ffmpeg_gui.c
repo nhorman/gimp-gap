@@ -3767,13 +3767,13 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the Set Aspectratio checkbutton */
-  checkbutton = gtk_check_button_new_with_label (_("Set Aspectratio"));
+  checkbutton = gtk_check_button_new_with_label (_("Set aspect ratio"));
   gpp->ff_aspect_checkbutton = checkbutton;
   gtk_widget_show (checkbutton);
   gtk_table_attach (GTK_TABLE (table), checkbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (checkbutton, _("store aspectratio information (width/height) in the output video"), NULL);
+  gimp_help_set_help_data (checkbutton, _("Store aspect ratio information (width/height) in the output video"), NULL);
   g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                     G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -3781,7 +3781,7 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the ASPECT combo */
-  combo = gimp_int_combo_box_new (_("auto"),   GAP_GVE_FFMPEG_ASPECT_00_AUTO,
+  combo = gimp_int_combo_box_new (_("Auto"),   GAP_GVE_FFMPEG_ASPECT_00_AUTO,
                                   _("3:2"),    GAP_GVE_FFMPEG_ASPECT_01_3_2,
                                   _("4:3"),    GAP_GVE_FFMPEG_ASPECT_02_4_3,
                                   _("16:9"),   GAP_GVE_FFMPEG_ASPECT_03_16_9,
@@ -3828,7 +3828,7 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), checkbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (checkbutton, _("show video encoder expert settings"), NULL);
+  gimp_help_set_help_data (checkbutton, _("Show video encoder expert settings"), NULL);
   g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                     G_CALLBACK (on_ff_gint32_checkbutton_toggled),
