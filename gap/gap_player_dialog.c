@@ -6511,7 +6511,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   if (gap_debug) printf("p_new_audioframe\n");
 
-  frame0a = gimp_frame_new ("Audio Playback Settings");
+  frame0a = gimp_frame_new (_("Audio Playback Settings"));
 
   /* the vbox */
   vbox1 = gtk_vbox_new (FALSE, 0);
@@ -7064,7 +7064,7 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
 
   if (gap_debug) printf("p_new_configframe\n");
 
-  frame0c = gimp_frame_new ("Playback Preferences");
+  frame0c = gimp_frame_new (_("Playback Preferences"));
 
   /* the vbox */
   vbox1 = gtk_vbox_new (FALSE, 0);
