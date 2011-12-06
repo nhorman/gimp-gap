@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-06 01:28+0100\n"
-"PO-Revision-Date: 2011-12-06 01:27+0100\n"
+"PO-Revision-Date: 2011-12-06 17:19+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "Language: \n"
@@ -4128,15 +4128,15 @@ msgstr ""
 "%s"
 
 #: ../gap/gap_mov_dialog.c:3534
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Could not read parameterfile\n"
 "filename: '%s'\n"
 "(Is not a valid move path xml parameterfile file)"
 msgstr ""
-"ERRORE: impossibile leggere i punti di controllo\n"
-"nomefile: '%s'\n"
-"(non è un file di punti di controllo valido)"
+"ERRORE: impossibile leggere il file dei parametri\n"
+"di nome: \"%s\"\n"
+"(non è un file di parametri di spostamento percorso xml valido)"
 
 #: ../gap/gap_mov_dialog.c:3556
 #, c-format
@@ -5158,18 +5158,14 @@ msgstr ""
 "%s"
 
 #: ../gap/gap_mov_dialog.c:6802
-#, fuzzy
 msgid "MovePath xmlfile:"
-msgstr "Muovi tracciato"
+msgstr "File xml di spostamento percorso:"
 
 #: ../gap/gap_mov_dialog.c:6804
-#, fuzzy
 msgid ""
 "Name of the file containing move path paramters and controlpoints in XML "
 "format"
-msgstr ""
-"Name of the file containing move path paramters and controlpoints in XML "
-"format"
+msgstr "Il nome del file contenente i parametri di spostamento percorso ed i punti di controllo in formato XML"
 
 #: ../gap/gap_mov_dialog.c:6812 ../vid_common/gap_cme_gui.c:2822
 msgid "Total Frames:"
@@ -6757,14 +6753,10 @@ msgid "Play"
 msgstr "Esegui"
 
 #: ../gap/gap_player_dialog.c:8075
-#, fuzzy
 msgid ""
 "Start playback. SHIFT: snapshot frames in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
-msgstr ""
-"Inizia l'esecuzione. Maiusc: cattura i quadri in un'immagine multilivello "
-"con dimensioni originali. Ctrl: cattura i quadri con la dimensione "
-"precedente Alt: forza la cattura di una nuova immagine"
+msgstr "Inizia l'esecuzione. Maiusc: cattura i quadri in un'immagine multilivello con dimensioni originali. Ctrl: cattura i quadri con dimensione anteprima Alt: forza la creazione di una nuova immagine istantanea"
 
 #. the PAUSE button
 #: ../gap/gap_player_dialog.c:8084
@@ -6786,15 +6778,11 @@ msgid "Reverse"
 msgstr "Inverti"
 
 #: ../gap/gap_player_dialog.c:8098
-#, fuzzy
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
 "snapshot image"
-msgstr ""
-"Inizia l'esecuzione al contrario. Maiusc cattura i quadri in un'immagine "
-"multilivello di ampiezza originale Ctrl: cattura all'ampiezza precedente "
-"Alt: forza la cattura di una nuova immagine"
+msgstr "Inizia l'esecuzione al contrario. Maiusc: cattura i quadri in un'immagine multilivello di ampiezza originale Ctrl: cattura con la dimensione dell'anteprima Alt: forza la creazione di una nuova immagine istantanea"
 
 #: ../gap/gap_player_main.c:283
 msgid "Playback..."
@@ -7817,9 +7805,8 @@ msgstr ""
 
 #. the movepath label
 #: ../gap/gap_story_att_trans_dlg.c:3936
-#, fuzzy
 msgid "Movepath File:"
-msgstr "Crea (i) file:"
+msgstr "File percorso di spostamento:"
 
 #. the comment label
 #. the Comment lable
@@ -11046,7 +11033,6 @@ msgstr ""
 "audio"
 
 #: ../vid_common/gap_cme_main.c:148
-#, fuzzy
 msgid ""
 "This plugin is a common GUI for all available video + audio encoding plugins "
 "it operates on a selected range of animframes or storyboard files. The "
@@ -11058,18 +11044,7 @@ msgid ""
 "the dialog. for noninteractive calls default values will be used. (you may "
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
-msgstr ""
-"Questo plugin è un'interfaccia grafica comune per tutti i plugin video + "
-"audio e opera su insieme selezionato di quadri animati o file di storyboard. "
-"I dati audio di ingresso (opzionali) sono trasformati (param: audfile) in "
-"formato RIFF WAVE (PCM 16bit) e passati al plugin di codifica video come "
-"file temporaneo (o direttamente se il formato e la velocità di campionamento "
-"corrispondono già alla velocità di campionamento desiderate). Il formato "
-"video viene definito con il parametro vid_enc_plugin. Il plugin specifico "
-"viene chiamato con i parametri impostati nella finestra di dialogo. Per "
-"chiamate non interattive verranno usati i valori predefiniti (è possibile "
-"chiamare il plugin desiderato direttamente se si vogliono specificare "
-"parametri non interattivi."
+msgstr "Questo plugin è un'interfaccia grafica comune a tutti i plugin video + audio e opera su insieme selezionato di quadri animati o file di storyboard. I dati audio in ingresso (opzionali) vengono trasformati (parametro: audfile) in formato RIFF WAVE (PCM 16bit) e passati al plugin di codifica video selezionato come file temporaneo (o direttamente se il formato e la velocità di campionamento corrispondono già alla velocità di campionamento desiderate). Il formato video viene definito con il parametro vid_enc_plugin. Il plugin specifico viene chiamato con i parametri impostati nella finestra di dialogo. Per chiamate non interattive verranno usati i valori predefiniti (è possibile chiamare il plugin desiderato direttamente se si desidera specificare parametri non interattivi"
 
 #: ../vid_common/gap_cme_main.c:160
 msgid "Master Videoencoder..."
@@ -12786,7 +12761,7 @@ msgstr ""
 "basato su FFMPEG di Fabrice Bellard"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1914
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The file: %s\n"
 "contains too many audio-input tracks\n"
@@ -12798,7 +12773,7 @@ msgid_plural ""
 msgstr[0] ""
 "Il file: %s\n"
 "contiene troppe tracce audio in ingresso\n"
-"(vengono usate solo %d tracce, il resto viene ignorato)"
+"(viene usata solo %d traccia, il resto viene ignorato)"
 msgstr[1] ""
 "Il file: %s\n"
 "contiene troppe tracce audio in ingresso\n"
