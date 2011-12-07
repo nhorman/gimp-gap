@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-03 18:23+0000\n"
-"PO-Revision-Date: 2011-12-04 01:13+0100\n"
+"POT-Creation-Date: 2011-12-06 16:20+0000\n"
+"PO-Revision-Date: 2011-12-06 23:56+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -2081,14 +2081,12 @@ msgstr "Možnosti"
 
 #. the tri-map drawable selection combo box
 #: ../gap/gap_fg_matting_dialog.c:429
-#, fuzzy
 msgid "Tri-Map:"
 msgstr "Tri-zemljevid:"
 
 #: ../gap/gap_fg_matting_dialog.c:443
-#, fuzzy
 msgid "Select the tri_map layer (or layermask).  the tri-map shall be of same size as the input layer and  provides a rough user selection  where WHITE pixels in the tri map defines FOREGROUND (eg. opaque result)  BLACK pixels define BACKGROUND (eg. transparent result) GRAY pixels (value 1 upto 240) ar marked as Undefined  (eg. opacity to be processed by this filter.) )"
-msgstr "Izberite plast tri-zemljevida (ali masko plasti). Tri-zemljevid naj bo enake velikosti kot vhodna plast in ponuja grob izbor uporabnika, kjer BELE slikovne točke določajo OSPREDJE (npr. prekrivni rezultat), ČRNE slikovne točke določajo OZADJE (npr. prosojen rezultat), SIVE slikovne točke (vrednosti 1 do 240) pa so označene kot Nedoločene (npr. prekrivnost, ki jo bo obdelal ta filter)."
+msgstr "Izberite plast tri_zemljevida (ali masko plasti). Tri-zemljevid naj bo enake velikosti kot vhodna plast in ponuja grob izbor uporabnika, kjer BELE slikovne točke določajo OSPREDJE (npr. prekrivni rezultat), ČRNE slikovne točke določajo OZADJE (npr. prosojen rezultat), SIVE slikovne točke (vrednosti 1 do 240) pa so označene kot Nedoločene (npr. prekrivnost, ki jo bo obdelal ta filter)."
 
 #: ../gap/gap_fg_matting_dialog.c:467
 msgid "Layermask"
@@ -2102,7 +2100,6 @@ msgstr "Ustvari masko plasti:"
 
 #: ../gap/gap_fg_matting_dialog.c:502
 #: ../gap/gap_fg_from_sel_dialog.c:354
-#, fuzzy
 msgid "ON: render opacity by creating a new layer mask, OFF: apply rendered opacity to the alpha channel"
 msgstr "VKLJUČENO: upodobi prekrivnost z ustvarjanjem nove maske plasti, IZKLJUČENO: uveljavi upodobljeno prekrivnost na kanal alfa"
 
@@ -2114,19 +2111,16 @@ msgstr "Zakleni masko:"
 
 #: ../gap/gap_fg_matting_dialog.c:526
 #: ../gap/gap_fg_from_sel_dialog.c:378
-#, fuzzy
 msgid "ON: Keep RGB channels of the input layer, OFF: allow Background color removal in processed undefined regions"
 msgstr "VKLJUČENO: ohrani kanale RGB vhodne plasti, IZKLJUČENO: dovoli odstranitev barve ozadja v obdelanih nerazločenih območjih"
 
 #. create_result (create_result checkbutton
 #: ../gap/gap_fg_matting_dialog.c:539
-#, fuzzy
 msgid "Create Result Layer:"
-msgstr "Ustvari plast:"
+msgstr "Ustvari rezult. plast:"
 
 #. gtk_widget_show (checkbutton);
 #: ../gap/gap_fg_matting_dialog.c:551
-#, fuzzy
 msgid "ON: create a new layer as result of the foreground extraction processing. OFF: render transparency and background color removal on the input drawable"
 msgstr "VKLJUČENO: ustvari novo plast kot rezultat obdelave izločitve ospredja. IZKLJUČENO: upodobi odstranitev prosojnosti in barve ozadja na vhodnem risanem elementu"
 
@@ -2138,7 +2132,6 @@ msgstr "Prag barvnih razlik"
 
 #: ../gap/gap_fg_matting_dialog.c:575
 #: ../gap/gap_fg_from_sel_dialog.c:400
-#, fuzzy
 msgid "sensitivity for color comparison"
 msgstr "Občutljivost za barvno primerjavo"
 
@@ -2148,7 +2141,6 @@ msgid "Inner Radius"
 msgstr "Notranji polmer"
 
 #: ../gap/gap_fg_from_sel_dialog.c:305
-#, fuzzy
 msgid "Radius for undefined (e.g. trimmable) area inside the selection border"
 msgstr "Radij za nedoločeno (npr. obrezljivo) območje znotraj obrobe izbora"
 
@@ -2158,7 +2150,6 @@ msgid "Outer Radius"
 msgstr "Zunanji polmer"
 
 #: ../gap/gap_fg_from_sel_dialog.c:326
-#, fuzzy
 msgid "Radius for undefined (e.g. trimmable) area outside the selection border"
 msgstr "Radij za nedoločeno (npr. obrezljivo) območje zunaj obrobe izbora"
 
@@ -6618,7 +6609,6 @@ msgid "Flatten all resulting frames. Most fileformats can not handle multiple la
 msgstr "Splošči vse izhodne sličice. Večina vrst slikovnih datotek ne podpira več plasti in zato zahtevajo sploščene sličice (sploščanje pomeni združevanje plasti navzdol v eno sestavljeno plast). Primer: Datoteka slike JPEG ne podpira več plasti in pri shranjevanju zahteva sploščenje sličic."
 
 #: ../gap/gap_range_ops.c:515
-#, fuzzy
 msgid "Merge resulting frame down to one layer. This keeps transparency information Example: use this for PNG fileformat that can handle transpararency (alpha channel) but is limited to one layer)"
 msgstr "Spoji rezultirajočo sličico v eno plast. S tem ohranjate podatke o prosojnosti. Primer: uporabite za datoteke PNG, ki podpirajo prosojnost (kanal alfa), vendar so omejene na eno plast."
 
