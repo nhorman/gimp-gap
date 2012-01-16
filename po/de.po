@@ -3,22 +3,24 @@
 # Sven Neumann <sven@gimp.org>, 2004.
 # Hendrik Brandt <heb@gnome-de.org>, 2004.
 # Hendrik Richter <hendrikr@gnome.org>, 2005, 2006.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2011.
-# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2010, 2011.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2012.
+# Christian Kirbach <Christian.Kirbach@googlemail.com>, 2010, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-07 17:57+0000\n"
-"PO-Revision-Date: 2011-12-20 21:17+0100\n"
+"POT-Creation-Date: 2011-12-29 00:32+0000\n"
+"PO-Revision-Date: 2012-01-16 12:46+0100\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
 
 #. Button  to invoke fontbrowser
 #: ../gap/gap_arr_dialog.c:544
@@ -858,7 +860,7 @@ msgid ""
 "(compared with the corresponding pixel in the colormask) are set to lower "
 "opacity value (usually transparent)"
 msgstr ""
-"Unterer Schwellwert für Colordiff. Pixel, die sich im Farbwert weniger als "
+"Unterer Schwellenwert für Colordiff. Pixel, die sich im Farbwert weniger als "
 "dieser Wert unterscheiden (verglichen mit dem entsprechenden Pixel in der "
 "Farbmaske), werden auf einen niedrigeren Deckungswert gesetzt (normalerweise "
 "transparent)"
@@ -873,7 +875,7 @@ msgid ""
 "(compared with the corresponding pixel in the colormask) are set to upper "
 "opacity value (usually opaque)"
 msgstr ""
-"Oberer Schwellwert für Colordiff. Pixel, die sich im Farbwert mehr als "
+"Oberer Schwellenwert für Colordiff. Pixel, die sich im Farbwert mehr als "
 "dieser Wert unterscheiden (verglichen mit dem entsprechenden Pixel in der "
 "Farbmaske), werden auf den oberen Deckungswert gesetzt (normalerweise volle "
 "Deckkraft)"
@@ -907,6 +909,8 @@ msgid ""
 "Isle removal radius in pixels (use value 0 to disable removal of isolated "
 "pixels)"
 msgstr ""
+"Insel-Entfernungsradius in Pixel (Wert 0 verhindert die Entfernung "
+"isolierter Pixel)"
 
 #: ../gap/gap_colormask_dialog.c:389
 msgid "Isle Area:"
@@ -941,7 +945,7 @@ msgid ""
 "Colordiff threshold (use value 0 for transparency)"
 msgstr ""
 "Niedrige Deckkraft wird für Pixel mit einer Farbdifferenz kleiner als der "
-"Schwellwert von Colordiff gesetzt  (0 bedeutet volle Transparenz)"
+"Schwellenwert von Colordiff gesetzt  (0 bedeutet volle Transparenz)"
 
 #: ../gap/gap_colormask_dialog.c:485
 msgid "Upper Opacity:"
@@ -953,13 +957,11 @@ msgid ""
 "Colordiff threshold (use value 1 for opacity)"
 msgstr ""
 "Obere Deckkraft wird für Pixel mit einer Farbdifferenz größer als dem hohen "
-"Schwellwert von Colordiff gesetzt  (1 bedeutet volle Deckkraft)"
+"Schwellenwert von Colordiff gesetzt  (1 bedeutet volle Deckkraft)"
 
 #: ../gap/gap_colormask_dialog.c:503
-#, fuzzy
-#| msgid "Target Alpha:"
 msgid "Trigger Alpha:"
-msgstr "Minimale Transparenz:"
+msgstr "Transparenzschwelle:"
 
 #: ../gap/gap_colormask_dialog.c:506
 msgid ""
@@ -968,6 +970,10 @@ msgid ""
 "mask is below this trigger value are not changed (e.g. keep their original "
 "opacity)"
 msgstr ""
+"Die Transparenzschwelle ist nur für den Fall relevant, wenn die Farbmaske "
+"einen Alphakanal enthält. All jene Pixel werden nicht geändert (d.h sie "
+"behalten ihre ursprüngliche Deckkraft), für die der Alphakanal des Pixels in "
+"der Farbmaske niedriger als der Schwellenwert ist."
 
 #. the frame
 #. the notebook page label for expert encoder options
@@ -984,7 +990,7 @@ msgstr "_Algorithmus:"
 #. enableKeyColorThreshold checkbutton
 #: ../gap/gap_colormask_dialog.c:586
 msgid "Enable individual color threshold for the key color"
-msgstr "Individuellen Farbschwellwert für die Schlüsselfarbe verwenden"
+msgstr "Individuellen Farbschwellenwert für die Schlüsselfarbe verwenden"
 
 #. the keycolor label
 #: ../gap/gap_colormask_dialog.c:604
@@ -998,7 +1004,7 @@ msgstr "Schlüsselfarbe"
 
 #: ../gap/gap_colormask_dialog.c:631
 msgid "Key Colordiff threshold:"
-msgstr "Schwellwert für die Schlüsselfarbe:"
+msgstr "Schwellenwert für die Schlüsselfarbe:"
 
 #: ../gap/gap_colormask_dialog.c:646
 msgid "Key Color Sensitivity:"
@@ -2183,6 +2189,8 @@ msgid ""
 "ON: render opacity by creating a new layer mask, OFF: apply rendered opacity "
 "to the alpha channel"
 msgstr ""
+"EIN: Deckkraft durch Erstellung einer neuen Ebenenmaske erreichen, AUS: "
+"Erzeugte Deckkraft auf den Alphakanal anwenden"
 
 #. lock_color checkbutton
 #: ../gap/gap_fg_matting_dialog.c:516 ../gap/gap_fg_from_sel_dialog.c:368
@@ -2589,7 +2597,7 @@ msgid ""
 "in start frame has no layermask"
 msgstr ""
 "Die zuerst ausgewählte Ebene »%s«\n"
-"im ersten Frame hat keine Ebenenmaske"
+"im ersten Einzelbild hat keine Ebenenmaske"
 
 #: ../gap/gap_mod_layer_dialog.c:212
 msgid "New Layer Name"
@@ -3455,12 +3463,11 @@ msgid "Locate:"
 msgstr "Finden:"
 
 #: ../gap/gap_morph_dialog.c:3929
-#, fuzzy
 msgid ""
 "Locate radius in pixels. radius for automatically point locate feature  "
 "triggered by CTRL when setting workpoints.(Not relevant for rendering)"
 msgstr ""
-"Schwellwert der Kantenerkennung zur automatischen Punktauffindung. Wird "
+"Schwellenwert der Kantenerkennung zur automatischen Punktauffindung. Wird "
 "durch STRG beim Setzen von Arbeitspunkten ausgelöst. (Ist für die "
 "Darstellung nicht relevant)"
 
@@ -3476,7 +3483,7 @@ msgid ""
 "Edge detection threshold for automatically point locate feature  triggered "
 "by CTRL when setting workpoints.(Not relevant for rendering)"
 msgstr ""
-"Schwellwert der Kantenerkennung zur automatischen Punktauffindung. Wird "
+"Schwellenwert der Kantenerkennung zur automatischen Punktauffindung. Wird "
 "durch STRG beim Setzen von Arbeitspunkten ausgelöst. (Ist für die "
 "Darstellung nicht relevant)"
 
@@ -3578,11 +3585,11 @@ msgstr ""
 
 #: ../gap/gap_morph_exec.c:2768
 msgid "creating morph tween layers..."
-msgstr ""
+msgstr "Morph-Zwischenebenen werden erstellt …"
 
 #: ../gap/gap_morph_exec.c:2772
 msgid "creating warp tween layers..."
-msgstr ""
+msgstr "Warp-Zwischenebenen werden erstellt …"
 
 #: ../gap/gap_morph_exec.c:3349
 #, c-format
@@ -3664,6 +3671,9 @@ msgid ""
 "(note that tweens are created via simple fade operations when no "
 "workpointfile is available)"
 msgstr ""
+"Name der mit der Morph-Funktion erstellten Arbeitspunktdatei\n"
+"(Beachten Sie, dass Zwischenebenen als einfache Überblendungen erstellt "
+"werden, falls keine Arbeitspunktdatei verfügbar ist)"
 
 #: ../gap/gap_morph_tween_dialog.c:445
 msgid "Create one tween as Layer"
@@ -3775,7 +3785,7 @@ msgstr ""
 
 #: ../gap/gap_morph_tween_dialog.c:834
 msgid "Edge Threshold:"
-msgstr "Kanten-Schwellwert:"
+msgstr "Kanten-Schwellenwert:"
 
 #: ../gap/gap_morph_tween_dialog.c:837
 msgid ""
@@ -3783,10 +3793,10 @@ msgid ""
 "are detected on pixels where color or opacity differs significant from the "
 "neighbor pixel.(e.g. more than the specified edge detection threshold)."
 msgstr ""
-"Schwellwert der Kantenerkennung. Arbeitspunkte werden für erkannte Kanten "
+"Schwellenwert der Kantenerkennung. Arbeitspunkte werden für erkannte Kanten "
 "erstellt. Kanten werden bei Pixeln erkannt, die sich in Farbe oder Deckkraft "
 "signifikant vom Nachbarpixel unterscheiden. (z.B. mehr als der angegebene "
-"Schwellwert der Kantenerkennung)"
+"Schwellenwert der Kantenerkennung)"
 
 #: ../gap/gap_morph_tween_dialog.c:852
 msgid "Locate ColordiffEdge Threshold:"
@@ -4011,8 +4021,8 @@ msgid ""
 "Save all single frames of animated preview to video buffer.(configured in "
 "gimprc by video-paste-dir and video-paste-basename)"
 msgstr ""
-"Sichere alle Frames der animierten Vorschau in der Video-Ablage.(wird in "
-"gimprc als video-paste-dir und video-paste-basename konfiguriert)"
+"Alle Einzelbilder der animierten Vorschau in der Video-Ablage sichern.(wird "
+"in gimprc als video-paste-dir und video-paste-basename konfiguriert)"
 
 #. the Default button
 #: ../gap/gap_mov_dialog.c:1556 ../gap/gap_mpege.c:373
@@ -4038,14 +4048,14 @@ msgid "Generation of animated preview failed"
 msgstr "Erzeugung der animierten Vorschau ist gescheitert"
 
 #: ../gap/gap_mov_dialog.c:1904
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No stroke ids found in path:\n"
 "'%s'\n"
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"Kein unterstützter Pfad gefunden:\n"
+"Keine Strichkennungen im Pfad gefunden:\n"
 "»%s«\n"
 "im Bild:\n"
 "»%s«"
@@ -5548,7 +5558,8 @@ msgid ""
 "ERROR: invoked from a single image, but video frame is required"
 msgstr ""
 "\n"
-"FEHLER: Für ein einzelnes Bild aufgerufen, aber ein Video-Frame wird benötigt"
+"FEHLER: Für ein einzelnes Bild aufgerufen, aber ein Video-Einzelbild wird "
+"benötigt"
 
 #: ../gap/gap_name2layer_main.c:168
 msgid "Filename to Layer..."
@@ -5649,7 +5660,7 @@ msgid ""
 "Goto prev frame\n"
 "SHIFT use timezoom stepsize"
 msgstr ""
-"Gehe zu vorherigem Frame\n"
+"Zu vorherigem Einzelbild gehen\n"
 "UMSCHALT bewirkt »Zeitdehnung« als Schrittgröße"
 
 #: ../gap/gap_navigator_dialog.c:473
@@ -5657,7 +5668,7 @@ msgid ""
 "Goto next frame\n"
 "SHIFT use timezoom stepsize"
 msgstr ""
-"Gehe zum nächsten Frame\n"
+"Zum nächsten Einzelbild gehen\n"
 "UMSCHALT bewirkt »Zeitdehnung« als Schrittgröße"
 
 #: ../gap/gap_navigator_dialog.c:478
@@ -5788,7 +5799,7 @@ msgstr "Video-Einzelbilder:"
 
 #: ../gap/gap_navigator_dialog.c:4277
 msgid "Set framerate in frames/sec"
-msgstr "Frame-Rate in Frames/Sekunde festlegen"
+msgstr "Bildrate in Einzelbildern/Sekunde festlegen"
 
 #: ../gap/gap_navigator_dialog.c:4285
 msgid "Timezoom:"
@@ -6613,7 +6624,7 @@ msgstr "Bereich an Standardausgabe senden"
 
 #: ../gap/gap_player_dialog.c:7739
 msgid "Start framenumber of selection range"
-msgstr "Erste Framenummer des gewählten Bereichs"
+msgstr "Erste Einzelbildnummer des gewählten Bereichs"
 
 #: ../gap/gap_player_dialog.c:7762
 msgid "Add inverse range to cliplist"
@@ -6625,7 +6636,7 @@ msgstr "Umgekehrten Bereich an Standardausgabe senden"
 
 #: ../gap/gap_player_dialog.c:7790
 msgid "End framenumber of selection range"
-msgstr "Letzte Framenummer des gewählten Bereichs"
+msgstr "Letzte Einzelbildnummer des gewählten Bereichs"
 
 #: ../gap/gap_player_dialog.c:7806
 msgid "Reset playback speed to original (or previous) value"
@@ -7206,7 +7217,7 @@ msgid ""
 "Desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr ""
-"Frames konvertieren: Speichern schlug fehl.\n"
+"Einzelbilder konvertieren: Speichern schlug fehl.\n"
 "Das gewünschte Plugin zum Speichern kann mit dem Typ nicht umgehen\n"
 "oder das gewünschte Plugin zum Speichern ist nicht verfügbar."
 
@@ -7690,12 +7701,16 @@ msgid ""
 "scale width value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
 msgstr ""
+"Wert für Breitenskalierung für das erste behandelte Einzelbild. 100 bedeutet "
+"1:1, 50 die Hälfte und 200 doppelte Breite"
 
 #: ../gap/gap_story_att_trans_dlg.c:3827
 msgid ""
 "scale width value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
 msgstr ""
+"Wert für Breitenskalierung für das letzte behandelte Einzelbild. 100 "
+"bedeutet 1:1, 50 die Hälfte und 200 doppelte Breite"
 
 #: ../gap/gap_story_att_trans_dlg.c:3832
 msgid ""
@@ -7724,12 +7739,16 @@ msgid ""
 "scale height value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
 msgstr ""
+"Wert für Höhenskalierung für das erste behandelte Einzelbild. 100 bedeutet "
+"1:1, 50 die Hälfte und 200 doppelte Höhe"
 
 #: ../gap/gap_story_att_trans_dlg.c:3855
 msgid ""
 "scale height value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
 msgstr ""
+"Wert für Höhenskalierung für das letzte behandelte Einzelbild. 100 bedeutet "
+"1:1, 50 die Hälfte und 200 doppelte Höhe"
 
 #: ../gap/gap_story_att_trans_dlg.c:3860
 msgid ""
@@ -7773,7 +7792,7 @@ msgstr ""
 
 #: ../gap/gap_story_att_trans_dlg.c:3890
 msgid "acceleration characteristic (currently ignored)"
-msgstr ""
+msgstr "Beschleunigungscharakteristik (derzeit ignoriert)"
 
 #. the movepath label
 #: ../gap/gap_story_att_trans_dlg.c:3936
@@ -7934,7 +7953,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:5465
 msgid "Framecache / open video:"
-msgstr ""
+msgstr "Einzelbild-Zwischenspeicher / offenes Video:"
 
 #: ../gap/gap_story_dialog.c:5466
 msgid ""
@@ -7994,7 +8013,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:5545
 msgid "Multiprocessor Encoder Support:"
-msgstr ""
+msgstr "Unterstützung für Mehrprozessorsysteme bei der Codierung:"
 
 #: ../gap/gap_story_dialog.c:5546
 msgid ""
@@ -8276,9 +8295,8 @@ msgid "Reset parameters to default values"
 msgstr "Parameter auf Standardwerte zurücksetzen"
 
 #: ../gap/gap_story_dialog.c:8873
-#, fuzzy
 msgid "Generate Original Tone Audio"
-msgstr "Originalen ? erstellen"
+msgstr "Originale Tonspur erstellen"
 
 #: ../gap/gap_story_dialog.c:8907
 #, c-format
@@ -8339,12 +8357,14 @@ msgstr "Einzelbildrate in Bilder/Sekunde"
 
 #: ../gap/gap_story_dialog.c:9137
 msgid "Track 1 on top:"
-msgstr ""
+msgstr "Spur 1 zuoberst:"
 
 #: ../gap/gap_story_dialog.c:9138
 msgid ""
 "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
+"EIN: Videospur 1 ist im Vordergrund (zuoberst). AUS: Videospur 1 ist im "
+"Hintergrund."
 
 #. the aspect label
 #: ../gap/gap_story_dialog.c:9176 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3761
@@ -8373,13 +8393,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:9238
-#, fuzzy
 msgid "Master audio samplerate for the resulting video in samples/sec."
-msgstr "Frame-Rate der animierten Vorschau in Frames/s"
+msgstr ""
+"Abtastrate der Haupttonspur des resultierenden Videos in Abtastungen/Sek."
 
 #: ../gap/gap_story_dialog.c:9254
 msgid "Master audio volume, where 1.0 keeps original volume"
-msgstr ""
+msgstr "Hauptlautstärke. 1.0 entspricht der ursprünglichen Lautstärke."
 
 #: ../gap/gap_story_dialog.c:9279
 msgid "Ext. Transparency Format:"
@@ -8533,6 +8553,8 @@ msgid ""
 "Error: the mask name:  \"%s\" is already in use\n"
 "please enter another name."
 msgstr ""
+"Fehler: Der Maskenname »%s« wird bereits verwendet,\n"
+"bitte wählen Sie einen anderen Namen."
 
 #: ../gap/gap_story_properties.c:2368
 msgid "Set Image or Frame Filename"
@@ -8648,7 +8670,7 @@ msgstr "Datei:"
 #. lower/upper unconstrained
 #: ../gap/gap_story_properties.c:4162
 msgid "framenumber of the first frame in the clip range"
-msgstr ""
+msgstr "Nummer des ersten Einzelbilds im Clip-Bereich"
 
 #. lower/upper
 #. step, page
@@ -8657,7 +8679,7 @@ msgstr ""
 #. lower/upper unconstrained
 #: ../gap/gap_story_properties.c:4191
 msgid "framenumber of the last frame in the clip range"
-msgstr ""
+msgstr "Nummer des letzten Einzelbilds im Clip-Bereich"
 
 # TODO besserer Ausdruck?
 #: ../gap/gap_story_properties.c:4212
@@ -8760,8 +8782,8 @@ msgstr ""
 msgid ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
-"Schwellwert beim Entflechten: 0.0 bedeutet keine Interpolation, 0.999 glatte "
-"Interpolation"
+"Schwellenwert beim Entflechten: 0.0 bedeutet keine Interpolation, 0.999 "
+"glatte Interpolation"
 
 #. the Transform (flip_request) label
 #: ../gap/gap_story_properties.c:4460
@@ -9156,7 +9178,7 @@ msgstr "MMX deaktivieren"
 
 #: ../gap/gap_vex_dialog.c:2151
 msgid "Frame number of 1.st frame to extract"
-msgstr "Einzelbildnummer des ersten Frames, der extrahiert werden soll"
+msgstr "Einzelbildnummer des ersten Einzelbilds, das extrahiert werden soll"
 
 #. the videorange button (that invokes the player for video range selection)
 #: ../gap/gap_vex_dialog.c:2169
@@ -9409,7 +9431,7 @@ msgstr ""
 
 #: ../gap/gap_video_index_creator.c:527
 msgid "vindex already OK"
-msgstr ""
+msgstr "vindex bereits in Ordnung"
 
 #: ../gap/gap_video_index_creator.c:552
 msgid "vindex created (FULLSCAN OK)"
@@ -10650,7 +10672,7 @@ msgstr "Temporäre Datei:"
 #. the convert Tmp audiofilefile button
 #: ../vid_common/gap_cme_gui.c:3418
 msgid "Audioconvert"
-msgstr ""
+msgstr "Tonumwandlung"
 
 #: ../vid_common/gap_cme_gui.c:3424
 msgid ""
@@ -10722,11 +10744,11 @@ msgstr "1280x720 HD"
 
 #: ../vid_common/gap_cme_gui.c:3670
 msgid "1920x1080 FullHD"
-msgstr ""
+msgstr "1920x1080 FullHD"
 
 #: ../vid_common/gap_cme_gui.c:3671
 msgid "1920x1088 EosHD"
-msgstr ""
+msgstr "1920x1088 EosHD"
 
 #: ../vid_common/gap_cme_gui.c:3680
 msgid "Scale width/height to common size"
@@ -10860,7 +10882,7 @@ msgid ""
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
 msgstr ""
-"Dieses Plugin ist die allgemeine Oberfläche für alle verfügbaren Plugins zur "
+"Dieses Plugin ist die allgemeine Oberfläche für alle verfügbaren Plugins zur "
 "Video- und Audio-Codierung"
 
 #: ../vid_common/gap_cme_main.c:160
@@ -10896,9 +10918,8 @@ msgstr "RAW PCM"
 
 #. the APP0 Marker label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:542
-#, fuzzy
 msgid "APP0 Marker:"
-msgstr "Ungültige Markierung"
+msgstr "APP0-Markierung:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:562
 msgid ""
@@ -11234,7 +11255,7 @@ msgstr "Ausgewählte Voreinstellung: %s"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:502
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:518
 msgid "Recommanded Framesize"
-msgstr ""
+msgstr "Empfohlene Einzelbildgröße"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:529
 #, c-format
@@ -11419,7 +11440,7 @@ msgstr "10 tesa (x264-spezifisch)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1657
 msgid "Select algorithm for motion estimation"
-msgstr "Wählen Sie den Algorithmus für die Bewegungsabschätzung"
+msgstr "Wählen Sie den Algorithmus für die Bewegungsabschätzung"
 
 #. the DCT algorithm label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1675
@@ -11570,7 +11591,7 @@ msgstr ""
 #. the MB_DECISION combo
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1779
 msgid "simple (use mb_cmp)"
-msgstr ""
+msgstr "einfach (mb_cmp verwenden)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1780
 msgid "bits (the one which needs fewest bits)"
@@ -11581,9 +11602,8 @@ msgid "rate distortion"
 msgstr ""
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1789
-#, fuzzy
 msgid "Select algorithm for macroblock decision"
-msgstr "Wählen Sie den Algorithmus für die Bewegungsabschätzung"
+msgstr "Wählen Sie den Algorithmus für die Makroblock-Entscheidung"
 
 #. the Coder Type label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1807
@@ -11628,11 +11648,11 @@ msgstr "Vorgängermethode"
 #. the Macroblock compare function label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1878
 msgid "Macroblock cmp:"
-msgstr ""
+msgstr "Macroblock-Vergleich:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1894
 msgid "Select macroblock compare function "
-msgstr ""
+msgstr "Wählen Sie die Vergleichsfunktion des macroblock"
 
 #. the ildct compare function label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1912
@@ -11641,7 +11661,7 @@ msgstr "ildct cmp:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1928
 msgid "Select ildct compare function "
-msgstr ""
+msgstr "Wählen Sie die ildct-Vergleichsfunktion "
 
 #. the fullpel compare function label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1947
@@ -12019,6 +12039,7 @@ msgstr "P4X4"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2738
 msgid "enable 4x4, 8x4 and 4x8 partitions in P-frames.(for X264 codec)"
 msgstr ""
+"4x4, 8x4 und 4x8  Einteilungen in P-Einzelbildern aktivieren.(für X264-Codec)"
 
 #. the use_memc_only checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2748
@@ -12046,6 +12067,7 @@ msgstr "B8x8"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2782
 msgid "enable 8x8 16x8 and 8x16 partitions in B-frames.(for X264 codec)"
 msgstr ""
+"8x8 16x8 und 8x16 Einteilungen in B-Einzelbildern aktivieren.(für X264-Codec)"
 
 #. the use_drop_frame_timecode checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2793
@@ -12212,7 +12234,7 @@ msgstr "b-qfactor:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3138
 msgid "qp factor between p and b frames"
-msgstr ""
+msgstr "qp-Faktor zwischen p- und b-Einzelbildern"
 
 #. the i-qfactor label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3148
@@ -12221,7 +12243,7 @@ msgstr "i-qfactor:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3164
 msgid "qp factor between p and i frames"
-msgstr ""
+msgstr "qp-Faktor zwischen p- und i-Einzelbildern"
 
 #. the b-qoffset label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3175
@@ -12230,7 +12252,7 @@ msgstr "b-qoffset:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3192
 msgid "qp offset between p and b frames"
-msgstr ""
+msgstr "qp-Verschiebung zwischen p- und b-Einzelbildern"
 
 #. the i-qoffset label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3202
@@ -12239,7 +12261,7 @@ msgstr "i-qoffset:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3218
 msgid "qp offset between p and i frames"
-msgstr ""
+msgstr "qp-Verschiebung zwischen p- und i-Einzelbildern"
 
 #. the Bitrate Tolerance label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3229
