@@ -5,6 +5,7 @@
 # Copyright (C) 1998-2005, 2006, 2008, 2011, 2012 Free Software Foundation, Inc.
 # Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
 #
+#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
 # María Majadas <alixis82@gmail.com>, 2008.
@@ -12,21 +13,20 @@
 # Francisco Vila <francisco.vila@hispalinux.es>, 2011, 2012.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-17 15:35+0000\n"
-"PO-Revision-Date: 2012-01-25 17:15+0100\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2012-01-25 16:27+0000\n"
+"PO-Revision-Date: 2012-01-25 19:04+0100\n"
+"Last-Translator: Francisco Vila <francisco.vila@hispalinux.es>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
@@ -853,14 +853,10 @@ msgid "Base Options"
 msgstr "Opciones básicas"
 
 #: ../gap/gap_colormask_dialog.c:243
-#, fuzzy
-#| msgid "Color Mask"
 msgid "Color Mask:"
-msgstr "Máscara de color"
+msgstr "Máscara de color:"
 
 #: ../gap/gap_colormask_dialog.c:249
-#, fuzzy
-#| msgid "Colordiff threshold:"
 msgid "Colordiff Threshold:"
 msgstr "Umbral para la diferencia de colores:"
 
@@ -876,8 +872,6 @@ msgstr ""
 "transparente)."
 
 #: ../gap/gap_colormask_dialog.c:266
-#, fuzzy
-#| msgid "_HiColordiff threshold:"
 msgid "_HiColordiff Threshold:"
 msgstr "Umbral superior para la _diferencia de colores:"
 
@@ -893,15 +887,11 @@ msgstr ""
 
 #. keep layermask checkbutton
 #: ../gap/gap_colormask_dialog.c:285
-#, fuzzy
-#| msgid "Keep layermask"
 msgid "Keep Layer Mask"
 msgstr "Conservar máscara de capa"
 
 #. apply immediate checkbutton
 #: ../gap/gap_colormask_dialog.c:301
-#, fuzzy
-#| msgid "Apply Immediate"
 msgid "Apply Immediately"
 msgstr "Aplicar inmediatamente"
 
@@ -953,8 +943,6 @@ msgid "Opacity Options"
 msgstr "Opciones de opacidad"
 
 #: ../gap/gap_colormask_dialog.c:468
-#, fuzzy
-#| msgid "Lower opacity:"
 msgid "Lower Opacity:"
 msgstr "Opacidad inferior:"
 
@@ -968,8 +956,6 @@ msgstr ""
 "para transparencia)"
 
 #: ../gap/gap_colormask_dialog.c:485
-#, fuzzy
-#| msgid "Upper opacity:"
 msgid "Upper Opacity:"
 msgstr "Opacidad superior:"
 
@@ -983,8 +969,6 @@ msgstr ""
 "1 para opacidad)"
 
 #: ../gap/gap_colormask_dialog.c:503
-#, fuzzy
-#| msgid "Trigger alpha:"
 msgid "Trigger Alpha:"
 msgstr "Alfa de disparo:"
 
@@ -2166,16 +2150,12 @@ msgstr "Extraer primer plano por medio de selección…"
 
 #. Menu names
 #: ../gap/gap_fg_matting_main.c:213
-#, fuzzy
-#| msgid "<Image>/Video/Layer/Transform/"
 msgid "<Image>/Layer/Transparency/"
-msgstr "<Image>/Vídeo/Capa/Transformar/"
+msgstr "<Image>/Capa/Transparencia/"
 
 #: ../gap/gap_fg_matting_exec.c:130
-#, fuzzy
-#| msgid "Grain Extract"
 msgid "Foreground Extract"
-msgstr "Extracción de grano"
+msgstr "Extracción del primer plano"
 
 #. The dialog1 and main vbox
 #: ../gap/gap_fg_matting_dialog.c:372 ../gap/gap_fg_from_sel_dialog.c:240
@@ -2210,17 +2190,13 @@ msgstr ""
 "filtro)."
 
 #: ../gap/gap_fg_matting_dialog.c:467
-#, fuzzy
-#| msgid "layermask"
 msgid "Layermask"
-msgstr "máscara de capa"
+msgstr "Máscara de capa"
 
 #. create_layermask checkbutton
 #: ../gap/gap_fg_matting_dialog.c:491 ../gap/gap_fg_from_sel_dialog.c:343
-#, fuzzy
-#| msgid "Create Layers"
 msgid "Create Layermask:"
-msgstr "Crear capas"
+msgstr "Crear máscara de capa:"
 
 #: ../gap/gap_fg_matting_dialog.c:502 ../gap/gap_fg_from_sel_dialog.c:354
 msgid ""
@@ -2232,10 +2208,8 @@ msgstr ""
 
 #. lock_color checkbutton
 #: ../gap/gap_fg_matting_dialog.c:516 ../gap/gap_fg_from_sel_dialog.c:368
-#, fuzzy
-#| msgid "Color mask:"
 msgid "Lock Colors:"
-msgstr "Máscara de color"
+msgstr "Bloquear colores:"
 
 #: ../gap/gap_fg_matting_dialog.c:526 ../gap/gap_fg_from_sel_dialog.c:378
 msgid ""
@@ -2248,10 +2222,8 @@ msgstr ""
 
 #. create_result (create_result checkbutton
 #: ../gap/gap_fg_matting_dialog.c:539
-#, fuzzy
-#| msgid "Create Layer:"
 msgid "Create Result Layer:"
-msgstr "Crear capa:"
+msgstr "Crear capa resultante:"
 
 #. gtk_widget_show (checkbutton);
 #: ../gap/gap_fg_matting_dialog.c:551
@@ -2265,10 +2237,8 @@ msgstr ""
 
 #. colordiff_threshold spinbutton
 #: ../gap/gap_fg_matting_dialog.c:567 ../gap/gap_fg_from_sel_dialog.c:392
-#, fuzzy
-#| msgid "Colordiff threshold:"
 msgid "Color Diff Threshold"
-msgstr "Umbral para la diferencia de colores:"
+msgstr "Umbral para la diferencia de colores"
 
 #: ../gap/gap_fg_matting_dialog.c:575 ../gap/gap_fg_from_sel_dialog.c:400
 msgid "sensitivity for color comparison"
@@ -2276,10 +2246,8 @@ msgstr "sensibilidad de la comparación de colores"
 
 #. the InnerRadius spinbutton
 #: ../gap/gap_fg_from_sel_dialog.c:297
-#, fuzzy
-#| msgid "Isle Radius:"
 msgid "Inner Radius"
-msgstr "Radio de las isletas:"
+msgstr "Radio interior"
 
 #: ../gap/gap_fg_from_sel_dialog.c:305
 msgid "Radius for undefined (e.g. trimmable) area inside the selection border"
@@ -2288,10 +2256,8 @@ msgstr ""
 
 #. the OuterRadius spinbutton
 #: ../gap/gap_fg_from_sel_dialog.c:318
-#, fuzzy
-#| msgid "Feather Radius:"
 msgid "Outer Radius"
-msgstr "Radio de difuminado:"
+msgstr "Radio exterior"
 
 #: ../gap/gap_fg_from_sel_dialog.c:326
 msgid "Radius for undefined (e.g. trimmable) area outside the selection border"
@@ -6429,10 +6395,8 @@ msgid "Select Audiofile"
 msgstr "Seleccionar archivo de sonido"
 
 #: ../gap/gap_player_dialog.c:6514
-#, fuzzy
-#| msgid "Advanced Settings"
 msgid "Audio Playback Settings"
-msgstr "Configuración avanzada"
+msgstr "Ajustes de la reproducción de audio"
 
 #. audiofile label
 #. the output audiofile label
@@ -6581,10 +6545,8 @@ msgid "Videotime:"
 msgstr "Tiempo de vídeo:"
 
 #: ../gap/gap_player_dialog.c:7067
-#, fuzzy
-#| msgid "Preferences"
 msgid "Playback Preferences"
-msgstr "Preferencias"
+msgstr "Preferencias de reproducción"
 
 #. Cahe size label
 #: ../gap/gap_player_dialog.c:7085
@@ -7032,16 +6994,12 @@ msgid "Convert to Indexed"
 msgstr "Convertir a indexada"
 
 #: ../gap/gap_range_ops.c:506
-#, fuzzy
-#| msgid "Flatten:"
 msgid "Flatten"
-msgstr "Aplanar:"
+msgstr "Aplanar"
 
 #: ../gap/gap_range_ops.c:507
-#, fuzzy
-#| msgid "Merge Layers"
 msgid "Merge Visible Layers"
-msgstr "Mezclar capas"
+msgstr "Mezclar capas visibles"
 
 #: ../gap/gap_range_ops.c:510
 msgid ""
@@ -7122,10 +7080,8 @@ msgstr ""
 "requiere convertirse a un tipo de imagen indexada."
 
 #: ../gap/gap_range_ops.c:582
-#, fuzzy
-#| msgid "Merge Layers"
 msgid "Merge Layers:"
-msgstr "Mezclar capas"
+msgstr "Mezclar capas:"
 
 #: ../gap/gap_range_ops.c:596
 msgid "Convert Frames to other Formats"
@@ -11061,10 +11017,8 @@ msgid "Framerate of the output video (frames/sec)"
 msgstr "Tasa de fotogramas (en fotogramas/seg.) del vídeo de salida"
 
 #: ../vid_common/gap_cme_gui.c:3742
-#, fuzzy
-#| msgid "original audio"
 msgid "original"
-msgstr "sonido original"
+msgstr "original"
 
 # //R Mejorar
 #: ../vid_common/gap_cme_gui.c:3764
@@ -11569,17 +11523,14 @@ msgid "NOT SUPPORTED"
 msgstr "NO SOPORTADO"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:490
-#, fuzzy, c-format
-#| msgid "Set all selected layers to mode: %s"
+#, c-format
 msgid "Selected Preset : %s"
-msgstr "Establecer todas las capas seleccionadas al modo: %s"
+msgstr "Ajuste predeterminado seleccionado: %s"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:502
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:518
-#, fuzzy
-#| msgid "Renumber Frames"
 msgid "Recommanded Framesize"
-msgstr "Renumerar fotogramas"
+msgstr "Tamaño de fotograma recomendado"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:529
 #, c-format
@@ -12764,24 +12715,18 @@ msgstr ""
 
 #. the Set Aspectratio checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3770
-#, fuzzy
-#| msgid "Select aspect ratio"
 msgid "Set aspect ratio"
-msgstr "Establecer proporción"
+msgstr "Establecer proporción de aspecto"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3776
-#, fuzzy
-#| msgid "store aspectratio information (width/height) in the output video"
 msgid "Store aspect ratio information (width/height) in the output video"
 msgstr ""
-"almacenar información de proporción (anchura/altura) en el vídeo de salida"
+"Almacenar información de proporción (anchura/altura) en el vídeo de salida"
 
 #. the ASPECT combo
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3784
-#, fuzzy
-#| msgid "auto"
 msgid "Auto"
-msgstr "auto"
+msgstr "Automática"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3785
 msgid "3:2"
@@ -12801,23 +12746,17 @@ msgstr "Establecer proporción"
 
 #. the show expert settings label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3816
-#, fuzzy
-#| msgid "Expert Options"
 msgid "Expert settings:"
-msgstr "Opciones avanzadas"
+msgstr "Opciones avanzadas:"
 
 #. the Set Aspectratio checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3825
-#, fuzzy
-#| msgid "Convert Settings"
 msgid "Show expert settings"
-msgstr "Ajustes de conversión"
+msgstr "Mostrar las opciones avanzadas"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3831
-#, fuzzy
-#| msgid "Predefined encoder parameter settings"
 msgid "Show video encoder expert settings"
-msgstr "Ajustes preestablecidos de los parámetros del codificador"
+msgstr "Mostrar los ajustes avanzados del codificador de vídeo"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3982
 msgid "FFMPEG Video Encode Parameters"
