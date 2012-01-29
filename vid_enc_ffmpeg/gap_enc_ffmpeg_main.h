@@ -38,13 +38,17 @@
 #include "avformat.h"
 #include "avcodec.h"
 
-/// start ffmpeg 0.5 / 0.6 support
+/// start ffmpeg 0.5 / 0.6 / 0.7 support
 #if LIBAVCODEC_VERSION_MAJOR < 52
 #define GAP_USES_OLD_FFMPEG_0_5
 #endif
+
 #if LIBAVCODEC_VERSION_MAJOR == 52
 #if LIBAVCODEC_VERSION_MINOR <= 20
 #define GAP_USES_OLD_FFMPEG_0_5
+#endif
+#if LIBAVCODEC_VERSION_MINOR <= 72
+#define GAP_USES_OLD_FFMPEG_0_6
 #endif
 #endif
 
@@ -403,6 +407,15 @@ typedef struct {
   gdouble psy_trellis;       // float psy_trellis;
   gint32  rc_lookahead;      // int rc_lookahead;
 
+  /* new params ffmpeg-0.7.11 */
+  gdouble crf_max;               // float crf_max;
+  gint32  log_level_offset;      // int log_level_offset;
+  gint32  slices;                // int slices;
+  gint32  thread_type;           // int thread_type;
+  gint32  active_thread_type;    // int active_thread_type;
+  gint32  thread_safe_callbacks; // int thread_safe_callbacks;
+  gint64  vbv_delay;             // uint64_t vbv_delay;
+  gint32  audio_service_type;    // enum AVAudioServiceType  audio_service_type;
 
 
   gint32 codec_FLAG_GMC;
@@ -430,6 +443,7 @@ typedef struct {
   gint32 codec_FLAG2_MBTREE;
   gint32 codec_FLAG2_PSY;
   gint32 codec_FLAG2_SSIM;
+  gint32 codec_FLAG2_INTRA_REFRESH;
 
   gint32 partition_X264_PART_I4X4;
   gint32 partition_X264_PART_I8X8;
@@ -564,6 +578,7 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_codec_FLAG2_MBTREE_checkbutton;
   GtkWidget *ff_codec_FLAG2_PSY_checkbutton;
   GtkWidget *ff_codec_FLAG2_SSIM_checkbutton;
+  GtkWidget *ff_codec_FLAG2_INTRA_REFRESH_checkbutton;
 
   GtkWidget *ff_partition_X264_PART_I4X4_checkbutton;
   GtkWidget *ff_partition_X264_PART_I8X8_checkbutton;

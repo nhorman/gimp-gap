@@ -54,6 +54,8 @@ gint32    gap_image_merge_to_specified_layer(gint32 ref_layer_id, GimpMergeType 
 gboolean  gap_image_set_selection_from_selection_or_drawable(gint32 image_id, gint32 ref_drawable_id
                               , gboolean force_from_drawable);
 void      gap_image_remove_invisble_layers(gint32 image_id);
+void      gap_image_remove_all_guides(gint32 image_id);
+void      gap_image_limit_layers(gint32 image_id, gint keepTopLayers,  gint keepBgLayers);
 
 
 #endif

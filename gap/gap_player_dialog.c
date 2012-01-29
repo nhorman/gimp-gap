@@ -112,6 +112,7 @@
 #include "gap_audio_extract.h"
 #include "gap_audio_extract.h"
 #include "gap_drawable_vref_parasite.h"
+#include "gap_detail_tracking_exec.h"
 
 #include "gap-intl.h"
 
@@ -346,6 +347,7 @@ static guchar * p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
                    , gint32 *th_height
                    , gboolean isBackwards
                    );
+static void     p_init_tile_cache(GapPlayerMainGlobalParams *gpp);
 static void     p_init_video_playback_cache(GapPlayerMainGlobalParams *gpp);
 static void     p_init_layout_options(GapPlayerMainGlobalParams *gpp);
 static guchar * p_fetch_frame_via_cache(GapPlayerMainGlobalParams *gpp
@@ -1247,10 +1249,29 @@ p_mtrace_image_alive(GapPlayerMainGlobalParams *gpp
 
 
 /* ------------------------------
+ * p_conditional_detail_tracking
+ * ------------------------------
+ * optional call detail  tracking.
+ * that logs coordinates of a detail (typically marked via 2 path vector points)
+ * as XML input file for the MovePath feature.
+ */
+static void
+p_conditional_detail_tracking(GapPlayerMainGlobalParams *gpp, gint32 image_id)
+{
+  if(gpp->enableDetailTracking)
+  {
+    gap_track_detail_on_top_layers_lastvals(image_id);
+    /* flush display to force rendering of newly added layers and vectors */
+    gimp_displays_flush ();
+  }
+}  /* end p_conditional_detail_tracking */
+
+
+/* ------------------------------
  * p_conditional_attach_dvref
  * ------------------------------
  * check if there is a valid current videoreference.
- * if yes attach the reference as (temporary) videoreferenc parasite
+ * if yes attach the reference as (temporary) videoreference parasite
  * to the specified drawable_id 
  * (that is typically the layer in the mtrace image)
  */
@@ -1355,6 +1376,8 @@ p_mtrace_image( GapPlayerMainGlobalParams *gpp
       g_free(l_name);
     }
 
+    p_conditional_detail_tracking(gpp, gpp->mtrace_image_id);
+
     gimp_displays_flush();
   }
 }  /* end p_mtrace_image */
@@ -1423,6 +1446,9 @@ p_mtrace_tmpbuf( GapPlayerMainGlobalParams *gpp
       gimp_drawable_set_name(dst_layer_id, l_name);
       g_free(l_name);
     }
+
+    p_conditional_detail_tracking(gpp, gpp->mtrace_image_id);
+
     gimp_displays_flush();
   }
 }  /* end p_mtrace_tmpbuf */
@@ -3100,6 +3126,29 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
 
 
 /* -----------------------------
+ * p_init_tile_cache
+ * -----------------------------
+ */
+static void
+p_init_tile_cache(GapPlayerMainGlobalParams *gpp)
+{
+  gchar *value_string;
+
+  gpp->cache_ntiles = GAP_PLAYER_MAIN_DEFAULT_CACHE_NTILES;
+
+  value_string = gimp_gimprc_query("video_player_cache_ntiles");
+  if(value_string)
+  {
+    gpp->cache_ntiles = MAX(0, atol(value_string));
+    
+    g_free(value_string);
+  }
+
+  gimp_tile_cache_ntiles(gpp->cache_ntiles);
+  
+}  /* end p_init_tile_cache */
+
+/* -----------------------------
  * p_init_video_playback_cache
  * -----------------------------
  */
@@ -3152,6 +3201,21 @@ p_init_layout_options(GapPlayerMainGlobalParams *gpp)
     g_free(value_string);
   }
 
+
+  value_string = gimp_gimprc_query("video_player_enable_detail_tracking");
+  if(value_string)
+  {
+    if ((*value_string == 'Y') || (*value_string == 'y'))
+    {
+      gpp->enableDetailTracking = TRUE;
+    }
+    else
+    {
+      gpp->enableDetailTracking = FALSE;
+    }
+
+    g_free(value_string);
+  }
 }  /* end p_init_layout_options */
 
 
@@ -5865,6 +5929,68 @@ on_show_positionscale_checkbutton_toggled(GtkToggleButton *togglebutton,
 }  /* end on_show_positionscale_checkbutton_toggled */
 
 
+/* ---------------------------------------------
+ * on_enable_detail_tracking_checkbutton_toggled
+ * ---------------------------------------------
+ */
+static void
+on_enable_detail_tracking_checkbutton_toggled(GtkToggleButton *togglebutton,
+                                        GapPlayerMainGlobalParams *gpp)
+{
+  if(gpp == NULL)
+  {
+    return;
+  }
+
+  if (togglebutton->active)
+  {
+       gpp->enableDetailTracking = TRUE;
+  }
+  else
+  {
+       gpp->enableDetailTracking = FALSE;
+  }
+
+}  /* end on_enable_detail_tracking_checkbutton_toggled */
+
+/* ---------------------------------
+ * on_detail_tracking_button_clicked
+ * ---------------------------------
+ */
+static void
+on_detail_tracking_button_clicked (GtkButton       *button,
+                                   GapPlayerMainGlobalParams *gpp)
+{
+  gboolean dtailTrackingOk;
+  if(gpp == NULL)
+  {
+    return;
+  }
+  p_stop_playback(gpp);
+  if(gpp->gva_lock)
+  {
+    gpp->request_cancel_video_api = TRUE;
+    return;
+  }
+
+  dtailTrackingOk =
+    gap_detail_tracking_dialog_cfg_set_vals(gpp->mtrace_image_id);
+  
+  if(dtailTrackingOk)
+  {
+    gpp->enableDetailTracking = TRUE;
+    if(gpp->detail_tracking_checkbutton)
+    {
+      gtk_toggle_button_set_active (
+         GTK_TOGGLE_BUTTON (gpp->detail_tracking_checkbutton), TRUE);
+    }
+  }
+
+}  /* end on_detail_tracking_button_clicked */
+
+
+
+
 /* -----------------------------
  * on_close_button_clicked
  * -----------------------------
@@ -6986,6 +7112,40 @@ on_cache_size_spinbutton_changed (GtkEditable     *editable,
 
 
 /* -----------------------------------------
+ * on_tile_cache_size_spinbutton_changed
+ * -----------------------------------------
+ */
+static void
+on_tile_cache_size_spinbutton_changed (GtkEditable     *editable,
+                                  GapPlayerMainGlobalParams *gpp)
+{
+  gdouble  nsize;
+
+  if(gpp == NULL)
+  {
+    return;
+  }
+  nsize = GTK_ADJUSTMENT(gpp->cache_ntiles_spinbutton_adj)->value;
+
+  if(gap_debug)
+  {
+      printf("on_tile_cache_size_spinbutton_changed: cache_ntiles:%d newvalue:%d\n"
+              , (int) gpp->cache_ntiles
+              , (int) nsize
+              );
+  }
+
+  if(gpp->cache_ntiles != (gulong)nsize)
+  {
+    gpp->cache_ntiles = (gulong)nsize;
+
+    gimp_tile_cache_ntiles(gpp->cache_ntiles);
+  }
+
+}  /* end on_tile_cache_size_spinbutton_changed */
+
+
+/* -----------------------------------------
  * on_cache_clear_button_clicked
  * -----------------------------------------
  */
@@ -7002,13 +7162,12 @@ on_cache_clear_button_clicked (GtkButton       *button,
 }  /* end on_cache_clear_button_clicked */
 
 
-
 /* -----------------------------------------
- * p_gimprc_save_boolen_option
+ * p_gimprc_save_option
  * -----------------------------------------
  */
 static void
-p_gimprc_save_boolen_option (const char *option_name, gboolean value)
+p_gimprc_save_boolean_option (const char *option_name, gboolean value)
 {
   if(value)
   {
@@ -7018,8 +7177,7 @@ p_gimprc_save_boolen_option (const char *option_name, gboolean value)
   {
     gimp_gimprc_set(option_name, "no");
   }
-}  /* end p_gimprc_save_boolen_option */
-
+}  /* end p_gimprc_save_boolean_option */
 
 /* -----------------------------------------
  * on_prefs_save_gimprc_button_clicked
@@ -7029,16 +7187,25 @@ static void
 on_prefs_save_gimprc_button_clicked (GtkButton       *button,
                                GapPlayerMainGlobalParams *gpp)
 {
+  gchar *valueAsString;
+  
   if(gpp == NULL)
   {
     return;
   }
   gap_player_cache_set_gimprc_bytesize(gpp->max_player_cache);
 
-  p_gimprc_save_boolen_option("video_player_show_go_buttons"
+  p_gimprc_save_boolean_option("video_player_show_go_buttons"
                              ,gpp->show_go_buttons);
-  p_gimprc_save_boolen_option("video_player_show_position_scale"
+  p_gimprc_save_boolean_option("video_player_show_position_scale"
                              ,gpp->show_position_scale);
+  p_gimprc_save_boolean_option("video_player_enable_detail_tracking"
+                             ,gpp->enableDetailTracking);
+
+  valueAsString = g_strdup_printf("%d", gpp->cache_ntiles);
+  gimp_gimprc_set("video_player_cache_ntiles", valueAsString);
+  g_free(valueAsString);
+  
 
 }  /* end on_prefs_save_gimprc_button_clicked */
 
@@ -7081,7 +7248,7 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
 
   row = 0;
 
-  /* Cahe size label */
+  /* Cache size label */
   label = gtk_label_new (_("Cache Size (MB):"));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table1), label, 0, 1,  row, row+1,
@@ -7150,6 +7317,36 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
   gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), "0.0 MB");
   gpp->progress_bar_cache_usage = progress_bar;
 
+
+  row++;
+
+  /* tile Chache  */
+  label = gtk_label_new(_("Tile Cache:"));
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+  gtk_widget_show(label);
+
+
+  /* tile cache size spinutton */
+  spinbutton = gimp_spin_button_new (&adj,  /* return value */
+                        gpp->cache_ntiles,         /*   initial_val */
+                        0.0,   /* umin */
+                     9000.0,   /* umax */
+                        1.0,   /* sstep */
+                       10.0,   /* pagestep */
+                       0.0,                  /* page_size */
+                       10.0,                 /* climb_rate */
+                        0                    /* digits */
+                        );
+  gtk_widget_show (spinbutton);
+  gpp->cache_ntiles_spinbutton_adj = adj;
+  gtk_table_attach(GTK_TABLE(table1), spinbutton, 1, 2, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
+  gimp_help_set_help_data(spinbutton, _("gimp tile cache for the player process. (in tiles 64x64 pixel)"),NULL);
+  g_signal_connect (G_OBJECT (gpp->cache_ntiles_spinbutton_adj), "value_changed",
+                        G_CALLBACK (on_tile_cache_size_spinbutton_changed),
+                        gpp);
+
+
   row++;
 
   /* Layout Options label */
@@ -7196,6 +7393,46 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
   }
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_show_positionscale_checkbutton_toggled),
+                      gpp);
+
+  row++;
+
+
+
+
+
+  /* configure Detail Tracking button */
+  button = gtk_button_new_with_label(_("Configure Tracking:"));
+
+  gtk_widget_show (button);
+  gimp_help_set_help_data(button, _("Configure detail tracking options"),NULL);
+  gtk_table_attach(GTK_TABLE(table1), button, 0, 1, row, row + 1,
+                    (GtkAttachOptions) GTK_FILL,
+                    (GtkAttachOptions) GTK_FILL, 4, 0);
+  g_signal_connect (G_OBJECT (button), "pressed",
+                      G_CALLBACK (on_detail_tracking_button_clicked),
+                      gpp);
+
+  checkbutton = gtk_check_button_new_with_label (_("Enable Detail Tracking"));
+  gpp->detail_tracking_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table1), checkbutton, 1, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (checkbutton, _("ON: Enable detail tracking in snapshot image."
+                                          " Mark coordinates of one (or 2) significant details in the snapshot image"
+                                          " using the current path with one or 2 points."
+                                          " Each further snapshot automatically moves the marked points"
+                                          " to the coordinates of the corresponding details "
+                                          " and logs the movement as XML parameters for the MovePath feature."
+                                          " In case 2 points are marked, the rotation is calculated too.\n"
+                                          "OFF: Disable detail tracking."), NULL);
+  if(gpp->enableDetailTracking)
+  {
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), TRUE);
+  }
+  g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_enable_detail_tracking_checkbutton_toggled),
                       gpp);
 
   row++;
@@ -8512,11 +8749,14 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
   gpp->shell_initial_width = -1;
   gpp->shell_initial_height = -1;
 
+  gimp_tile_cache_ntiles(gpp->cache_ntiles);
+  p_init_tile_cache(gpp);
   p_init_video_playback_cache(gpp);
   p_init_layout_options(gpp);
 
   gpp->mtrace_image_id = -1;
   gpp->mtrace_mode = GAP_PLAYER_MTRACE_OFF;
+  gpp->detail_tracking_checkbutton = NULL;
 
   gpp->vindex_creation_is_running = FALSE;
   gpp->request_cancel_video_api = FALSE;

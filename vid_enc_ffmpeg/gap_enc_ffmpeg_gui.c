@@ -1066,6 +1066,8 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
                                , gpp->evl.codec_FLAG2_PSY);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_SSIM_checkbutton)
                                , gpp->evl.codec_FLAG2_SSIM);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_INTRA_REFRESH_checkbutton)
+                               , gpp->evl.codec_FLAG2_INTRA_REFRESH);
 
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partition_X264_PART_I4X4_checkbutton)
@@ -2934,6 +2936,22 @@ p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.codec_FLAG_GMC);
+
+
+    /* the INTRA_REFRESH checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Intra Refresh"));
+    gpp->ff_codec_FLAG2_INTRA_REFRESH_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Use periodic insertion of intra blocks instead of keyframes."), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_INTRA_REFRESH);
+
+
 
     flags_row++;
 

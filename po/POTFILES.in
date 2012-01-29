@@ -5,6 +5,7 @@ gap/gap_arr_dialog.c
 gap/gap_audio_extract.c
 gap/gap_audio_wav.c
 gap/gap_base_ops.c
+gap/gap_blend_fill_main.c
 gap/gap_bluebox.c
 gap/gap_bluebox_main.c
 gap/gap_colormask_dialog.c
@@ -14,6 +15,9 @@ gap/gap_dbbrowser_utils.c
 gap/gap_decode_mplayer_main.c
 gap/gap_decode_mplayer.c
 gap/gap_decode_xanim.c
+gap/gap_detail_align_exec.c
+gap/gap_detail_tracking_main.c
+gap/gap_detail_tracking_exec.c
 gap/gap_filter_foreach.c
 gap/gap_filter_main.c
 gap/gap_fire_pattern.c

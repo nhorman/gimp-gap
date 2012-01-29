@@ -802,8 +802,9 @@ p_base_get_thread_id_as_int()
 /* ---------------------------------------
  * p_debug_print_dump_AVCodecContext
  * ---------------------------------------
- * dump values of all (200 !!) parameters
+ * dump most parameters values
  * of the codec context to stdout
+ * (some unused and deprecated parameters are skipped)
  */
 static void
 p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
@@ -1027,6 +1028,28 @@ p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
   printf("(psy_trellis                  %f)\n", (float)  codecContext->psy_trellis);
   printf("(rc_lookahead                 %d)\n", (int)    codecContext->rc_lookahead);
 
+#ifndef GAP_USES_OLD_FFMPEG_0_6
+  printf("(crf_max                      %f)\n", (float)  codecContext->crf_max);
+  printf("(log_level_offset             %d)\n", (int)    codecContext->log_level_offset);
+  /* attribute_deprecated enum AVLPCType lpc_type; */
+  /* attribute_deprecated int lpc_passes;          */
+  printf("(slices                       %d)\n", (int)    codecContext->slices);
+  /* uint8_t *subtitle_header; */
+  /* int subtitle_header_size; */
+  /* AVPacket *pkt */
+  /* int is_copy;  */
+  printf("(thread_type                  %d)\n", (int)    codecContext->thread_type);
+  printf("(active_thread_type           %d)\n", (int)    codecContext->active_thread_type);
+  printf("(thread_safe_callbacks        %d)\n", (int)    codecContext->thread_safe_callbacks);
+  printf("(vbv_delay                    %lld)\n",        codecContext->vbv_delay);
+  printf("(audio_service_type           %d)\n", (int)    codecContext->audio_service_type);
+  /* enum AVSampleFormat request_sample_fmt */
+  /* int64_t pts_correction_num_faulty_pts; */
+  /* int64_t pts_correction_num_faulty_dts; */
+  /* int64_t pts_correction_last_pts; */
+  /* int64_t pts_correction_last_dts; */
+
+#endif
 #endif
 
   printf("AVCodecContext Settings END\n");
@@ -1518,12 +1541,25 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->codec_FLAG2_MBTREE               = 0; /* 0: FALSE */
   epp->codec_FLAG2_PSY                  = 0; /* 0: FALSE */
   epp->codec_FLAG2_SSIM                 = 0; /* 0: FALSE */
+  /* new flags/flags2 of ffmpeg-0.7.11 2012.01.12 */
+  epp->codec_FLAG2_INTRA_REFRESH        = 0; /* 0: FALSE */
 
   epp->partition_X264_PART_I4X4         = 0; /* 0: FALSE */
   epp->partition_X264_PART_I8X8         = 0; /* 0: FALSE */
   epp->partition_X264_PART_P8X8         = 0; /* 0: FALSE */
   epp->partition_X264_PART_P4X4         = 0; /* 0: FALSE */
   epp->partition_X264_PART_B8X8         = 0; /* 0: FALSE */
+
+
+  /* new parameters of ffmpeg-0.7.11 2012.01.12 */
+  epp->crf_max                       = 0.0;
+  epp->log_level_offset              = 0;
+  epp->slices                        = 0;
+  epp->thread_type                   = 3;   /* FF_THREAD_FRAME   1  + FF_THREAD_SLICE   2 */
+  epp->active_thread_type            = 0;
+  epp->thread_safe_callbacks         = 0;
+  epp->vbv_delay                     = 0;
+  epp->audio_service_type            = 0;
 
   if (preset_idx >= GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS)
   {
@@ -2379,6 +2415,9 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   p_set_flag(epp->codec_FLAG2_MBTREE,              &video_enc->flags2, CODEC_FLAG2_MBTREE);
   p_set_flag(epp->codec_FLAG2_PSY,                 &video_enc->flags2, CODEC_FLAG2_PSY);
   p_set_flag(epp->codec_FLAG2_SSIM,                &video_enc->flags2, CODEC_FLAG2_SSIM);
+#ifndef GAP_USES_OLD_FFMPEG_0_6
+  p_set_flag(epp->codec_FLAG2_INTRA_REFRESH,       &video_enc->flags2, CODEC_FLAG2_INTRA_REFRESH);
+#endif
 #endif
 
 
@@ -2556,6 +2595,16 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->psy_rd = (float)epp->psy_rd;
   video_enc->psy_trellis = (float)epp->psy_trellis;
   video_enc->rc_lookahead = (int)epp->rc_lookahead;
+#ifndef GAP_USES_OLD_FFMPEG_0_6
+  video_enc->crf_max = (float)epp->crf_max;
+  video_enc->log_level_offset = (int)epp->log_level_offset;
+  video_enc->slices = (int)epp->slices;
+  video_enc->thread_type = (int)epp->thread_type;
+  video_enc->active_thread_type = (int)epp->active_thread_type;
+  video_enc->thread_safe_callbacks = (int)epp->thread_safe_callbacks;
+  video_enc->vbv_delay = epp->vbv_delay;
+  video_enc->audio_service_type = epp->audio_service_type;
+#endif
 #endif
 
 

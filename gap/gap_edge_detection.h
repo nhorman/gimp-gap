@@ -1,6 +1,3 @@
-// TODOS: levels of non-black edge pixels are too dark (stretch range...)
-//        check colordiff (that seems not work properly on draft locate test image coords x:25 y:23  and x:25 y:24 !!!
-
 /* gap_edge_detection.h
  *    by hof (Wolfgang Hofer)
  *  2010/08/08
@@ -57,6 +54,20 @@ gint32 gap_edgeDetection(gint32  refDrawableId
   , gint32 *countEdgePixels
   );
 
+
+/* ---------------------------------
+ * gap_edgeDetectionByBlurDiff
+ * ---------------------------------
+ * create a new layer representing edges of the specified activeDrawableId.
+ * The edge detection is done based on difference versus a blured
+ * copy of the activeDrawableId.
+ * (optionalyy with auto streched levels)
+ * returns the drawable id of a newly created layer
+ */
+gint32
+gap_edgeDetectionByBlurDiff(gint32 activeDrawableId, gdouble blurRadius, gdouble blurResultRadius
+   , gdouble threshold, gint32 shift, gboolean doLevelsAutostretch
+   , gboolean invert);
 
 
 

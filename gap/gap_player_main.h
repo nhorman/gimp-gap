@@ -221,7 +221,7 @@ typedef struct GapPlayerMainGlobalParams {
 
   gint32     max_player_cache;    /* max bytesize to use for caching frames 
                                    * (at pview widget size) 
-                                   * a value of 0 turns cahing OFF
+                                   * a value of 0 turns caching OFF
                                    */
   GapPlayerCacheCompressionType cache_compression;
   gdouble                       cache_jpeg_quality;
@@ -257,8 +257,15 @@ typedef struct GapPlayerMainGlobalParams {
   GtkWidget *audio_enable_checkbutton;
 
   GapDrawableVideoRef  *dvref_ptr;
+
+  gboolean     enableDetailTracking;
+  gulong       cache_ntiles;                 /* gimp tile cache size for the player process */
+  GtkObject   *cache_ntiles_spinbutton_adj;
+  GtkWidget   *detail_tracking_checkbutton;
   
 } GapPlayerMainGlobalParams;
+
+#define GAP_PLAYER_MAIN_DEFAULT_CACHE_NTILES   200
 
 #define GAP_PLAYER_MAIN_AUSTAT_UNCHECKED       -1
 #define GAP_PLAYER_MAIN_AUSTAT_NONE             0

@@ -46,7 +46,8 @@
 
 #define   GAP_MOVPATH_XML_FILENAME_MAX_LENGTH     1024
 #define   GAP_MOVEPATH_GIMPRC_LOG_RENDER_PARAMS "video-move-path-log-render-params"
-
+#define   GAP_MOVEPATH_GIMPRC_ROTATE_THRESHOLD  "video-move-path-rotate-threshold"
+#define   GAP_MOVEPATH_DEFAULT_ROTATE_THRESHOLD  0.015
 
 typedef enum
 {
@@ -260,6 +261,8 @@ typedef struct {
         /* for the bluebox filter */
         GapBlueboxGlobalParams *bbp;
         GapBlueboxGlobalParams *bbp_pv;
+
+        gdouble  rotate_threshold;
 
 
 } GapMovValues;

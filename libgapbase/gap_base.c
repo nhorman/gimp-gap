@@ -299,6 +299,32 @@ gap_base_dup_filename_and_replace_extension_by_underscore(const char *filename)
 }  /* end gap_base_dup_filename_and_replace_extension_by_underscore */
 
 
+
+
+/* --------------------------------
+ * gap_base_gdouble_to_ascii_string
+ * --------------------------------
+ * convert the specified gdouble value to ascci string.
+ * (always use "." as decimalpoint, independent of LOCALE language settings)
+ * return the converted string. (the caller is responsible to g_free this string after usage)
+ */
+gchar *
+gap_base_gdouble_to_ascii_string(gdouble value, gint precision_digits)
+{
+  gchar *retValueAsSting;
+  
+  gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
+  gchar l_fmt_str[20];
+  gint  l_len;
+
+  g_snprintf(l_fmt_str, sizeof(l_fmt_str), "%%.%df", (int)precision_digits);
+  g_ascii_formatd(l_dbl_str, sizeof(l_dbl_str), l_fmt_str, value);
+
+  retValueAsSting = g_strdup_printf("%s", l_dbl_str);
+  return (retValueAsSting);
+}  /* end gap_base_gdouble_to_ascii_string */
+
+
 /* --------------------------------
  * gap_base_fprintf_gdouble
  * --------------------------------
@@ -326,6 +352,7 @@ gap_base_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_di
   }
   fprintf(fp, "%s", l_dbl_str);
 }  /* end gap_base_fprintf_gdouble */
+
 
 
 /* ============================================================================
@@ -414,10 +441,48 @@ gap_base_check_tooltips(gboolean *old_state)
 
 
 /* -----------------------------------------
+ * gap_base_get_gimprc_gdouble_value
+ * -----------------------------------------
+ * get gdouble configuration value for the keyname gimprc_option_name from the gimprc file.
+ * returns the configure value in constraint to the specified range 
+ * (between min_value and max_value)
+ * the specified default_value is returned in case the gimprc
+ * has no entry for the specified gimprc_option_name.
+ */
+gdouble
+gap_base_get_gimprc_gdouble_value (const char *gimprc_option_name
+   , gdouble default_value, gdouble min_value, gdouble max_value)
+{
+  char *value_string;
+  gdouble value;
+
+  value = default_value;
+
+  value_string = gimp_gimprc_query(gimprc_option_name);
+  if(value_string)
+  {
+     gchar *endptr;
+     gchar *nptr;
+     gdouble val;
+
+     nptr  = value_string;
+     val = g_ascii_strtod(nptr, &endptr);
+     if(nptr != endptr)
+     {
+       value = val;
+     }
+     g_free(value_string);
+  }
+  return (CLAMP(value, min_value, max_value));
+
+}  /* end gap_base_get_gimprc_gdouble_value */
+
+
+/* -----------------------------------------
  * gap_base_get_gimprc_int_value
  * -----------------------------------------
  * get integer configuration value for the keyname gimprc_option_name from the gimprc file.
- * returns the configure value in constaint to the specified range 
+ * returns the configure value in constraint to the specified range 
  * (between min_value and max_value)
  * the specified default_value is returned in case the gimprc
  * has no entry for the specified gimprc_option_name.
@@ -440,7 +505,6 @@ gap_base_get_gimprc_int_value (const char *gimprc_option_name
   return (CLAMP(value, min_value, max_value));
 
 }  /* end p_get_gimprc_int_value */
-
 
 /* -----------------------------------------
  * gap_base_get_gimprc_gboolean_value

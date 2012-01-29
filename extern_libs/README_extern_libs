@@ -3,7 +3,7 @@ as sourcecode for convenient static linking.
 
 CURRENT FFMPEG version is:
 
-- ffmpeg 0.6.1
+- ffmpeg 0.7.11
 
 CURRENT LIBMPEG3 version is:
        
@@ -45,9 +45,16 @@ this GIMP-GAP distribution.
   will work with a new ffmpeg version.
   Typically it requires much testing and some knowledge
   of both GIMP-GAP and ffmpeg internals to get new ffmpeg versions
-  working. 
+  working.
+  
   
   GIMP-GAP currently supports 
+  o) ffmpeg-0.7.11  basically works, tests done 
+       minor incopatibility detected at frame exact positioning compared against ffmpeg-0.6.1
+       on dvd mpeg2 encoded videos that do not start with a keyframe.
+       0.7.11 delivers one extra gray frame as 1st and a black frame as 2nd frame
+       where 0.6.1 did deliver just one black frame as 1st frame. 
+  o) ffmpeg-0.7.8 Not fully tested....
   o) ffmpeg-0.6.1 tests repeated, same results as ffmpeg-0.6
   o) ffmpeg-0.6 basically works, tests done 
      incopatibility detected at frame exact positioning compared against ffmpeg-0.5 
@@ -60,11 +67,9 @@ this GIMP-GAP distribution.
      when compiling/linking with ffmpeg-0.5)
      
 
-
-  newer ffmpeg GIT (or SVN) snapshots
-  may or may not compile, link and run with this GIMP-GAP release.
-  (a compile/link test was done with ffmpeg-2010-09-14 snapshot
-  that has no more support for libfaad --disable-ff-libfaad)
+  the ffmpeg releases 0.8.x, 0.9.x and latest GIT repository
+  are NOT compatible due to new API versions and will NOT compile with
+  this GIMP-GAP version.
 
 
 GIMP-GAP can be configured to be compiled without ffmpeg (in this case 

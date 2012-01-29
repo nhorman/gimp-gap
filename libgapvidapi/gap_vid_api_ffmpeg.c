@@ -144,6 +144,8 @@ typedef struct t_GVA_ffmpeg
 
   gint32        samples_buffer_size;
   guchar        *samples_buffer[2];    /* Buffer for decoded samples from samples_base_a until read position */
+  int16_t       *av_samples;           /* aligned buffer for decoding audio samples (MMX requires aligned data) */
+  int            av_samples_size;
 
   gint32        samples_base[2];       /* start offset of the samples_buffers (unit is samples) */
 
@@ -385,6 +387,8 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   handle->aud_pkt.data = NULL;          /* start with empty packet */
   handle->samples_buffer[0] = NULL;        /* set later (at 1.st audio packet read) */
   handle->samples_buffer[1] = NULL;        /* set later (at 1.st audio packet read) */
+  handle->av_samples = NULL;               /* set later (at 1.st audio packet read) */
+  handle->av_samples_size = 0;
   handle->samples_base[0] = 0;
   handle->samples_base[1] = 0;
   handle->bytes_filled[0] = 0;
@@ -630,6 +634,13 @@ p_wrapper_ffmpeg_close(t_GVA_Handle *gvahand)
   if(gap_debug) printf("p_wrapper_ffmpeg_close: START\n");
 
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+
+  if(handle->av_samples)
+  {
+    av_free(handle->av_samples);
+    handle->av_samples = NULL;
+    handle->av_samples_size = 0;
+  }
 
   if(handle->samples_buffer[0])
   {
@@ -3249,7 +3260,10 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
     l_sample_idx = gvahand->current_sample;
   }
 
-  if(gap_debug) printf("p_wrapper_ffmpeg_get_audio  samples: %d l_sample_idx:%d\n", (int)samples, (int)l_sample_idx);
+  if(gap_debug) 
+  {
+    printf("p_wrapper_ffmpeg_get_audio  samples: %d l_sample_idx:%d\n", (int)samples, (int)l_sample_idx);
+  }
 
   l_low_sample_idx = 0;
   if (handle->samples_base[0] > 0)
@@ -3268,6 +3282,13 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
      * (is not chached in the sample_buffers any more)
      * we have to reset audio read, and restart reading from the begin
      */
+    if(gap_debug)
+    {
+      printf("ffmpeg_get_audio l_sample_idx:%d  l_low_sample_idx:%d (calling reopen)\n"
+        , (int)l_sample_idx
+        , (int)l_low_sample_idx
+	);
+    }
     p_ffmpeg_aud_reopen_read(handle, gvahand);
   }
 
@@ -3284,6 +3305,11 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
                 , samples
                 , channel
                 );
+
+  if(gap_debug) 
+  {
+    printf("p_wrapper_ffmpeg_get_audio  DONE: l_rc:%d\n", (int)l_rc);
+  }
 
   if(l_rc == 0)
   {
@@ -3794,7 +3820,13 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
     {
         case AVMEDIA_TYPE_AUDIO:
             gvahand->atracks++;  /* count all audiostraems as audiotrack */
-            if(gap_debug) printf("\nInput Audio channels: %d\n", acc->channels);
+            if(gap_debug)
+	    {
+	      printf("\nInput Audio Track @ streamIndex:%d channels: %d\n"
+	        , ii
+		, acc->channels
+		);
+	    }
             if((gvahand->atracks == gvahand->aud_track)
             || (gvahand->atracks == 1))
             {
@@ -3813,6 +3845,12 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
             break;
         case AVMEDIA_TYPE_VIDEO:
             gvahand->vtracks++; /* count all videostraems as videotrack */
+            if(gap_debug)
+	    {
+	      printf("\nInput Video Track @ streamIndex:%d\n"
+	        , ii
+		);
+	    }
             if((gvahand->vtracks == gvahand->vid_track)
             || (gvahand->vtracks == 1))
             {
@@ -4161,7 +4199,10 @@ p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
 static void
 p_ffmpeg_aud_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
 {
-    if(gap_debug) printf("p_ffmpeg_aud_reopen_read: REOPEN\n");
+    if(gap_debug)
+    {
+      printf("p_ffmpeg_aud_reopen_read: REOPEN\n");
+    }
 
 
     /* CLOSE the audio codec */
@@ -4297,6 +4338,11 @@ p_pick_channel( t_GVA_ffmpeg *handle
   gint32  this_idx;
   gint32  prev_idx;
 
+  if(gap_debug)
+  {
+    printf("p_pick_channel: START channel:%d\n", (int)channel);
+  }
+
   l_samples_picked = 0;
   bytes_per_sample =  2 * gvahand->audio_cannels;
 
@@ -4317,7 +4363,10 @@ p_pick_channel( t_GVA_ffmpeg *handle
        */
       l_this_samples = (gint32)  (handle->samples_read - sample_idx);
 
-      if(gap_debug) printf("p_pick_channel(2): l_this_samples:%d\n", (int)l_this_samples);
+      if(gap_debug)
+      {
+        printf("p_pick_channel(2): l_this_samples:%d\n", (int)l_this_samples);
+      }
   }
 
   if(sample_idx >= handle->samples_base[this_idx])
@@ -4483,6 +4532,11 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
    {
      printf("p_read_audio_packets: before WHILE max_sample_pos: %d\n", (int)max_sample_pos);
      printf("p_read_audio_packets: before WHILE samples_read: %d\n", (int)handle->samples_read);
+     printf("samples_buffer[0]: %d samples_buffer[1]:%d output_samples_ptr:%d\n"
+         , (int)handle->samples_buffer[0]
+         , (int)handle->samples_buffer[1]
+         , (int)handle->output_samples_ptr
+	 );
    }
 
    while(handle->samples_read < max_sample_pos)
@@ -4504,7 +4558,10 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
       if(l_pktlen < 0)
       {
          /* EOF reached */
-         if (gap_debug) printf("p_read_audio_packets: EOF reached (or read ERROR)\n");
+         if (gap_debug)
+	 {
+	   printf("p_read_audio_packets: EOF reached (or read ERROR)\n");
+	 }
 
          gvahand->total_aud_samples = handle->samples_read;
          gvahand->all_samples_counted = TRUE;
@@ -4513,7 +4570,12 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
          break;
       }
 
-      /*if (gap_debug)  printf("aud_stream:%d pkt.stream_index #%d, pkt.size: %d samples_read:%d\n", handle->aud_stream_index, handle->aud_pkt.stream_index, handle->aud_pkt.size, (int)handle->samples_read);*/
+      if (gap_debug)
+      {
+        printf("aud_stream:%d pkt.stream_index #%d, pkt.size: %d samples_read:%d\n"
+	   , handle->aud_stream_index, handle->aud_pkt.stream_index
+	   , handle->aud_pkt.size, (int)handle->samples_read);
+      }
 
 
       /* check if packet belongs to the selected audio stream */
@@ -4525,14 +4587,20 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
          continue;
       }
 
-      /* if (gap_debug)  printf("using Packet\n"); */
+      if (gap_debug)
+      {
+        printf("using Packet stream_index:%d data:%d size:%d\n"
+	   ,(int)handle->aud_pkt.stream_index
+	   ,(int)handle->aud_pkt.data
+	   ,(int)handle->aud_pkt.size
+	   );
+      }
 
       /* packet is part of the selected video stream, use that packet */
       handle->abuf_ptr = handle->aud_pkt.data;
       handle->abuf_len = handle->aud_pkt.size;
     }
 
-    /* if (gap_debug) printf("before avcodec_decode_audio2: abuf_ptr:%d abuf_len:%d\n", (int)handle->abuf_ptr, (int)handle->abuf_len); */
 
     /* decode a frame. return -1 if error, otherwise return the number of
      * bytes used. If no audio frame could be decompressed, data_size is
@@ -4540,6 +4608,11 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
      */
     data_size = handle->samples_buffer_size;
 #ifdef GAP_USES_OLD_FFMPEG_0_5
+    if (gap_debug)
+    {
+       printf("before avcodec_decode_audio2: abuf_ptr:%d abuf_len:%d\n"
+         , (int)handle->abuf_ptr, (int)handle->abuf_len);
+    }
     l_len = avcodec_decode_audio2(handle->aud_codec_context  /* AVCodecContext * */
                                ,(int16_t *)handle->output_samples_ptr
                                ,&data_size
@@ -4547,17 +4620,53 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
                                ,handle->abuf_len
                                );
 #else
+  {
+    data_size = FFMAX(handle->aud_pkt.size * sizeof(int16_t), AVCODEC_MAX_AUDIO_FRAME_SIZE);
+    if (data_size > handle->av_samples_size)
+    {
+      /* force re-allocation of the aligend buffer */
+      if (handle->av_samples != NULL)
+      {
+        av_free(handle->av_samples);
+	handle->av_samples = NULL;
+      }
+    
+    }
+    if (handle->av_samples == NULL)
+    {
+      handle->av_samples = av_malloc(data_size);
+      handle->av_samples_size = data_size;
+    }
+    if(gap_debug)
+    {
+       printf("before avcodec_decode_audio3: av_samples:%d data_size:%d\n"
+	 , (int)handle->av_samples
+	 , (int)data_size
+	 );
+    }
     l_len = avcodec_decode_audio3(handle->aud_codec_context  /* AVCodecContext * */
-                               ,(int16_t *)handle->output_samples_ptr
+                               ,handle->av_samples
                                ,&data_size
                                ,&handle->aud_pkt
                                );
+    if(data_size > 0)
+    {
+      /* copy the decoded samples from the aligned av_samples buffer
+       * to current position in the samples_buffer of the relevant channel
+       * Note that calling avcodec_decode_audio3 procedure with handle->output_samples_ptr
+       * as destination pointer for the 16bit samples would be faster, 
+       * but will crash when ffmpeg is configured
+       * with enabled MMX and this pointer is not aligned.
+       */
+      memcpy(handle->output_samples_ptr, handle->av_samples, data_size);
+    }
+  }
 #endif
 
 
     if (gap_debug)
     {
-      printf("after avcodec_decode_audio2: l_len:%d data_size:%d samples_read:%d \n"
+      printf("after avcodec_decode_audioX: l_len:%d data_size:%d samples_read:%d \n"
              " sample_fmt:%d %s (expect:%d SAMPLE_FMT_S16)\n"
                          , (int)l_len
                          , (int)data_size
@@ -4570,7 +4679,7 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
 
     if(l_len < 0)
     {
-       printf("p_read_audio_packets: avcodec_decode_audio2 returned ERROR)\n"
+       printf("p_read_audio_packets: avcodec_decode_audioX returned ERROR)\n"
              "abuf_len:%d AVCODEC_MAX_AUDIO_FRAME_SIZE:%d samples_buffer_size:%d data_size:%d\n"
              , (int)handle->abuf_len
              , (int)AVCODEC_MAX_AUDIO_FRAME_SIZE
@@ -4675,6 +4784,10 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
 
   }  /* end while packet_read and decode audio frame loop */
 
+  if(gap_debug)
+  {
+    printf("p_read_audio_packets: DONE return code:%d\n", (int)l_rc);
+  }
   return(l_rc);
 }  /* end p_read_audio_packets */
 

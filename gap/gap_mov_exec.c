@@ -1390,19 +1390,21 @@ p_log_current_render_params(GapMovData *mov_ptr, GapMovCurrent *cur_ptr)
                 "       currX:%f currY:%f\n"
                 "       Width:%f Height:%f\n"
                 "       Opacity:%f  Rotate:%f  clip_to_img:%d force_visibility:%d\n"
-                "       src_stepmode:%d handleX:%d handleY:%d currSelFeatherRadius:%f\n",
+                "       src_stepmode:%d handleX:%d handleY:%d currSelFeatherRadius:%f rotate_threshold:%f\n",
                      cur_ptr->dst_frame_nr, (int)val_ptr->twix, cur_ptr->src_layer_idx,
-                     cur_ptr->currX, cur_ptr->currY,
-                     cur_ptr->currWidth,
-                     cur_ptr->currHeight,
-                     cur_ptr->currOpacity,
-                     cur_ptr->currRotation,
+                     (float)cur_ptr->currX,
+                     (float)cur_ptr->currY,
+                     (float)cur_ptr->currWidth,
+                     (float)cur_ptr->currHeight,
+                     (float)cur_ptr->currOpacity,
+                     (float)cur_ptr->currRotation,
                      val_ptr->clip_to_img,
                      val_ptr->src_force_visible,
                      val_ptr->src_stepmode,
                      cur_ptr->l_handleX,
                      cur_ptr->l_handleY,
-                     cur_ptr->currSelFeatherRadius
+                     (float)cur_ptr->currSelFeatherRadius,
+                     (float)val_ptr->rotate_threshold
                      );
 
     printf("       Perspective Factors: [0] %.3f %.3f  [1] %.3f %.3f  [2] %.3f %.3f  [3] %.3f %.3f\n"
@@ -3854,6 +3856,26 @@ void gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_p
 }       /* end gap_mov_exec_set_handle_offsets */
 
 
+/* ------------------------------------
+ * gap_mov_exec_new_GapMovValues
+ * ------------------------------------
+ */
+gdouble
+gap_mov_exec_get_default_rotate_threshold()
+{
+  gdouble rotate_threshold;
+  
+  
+  rotate_threshold = 
+    gap_base_get_gimprc_gdouble_value (GAP_MOVEPATH_GIMPRC_ROTATE_THRESHOLD
+                                       , GAP_MOVEPATH_DEFAULT_ROTATE_THRESHOLD
+                                       , 0.0  /* gdouble min_value */
+                                       , 1.0  /* gdouble max_value */
+                                       );
+
+  return (rotate_threshold);
+}  /* end gap_mov_exec_get_default_rotate_threshold */
+
 
 /* ------------------------------------
  * gap_mov_exec_new_GapMovValues
@@ -3866,6 +3888,7 @@ GapMovValues *gap_mov_exec_new_GapMovValues()
   pvals = g_new (GapMovValues, 1);
 
   pvals->version = GAP_MOV_INT_VERSION;
+  pvals->rotate_threshold = gap_mov_exec_get_default_rotate_threshold();
   pvals->recordedFrameWidth = 0;     /* witdh of the frame (at recording time of the move path settings) */
   pvals->recordedFrameHeight = 0;    /* height of the frame (at recording time of the move path settings) */
   pvals->recordedObjWidth = 0;

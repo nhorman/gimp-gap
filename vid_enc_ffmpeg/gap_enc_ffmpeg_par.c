@@ -234,6 +234,16 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
    gap_val_set_keyword(keylist, "(psy_trellis ",              &epp->psy_trellis,              GAP_VAL_GDOUBLE, 0, "# PSY trellis Strength of psychovisual optimization");
    gap_val_set_keyword(keylist, "(rc_lookahead ",             &epp->rc_lookahead,             GAP_VAL_GINT32, 0,  "# Number of frames for frametype and ratecontrol lookahead");
 
+   /* new params (introduced with ffmpeg 0.7.11  2012.01.12) */
+   gap_val_set_keyword(keylist, "(crf_max ",                  &epp->crf_max,               GAP_VAL_GDOUBLE, 0, "# Constant rate factor maximum");
+   gap_val_set_keyword(keylist, "(log_level_offset ",         &epp->log_level_offset,      GAP_VAL_GINT32, 0,  "#");
+   gap_val_set_keyword(keylist, "(slices ",                   &epp->slices,                GAP_VAL_GINT32, 0,  "# Indicates number of picture subdivisions");
+   gap_val_set_keyword(keylist, "(thread_type ",              &epp->thread_type,           GAP_VAL_GINT32, 0,  "# Which multithreading methods to use (FF_THREAD_FRAME 1, FF_THREAD_SLICE 2) ");
+   gap_val_set_keyword(keylist, "(active_thread_type ",       &epp->active_thread_type,    GAP_VAL_GINT32, 0,  "# Which multithreading methods are in use by the codec.");
+   gap_val_set_keyword(keylist, "(thread_safe_callbacks ",    &epp->thread_safe_callbacks, GAP_VAL_GINT32, 0,  "# Set by the client if its custom get_buffer() callback can be called from another thread");
+   gap_val_set_keyword(keylist, "(vbv_delay ",                &epp->vbv_delay,             GAP_VAL_GINT32, 0,  "# VBV delay coded in the last frame (in periods of a 27 MHz clock)");
+   gap_val_set_keyword(keylist, "(audio_service_type ",       &epp->audio_service_type,    GAP_VAL_GINT32, 0,  "# Type of service that the audio stream conveys.");
+
    /* codec flags */
 
    p_set_keyword_bool32(keylist, "(bitexact ",                &epp->bitexact,            "# CODEC_FLAG_BITEXACT (for testing, unused in productive version)");
@@ -291,6 +301,9 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
    p_set_keyword_bool32(keylist, "(partp4x4 ",                &epp->partition_X264_PART_P8X8,           "# X264_PART_P8X8  Analyze p16x8, p8x16 and p8x8");
    p_set_keyword_bool32(keylist, "(partp8x8 ",                &epp->partition_X264_PART_P4X4,           "# X264_PART_P4X4  Analyze p8x4, p4x8, p4x4");
    p_set_keyword_bool32(keylist, "(partb8x8 ",                &epp->partition_X264_PART_B8X8,           "# X264_PART_B8X8  Analyze b16x8, b8x16 and b8x8");
+
+   /* codec flags new in ffmpeg-0.7.11 */
+   p_set_keyword_bool32(keylist, "(use_bit_intra_refresh ",   &epp->codec_FLAG2_INTRA_REFRESH,          "# CODEC_FLAG2_INTRA_REFRESH       Use periodic insertion of intra blocks instead of keyframes.");
 
 }  /* end p_set_master_keywords */
 

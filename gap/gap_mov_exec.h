@@ -55,6 +55,7 @@ gint    gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals);
 void    gap_mov_exec_calculate_rotate_follow(GapMovValues *pvals, gdouble startangle);
 void    gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_ptr);
 void    gap_mov_exec_query(GapMovValues *val_ptr, GapAnimInfo *ainfo_ptr, GapMovQuery *mov_query);
+gdouble gap_mov_exec_get_default_rotate_threshold();
 
 GapMovValues *gap_mov_exec_new_GapMovValues();
 

@@ -139,4 +139,37 @@ gap_colordiff_simple_guchar(guchar *aPixelPtr
                    );
 
 
+
+
+
+
+/* ---------------------------------
+ * gap_colordiff_hvmax_guchar
+ * ---------------------------------
+ * returns difference of 2 colors as gdouble value
+ * in range 0.0 (exact match) to 1.0 (maximal difference)
+ * Note: 
+ * this procedure uses an HSV colormodel based
+ * Algorithm and calculates difference as max HSV difference.
+ *
+ */
+gdouble
+gap_colordiff_hvmax_guchar(guchar *aPixelPtr
+                   , guchar *bPixelPtr
+                   , gboolean debugPrint
+                   );
+
+
+/* ---------------------------------
+ * gap_colordiff_hvmax_GimpHSV
+ * ---------------------------------
+ * returns difference of 2 colors as gdouble value
+ * in range 0.0 (exact match) to 1.0 (maximal difference)
+ */
+gdouble
+gap_colordiff_hvmax_GimpHSV(GimpHSV *aHsvPtr
+                  , GimpHSV *bHsvPtr
+                  , gboolean debugPrint);
+                  
+
 #endif

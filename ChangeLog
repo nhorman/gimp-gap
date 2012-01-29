@@ -1,3 +1,168 @@
+2012-01-29 Wolfgang Hofer <hof@gimp.org>
+
+- fixed a bug in the GAP video API that caused a crash when decoding audio.
+  This bug occured when GIMP-GAP was built with ffmpeg confiure options that enabled MMX
+  and ac3 or aac encoded audio was extracted from videofiles.
+  The fix uses an additional aligned buffer (required for proper operation of MMX based
+  audio format conversions)
+  Note that the current implementation of this fix eliminates the performance advantage 
+  of MMX for the audio conversion, but enabled MMX is still preferable for video processing.
+  
+  The fix is relevant for both ffmpeg-0.6.1 and ffmpeg-0.7.11
+
+- update to ffmpeg-0.7.11 "Peace" that was released on 2012-01-12
+  removed confiure "--enable-libfaad" (that is no longer supported by ffmpeg-0.7.11.)
+
+  The gimp-gap configure.in script now checks for the yasm assembler
+  and automatically adds --disable-yasm configure option when configuring
+  the ffmpeg libraries build.
+  It displays a warning that installation of yasm is recommanded
+  for the ffmpeg build in that case.
+
+
+  The ffmpeg configure call now uses the options:
+   --disable-ffmpeg  --disable-ffplay  --disable-ffprobe  --disable-ffserver 
+  because those binaries are not required to build GIMP-GAP
+  and may cause fail of the build in case different librariy versions
+  are available on different locations.
+
+      The ffmpeg build of those binaries failed in my environment with
+          older libx264 installed at /usr/lib 
+          and newer version at /usr/local/lib
+      but built successful when building just the static libs without the ffmpeg binaries.
+
+  - compile support for older ffmpeg 0.6 is still there.
+     replace extern_libs/ffmpeg.tar.gz with an older 0.6, or 0.6.1 tarball
+     and remove the extern_libs/ffmpeg directory before
+     running the autoconf.sh script to build gimp-gap with the older versions)
+
+  - #define GAP_USES_OLD_FFMPEG_0_6  when compiling against 0.6 or 0.6.1
+   
+  - support new encoder flags: (via preset parameterfile and GUI)
+     epp->codec_FLAG2_INTRA_REFRESH        = 0; /* 0: FALSE */
+
+  - new encoder codec parameters (supported via preset parameterfile):
+    gdouble crf_max;               // float crf_max;
+    gint32  log_level_offset;      // int log_level_offset;
+    gint32  slices;                // int slices;
+    gint32  thread_type;           // int thread_type;
+    gint32  active_thread_type;    //  int active_thread_type;
+    gint32  thread_safe_callbacks; // int thread_safe_callbacks;
+    gint64  vbv_delay;             // uint64_t vbv_delay;
+    gint32  audio_service_type;    // enum AVAudioServiceType  audio_service_type;
+  
+- new plug-in to fill selected (small) areas by blending surrounding
+  colors to cover pixel errors. Intended to fix videos
+  shot with (my) camera that has some defect sensor pixels.
+
+- new plug-in to for tracking a detail over a sequence of video frames.
+  This plug-in is typically triggered by the Player and records the movement
+  as XML file usable with the MovePath plug-in.
+  Intended to compensate unwanted camera movements.
+  
+  implemented alternative locate algorithm that
+  uses gimp regions more efficient than the old one.
+  (runs at least 10 times faster)
+  
+  per default all calls of the old procedure
+  are redirected to use the newer implementation.
+  With the gimprc parameter "
+  (gap-locate-details-use-old-algorithm "yes")
+  the old implementation can be enabled
+  -- for more test and compare purpose on further development cycles--) 
+
+- new plug-in inspired by the "exact aligner" script.
+
+  This plug-in can operate on XML files (recorded with the detail tracking feature)
+  to align multiple frames when called as filter with the frames modify feature.
+  
+
+- the module gap_pixelrgn implements the procedure 
+  gap_gimp_pixel_rgns_unref to enable clean escape
+  from loops based on gimp_pixel_rgns_register, gimp_pixel_rgns_process.
+
+  * Usage CODE example:
+  *
+  *  for (pr = gimp_pixel_rgns_register (2, &PR1, &PR2);
+  *      pr != NULL;
+  *      pr = gimp_pixel_rgns_process (pr))
+  *  {
+  *      ... evaluate pixel data in pixel regions PR1, PR2
+  *      ...
+  *      if (further evaluation of the remaining tiles is not necessary)
+  *      {
+  *        // escaping from the loop without the call
+  *        // to gap_gimp_pixel_rgns_unref
+  *        // leads to memory leaks because of unbalanced tile ref/unref calls.
+  *        break;
+  *      }
+  *  }
+  *  if (pr != NULL)
+  *  {
+  *    gap_gimp_pixel_rgns_unref(pr);
+  *  }
+  
+  NOTE:  A procedure like gap_gimp_pixel_rgns_unref
+  that deals with libgimp internal private structures
+  should better be part of libgimp.
+  (and should be generally available for plug-in development
+  in future gimp releases.)
+  BUT: The GIMP-GAP implementation would still be required for backwards compatibilty
+  with GIMP-2.6.x releases.
+  
+- fixed wrong dialog title in the MovePath single frame apply feature
+
+- MovePath rotation Threshold
+  The old move path implementation ignores rotate values between -0.5 and + 0.5 degree.
+  The threshold is intended for better render performance by skipping
+  rotate transformations when angle is nearly 0.
+  The hardcode value 0.5 is too high (especially for larger frame sizes introduced with HD video)
+  
+  The new implementation allows to configure this threshold 
+  in the range 0.0 upto 1.0 degree.
+  The new default threshold is configurable via gimprc parameter. "video-move-path-rotate-threshold"
+  and now the default is set to 0.015 degree that shall result in smoother rotations.
+  individual rotateThreshold configuration is supported via MovePath XML file.
+  The rotate_threshold value is not exposed in the Dialog.
+
+
+ * NEWS
+ * configure.in  
+ * po/POTFILES.in
+ * libgapbase/gap_base.c [.h]
+ * docs/reference/txt/gap_gimprc_params.txt  
+
+ * gap/Makefile.am
+ * gap/gap_mov_dialog.h
+ * gap/gap_mov_exec.c  [.h]
+ * gap/gap_mov_render.c
+ * gap/gap_mov_xml_par.c
+
+ * gap/gap_image.c [.h]
+ * gap/gap_player_main.c [.h]
+ * gap/gap_player_dialog.c 
+ * gap/gap_locate.c 
+ * gap/gap_colordiff.c [.h]
+ * gap/gap_edge_detection.c [.h]
+
+ * gap/gap_blend_fill_main.c             # new file
+ * gap/gap_detail_align_exec.c [.h]      # new files
+ * gap/gap_detail_tracking_exec.c [.h]   # new files
+ * gap/gap_detail_tracking_main.c        # new file
+ * gap/gap_locate2.c [.h]                # new files
+ * gap/gap_pixelrgn.c [.h]               # new files
+
+ * extern_libs/ffmpeg.tar.gz                # updated to ffmpeg release 0.7.11
+ * extern_libs/README_extern_libs  
+ * extern_libs/configure_options_ffmpeg_win32.txt
+ * extern_libs/configure_options_ffmpeg.txt
+
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+ * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+ * libgapvidapi/gap_vid_api_ffmpeg.c
+
+
 2011-11-30 Wolfgang Hofer <hof@gimp.org>
 
 - added option to merge visible layers
@@ -50,6 +215,7 @@
 
 2011-11-23 Wolfgang Hofer <hof@gimp.org>
 
+ * gap/Makefile.am
 - Foreground selection: fixed parameters for non interactive calls.
 
 - new feature: foreground extraction from current selection.

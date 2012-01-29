@@ -29,6 +29,15 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
     in a "process one frame per call" style, intended to be called as filter
     with the modify frames feature.
 
+  - new plug-in to fill selected (small) areas by blending surrounding
+    colors to cover pixel errors. Intended to fix images and videos
+    shot with a camera that has some defect sensor pixels or dirty lens.
+
+  - new plug-in for tracking a significant detail in frames.
+    This plug-in is integrated in the Playback and can
+    record movents of the detail as XML parameters for the MovePath feature.
+    The recorded movements are useful to compensate unwanted shaking
+    of videos recorder without a stativ.
  
 - GIMP-GAP now supports speed control of movements and other transitions
   via Acceleration characteristic presets. Those presets are available
@@ -71,7 +80,7 @@ Here is a short overview whats new in GIMP-GAP-2.7.0:
 
 
 - updated gimp-gap video API and ffmpeg-based video encoder
-  to support the libraries provided with the ffmpeg-0.6.1 release
+  to support the libraries provided with the ffmpeg-0.7.11 release
   This includes various bugfixes related to video de/encode 
   (but breaks backwards compatibility when seeking positions by frame number
   in videofiles that do not start with a keyframe).

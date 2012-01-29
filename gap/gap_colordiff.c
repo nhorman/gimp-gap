@@ -361,3 +361,125 @@ gap_colordiff_simple_guchar(guchar *aPixelPtr
   return (colorDiff);
 
 }  /* end gap_colordiff_simple_guchar */
+
+
+
+/* ---------------------------------
+ * gap_colordiff_hvmax_GimpHSV
+ * ---------------------------------
+ * returns difference of 2 colors as gdouble value
+ * in range 0.0 (exact match) to 1.0 (maximal difference)
+ */
+gdouble
+gap_colordiff_hvmax_GimpHSV(GimpHSV *aHsvPtr
+                  , GimpHSV *bHsvPtr
+                  , gboolean debugPrint)
+{
+  gdouble colorDiff;
+  gdouble hDif;
+  gdouble h2Dif;
+  gdouble sDif;
+  gdouble s2Dif;
+  gdouble vDif;
+  gdouble v2Dif;
+  gdouble vMax;
+  gdouble sMax;
+
+
+  hDif = fabs(aHsvPtr->h - bHsvPtr->h);
+  /* normalize hue difference.
+   * hue values represents an angle
+   * where value 0.5 equals 180 degree
+   * and value 1.0 stands for 360 degree that is
+   * equal to 0.0
+   * Hue is maximal different at 180 degree.
+   *
+   * after normalizing, the difference
+   * hDiff value 1.0 represents angle difference of 180 degree
+   */
+  if(hDif > 0.5)
+  {
+    hDif = (1.0 - hDif) * 2.0;
+  }
+  else
+  {
+    hDif = hDif * 2.0;
+  }
+  sDif = fabs(aHsvPtr->s - bHsvPtr->s);
+  vDif = fabs(aHsvPtr->v - bHsvPtr->v);
+  
+  sMax = MAX(aHsvPtr->s, bHsvPtr->s);
+  vMax = MAX(aHsvPtr->v, bHsvPtr->v);
+  
+  /* increase hue weight when comparing well saturated colors */
+  h2Dif = MIN(1.0, ((4.0 * sMax) * hDif));
+  v2Dif = vDif * vDif;
+  s2Dif = sDif * sDif * sDif;
+
+  colorDiff = MAX(MAX(v2Dif, h2Dif),s2Dif);
+
+
+
+  if(debugPrint)
+  {
+    printf("max HSV: hsv 1/2 (%.3f %.3f %.3f) / (%.3f %.3f %.3f) vMax:%f\n"
+       , aHsvPtr->h
+       , aHsvPtr->s
+       , aHsvPtr->v
+       , bHsvPtr->h
+       , bHsvPtr->s
+       , bHsvPtr->v
+       , vMax
+       );
+    printf("diffHSV:  (h2:%.3f h:%.3f s2:%.3f s:%.3f v2:%.3f v:%.3f)  max colorDiff:%.5f\n"
+       , h2Dif
+       , hDif
+       , s2Dif
+       , sDif
+       , v2Dif
+       , vDif
+       , colorDiff
+       );
+  }
+
+  return (colorDiff);
+
+}  /* end gap_colordiff_hvmax_GimpHSV */
+
+
+
+
+/* ---------------------------------
+ * gap_colordiff_hvmax_guchar
+ * ---------------------------------
+ * returns difference of 2 colors as gdouble value
+ * in range 0.0 (exact match) to 1.0 (maximal difference)
+ * Note: 
+ * this procedure uses an HSV colormodel based
+ * Algorithm and calculates difference as max HSV difference.
+ *
+ */
+gdouble
+gap_colordiff_hvmax_guchar(guchar *aPixelPtr
+                   , guchar *bPixelPtr
+                   , gboolean debugPrint
+                   )
+{
+  GimpRGB aRgb;
+  GimpRGB bRgb;
+  GimpHSV aHsv;
+  GimpHSV bHsv;
+
+  gimp_rgba_set_uchar (&aRgb, aPixelPtr[0], aPixelPtr[1], aPixelPtr[2], 255);
+  gimp_rgba_set_uchar (&bRgb, bPixelPtr[0], bPixelPtr[1], bPixelPtr[2], 255);
+
+  gimp_rgb_to_hsv(&aRgb, &aHsv);
+  gimp_rgb_to_hsv(&bRgb, &bHsv);
+
+  return (gap_colordiff_hvmax_GimpHSV(&aHsv
+                            , &bHsv
+                            , debugPrint
+                            ));
+
+}  /* end gap_colordiff_hvmax_guchar */
+

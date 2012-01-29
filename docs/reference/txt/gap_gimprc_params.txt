@@ -51,6 +51,14 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # the cache size can be set in kilobytes (K) or megaytes (M)
 (video_playback_cache "100M")
 
+# the gap player supports caching of gimp tiles
+# note that frame playback does NOT use gimp_tiles (see video_playback_cache)
+# but caching of gimp tiles is relevant for other tile based processing features
+# (especially detail tracking that accesses the same region of gimp tiles in many loop iterations)
+# the cache size is specified in number of tiles.
+(video_player_cache_ntiles 200)
+
+
 # the gap player has several widgets to set the
 # position (e.g. the currently displayed framenumber)
 #
@@ -359,3 +367,22 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # number of video frames)
 # default value is 36
 (gap_ffetch_gva_frames_to_keep_cached "36")
+
+# gimp-gap has implemented 2 algorithms to locate small detail
+# of a layer in a corresponding layer.
+# the older implementation is slower but may may be activated
+# with this parameter for test purpose
+# default is no
+(gap-locate-details-use-old-algorithm "no")
+
+
+# Move Path debug feature to trigger logging current parameters
+# while rendering a frame to stdout.
+# default is no
+(video-move-path-log-render-params "no")
+
+# Move Path rotation threshold is a float number between 0.0 and 1.0
+# This threshold vaule allows Move path render engine to skip the time consuming
+# rotate transformations on very small angles.
+# default is 0.0125 degree
+(video-move-path-rotate-threshold "0.0125")

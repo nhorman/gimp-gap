@@ -739,7 +739,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
     printf("gap_mov_render_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
                 "       Width=%f Height=%f\n"
                 "       Opacity=%f  Rotate=%f  clip_to_img = %d force_visibility = %d\n"
-                "       src_stepmode = %d\n"
+                "       src_stepmode = %d rotate_threshold=%.7f\n"
 		"       singleMovObjLayerId=%d singleMovObjIMAGEId=%d (frame)image_id=%d\n",
                      cur_ptr->dst_frame_nr, cur_ptr->src_layer_idx,
                      cur_ptr->currX, cur_ptr->currY,
@@ -750,6 +750,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
                      val_ptr->clip_to_img,
                      val_ptr->src_force_visible,
                      val_ptr->src_stepmode,
+                     val_ptr->rotate_threshold,
 		     cur_ptr->singleMovObjLayerId,
 		     gimp_drawable_get_image(cur_ptr->singleMovObjLayerId),
 		     image_id
@@ -995,7 +996,8 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   }
 
 
-  if((cur_ptr->currRotation  > 0.5) || (cur_ptr->currRotation < -0.5))
+  if((cur_ptr->currRotation  > val_ptr->rotate_threshold) 
+  || (cur_ptr->currRotation <  (0.0 - val_ptr->rotate_threshold)))
   {
     gboolean     l_interpolation;
 

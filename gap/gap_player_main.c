@@ -223,6 +223,10 @@ static GapPlayerMainGlobalParams global_params =
 , NULL                /* GtkWidget *audio_enable_checkbutton */
 
 , NULL                /* GapDrawableVideoRef  *dvref_ptr */
+, FALSE               /* gboolean     enableDetailTracking */
+, GAP_PLAYER_MAIN_DEFAULT_CACHE_NTILES  /* gulong cache_ntiles */
+, NULL                /* GtkObject *cache_ntiles_spinbutton_adj */
+, NULL                /* GtkWidget   *detail_tracking_checkbutton */
 };
 
 

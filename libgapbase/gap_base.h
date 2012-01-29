@@ -94,6 +94,18 @@ char *
 gap_base_dup_filename_and_replace_extension_by_underscore(const char *filename);
 
 
+
+/* --------------------------------
+ * gap_base_gdouble_to_ascii_string
+ * --------------------------------
+ * convert the specified gdouble value to ascci string.
+ * (always use "." as decimalpoint, independent of LOCALE language settings)
+ * return the converted string. (the caller is responsible to g_free this string after usage)
+ */
+gchar *
+gap_base_gdouble_to_ascii_string(gdouble value, gint precision_digits);
+
+
 /* --------------------------------
  * gap_base_fprintf_gdouble
  * --------------------------------
@@ -126,12 +138,24 @@ gap_base_sscan_flt_numbers(gchar   *buf
 gboolean
 gap_base_check_tooltips(gboolean *old_state);
 
+/* -----------------------------------------
+ * gap_base_get_gimprc_gdouble_value
+ * -----------------------------------------
+ * get gdouble configuration value for the keyname gimprc_option_name from the gimprc file.
+ * returns the configure value in constraint to the specified range 
+ * (between min_value and max_value)
+ * the specified default_value is returned in case the gimprc
+ * has no entry for the specified gimprc_option_name.
+ */
+gdouble
+gap_base_get_gimprc_gdouble_value (const char *gimprc_option_name
+   , gdouble default_value, gdouble min_value, gdouble max_value);
 
 /* -----------------------------------------
  * gap_base_get_gimprc_int_value
  * -----------------------------------------
  * get integer configuration value for the keyname gimprc_option_name from the gimprc file.
- * returns the configure value in constaint to the specified range 
+ * returns the configure value in constraint to the specified range 
  * (between min_value and max_value)
  * the specified default_value is returned in case the gimprc
  * has no entry for the specified gimprc_option_name.

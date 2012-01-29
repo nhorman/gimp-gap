@@ -119,6 +119,7 @@
 #define GAP_MOVPATH_XML_TOKEN_CONTROLPOINTS          "controlpoints"
 #define GAP_MOVPATH_XML_TOKEN_CURRENT_POINT          "current_point"
 #define GAP_MOVPATH_XML_TOKEN_NUMBER_OF_POINTS       "number_of_points"
+#define GAP_MOVPATH_XML_TOKEN_ROTATE_THRESHOLD       "rotate_threshold"
 #define GAP_MOVPATH_XML_TOKEN_CONTROLPOINT           "controlpoint"
 #define GAP_MOVPATH_XML_TOKEN_PX                     "px"
 #define GAP_MOVPATH_XML_TOKEN_PY                     "py"
@@ -819,6 +820,10 @@ p_xml_parse_element_controlpoints(const gchar         *element_name,
     {
       userDataPtr->isParseOk = gap_xml_parse_value_gint(*value_cursor, &userDataPtr->pvals->point_idx);
     }
+    else if (strcmp (*name_cursor, GAP_MOVPATH_XML_TOKEN_ROTATE_THRESHOLD) == 0)
+    {
+      userDataPtr->isParseOk = gap_xml_parse_value_gdouble(*value_cursor, &userDataPtr->pvals->rotate_threshold);
+    }
     else if (strcmp (*name_cursor, GAP_MOVPATH_XML_TOKEN_NUMBER_OF_POINTS) == 0)
     {
       gint numberOfPoints;
@@ -1164,6 +1169,7 @@ p_copy_transformed_values(GapMovValues *dstValues, GapMovValues *srcValues
   gint ii;
   
   dstValues->version = srcValues->version;
+  dstValues->rotate_threshold = srcValues->rotate_threshold;
   dstValues->recordedFrameWidth = srcValues->recordedFrameWidth;
   dstValues->recordedFrameHeight = srcValues->recordedFrameHeight;
   dstValues->recordedObjWidth = srcValues->recordedObjWidth;
@@ -1315,6 +1321,7 @@ gap_mov_xml_par_load(const char *filename, GapMovValues *productiveValues
   gError = NULL;
   tmpValues = gap_mov_exec_new_GapMovValues();
   tmpValues->dst_image_id = productiveValues->dst_image_id;
+  tmpValues->rotate_threshold = productiveValues->rotate_threshold;
   userDataPtr = g_new(GapMovXmlUserData, 1);
   userDataPtr->pvals = tmpValues;
 
@@ -1557,6 +1564,7 @@ gap_mov_xml_par_save(char *filename, GapMovValues *pvals)
     fprintf(l_fp, "  <%s ", GAP_MOVPATH_XML_TOKEN_CONTROLPOINTS);
     gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_CURRENT_POINT, pvals->point_idx);
     gap_xml_write_int_value(l_fp, GAP_MOVPATH_XML_TOKEN_NUMBER_OF_POINTS, pvals->point_idx_max +1);
+    gap_xml_write_gdouble_value(l_fp, GAP_MOVPATH_XML_TOKEN_ROTATE_THRESHOLD, pvals->rotate_threshold, 1, 7);
     fprintf(l_fp, " >\n");
 
     /* check for conditonal write 

@@ -293,8 +293,6 @@ gap_image_merge_to_specified_layer(gint32 ref_layer_id, GimpMergeType mergemode)
     {
       for(l_idx = 0; l_idx < l_nlayers; l_idx++)
       {
-        gboolean l_visible;
-        
         if (l_layers_list[l_idx] == ref_layer_id)
         {
           gimp_drawable_set_visible(l_layers_list[l_idx], TRUE);
@@ -454,3 +452,68 @@ gap_image_remove_invisble_layers(gint32 image_id)
     g_free (l_layers_list);
   }
 }  /* end gap_image_remove_invisble_layers */
+
+
+/* ---------------------------------------
+ * gap_image_remove_all_guides
+ * ---------------------------------------
+ */
+void
+gap_image_remove_all_guides(gint32 image_id)
+{
+  gint32  guide_id;
+
+  while(TRUE)
+  {
+    guide_id = 0;  /* 0 starts find at 1st guide */
+    guide_id = gimp_image_find_next_guide(image_id, guide_id);
+    
+    if (guide_id < 1)
+    {
+       break;
+    }
+    gimp_image_delete_guide(image_id, guide_id);
+  }
+
+  
+}  /* end gap_image_remove_all_guides */
+
+
+/* ---------------------------------------
+ * gap_image_limit_layers
+ * ---------------------------------------
+ * keepTopLayers  number of layers to keep on top of the layerstack (Foreground).
+ * keepBgLayers   number of layers to keep on bottom of the layerstack (Background).
+ *
+ * Note that gimp-2.7 or later versions supports layer groups.
+ * this procedure does only check for toplevel layers
+ * and ignores layers that are nested in groups.
+ * e.g. a top level group counts as one single layer
+ * no matter how many layers und subgroups are in the toplevel group.
+ *
+ */
+void
+gap_image_limit_layers(gint32 image_id, gint keepTopLayers,  gint keepBgLayers)
+{
+  gint      l_nlayers;
+  gint32   *l_layers_list;
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    int ii;
+    
+    for(ii=0; ii < l_nlayers; ii++)
+    {
+      if ((ii >= keepTopLayers)
+      &&  ((l_nlayers -ii) > keepBgLayers))
+      {
+        gimp_image_remove_layer(image_id, l_layers_list[ii]);
+      }
+    }
+    g_free (l_layers_list);
+
+  }
+}  /* end gap_image_limit_layers */
+
+

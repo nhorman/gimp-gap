@@ -201,6 +201,15 @@ AC_ARG_ENABLE(ff_libbz2,
 
 
 
+dnl check for the yasm assembler program (recommanded for build of ffmpeg libraries avcodec, avformat,...)
+dnl note that ffmpeg-0.7.11 can be built without yasm when explicte configured with --disable-yasm
+dnl but at least display a warning in this case.
+yasm_warn=""
+AC_CHECK_PROG(HAVE_YASM_ASSEMBLER, yasm, yes, no)
+if test "x$HAVE_YASM_ASSEMBLER" = "xno"; then
+   yasm_warn=" the yasm assembler, recommanded to build libavformat, libavcodec, was not found. "
+fi
+
 
 
 dnl ## libmp3lame lame/lame.h lame_init -lmp3lame -lm
@@ -240,27 +249,31 @@ dnl check for faad library (useful for better ffmpeg audio support)
 dnl the check result does not matter unless libavformat is linked or built later on.
 FF_LIBFAAD=""
 faad_warn=""
-AC_ARG_ENABLE(ff_libfaad,
-              [  --disable-ff-libfaad          configure libavformat without libfaad])
-  if test "x$enable_ff_libfaad" != "xno"; then
-    AC_CHECK_LIB(faad, NeAACDecOpen,
-        [AC_CHECK_HEADER(faad.h,
-          FF_LIBFAAD="-lfaad",
-          faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
-      faad_warn="faad library (libfaad) not found (not critical)")    
 
-    dnl additional check for faad1 library (that is also sufficient for building ffmpeg 0.5)
+dnl ffmpeg-0.7.8 has dropped support for faad library
+dnl TODO remove faad specific stuff after succesful integration of ffmpeg-0.7.8
 
-    if test "x$FF_LIBFAAD" = "x"; then
-      AC_CHECK_LIB(faad, faacDecOpen,
-        [AC_CHECK_HEADER(faad.h,
-          FF_LIBFAAD="-lfaad",
-          faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
-        faad_warn="faad library (libfaad) not found (not critical)")    
-    fi
-
-  fi
-dnl
+dnl AC_ARG_ENABLE(ff_libfaad,
+dnl               [  --disable-ff-libfaad          configure libavformat without libfaad])
+dnl   if test "x$enable_ff_libfaad" != "xno"; then
+dnl     AC_CHECK_LIB(faad, NeAACDecOpen,
+dnl         [AC_CHECK_HEADER(faad.h,
+dnl           FF_LIBFAAD="-lfaad",
+dnl           faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
+dnl       faad_warn="faad library (libfaad) not found (not critical)")    
+dnl 
+dnl     dnl additional check for faad1 library (that is also sufficient for building ffmpeg 0.5)
+dnl 
+dnl     if test "x$FF_LIBFAAD" = "x"; then
+dnl       AC_CHECK_LIB(faad, faacDecOpen,
+dnl         [AC_CHECK_HEADER(faad.h,
+dnl           FF_LIBFAAD="-lfaad",
+dnl           faad_warn="$NEW_LINE ** faad header file (faad.h) not found (not critical)")],
+dnl         faad_warn="faad library (libfaad) not found (not critical)")    
+dnl     fi
+dnl 
+dnl   fi
+dnl dnl
 
 
 
@@ -270,16 +283,22 @@ dnl ### set X264_REQUIRED_VERSION="0.65" to support ffmpeg-0.5 (condition "X264_
 dnl ### set X264_REQUIRED_VERSION="0.85" to support ffmpeg-0.6 (broken mjpeg decoder)
 dnl ### set X264_REQUIRED_VERSION="0.98" to support ffmpeg-2010-09-14 snapshot (for testing)
 dnl ### new libx264 versions (X264_BUILD >= 93)  require to include stdint.h (or inttypes.h)
-dnl ### before including tthe headerfile x264.h 
+dnl ### before including the headerfile x264.h 
 dnl ### therfore we provide this requirement as 4. parameter of the AC_CHECK_HEADER macro.
 dnl ### but AC_CHECK_LIB now fails when checking for procedure x264_encoder_open
 dnl ### because x264_encoder_open is a define constant that refers to x264_encoder_open_<X264_BUILD>
-dnl ### therefore therefore the check was changed to procedure x264_encoder_close
+dnl ### therefore the check was changed to procedure x264_encoder_close
 dnl ### (dont want to AC_CHECK_LIB that works only for one hardcoded version.)
+dnl ### set X264_REQUIRED_VERSION="0.120" to support ffmpeg-0.7.8
+dnl ###   note that ffmpeg configure script says that required libx264 version is >= 0.115
+dnl ###   but with libx264 0.115 version installed on my development system
+dnl ###   the ffmpeg-0.7.8 configure script complained:
+dnl ###   ERROR: libx264 version must be >= 0.115.
+dnl ###   After this test i updated to X264 0.120 and ffmpeg-0.7.8 configure worked fine without complaining...
 dnl the check result does not matter unless libavformat is linked or built later on.
 
 
-X264_REQUIRED_VERSION="0.85"
+X264_REQUIRED_VERSION="0.120"
 X264_REQUIRED_INC='#ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif'
@@ -299,10 +318,11 @@ dnl  fi
   if test "x$enable_ff_libx264" != "xno"; then
     if ! $PKG_CONFIG --atleast-version=$X264_REQUIRED_VERSION x264; then
         x264_warn="$NEW_LINE x264 library (libx264) required version $X264_REQUIRED_VERSION not found (not critical, but no open H264 video codec support)"
+        FF_LIBX264=""
     else
       AC_CHECK_LIB(x264, x264_encoder_close,
         [AC_CHECK_HEADER(x264.h,
-          FF_LIBX264="-lx264",
+          FF_LIBX264=`$PKG_CONFIG --libs x264`,
           x264_warn="$NEW_LINE x264 header file (x264.h) not found (not critical, but no open H264 video codec support)",
           $X264_REQUIRED_INC)],
         x264_warn="$NEW_LINE x264 library (libx264) not found (not critical, but no open H264 video codec support)")
@@ -547,6 +567,14 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       FFMPEG_CONFIGURE_OPTIONS=" $ff_pass_through_flags $FFMPEG_CONFIGURE_OPTIONS --enable-swscale"
  
       FFMPEG_ENABLE_NONFREE=""
+
+
+      dnl ffmpeg-0.7.11 recommands build with yasm assembler, but the
+      dnl configure script fails when yasm is not installed and yasm is not diasbled by explicite configure option.
+      if test "x$HAVE_YASM_ASSEMBLER" = "xno"; then
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --disable-yasm"
+      	 yasm_warn="$yasm_warn  ffmpeg congigure option --disable-yasm was used to allow a crippled build. (Installation of yasm is RECOMMANDED)"
+      fi
 
       dnl configure ffmpeg bzip2 usage
       if test "x$FF_BZIP2" != "x"; then
@@ -1187,4 +1215,4 @@ docs/reference/Makefile
 docs/reference/txt/Makefile
 ])
 
-AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $moved_old_ffmpeg_warn $moved_old_libmpeg3_warn $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)
+AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $moved_old_ffmpeg_warn $moved_old_libmpeg3_warn $vid_ffmpeg_warning $yasm_warn $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)

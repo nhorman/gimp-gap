@@ -34,6 +34,7 @@
 /* GAP includes */
 #include "gap_lib_common_defs.h"
 #include "gap_locate.h"
+#include "gap_locate2.h"
 #include "gap_colordiff.h"
 #include "gap_lib.h"
 #include "gap_image.h"
@@ -218,7 +219,6 @@ p_trimReferenceShape(GapLocateContext *lctx)
       if(isRefPixelColor)
       {
         gdouble hDif;
-        gdouble sDif;
 
         hDif = fabs(refHsv.h - currentHsv.h);
         /* normalize hue difference.
@@ -754,6 +754,12 @@ static void p_locateDetailLoop(GapLocateContext *lctx)
  * are best matching (e.g with minimun color difference)
  * the return value is the minimum colordifference value
  * (in range 0.0 to 1.0 where 0.0 indicates that the compared area is exactly equal)
+ *
+ * NOTE: this procedure is the old implementation and shall not be used in new code.
+ *       it calls the more efficient alternative implementation
+ *       unless the user explicte sets the gimprc parameter
+ *         gap-locate-details-use-old-algorithm yes
+ * 
  */
 gdouble gap_locateDetailWithinRadius(gint32  refDrawableId
   , gint32  refX
@@ -768,6 +774,31 @@ gdouble gap_locateDetailWithinRadius(gint32  refDrawableId
 {
   GapLocateContext  locateContext;
   GapLocateContext *lctx;
+ 
+  gboolean useGapLocateOldAlgo;
+  
+  
+  useGapLocateOldAlgo =
+    gap_base_get_gimprc_gboolean_value("gap-locate-details-use-old-algorithm", FALSE);
+
+  if(useGapLocateOldAlgo == FALSE)
+  {
+    gdouble avgColordiff;
+    
+    avgColordiff =
+      gap_locateAreaWithinRadius(refDrawableId
+                                ,refX
+                                ,refY
+                                ,refShapeRadius
+                                ,targetDrawableId
+                                ,targetMoveRadius
+                                ,targetX
+                                ,targetY
+                                );
+    
+    return(avgColordiff);
+  }
+
 
   /* init context */  
   lctx = &locateContext;
