@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gimp-gap 2.8\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-06 16:20+0000\n"
-"PO-Revision-Date: 2011-12-06 23:56+0100\n"
+"POT-Creation-Date: 2012-01-29 09:41+0000\n"
+"PO-Revision-Date: 2012-01-29 23:26+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 
 #. Button  to invoke fontbrowser
@@ -182,7 +182,7 @@ msgid "Problem while writing audiofile: %s"
 msgstr "Težava pri pisanju v zvočno datoteko: %s"
 
 #: ../gap/gap_audio_wav.c:613
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1903
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1939
 #, c-format
 msgid ""
 "The file: %s\n"
@@ -542,6 +542,146 @@ msgstr "Preštevilči sličice"
 msgid "Renumber Frames 2nd Pass"
 msgstr "Drugi prehod pri preštevilčenju sličic"
 
+#: ../gap/gap_blend_fill_main.c:234
+msgid "Blend Fill..."
+msgstr "Zapolni z zlivanjem ..."
+
+#. Menu names
+#: ../gap/gap_blend_fill_main.c:245
+#: ../gap/gap_detail_tracking_main.c:298
+#: ../gap/gap_wr_resynth.c:185
+msgid "<Image>/Video/Layer/Enhance/"
+msgstr "<Image>/Video/Plast/Izboljšaj/"
+
+#: ../gap/gap_blend_fill_main.c:311
+#: ../gap/gap_blend_fill_main.c:1937
+msgid "selection.svg"
+msgstr "izbor.svg"
+
+#: ../gap/gap_blend_fill_main.c:475
+msgid "Blendfill ..."
+msgstr "Zapolni z zlivanjem ..."
+
+#: ../gap/gap_blend_fill_main.c:1415
+#: ../gap/gap_blend_fill_main.c:1717
+#, c-format
+msgid "Path Vectors too large to fit into buffersize:%d."
+msgstr "Vektorji poti preveliki za velikost medpomnilnika: %d."
+
+#: ../gap/gap_blend_fill_main.c:1426
+#: ../gap/gap_blend_fill_main.c:1724
+msgid "No Path Vectors available."
+msgstr "Vektorji poti niso na voljo."
+
+#: ../gap/gap_blend_fill_main.c:1443
+msgid "SVG file does not exist (use Save Pats button to create)."
+msgstr "Datoteka SVG ne obstaja (za ustvarjanje uporabi gumb Shrani poti)."
+
+#: ../gap/gap_blend_fill_main.c:1449
+msgid "please enter SVG filename"
+msgstr "Vnesite ime za datoteko SVG."
+
+#: ../gap/gap_blend_fill_main.c:1568
+msgid "Select vectorfile name"
+msgstr "Izberite ime vektorske datoteke"
+
+#: ../gap/gap_blend_fill_main.c:1679
+#, c-format
+msgid "Failed to write SVG file: %s"
+msgstr "Datoteke SVG ni mogoče zapisati: %s"
+
+#: ../gap/gap_blend_fill_main.c:1765
+msgid "Blend Fill Selection"
+msgstr "Zapolni izbor z zlivanjem"
+
+#. horizontalBlendFlag checkbutton
+#: ../gap/gap_blend_fill_main.c:1799
+msgid ""
+"fills the selection by blending opposite border colors outside the selction to cover the selected area.\n"
+"Intended to fix small pixel errors"
+msgstr ""
+"Zapolni izbor z zlivanjem barv nasprotnih obrob zunaj izbora, da se zapolni površina izbranega.\n"
+"Namenjeno popravljanju manjših napak slikovnih točk."
+
+#. horizontalBlendFlag checkbutton
+#: ../gap/gap_blend_fill_main.c:1811
+msgid "Horizontal Blend:"
+msgstr "Vodoravno zlivanje:"
+
+#: ../gap/gap_blend_fill_main.c:1820
+msgid "ON: enable horizontal color blending. OFF: disable horizontal color blending."
+msgstr "VKLJUČENO: omogoči vodoravno barvno zlivanje. IZKLJUČENO: onemogoči vodoravno barvno zlivanje."
+
+#. verticalBlendFlag checkbutton
+#: ../gap/gap_blend_fill_main.c:1833
+msgid "Vertical Blend:"
+msgstr "Navpično zlivanje:"
+
+#: ../gap/gap_blend_fill_main.c:1842
+msgid "ON: enable vertical color blending. OFF: disable vertical color blending."
+msgstr "VKLJUČENO: omogoči navpično barvno zlivanje. IZKLJUČENO: onemogoči navpično barvno zlivanje."
+
+#: ../gap/gap_blend_fill_main.c:1855
+#: ../gap/gap_wr_resynth.c:478
+msgid "Border Radius:"
+msgstr "Polmer robu:"
+
+#: ../gap/gap_blend_fill_main.c:1858
+msgid "radius for picking border colors"
+msgstr "Radij za izbiranje barv obrobe"
+
+#. layer combo_box (altSelection)
+#. layer combo_box (alt_selection)
+#: ../gap/gap_blend_fill_main.c:1869
+#: ../gap/gap_wr_resynth.c:503
+msgid "Set Selection:"
+msgstr "Določite izbor:"
+
+#: ../gap/gap_blend_fill_main.c:1880
+msgid "Selection From All Paths"
+msgstr "Izbor z vseh poti"
+
+#: ../gap/gap_blend_fill_main.c:1885
+msgid "Selection From Vectors File"
+msgstr "Izbor iz vektorske datoteke"
+
+#. grab vectors button
+#: ../gap/gap_blend_fill_main.c:1915
+msgid "Save Paths"
+msgstr "Shrani poti"
+
+#: ../gap/gap_blend_fill_main.c:1920
+msgid "Save all pathes as svg vector file.(use svg file when large or many pathes shall be used)"
+msgstr "Shrani vse poti kot vektorsko datoteko svg (uporabite datoteko svg, ko so v rabi obsežne ali številne poti)."
+
+#: ../gap/gap_blend_fill_main.c:1932
+msgid "Name of SVG vector file"
+msgstr "Ime vektorske datoteke SVG"
+
+#. the videofile button (that invokes fileselection dialog)
+#. the basename button (that invokes the fileselection dialog)
+#. the output audiofile button (that invokes the fileselection dialog)
+#. the (output) video filebrowser button
+#. the Macrofile filebrowser button
+#. the Storyboard filebrowser button
+#. the Audiofile filebrowser button
+#. the pass_logfile fileselector button
+#: ../gap/gap_blend_fill_main.c:1946
+#: ../gap/gap_vex_dialog.c:2109
+#: ../gap/gap_vex_dialog.c:2481
+#: ../gap/gap_vex_dialog.c:2705
+#: ../vid_common/gap_cme_gui.c:2686
+#: ../vid_common/gap_cme_gui.c:2964
+#: ../vid_common/gap_cme_gui.c:3000
+#: ../vid_common/gap_cme_gui.c:3316
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3505
+msgid "..."
+msgstr "..."
+
+#: ../gap/gap_blend_fill_main.c:1952
+msgid "Select output svg vector file via browser"
+msgstr "Izberite izhodno vektorsko datoteko SVG z brskalnikom"
+
 #. toggle bluebox
 #: ../gap/gap_bluebox.c:251
 #: ../gap/gap_mov_dialog.c:3925
@@ -848,7 +988,7 @@ msgstr "Modro ozadje ..."
 #: ../gap/gap_name2layer_main.c:177
 #: ../gap/gap_navigator_dialog.c:552
 #: ../gap/gap_onion_main.c:205
-#: ../gap/gap_player_main.c:293
+#: ../gap/gap_player_main.c:297
 #: ../gap/gap_story_main.c:190
 #: ../vid_common/gap_cme_main.c:168
 msgid "<Image>/Video/"
@@ -951,7 +1091,7 @@ msgstr "Prožilna alfa je relevantna le v primeru, da ima barvna maska kanal alf
 #. the frame
 #. the notebook page label for expert encoder options
 #: ../gap/gap_colormask_dialog.c:541
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4191
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4209
 msgid "Expert Options"
 msgstr "Napredne možnosti"
 
@@ -1244,7 +1384,7 @@ msgstr "Številka slikovne sledi za izločitev. (0 == prezri sliko)"
 #. Sample Offset
 #. the audiotrack to label
 #: ../gap/gap_decode_mplayer.c:479
-#: ../gap/gap_player_dialog.c:6681
+#: ../gap/gap_player_dialog.c:6807
 #: ../gap/gap_vex_dialog.c:2276
 msgid "Audiotrack:"
 msgstr "Zvočna sled:"
@@ -1585,7 +1725,7 @@ msgstr "Omogoči izločanje sličic"
 
 #. create extract audio otone track button
 #: ../gap/gap_decode_xanim.c:288
-#: ../gap/gap_player_dialog.c:6708
+#: ../gap/gap_player_dialog.c:6834
 msgid "Extract Audio"
 msgstr "Izloči zvok"
 
@@ -1691,6 +1831,211 @@ msgid ""
 msgstr ""
 "Izločenih sličic ni mogoče najti,\n"
 "xanim ni uspel ali je bil preklican"
+
+#: ../gap/gap_detail_align_exec.c:617
+msgid "Frame Phase:"
+msgstr "Faza sličic:"
+
+#: ../gap/gap_detail_align_exec.c:618
+msgid "Frame number (phase) to be rendered."
+msgstr "Številka sličice (faza), ki bo upodobljena."
+
+#: ../gap/gap_detail_align_exec.c:631
+msgid "XML file:"
+msgstr "Datoteka XML:"
+
+#: ../gap/gap_detail_align_exec.c:632
+msgid "Name of the xml file that contains the tracked detail coordinates.  (recorded with the detail tracking feature)."
+msgstr "Ime datoteke xml, ki vsebuje sledene koordinate podrobnosti (posneta s funkcijo sledenja podrobnosti)."
+
+#. the Default button
+#: ../gap/gap_detail_align_exec.c:641
+#: ../gap/gap_detail_tracking_exec.c:1471
+#: ../gap/gap_mov_dialog.c:1556
+#: ../gap/gap_mpege.c:373
+#: ../gap/gap_name2layer_main.c:512
+#: ../gap/gap_split.c:505
+#: ../gap/gap_story_dialog.c:5224
+#: ../gap/gap_story_dialog.c:5559
+#: ../gap/gap_video_index_creator.c:1006
+#: ../gap/gap_wr_opacity.c:356
+#: ../vid_common/gap_cme_gui.c:3247
+msgid "Default"
+msgstr "Privzeto"
+
+#: ../gap/gap_detail_align_exec.c:642
+#: ../gap/gap_detail_tracking_exec.c:1472
+#: ../gap/gap_mov_dialog.c:1557
+#: ../gap/gap_mpege.c:374
+#: ../gap/gap_name2layer_main.c:513
+#: ../gap/gap_split.c:506
+#: ../gap/gap_video_index_creator.c:1007
+#: ../gap/gap_wr_opacity.c:357
+msgid "Reset all parameters to default values"
+msgstr "Ponastavi vse parametre na privzete vrednosti"
+
+#: ../gap/gap_detail_align_exec.c:644
+msgid "Detail Align via XML"
+msgstr "Poravnava podrobnosti prek XML"
+
+#: ../gap/gap_detail_align_exec.c:645
+#: ../gap/gap_detail_tracking_exec.c:1475
+#: ../gap/gap_name2layer_main.c:519
+#: ../gap/gap_video_index_creator.c:1013
+#: ../gap/gap_wr_opacity.c:360
+msgid "Settings :"
+msgstr "Nastavitve:"
+
+#: ../gap/gap_detail_align_exec.c:807
+msgid ""
+"This filter requires a current path with 4 points,where point 1 and 2 mark reference positions and point 3 and 4 mark postions in the target layer.It transforms the target layer in a way that point3 is moved to point1 and point4 moves to point2.(this may include rotate an scale transforamtion).\n"
+"A path with 2 points can be used to move point2 to point1.(via simple move operation without rotate and scale)"
+msgstr ""
+"Ta filter potrebuje trenutno pot s štirimi točkami, kjer sta prvi točki položaj v sklicni, zadnji dve pa položaj v ciljni plasti. Preoblikuje ciljno plast na način, da se točka 3 premakne v točko 1, točka 4 pa v točko 2 (to lahko vključuje tudi preoblikovanje s sukanjem in spremembo velikosti).\n"
+"Pot z dvema točkama lahko uporabite za premik točke 2 v točko 1 (prek enostavne opreracije premika brez sukanja in spremembe merila)."
+
+#: ../gap/gap_detail_tracking_main.c:220
+msgid "DetailTracking Config..."
+msgstr "Prilagoditev sledenja podrobnosti ..."
+
+#: ../gap/gap_detail_tracking_main.c:245
+msgid "DetailTracking"
+msgstr "Sledenje podrobnosti"
+
+#: ../gap/gap_detail_tracking_main.c:267
+msgid "Align Transform via XML file..."
+msgstr "Poravnaj transformacijo prek datoteke XML ..."
+
+#: ../gap/gap_detail_tracking_main.c:287
+msgid "Exact Align via 4-Point Path."
+msgstr "Natančna poravnava prek 4-točkovne poti."
+
+#: ../gap/gap_detail_tracking_main.c:299
+msgid "<Image>/Layer/Transform/"
+msgstr "<Image>/Plast/Transformiraj/"
+
+#: ../gap/gap_detail_tracking_exec.c:1195
+msgid "Detail Tracking Stopped. (could not find corresponding detail)"
+msgstr "Sledenje podrobnosti ustavljeno (ustrezne podrobnosti ni mogoče najti)."
+
+#: ../gap/gap_detail_tracking_exec.c:1330
+msgid ""
+"This filter requires a current path with one or 2 anchor points\n"
+"to mark coordinate(s) to be tracked in the target frame(s)"
+msgstr ""
+"Ta filter zahteva trenutno pot z eno ali dvema točkama sidranja\n"
+"za označitev koordinat, ki bodo zasledovane v ciljnih sličicah."
+
+#: ../gap/gap_detail_tracking_exec.c:1336
+msgid "Locate colordiff Thres:"
+msgstr "Prag lociranja barvne razlike:"
+
+#: ../gap/gap_detail_tracking_exec.c:1337
+msgid "Colordiff threshold value. Locate fails when average color difference is below this value."
+msgstr "Vrednost praga barvne razlike. Lociranje je neuspešno, ko je povprečna barvna razlika pod to vrednostjo."
+
+#: ../gap/gap_detail_tracking_exec.c:1349
+#: ../gap/gap_morph_tween_dialog.c:818
+msgid "Locate Shape Radius:"
+msgstr "Polmer lociranja lika:"
+
+#: ../gap/gap_detail_tracking_exec.c:1350
+msgid "The quadratic area surrounding a marked detail coordinate +- this radius is considered as reference shape, to be tracked in the target frame(s)."
+msgstr "Kvadratno območje, ki obkroža koordinate označene podrobnosti +- ta radij velja za referenčni lik, ki se mu bo sledilo v ciljnih sličicah."
+
+#: ../gap/gap_detail_tracking_exec.c:1363
+msgid "Locate Target Move Radius:"
+msgstr "Polmer lociranja premika cilja:"
+
+#: ../gap/gap_detail_tracking_exec.c:1364
+msgid "Limits attempts to locate the Detail within this radius."
+msgstr "Omeji poskuse lociranja podrobnosti na ta radij."
+
+#: ../gap/gap_detail_tracking_exec.c:1378
+msgid "Log Relative Coords:"
+msgstr "Beleži relativne koordinate:"
+
+#: ../gap/gap_detail_tracking_exec.c:1379
+msgid ""
+"ON: Coordinates are logged relative to the first coordinate.\n"
+"OFF: Coordinates are logged as absolute pixel coordinate values."
+msgstr ""
+"VKLJUČENO: Koordinate se beležijo relativno na prvo koordinato.\n"
+"IZKLJUČENO: Koordinate se beležijo v absolutnih vrednostih koordinat slikovnih točk."
+
+#: ../gap/gap_detail_tracking_exec.c:1388
+msgid "Log Scaling:"
+msgstr "Beleži merilo velikosti:"
+
+#: ../gap/gap_detail_tracking_exec.c:1389
+msgid ""
+"ON: Calculate scaling and rotation when 2 detail Coordinates are tracked.\n"
+"OFF: Calculate only rotation and keep orignal size."
+msgstr ""
+"VKLJUČENO: Izračuna spremembo merila in sukanje ob sledenju koordinat dveh podrobnosti.\n"
+"IZKLJUČENO: Izračuna le sukanje in ohrani izvorno velikost."
+
+#: ../gap/gap_detail_tracking_exec.c:1399
+msgid "BG is Reference:"
+msgstr "Ozadje je sklic:"
+
+#: ../gap/gap_detail_tracking_exec.c:1400
+msgid ""
+"ON: Use background layer as reference and foreground layer as target for tracking.\n"
+"OFF: Use foreground layer as target, and the layer below as reference\n"
+"."
+msgstr ""
+"VKLJUČENO: Uporabi plast ozadja kot sklic in plast ospredja kot cilj za sledenje.\n"
+"IZKLJUČENO: Uporabi plast ospredja kot cilj in plast pod njo kot sklic.\n"
+"."
+
+#: ../gap/gap_detail_tracking_exec.c:1408
+msgid "Remove Middle Layers:"
+msgstr "Odstrani vmesne plasti:"
+
+#: ../gap/gap_detail_tracking_exec.c:1409
+msgid ""
+"ON: removes layers (except BG and 2 Layer on top) that are not relevant for detail tracking.\n"
+"OFF: Keep all layers."
+msgstr ""
+"VKLJUČENO: odstrani plasti (razen ozadja in dveh plasti na vrhu), ki niso pomembne za sledeneje podrobnostim.\n"
+"IZKLJUČENO: Ohrani vse plasti."
+
+#: ../gap/gap_detail_tracking_exec.c:1420
+msgid "Const X Offset:"
+msgstr "Konst. zamik X:"
+
+#: ../gap/gap_detail_tracking_exec.c:1421
+msgid "This value is added when logging captured X coordinates."
+msgstr "Ta vrednost je dodana pri beleženju zajetih koordinat X."
+
+#: ../gap/gap_detail_tracking_exec.c:1434
+msgid "Const Y Offset:"
+msgstr "Konst. zamik Y:"
+
+#: ../gap/gap_detail_tracking_exec.c:1435
+msgid "This value is added when logging captured Y coordinates."
+msgstr "Ta vrednost je dodana pri beleženju zajetih koordinat Y."
+
+#: ../gap/gap_detail_tracking_exec.c:1448
+msgid "Const Rotate Offset:"
+msgstr "Konst. zamik sukanja:"
+
+#: ../gap/gap_detail_tracking_exec.c:1449
+msgid "This value is added when logging rotation values."
+msgstr "Ta vrednost je dodana pri beleženju vrednosti sukanja."
+
+#: ../gap/gap_detail_tracking_exec.c:1461
+msgid "MovePath XML file:"
+msgstr "Datoteka XML za pot premika:"
+
+#: ../gap/gap_detail_tracking_exec.c:1462
+msgid "Name of the file to log the tracked detail coordinates  as XML parameterfile for later use in the MovePath plug-in."
+msgstr "Ime datoteke, ki beleži koordinate zasledovane podrobnosti kot datoteko parametrov XML za kasnejšo rabo z vtičnikom PotPremika."
+
+#: ../gap/gap_detail_tracking_exec.c:1474
+msgid "Detail Tracking"
+msgstr "Sledenje podrobnosti"
 
 #: ../gap/gap_filter_foreach.c:133
 msgid "Backup to file"
@@ -2232,7 +2577,7 @@ msgstr "** Datoteka ni filtrski makro **"
 
 #: ../gap/gap_fmac_main.c:1020
 #: ../gap/gap_onion_dialog.c:1366
-#: ../gap/gap_player_dialog.c:8064
+#: ../gap/gap_player_dialog.c:8301
 msgid "Show help page"
 msgstr "Pokaži stran pomoči"
 
@@ -2273,7 +2618,7 @@ msgstr ""
 "Raziskovalec PDB pokaže zgolj filtre, ki so že bili uporabljeni v trenutni seji in imajo nastavljen notranji medpomnilnik z nastavljenimi parametri zadnjega klica"
 
 #: ../gap/gap_fmac_main.c:1080
-#: ../gap/gap_player_dialog.c:8112
+#: ../gap/gap_player_dialog.c:8349
 msgid "Close window"
 msgstr "Zapri okno"
 
@@ -3631,10 +3976,6 @@ msgstr "Polmer lociranja premika:"
 msgid "Locate radius in pixels. The workpoint generation searches for corresponding points in the next frame within this radius"
 msgstr "Radij lociranja v slikovnih točkah. Tvorba delovnih točk išče ustrezne točke v naslednji sličici v okviru tega radija."
 
-#: ../gap/gap_morph_tween_dialog.c:818
-msgid "Locate Shape Radius:"
-msgstr "Polmer lociranja lika:"
-
 #: ../gap/gap_morph_tween_dialog.c:824
 msgid "Locate Shaperadius in pixels. Defines shape size as area around workpoint to be compared  when loacting corresponding coordinate in the next frame."
 msgstr "Radij lociranja lika v slikovnih točkah. Določa velikost lika kot površino okoli delovne točke, ki naj bo primerjana pri lociranju ustrezne koordinate v naslednji sličici."
@@ -3844,28 +4185,6 @@ msgstr "Kopiraj v video medpomnilnik:"
 #: ../gap/gap_mov_dialog.c:1549
 msgid "Save all single frames of animated preview to video buffer.(configured in gimprc by video-paste-dir and video-paste-basename)"
 msgstr "Shrani vse posamične sličice predogleda animacije v video medpomnilnik (konfigurirano v datoteki gimprc z video-paste-dir in video-paste-basename)."
-
-#. the Default button
-#: ../gap/gap_mov_dialog.c:1556
-#: ../gap/gap_mpege.c:373
-#: ../gap/gap_name2layer_main.c:512
-#: ../gap/gap_split.c:505
-#: ../gap/gap_story_dialog.c:5224
-#: ../gap/gap_story_dialog.c:5559
-#: ../gap/gap_video_index_creator.c:1006
-#: ../gap/gap_wr_opacity.c:356
-#: ../vid_common/gap_cme_gui.c:3247
-msgid "Default"
-msgstr "Privzeto"
-
-#: ../gap/gap_mov_dialog.c:1557
-#: ../gap/gap_mpege.c:374
-#: ../gap/gap_name2layer_main.c:513
-#: ../gap/gap_split.c:506
-#: ../gap/gap_video_index_creator.c:1007
-#: ../gap/gap_wr_opacity.c:357
-msgid "Reset all parameters to default values"
-msgstr "Ponastavi vse parametre na privzete vrednosti"
 
 #: ../gap/gap_mov_dialog.c:1559
 msgid "Move Path Animated Preview"
@@ -4077,7 +4396,7 @@ msgstr "Izvorni in ciljni korak sličic sta sinhronizirana pri vrednosti 1,0. Vr
 #. the playback mode checkbuttons
 #. Loop Toggle
 #: ../gap/gap_mov_dialog.c:3788
-#: ../gap/gap_player_dialog.c:7901
+#: ../gap/gap_player_dialog.c:8138
 msgid "Loop"
 msgstr "Zankaj"
 
@@ -4179,7 +4498,7 @@ msgstr "Odpri pogovorno okno za nastavitev parametrov in ključne barve filtra m
 
 #. toggle Tracelayer
 #: ../gap/gap_mov_dialog.c:3989
-#: ../gap/gap_mov_exec.c:1882
+#: ../gap/gap_mov_exec.c:1884
 msgid "Tracelayer"
 msgstr "Sledilna plast"
 
@@ -4919,12 +5238,12 @@ msgid "Curent Frame number (e.g. phase to be phase Total number of frames"
 msgstr "Številka trenutne sličice (npr. faza, ki bo faza skupnega števila sličic"
 
 #: ../gap/gap_mov_dialog.c:6833
-#: ../gap/gap_player_dialog.c:478
+#: ../gap/gap_player_dialog.c:480
 msgid "Copy Audiofile as Wavefile"
 msgstr "Kopiraj zvočno datoteko v zapisu WAV"
 
 #: ../gap/gap_mov_dialog.c:6834
-#: ../gap/gap_player_dialog.c:479
+#: ../gap/gap_player_dialog.c:481
 #: ../gap/gap_story_dialog.c:5228
 #: ../gap/gap_story_dialog.c:8874
 #: ../gap/gap_story_dialog.c:9324
@@ -4935,7 +5254,7 @@ msgstr "Nastavitve"
 msgid "Tweenlayer"
 msgstr "Vmesna plast (Tweenlayer)"
 
-#: ../gap/gap_mov_exec.c:1705
+#: ../gap/gap_mov_exec.c:1707
 msgid ""
 "No source image was selected.\n"
 "Please open a 2nd image of the same type before opening 'Move Path'."
@@ -4943,19 +5262,19 @@ msgstr ""
 "Izvorna slika ni bila izbrana.\n"
 "Preden odprete 'Pomakni pot', odprite drugo sliko iste vrste."
 
-#: ../gap/gap_mov_exec.c:1719
+#: ../gap/gap_mov_exec.c:1721
 msgid "Copying layers into frames..."
 msgstr "Kopiranje plasti v sličice ..."
 
-#: ../gap/gap_mov_exec.c:1723
+#: ../gap/gap_mov_exec.c:1725
 msgid "Generating animated preview..."
 msgstr "Ustvarjanje animiranega predogleda ..."
 
-#: ../gap/gap_mov_exec.c:2248
+#: ../gap/gap_mov_exec.c:2250
 msgid "Transforming layer according to move path frame_phase..."
 msgstr "Plast transformacije glede na fazo sličic poti premika ..."
 
-#: ../gap/gap_mov_exec.c:3523
+#: ../gap/gap_mov_exec.c:3525
 #, c-format
 msgid ""
 "\n"
@@ -4964,7 +5283,7 @@ msgstr ""
 "\n"
 "Napaka: Ključna sličica %d je v točki [%d] višja ali enaka kot nazadnje obravnavana sličica."
 
-#: ../gap/gap_mov_exec.c:3531
+#: ../gap/gap_mov_exec.c:3533
 #, c-format
 msgid ""
 "\n"
@@ -4975,7 +5294,7 @@ msgstr ""
 "Napaka: Ključna sličica %d v točki [%d] ni pustila dovolj prostora (sličic)\n"
 "za prejšnje nadzorne točke."
 
-#: ../gap/gap_mov_exec.c:3541
+#: ../gap/gap_mov_exec.c:3543
 #, c-format
 msgid ""
 "\n"
@@ -4984,7 +5303,7 @@ msgstr ""
 "\n"
 "Napaka: Ključna sličica %d ni v zaporedju pri točki [%d]."
 
-#: ../gap/gap_mov_exec.c:3559
+#: ../gap/gap_mov_exec.c:3561
 #, c-format
 msgid ""
 "\n"
@@ -4993,7 +5312,7 @@ msgstr ""
 "\n"
 "Napaka: kontrolna točka [%d] je zunaj obravnavanega obsega sličic."
 
-#: ../gap/gap_mov_exec.c:3573
+#: ../gap/gap_mov_exec.c:3575
 #, c-format
 msgid ""
 "\n"
@@ -5355,12 +5674,6 @@ msgstr ""
 msgid "Render Filename to Layer"
 msgstr "Upodobi ime datoteke v plast"
 
-#: ../gap/gap_name2layer_main.c:519
-#: ../gap/gap_video_index_creator.c:1013
-#: ../gap/gap_wr_opacity.c:360
-msgid "Settings :"
-msgstr "Nastavitve:"
-
 #: ../gap/gap_navigator_dialog.c:440
 msgid ""
 "Playback\n"
@@ -5526,7 +5839,7 @@ msgstr "Nič ne izberi"
 
 #. Video Length (frames)
 #: ../gap/gap_navigator_dialog.c:4240
-#: ../gap/gap_player_dialog.c:6888
+#: ../gap/gap_player_dialog.c:7014
 msgid "Videoframes:"
 msgstr "Video sličice:"
 
@@ -5794,7 +6107,7 @@ msgid "Removing onionskin layers..."
 msgstr "Odstranjevanje folij ..."
 
 #. Format the message
-#: ../gap/gap_player_dialog.c:406
+#: ../gap/gap_player_dialog.c:408
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
@@ -5803,23 +6116,23 @@ msgstr ""
 "Pojavile so se težave s predvajanjem zvoka. Zvočna knjižnica sporoča:\n"
 "%s"
 
-#: ../gap/gap_player_dialog.c:427
+#: ../gap/gap_player_dialog.c:429
 msgid "Audiosource:"
 msgstr "Zvočni vir:"
 
-#: ../gap/gap_player_dialog.c:438
+#: ../gap/gap_player_dialog.c:440
 msgid "Wavefile:"
 msgstr "Zvočna datoteka:"
 
-#: ../gap/gap_player_dialog.c:440
+#: ../gap/gap_player_dialog.c:442
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
 msgstr "Ime zvočne datoteke, ki bo ustvarjena kot kopija v zapisu RIFF WAVE"
 
-#: ../gap/gap_player_dialog.c:447
+#: ../gap/gap_player_dialog.c:449
 msgid "Resample:"
 msgstr "Prevzorčenje:"
 
-#: ../gap/gap_player_dialog.c:448
+#: ../gap/gap_player_dialog.c:450
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -5829,18 +6142,18 @@ msgstr ""
 
 #. Audio Samplerate
 #. the Samplerate label
-#: ../gap/gap_player_dialog.c:456
-#: ../gap/gap_player_dialog.c:6830
+#: ../gap/gap_player_dialog.c:458
+#: ../gap/gap_player_dialog.c:6956
 #: ../gap/gap_story_dialog.c:9237
 #: ../vid_common/gap_cme_gui.c:3351
 msgid "Samplerate:"
 msgstr "Hitrost vzorčenja:"
 
-#: ../gap/gap_player_dialog.c:457
+#: ../gap/gap_player_dialog.c:459
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr "Ciljna hitrost vzorčenja zvoka v vzorcih/s. Ta ni upoštevana, če je prevzorčenje izklopljeno."
 
-#: ../gap/gap_player_dialog.c:572
+#: ../gap/gap_player_dialog.c:574
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -5852,29 +6165,29 @@ msgstr ""
 "Če je izvršljiva datoteka wavplay nameščena,\n"
 "nastavite spremenljivko okolja WAVPLAYPATH, preden zaženete GIMP.\n"
 
-#: ../gap/gap_player_dialog.c:635
+#: ../gap/gap_player_dialog.c:637
 msgid "Audio Delay"
 msgstr "Zvočna zakasnitev"
 
-#: ../gap/gap_player_dialog.c:647
+#: ../gap/gap_player_dialog.c:649
 msgid "Syncron"
 msgstr "Sinhrono"
 
-#: ../gap/gap_player_dialog.c:651
+#: ../gap/gap_player_dialog.c:653
 msgid "Audio Skipped"
 msgstr "Zvok je preskočil"
 
-#: ../gap/gap_player_dialog.c:663
+#: ../gap/gap_player_dialog.c:665
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (pri %.4f sličic/s)"
 
-#: ../gap/gap_player_dialog.c:760
+#: ../gap/gap_player_dialog.c:762
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Napaka pri branju glave WAV-datoteke '%s'"
 
-#: ../gap/gap_player_dialog.c:1112
+#: ../gap/gap_player_dialog.c:1114
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -5885,7 +6198,7 @@ msgstr ""
 "ni nobene povezave do izvršljivega programa,\n"
 "nastavljena vrednost za %s je: %s\n"
 
-#: ../gap/gap_player_dialog.c:1133
+#: ../gap/gap_player_dialog.c:1135
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -5896,7 +6209,7 @@ msgstr ""
 "ne kaže na izvršljivi program,\n"
 "njena trenutna vrednost je: %s\n"
 
-#: ../gap/gap_player_dialog.c:1169
+#: ../gap/gap_player_dialog.c:1171
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -5914,103 +6227,103 @@ msgstr ""
 "preden zaženete GIMP-a."
 
 #. filename prefix shortcut for storyboard single track playback for specified track number
-#: ../gap/gap_player_dialog.c:2126
+#: ../gap/gap_player_dialog.c:2152
 #, c-format
 msgid "STB:[%d]"
 msgstr "ZGDBRS: [%d]"
 
 #. filename prefix shortcut for storyboard in composite video playback mode
-#: ../gap/gap_player_dialog.c:2131
+#: ../gap/gap_player_dialog.c:2157
 msgid "STB:"
 msgstr "ZGDBRS:"
 
 #. shortname prefix to indicate that displayed filename is a single videofile
-#: ../gap/gap_player_dialog.c:2148
+#: ../gap/gap_player_dialog.c:2174
 msgid "VIDEO:"
 msgstr "VIDEO:"
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
-#: ../gap/gap_player_dialog.c:2160
+#: ../gap/gap_player_dialog.c:2186
 msgid "FRAMES:"
 msgstr "SLIČICE:"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: ../gap/gap_player_dialog.c:2259
-#: ../gap/gap_player_dialog.c:4570
+#: ../gap/gap_player_dialog.c:2285
+#: ../gap/gap_player_dialog.c:4634
 msgid "Playing"
 msgstr "Predvajanje"
 
 #. the status value label
-#: ../gap/gap_player_dialog.c:2298
-#: ../gap/gap_player_dialog.c:8000
+#: ../gap/gap_player_dialog.c:2324
+#: ../gap/gap_player_dialog.c:8237
 msgid "Ready"
 msgstr "Pripravljen"
 
-#: ../gap/gap_player_dialog.c:2432
+#: ../gap/gap_player_dialog.c:2458
 msgid "cheking audiotrack"
 msgstr "Preverjanje zvočne sledi"
 
-#: ../gap/gap_player_dialog.c:2452
+#: ../gap/gap_player_dialog.c:2478
 msgid "extracted audio is up to date"
 msgstr "Izločeni zvok je posodobljen"
 
-#: ../gap/gap_player_dialog.c:2461
+#: ../gap/gap_player_dialog.c:2487
 msgid "extracting audio"
 msgstr "Izločanje zvoka ..."
 
-#: ../gap/gap_player_dialog.c:2492
+#: ../gap/gap_player_dialog.c:2518
 msgid "Audio Extract CANCELLED"
 msgstr "Izločitev zvoka PREKLICANA"
 
-#: ../gap/gap_player_dialog.c:2502
-#: ../gap/gap_player_dialog.c:2513
+#: ../gap/gap_player_dialog.c:2528
+#: ../gap/gap_player_dialog.c:2539
 msgid "Audio Extract FAILED"
 msgstr "Izločitev zvoka NI USPELA"
 
-#: ../gap/gap_player_dialog.c:2503
-#: ../gap/gap_player_dialog.c:2514
+#: ../gap/gap_player_dialog.c:2529
+#: ../gap/gap_player_dialog.c:2540
 #, c-format
 msgid "Extract of audiotrack failed on videofile: %s"
 msgstr "Izločanje zvočne sledi datoteke ni uspelo: %s"
 
-#: ../gap/gap_player_dialog.c:2829
+#: ../gap/gap_player_dialog.c:2855
 msgid "seek-selftest"
 msgstr "Samodejni preizkus iskanja"
 
-#: ../gap/gap_player_dialog.c:2851
+#: ../gap/gap_player_dialog.c:2877
 #: ../gap/gap_story_vthumb.c:301
 #, c-format
 msgid "Creating Index"
 msgstr "Ustvarjanje kazala"
 
-#: ../gap/gap_player_dialog.c:2881
+#: ../gap/gap_player_dialog.c:2907
 #, c-format
 msgid "No videoindex available. Access is limited to (slow) sequential read on file: %s"
 msgstr "Slikovno kazalo ni na voljo. Dostop je omejen s (počasnim) zaporednim branjem datoteke: %s"
 
-#: ../gap/gap_player_dialog.c:2971
+#: ../gap/gap_player_dialog.c:2997
 #: ../gap/gap_story_dialog.c:6767
 #, c-format
 msgid "Videoseek"
 msgstr "Iskanje slike"
 
-#: ../gap/gap_player_dialog.c:3556
-#: ../gap/gap_player_dialog.c:4033
+#: ../gap/gap_player_dialog.c:3620
+#: ../gap/gap_player_dialog.c:4097
 #: ../gap/gap_story_vthumb.c:359
 msgid "Canceled"
 msgstr "Preklicano"
 
 #. printf("DROP (SKIP) frame\n");
-#: ../gap/gap_player_dialog.c:4553
+#: ../gap/gap_player_dialog.c:4617
 msgid "Skip"
 msgstr "Preskoči"
 
-#: ../gap/gap_player_dialog.c:4582
+#: ../gap/gap_player_dialog.c:4646
 #, c-format
 msgid "Delay %.2f"
 msgstr "Zakasnitev %.2f"
 
-#: ../gap/gap_player_dialog.c:6222
+#: ../gap/gap_player_dialog.c:6348
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -6021,7 +6334,7 @@ msgstr ""
 "ne kaže na izvršljiv program,\n"
 "trenutno nastavljena vrednost za %s je: %s\n"
 
-#: ../gap/gap_player_dialog.c:6244
+#: ../gap/gap_player_dialog.c:6370
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -6032,7 +6345,7 @@ msgstr ""
 "ne kaže na izvršljivi program,\n"
 "njena trenutna vrednost je: %s\n"
 
-#: ../gap/gap_player_dialog.c:6263
+#: ../gap/gap_player_dialog.c:6389
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
@@ -6041,59 +6354,59 @@ msgstr ""
 "NAPAKA: Zunanji program za pretvorbo zvoka ni izvršljiv.\n"
 "Ime datoteke: '%s'\n"
 
-#: ../gap/gap_player_dialog.c:6283
+#: ../gap/gap_player_dialog.c:6409
 msgid "Creating audiofile - please wait"
 msgstr "Ustvarjanje zvočne datoteke - prosimo, počakajte!"
 
-#: ../gap/gap_player_dialog.c:6319
+#: ../gap/gap_player_dialog.c:6445
 msgid "external audioconverter FAILED."
 msgstr "Zunanja zvočna pretvorba NI USPELA."
 
-#: ../gap/gap_player_dialog.c:6320
+#: ../gap/gap_player_dialog.c:6446
 msgid "extern audioconverter FAILED"
 msgstr "Zunanja zvočna pretvorba NI USPELA"
 
-#: ../gap/gap_player_dialog.c:6466
+#: ../gap/gap_player_dialog.c:6592
 msgid "Select Audiofile"
 msgstr "Izberite zvočno datoteko"
 
-#: ../gap/gap_player_dialog.c:6514
+#: ../gap/gap_player_dialog.c:6640
 msgid "Audio Playback Settings"
 msgstr "Nastavitve predvajanja zvoka"
 
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: ../gap/gap_player_dialog.c:6539
+#: ../gap/gap_player_dialog.c:6665
 #: ../gap/gap_vex_dialog.c:2685
 #: ../vid_common/gap_cme_gui.c:3290
 msgid "Audiofile:"
 msgstr "Zvočna datoteka:"
 
-#: ../gap/gap_player_dialog.c:6551
+#: ../gap/gap_player_dialog.c:6677
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr "Vpišite zvočno datoteko. Ta mora biti v zapisu RIFF WAVE."
 
-#: ../gap/gap_player_dialog.c:6572
+#: ../gap/gap_player_dialog.c:6698
 msgid "Open audiofile selection browser dialog window"
 msgstr "Odpri pogovorno okno za izbiro zvočne datoteke"
 
 #. Volume
-#: ../gap/gap_player_dialog.c:6584
+#: ../gap/gap_player_dialog.c:6710
 #: ../gap/gap_story_dialog.c:9253
 msgid "Volume:"
 msgstr "Glasnost:"
 
-#: ../gap/gap_player_dialog.c:6604
+#: ../gap/gap_player_dialog.c:6730
 msgid "Audio Volume"
 msgstr "Glasnost zvoka"
 
 #. check button
-#: ../gap/gap_player_dialog.c:6610
+#: ../gap/gap_player_dialog.c:6736
 msgid "Enable"
 msgstr "Omogoči"
 
-#: ../gap/gap_player_dialog.c:6615
+#: ../gap/gap_player_dialog.c:6741
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
@@ -6102,20 +6415,20 @@ msgstr ""
 "IZKLJUČENO: Nemo predvajanje slike."
 
 #. Sample Offset
-#: ../gap/gap_player_dialog.c:6625
+#: ../gap/gap_player_dialog.c:6751
 msgid "Offset:"
 msgstr "Zamik:"
 
-#: ../gap/gap_player_dialog.c:6645
+#: ../gap/gap_player_dialog.c:6771
 msgid "Audio offset in frames at original video playback speed. A value of 0 starts audio and video at synchron time. A value of -10 will play frame 1 up to frame 9 silently and start audio at frame 10. A value of 10 starts audio at frame 1, but skips the audio begin part in a length that is equal to the duration of 10 frames at original video playback speed."
 msgstr "Zvočni zamik (v številu sličic) pri predvajanju izvorne hitrosti videa. Vrednost 0 zažene predvajanje zvoka in slike hkrati (sinhrono). Vrednost -10 predvaja sličice od 1 do 9 nemo, zvok se začne predvajati od 10. sličice naprej. Pri vrednosti 10 se zvok začne predvajati od 1. sličice, vendar potem preskoči predvajanje zvoka za 10 sličic glede na izvorno hitrost predvajanja."
 
 #. check button
-#: ../gap/gap_player_dialog.c:6660
+#: ../gap/gap_player_dialog.c:6786
 msgid "original audio"
 msgstr "Izvorni zvok"
 
-#: ../gap/gap_player_dialog.c:6665
+#: ../gap/gap_player_dialog.c:6791
 msgid ""
 "ON: for video clip playback sync audio startposition according to original position in the referenced video. Use this option if the audiofile is an extracted audiotrack of the full referenced videofile\n"
 "OFF: do not sync audio with original position in the referenced videos. Use this for independent audiofile playback."
@@ -6123,99 +6436,108 @@ msgstr ""
 "VKLJUČENO: Za predvajanje video posnetka sinhroniziraj začetni položaj zvoka glede na izvorni položaj v sklicanem videu. To možnost uporabite, če je zvočna datoteka izločena zvočna sled polno sklicane video datoteke.\n"
 "IZKLJUČENO: Ne sinhroniziraj zvoka z izvornim položajem v sklicanih videih. To uporabite za neodvisno predvajanje zvočnih datotek."
 
-#: ../gap/gap_player_dialog.c:6701
+#: ../gap/gap_player_dialog.c:6827
 msgid "Audio Track"
 msgstr "Zvočna sled"
 
-#: ../gap/gap_player_dialog.c:6711
+#: ../gap/gap_player_dialog.c:6837
 msgid "Extract Audio Track from videofile for the current videofile and use it for origial audiotrack playback"
 msgstr "Izloči zvočno sled iz video datoteke in jo uporabi za predvajanje izvorne zvočne sledi."
 
 #. create wavfile button
-#: ../gap/gap_player_dialog.c:6725
+#: ../gap/gap_player_dialog.c:6851
 msgid "Copy As Wavfile"
 msgstr "Kopiraj kot datoteko WAV"
 
-#: ../gap/gap_player_dialog.c:6727
+#: ../gap/gap_player_dialog.c:6853
 msgid "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for audio playback"
 msgstr "Ustvari kopijo zvočne datoteke kot datoteko RIFF WAVE ter jo uporabi za zvočno predvajanje. "
 
-#: ../gap/gap_player_dialog.c:6739
+#: ../gap/gap_player_dialog.c:6865
 msgid "Reset offset and volume"
 msgstr "Ponastavi zamik in jakost zvoka"
 
 #. Audio Offset Length (mm:ss:msec)
-#: ../gap/gap_player_dialog.c:6771
+#: ../gap/gap_player_dialog.c:6897
 msgid "Offsettime:"
 msgstr "Časovni zamik:"
 
 #. Total Audio Length (mm:ss:msec)
 #. the audio timing information labels
-#: ../gap/gap_player_dialog.c:6785
+#: ../gap/gap_player_dialog.c:6911
 #: ../vid_common/gap_cme_gui.c:3523
 msgid "Audiotime:"
 msgstr "Časovna dolžina zvoka:"
 
 #. Length (frames)
-#: ../gap/gap_player_dialog.c:6800
+#: ../gap/gap_player_dialog.c:6926
 msgid "Audioframes:"
 msgstr "Dolžina zvočnih sličic:"
 
 #. Audiolength (Samples)
-#: ../gap/gap_player_dialog.c:6815
+#: ../gap/gap_player_dialog.c:6941
 msgid "Samples:"
 msgstr "Vzorci:"
 
 #. Audio Channels
-#: ../gap/gap_player_dialog.c:6844
+#: ../gap/gap_player_dialog.c:6970
 msgid "Channels:"
 msgstr "Kanali:"
 
 #. Bits per Audio Sample
-#: ../gap/gap_player_dialog.c:6858
+#: ../gap/gap_player_dialog.c:6984
 msgid "Bits/Sample:"
 msgstr "Bitov/vzorec:"
 
 #. Total Video Length (mm:ss:msec)
 #. the video timing information labels
-#: ../gap/gap_player_dialog.c:6873
+#: ../gap/gap_player_dialog.c:6999
 #: ../vid_common/gap_cme_gui.c:3496
 msgid "Videotime:"
 msgstr "Dolžina videa:"
 
-#: ../gap/gap_player_dialog.c:7067
+#: ../gap/gap_player_dialog.c:7234
 msgid "Playback Preferences"
 msgstr "Nastavitve predvajanja"
 
-#. Cahe size label
-#: ../gap/gap_player_dialog.c:7085
+#. Cache size label
+#: ../gap/gap_player_dialog.c:7252
 msgid "Cache Size (MB):"
 msgstr "Velikost predpomnilnika (MB):"
 
-#: ../gap/gap_player_dialog.c:7111
+#: ../gap/gap_player_dialog.c:7278
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
 msgstr "Največja velikost predpomnilnika sličic predvajalnika, v MB. Vrednost 0 izključi predpomnilnik."
 
-#: ../gap/gap_player_dialog.c:7120
+#: ../gap/gap_player_dialog.c:7287
 msgid "Clear the frame cache"
 msgstr "Počisti predpomnilnik sličic"
 
 #. Chache Status (number of frames currently in the cache)
-#: ../gap/gap_player_dialog.c:7131
+#: ../gap/gap_player_dialog.c:7298
 msgid "Cached Frames:"
 msgstr "Predpomnjene sličice:"
 
+#. tile Chache
+#: ../gap/gap_player_dialog.c:7324
+msgid "Tile Cache:"
+msgstr "Predpomnilnik tlakovanja:"
+
+#: ../gap/gap_player_dialog.c:7344
+msgid "gimp tile cache for the player process. (in tiles 64x64 pixel)"
+msgstr "Gimpov predpomnilnik tlakovanja za proces predvajalnika (v tlakovcih 64x64 slik. točk)."
+
 #. Layout Options label
-#: ../gap/gap_player_dialog.c:7156
+#: ../gap/gap_player_dialog.c:7353
 msgid "Layout Options:"
 msgstr "Možnosti postavitve"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:7166
+#: ../gap/gap_player_dialog.c:7363
 msgid "Show Button Array"
 msgstr "Pokaži vrstico gumbov"
 
-#: ../gap/gap_player_dialog.c:7172
+#: ../gap/gap_player_dialog.c:7369
 msgid ""
 "ON: Show the go button array positioning tool.\n"
 "OFF: Hide the go button array."
@@ -6224,11 +6546,11 @@ msgstr ""
 "IZKLJUČENO: Skrij vrstico gumbov."
 
 #. Show Position Scale (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:7185
+#: ../gap/gap_player_dialog.c:7382
 msgid "Show Position Scale"
 msgstr "Pokaži merilo položaja"
 
-#: ../gap/gap_player_dialog.c:7191
+#: ../gap/gap_player_dialog.c:7388
 msgid ""
 "ON: Show the position scale.\n"
 "OFF: Hide the position scale."
@@ -6236,48 +6558,69 @@ msgstr ""
 "VKLJUČENO: Pokaži merilo položaja.\n"
 "IZKLJUČENO: Skrij merilo položaja."
 
+#. configure Detail Tracking button
+#: ../gap/gap_player_dialog.c:7405
+msgid "Configure Tracking:"
+msgstr "Prilagoditev sledenja:"
+
+#: ../gap/gap_player_dialog.c:7408
+msgid "Configure detail tracking options"
+msgstr "Prilagodi možnosti sledenja podrobnosti"
+
+#: ../gap/gap_player_dialog.c:7416
+msgid "Enable Detail Tracking"
+msgstr "Omogoči sledenje podrobnosti"
+
+#: ../gap/gap_player_dialog.c:7422
+msgid ""
+"ON: Enable detail tracking in snapshot image. Mark coordinates of one (or 2) significant details in the snapshot image using the current path with one or 2 points. Each further snapshot automatically moves the marked points to the coordinates of the corresponding details  and logs the movement as XML parameters for the MovePath feature. In case 2 points are marked, the rotation is calculated too.\n"
+"OFF: Disable detail tracking."
+msgstr ""
+"VKLJUČENO: Omogoči sledenje podrobnosti v zajeti sliki. Označi koordinate ene (ali dveh) opaznih podrobnosti v zajeti sliki z uporabo trenutne poti z eno ali dvema točkama. Vsaka nadaljna zajeta slika samodejno premakne označene točke h koordinatam ustrezajočih podrobnosti in beleži gibanje kot parametre XML za funkcijo PotPremika. V primeru označevanja dveh točk je izračunano tudi sukanje.\n"
+"IZKLJUČENO: Onemogoči sledenje podrobnosti."
+
 #. Save Player Preferences label
-#: ../gap/gap_player_dialog.c:7204
+#: ../gap/gap_player_dialog.c:7441
 msgid "Save Preferences:"
 msgstr "Shrani nastavitve:"
 
-#: ../gap/gap_player_dialog.c:7216
+#: ../gap/gap_player_dialog.c:7453
 msgid "Save player cache and layout settings (as gimprc parameters)"
 msgstr "Shrani predpomnilnik predvajalnika in nastavitve postavitve (kot parametre gimprc)"
 
-#: ../gap/gap_player_dialog.c:7331
+#: ../gap/gap_player_dialog.c:7568
 msgid "Videoframe Playback"
 msgstr "Predvajanje video sličic"
 
 #. vid options TAB frame
 #. the video options notebook tab
-#: ../gap/gap_player_dialog.c:7346
+#: ../gap/gap_player_dialog.c:7583
 #: ../vid_common/gap_cme_gui.c:2596
 msgid "Video Options"
 msgstr "Možnosti videa"
 
 #. configure options TAB frame
-#: ../gap/gap_player_dialog.c:7370
+#: ../gap/gap_player_dialog.c:7607
 msgid "Preferences"
 msgstr "Nastavitve"
 
 #. audio options TAB frame
 #. the Audio Options notebook tab
-#: ../gap/gap_player_dialog.c:7386
+#: ../gap/gap_player_dialog.c:7623
 #: ../vid_common/gap_cme_gui.c:2608
 msgid "Audio Options"
 msgstr "Možnosti zvoka"
 
-#: ../gap/gap_player_dialog.c:7479
+#: ../gap/gap_player_dialog.c:7716
 msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr "Klik: Pojdi na okvir, Ctrl-klik: nastavi 'Od sličice', Alt-klik: nastavi 'Do sličice'"
 
-#: ../gap/gap_player_dialog.c:7552
-#: ../gap/gap_player_dialog.c:7685
+#: ../gap/gap_player_dialog.c:7789
+#: ../gap/gap_player_dialog.c:7922
 msgid "The currently displayed frame number"
 msgstr "Trenutno prikazana številka sličice"
 
-#: ../gap/gap_player_dialog.c:7632
+#: ../gap/gap_player_dialog.c:7869
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -6285,11 +6628,11 @@ msgstr ""
 "Klik: Nastavi trenutno številko sličice ko začetek obsega izbora 'Od sličice',\n"
 "SHIFT-klik: naloži to sličico v sklicujočo sliko"
 
-#: ../gap/gap_player_dialog.c:7643
+#: ../gap/gap_player_dialog.c:7880
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr "Nastavi trenutno številko sličice kot začetek obsega izbora 'Od sličice'"
 
-#: ../gap/gap_player_dialog.c:7659
+#: ../gap/gap_player_dialog.c:7896
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -6297,51 +6640,51 @@ msgstr ""
 "Klik: Nastavi trenutno številko sličice kot konec obsega izbora 'Do sličice',\n"
 "SHIFT-klik: naloži to sličico v sklicujočo sliko"
 
-#: ../gap/gap_player_dialog.c:7670
+#: ../gap/gap_player_dialog.c:7907
 msgid "Set current framenr as selection range end 'To Frame'"
 msgstr "Nastavi trenutno številko sličice kot konec obsega izbora 'Do sličice'"
 
-#: ../gap/gap_player_dialog.c:7713
+#: ../gap/gap_player_dialog.c:7950
 msgid "Add range to cliplist"
 msgstr "Dodaj obseg v seznam posnetkov"
 
-#: ../gap/gap_player_dialog.c:7717
+#: ../gap/gap_player_dialog.c:7954
 msgid "Print range to stdout"
 msgstr "Natisni obseg na st. izhod"
 
-#: ../gap/gap_player_dialog.c:7739
+#: ../gap/gap_player_dialog.c:7976
 msgid "Start framenumber of selection range"
 msgstr "Številka začetne sličice izbranega obsega"
 
-#: ../gap/gap_player_dialog.c:7762
+#: ../gap/gap_player_dialog.c:7999
 msgid "Add inverse range to cliplist"
 msgstr "Dodaj obraten obseg seznamu posnetkov"
 
-#: ../gap/gap_player_dialog.c:7766
+#: ../gap/gap_player_dialog.c:8003
 msgid "Print inverse range to stdout"
 msgstr "Natisni obraten obseg na stdout"
 
-#: ../gap/gap_player_dialog.c:7790
+#: ../gap/gap_player_dialog.c:8027
 msgid "End framenumber of selection range"
 msgstr "Številka končne sličice izbranega obsega"
 
-#: ../gap/gap_player_dialog.c:7806
+#: ../gap/gap_player_dialog.c:8043
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Ponastavi hitrost predvajanja nazaj na izvorno (ali prejšnjo) vrednost"
 
-#: ../gap/gap_player_dialog.c:7829
+#: ../gap/gap_player_dialog.c:8066
 msgid "Current playback speed (frames/sec)"
 msgstr "Trenutna hitrost predvajanja (sličic/s)"
 
-#: ../gap/gap_player_dialog.c:7855
+#: ../gap/gap_player_dialog.c:8092
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Preklapljaj med velikostma 128 in 256. <Shift> Nastavi razmerje 1:1 za velikost celotne slike"
 
-#: ../gap/gap_player_dialog.c:7877
+#: ../gap/gap_player_dialog.c:8114
 msgid "Video preview size (pixels)"
 msgstr "Velikost predogleda slike (v slikovnih točkah)"
 
-#: ../gap/gap_player_dialog.c:7907
+#: ../gap/gap_player_dialog.c:8144
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -6350,11 +6693,11 @@ msgstr ""
 "IZKLJUČENO: Predvajaj le enkrat."
 
 #. SelOnly Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7921
+#: ../gap/gap_player_dialog.c:8158
 msgid "Selection only"
 msgstr "Le izbor "
 
-#: ../gap/gap_player_dialog.c:7927
+#: ../gap/gap_player_dialog.c:8164
 msgid ""
 "ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
@@ -6363,20 +6706,20 @@ msgstr ""
 "IZKLJUČENO: Predvajaj vse sličice."
 
 #. PingPong Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7940
+#: ../gap/gap_player_dialog.c:8177
 msgid "Ping pong"
 msgstr "Ping pong (sem ter tja)"
 
-#: ../gap/gap_player_dialog.c:7946
+#: ../gap/gap_player_dialog.c:8183
 msgid "ON: Play alternating forward/backward"
 msgstr "VKLJUČENO: Predvajaj izmenično naprej/nazaj."
 
 #. UseThumbnails Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7959
+#: ../gap/gap_player_dialog.c:8196
 msgid "Thumbnails"
 msgstr "Sličice za predogled"
 
-#: ../gap/gap_player_dialog.c:7965
+#: ../gap/gap_player_dialog.c:8202
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -6385,11 +6728,11 @@ msgstr ""
 "IZKLJUČENO: Preberi sličice v polni velikosti."
 
 #. ExactTiming Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7980
+#: ../gap/gap_player_dialog.c:8217
 msgid "Exact timing"
 msgstr "Natančna časovna usklajenost"
 
-#: ../gap/gap_player_dialog.c:7986
+#: ../gap/gap_player_dialog.c:8223
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -6398,42 +6741,42 @@ msgstr ""
 "IZKLJUČENO: Onemogoči preskakovanje sličic."
 
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
-#: ../gap/gap_player_dialog.c:8044
+#: ../gap/gap_player_dialog.c:8281
 msgid "Cancel Videoindex creation"
 msgstr "Prekliči ustvarjanje kazala slik"
 
-#: ../gap/gap_player_dialog.c:8048
+#: ../gap/gap_player_dialog.c:8285
 msgid "Cancel videoindex creation. Videoindex creation requires full scanning of the video but allows fast random access to frames afterwards. Without a videoindex, access is done by a very slow sequential read"
 msgstr "Prekliči ustvarjanje slikovnega kazala. Ustvarjanje slikovnega kazala zahteva polno pregledovanje slike, vendar s tem omogoči hiter, naključen dostop do sličic. Brez slikovnega kazala je dostop izvršen z zelo počasnim zaporednim branjem."
 
 #. the PLAY button
-#: ../gap/gap_player_dialog.c:8072
+#: ../gap/gap_player_dialog.c:8309
 msgid "Play"
 msgstr "Predvajaj"
 
-#: ../gap/gap_player_dialog.c:8075
+#: ../gap/gap_player_dialog.c:8312
 msgid "Start playback. SHIFT: snapshot frames in a multilayer image at original size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr "Začni s predvajanjem. SHIFT: Zajemi sličice v večplastno sliko izvorne velikosti. CTRL: Zajemi v predogledni velikosti. ALT: Vsili ustvarjanje nove slike zajema."
 
 #. the PAUSE button
-#: ../gap/gap_player_dialog.c:8084
+#: ../gap/gap_player_dialog.c:8321
 msgid "Pause"
 msgstr "Prekini"
 
-#: ../gap/gap_player_dialog.c:8088
+#: ../gap/gap_player_dialog.c:8325
 msgid "Pause if playing (any mousebutton). Go to selection start/active/end (left/middle/right mousebutton) if not playing"
 msgstr "Prekinitev predvajanja (klik katerekoli tipke miške). Pojdi na začetek/aktivni del/konec izbora (leva/sredinska/ desna tipka miške), če predvajanje ni v teku. "
 
 #. the PLAY_REVERSE button
-#: ../gap/gap_player_dialog.c:8095
+#: ../gap/gap_player_dialog.c:8332
 msgid "Reverse"
 msgstr "V nasprotni smeri"
 
-#: ../gap/gap_player_dialog.c:8098
+#: ../gap/gap_player_dialog.c:8335
 msgid "Start reverse playback. SHIFT: snapshot frames in a multilayer image at original size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr "Začni s predvajanjem v obratni smeri. SHIFT: Zajemi sličice v večplastno sliko izvorne velikosti. CTRL: Zajemi v predogledni velikosti. ALT: Vsili ustvarjanje nove slike zajema."
 
-#: ../gap/gap_player_main.c:283
+#: ../gap/gap_player_main.c:287
 msgid "Playback..."
 msgstr "Predvajanje ..."
 
@@ -7309,7 +7652,7 @@ msgstr "Datoteka poti premika:"
 #. the Comment lable
 #: ../gap/gap_story_att_trans_dlg.c:3983
 #: ../gap/gap_story_properties.c:5018
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3727
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3745
 msgid "Comment:"
 msgstr "Komentar:"
 
@@ -7868,7 +8211,7 @@ msgstr "VKLJUČENO: slikovna sled 1 je v ospredju (na vrhu). IZKLJUČENO: video 
 
 #. the aspect label
 #: ../gap/gap_story_dialog.c:9176
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3761
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3779
 msgid "Aspect:"
 msgstr "Razmerje stranic:"
 
@@ -8607,25 +8950,6 @@ msgstr "ImeVideoDatoteke:"
 msgid "Name of videofile (used as inputfile)"
 msgstr "Ime video datoteke (kot vhodna datoteka)"
 
-#. the videofile button (that invokes fileselection dialog)
-#. the basename button (that invokes the fileselection dialog)
-#. the output audiofile button (that invokes the fileselection dialog)
-#. the (output) video filebrowser button
-#. the Macrofile filebrowser button
-#. the Storyboard filebrowser button
-#. the Audiofile filebrowser button
-#. the pass_logfile fileselector button
-#: ../gap/gap_vex_dialog.c:2109
-#: ../gap/gap_vex_dialog.c:2481
-#: ../gap/gap_vex_dialog.c:2705
-#: ../vid_common/gap_cme_gui.c:2686
-#: ../vid_common/gap_cme_gui.c:2964
-#: ../vid_common/gap_cme_gui.c:3000
-#: ../vid_common/gap_cme_gui.c:3316
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3487
-msgid "..."
-msgstr "..."
-
 #: ../gap/gap_vex_dialog.c:2116
 msgid "Select video using file browser"
 msgstr "Izberite video z uporabo datotečnega brskalnika"
@@ -9311,11 +9635,6 @@ msgstr "Pametna radirka izbora."
 msgid "Smart selection eraser..."
 msgstr "Pametna radirka izbora ..."
 
-#. Menu names
-#: ../gap/gap_wr_resynth.c:185
-msgid "<Image>/Video/Layer/Enhance/"
-msgstr "<Image>/Video/Plast/Izboljšaj/"
-
 #: ../gap/gap_wr_resynth.c:316
 #: ../gap/gap_wr_trans.c:447
 #, c-format
@@ -9343,18 +9662,9 @@ msgstr ""
 "Vendar ta zunanji vtičnik ni nameščen.\n"
 "Na voljo je v imeniku vtičnikov za Gimp."
 
-#: ../gap/gap_wr_resynth.c:478
-msgid "Border Radius:"
-msgstr "Polmer robu:"
-
 #: ../gap/gap_wr_resynth.c:491
 msgid "Seed:"
 msgstr "Seme:"
-
-#. layer combo_box (alt_selection)
-#: ../gap/gap_wr_resynth.c:503
-msgid "Set Selection:"
-msgstr "Določite izbor:"
 
 #: ../gap/gap_wr_resynth.c:608
 #, c-format
@@ -10302,7 +10612,7 @@ msgstr "Parametri kodiranja slike AVI"
 #. the Video CODEC label
 #. the video codec label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:489
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1271
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1273
 msgid "Video CODEC:"
 msgstr "Slikovni kodek:"
 
@@ -10313,7 +10623,7 @@ msgstr "Izberite kodek za slikovni del"
 #. the Audio CODEC label
 #. the audio codec label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:524
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1294
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1296
 msgid "Audio CODEC:"
 msgstr "Zvočni kodek:"
 
@@ -10646,1116 +10956,1125 @@ msgstr ""
 "Priporočeni zvočni kodek: %s\n"
 "Končnice: %s %s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1185
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1187
 msgid "Select File"
 msgstr "Izberite datoteko"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1231
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1233
 msgid "FFMpeg Basic Encoder Options"
 msgstr "Možnosti osnovnega kodirnika FFMpeg"
 
 #. the fileformat label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1244
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1246
 msgid "Fileformat:           "
 msgstr "Vrsta datoteke:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1260
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1262
 msgid "The output multimedia fileformat"
 msgstr "Vrsta izhodne večpredstavnostne datoteke"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1285
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1287
 msgid "The video codec"
 msgstr "Video kodek"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1308
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1310
 msgid "The audio codec"
 msgstr "Zvočni kodek"
 
 #. the audio bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1317
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1319
 msgid "Audio Bitrate:"
 msgstr "Bitna hitrost zvoka:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1333
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1335
 msgid "Audio bitrate in kBit/sec"
 msgstr "Bitna hitrost zvoka v kBit/s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1362
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1364
 msgid "Commonly-used used audio bitrates"
 msgstr "Pogosto uporabljene bitne hitrosti za zvok"
 
 #. the video bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1379
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1381
 msgid "Video Bitrate:"
 msgstr "Bitna hitrost slike:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1396
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1398
 msgid "Video bitrate kBit/sec"
 msgstr "Bitna hitrost slike v kBit/s"
 
 #. the qscale label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1408
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1410
 msgid "qscale:"
 msgstr "qscale:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1426
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1428
 msgid "Use fixed video quantiser scale (VBR) (0=const bitrate)"
 msgstr "Uporabi nespremenljivo lestvico kvantizacije (VBR) (0 = konstantna bitna hitrost)"
 
 #. the qmin label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1437
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1439
 msgid "qmin:"
 msgstr "qmin:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1456
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1458
 msgid "min video quantiser scale (VBR)"
 msgstr "Najm. lestvica kvantizacije slike (VBR)"
 
 #. the qmax label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1467
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1469
 msgid "qmax:"
 msgstr "qmax:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1484
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1486
 msgid "max video quantiser scale (VBR)"
 msgstr "Najv. lestvica kvantizacije slike (VBR)"
 
 #. the qdiff label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1495
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1497
 msgid "qdiff:"
 msgstr "qdiff:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1513
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1515
 msgid "max difference between the quantiser scale (VBR)"
 msgstr "Najv. razlika na lestvici kvantizacije (VBR)"
 
 #. the Frametype label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1524
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1526
 msgid "Frametype:"
 msgstr "Vrsta sličic:"
 
 #. the intra only checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1532
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1534
 msgid "Intra Only"
 msgstr "samo intra"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1538
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1540
 msgid "use only intra frames (I)"
-msgstr "Uporabi le intrasličice (I)"
+msgstr "Uporabi le medsličice (I)"
 
 #. the GOP label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1547
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1549
 msgid "GOP:"
 msgstr "GOP:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1565
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1567
 msgid "Group of picture size"
 msgstr "Skupina velikosti slik"
 
 #. the B_frames label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1575
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1577
 msgid "B-Frames:"
 msgstr "B-sličice:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1592
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1594
 msgid "Max number of B-frames in sequence"
 msgstr "Največje število B-sličic v sekvenci"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1620
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1622
 msgid "FFMpeg Expert Encoder Algorithms"
 msgstr "Algoritmi naprednega kodirnika FFMpeg"
 
 #. the motion estimation label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1632
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1634
 msgid "Motion estimation:"
 msgstr "Ocena gibanja:"
 
 #. the motion estimation combo box
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1641
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1643
 msgid "1 zero (fastest)"
 msgstr "1 brez (najhitrejša)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1642
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1644
 msgid "2 full (best)"
 msgstr "2 polna (najboljša)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1643
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1645
 msgid "3 log"
 msgstr "3 z dnevnikom"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1644
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1646
 msgid "4 phods"
 msgstr "4 phods"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1645
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1647
 msgid "5 epzs (recommended)"
 msgstr "5 epzs (priporočeno)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1646
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1648
 msgid "6 x1"
 msgstr "6 x1"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1647
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1649
 msgid "7 hex (x264 specific)"
 msgstr "7 hex (za x264)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1648
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1650
 msgid "8 umh (x264 specific)"
 msgstr "8 umh (za x264)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1649
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1651
 msgid "9 iter (snow specific)"
 msgstr "9 iter (za snow)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1650
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1652
 msgid "10 tesa (x264 specific)"
 msgstr "10 tesa (za x264)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1657
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1659
 msgid "Select algorithm for motion estimation"
 msgstr "Izberite algoritem za oceno gibanja"
 
 #. the DCT algorithm label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1675
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1677
 msgid "DCT algorithm:"
 msgstr "Algoritem DCT:"
 
 #. the DCT algorithm combo
 #. the IDCT algorithm combo
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1683
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1722
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1685
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1724
 msgid "0 auto"
 msgstr "0 samodejen"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1684
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1686
 msgid "1 fast int"
 msgstr "1 hiter, celoštevilčen"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1685
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1687
 msgid "2 int"
 msgstr "2 int"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1686
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1688
 msgid "3 mmx"
 msgstr "3 mmx"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1687
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1689
 msgid "4 mlib"
 msgstr "4 mlib"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1688
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1690
 msgid "5 altivec"
 msgstr "5 altivec"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1689
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1691
 msgid "6 faan"
 msgstr "6 faan"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1696
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1698
 msgid "Select algorithm for DCT"
 msgstr "Izberite filter za DCT"
 
 #. the IDCT algorithm label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1713
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1715
 msgid "IDCT algorithm:"
 msgstr "Algoritem IDCT:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1723
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1725
 msgid "1 int"
 msgstr "1 int"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1724
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1726
 msgid "2 simple"
 msgstr "2 enostaven"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1725
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1727
 msgid "3 simple mmx"
 msgstr "3 enostaven mmx"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1726
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1728
 msgid "4 libmpeg2mmx"
 msgstr "4 libmpeg2mmx"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1727
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1729
 msgid "5 ps2"
 msgstr "5 ps2"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1728
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1730
 msgid "6 mlib"
 msgstr "6 mlib"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1729
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1731
 msgid "7 arm"
 msgstr "7 arm"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1730
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1732
 msgid "8 altivec"
 msgstr "8 altivec"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1731
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1733
 msgid "9 sh4"
 msgstr "9 sh4"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1732
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1734
 msgid "10 simplearm"
 msgstr "10 simplearm"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1733
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1735
 msgid "11 h264"
 msgstr "11 h264"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1734
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1736
 msgid "12 vp3"
 msgstr "12 vp3"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1735
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1737
 msgid "13 ipp"
 msgstr "13 ipp"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1736
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1738
 msgid "14 xvidmmx"
 msgstr "14 xvidmmx"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1737
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1739
 msgid "15 cavs"
 msgstr "15 cavs"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1738
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1740
 msgid "16 simplearmv5te"
 msgstr "16 enostavenarmv5te"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1739
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1741
 msgid "17 simplearmv6"
 msgstr "17 enostavenarmv6"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1740
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1742
 msgid "18 simplevis"
 msgstr "18 enostavenvis"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1741
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1743
 msgid "19 wmv2"
 msgstr "19 wmv2"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1742
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1744
 msgid "20 faan"
 msgstr "20 faan"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1743
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1745
 msgid "21 ea"
 msgstr "21 ea"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1744
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1746
 msgid "22 simpleneon"
 msgstr "22 enostavenneon"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1745
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1747
 msgid "23 simplealpha"
 msgstr "23 enostavenalfa"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1753
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1755
 msgid "Select algorithm for IDCT"
 msgstr "Izberite algoritem za IDCT"
 
 #. the MB_DECISION label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1771
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1773
 msgid "MB Decision:"
 msgstr "Odločitev MB:"
 
 #. the MB_DECISION combo
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1779
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1781
 msgid "simple (use mb_cmp)"
 msgstr "enostavni (uporabi mb_cmp)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1780
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1782
 msgid "bits (the one which needs fewest bits)"
 msgstr "biti (tisti, ki potrebuje najmanj bitov)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1781
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1783
 msgid "rate distortion"
 msgstr "Popačenje hitrosti"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1789
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1791
 msgid "Select algorithm for macroblock decision"
 msgstr "Izberite algoritem za odločanje makrobloka"
 
 #. the Coder Type label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1807
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1809
 msgid "Coder Type:"
 msgstr "Vrsta kodirnika:"
 
 #. the MB_DECISION combo
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1815
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1817
 msgid "0 vlc"
 msgstr "0 vlc"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1816
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1818
 msgid "1 ac"
 msgstr "1 ac"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1824
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1826
 msgid "Coder type"
 msgstr "Vrsta kodirnika"
 
 #. the Predictor label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1842
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1844
 msgid "Predictor:"
 msgstr "Napovedovalec:"
 
 #. the MB_DECISION combo
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1850
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1852
 msgid "0 left"
 msgstr "0 levo"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1851
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1853
 msgid "1 plane"
 msgstr "1 ravninsko"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1852
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1854
 msgid "2 median"
 msgstr "2 sredinsko"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1860
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1862
 msgid "Prediction method"
 msgstr "Metoda napovedovanja"
 
 #. the Macroblock compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1878
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1880
 msgid "Macroblock cmp:"
 msgstr "Primerjava makrobloka:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1894
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1896
 msgid "Select macroblock compare function "
 msgstr "Izberite funkcijo primerjave makrobloka"
 
 #. the ildct compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1912
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1914
 msgid "ildct cmp:"
 msgstr "Primerjava ildct:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1928
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1930
 msgid "Select ildct compare function "
 msgstr "Izberite funkcijo primerjave ildct"
 
 #. the fullpel compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1947
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1949
 msgid "Fullpel cmp:"
 msgstr "Primerjava cmp:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1963
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1965
 msgid "Select fullpel compare function "
 msgstr "Izberite funkcijo primerjave fullpell"
 
 #. the subpel compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1981
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1983
 msgid "Subpel cmp:"
 msgstr "Primerjava subpel:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1997
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1999
 msgid "Select subpel compare function"
 msgstr "Izberite funkcijo primerjave subpel"
 
 #. the pre motion estimation compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2015
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2017
 msgid "Pre motion estimation cmp:"
 msgstr "Primerjava ocene gibanja:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2031
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2066
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2033
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2068
 msgid "Select pre motion estimation compare function "
 msgstr "Izberite funkcijo primerjave ocene gibanja"
 
 #. the frame skip compare function label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2049
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2051
 msgid "Frame skip cmp:"
 msgstr "Primerjaj preskočene sličice:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2101
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2103
 msgid "FFMpeg Expert Flags"
 msgstr "Napredne zastavice FFMpeg"
 
 #. LABELS
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2134
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2136
 msgid "General flags:"
 msgstr "Splošne zastavice:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2141
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2143
 msgid "H263:"
 msgstr "H263:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2149
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2151
 msgid "MPEG2/4:"
 msgstr "MPEG2/4:"
 
 #. CHECKBUTTONS
 #. the Bitexact checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2161
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2163
 msgid "Bitexact"
 msgstr "Na bit natančno"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2167
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2169
 msgid "Only use bit exact algorithms (for codec testing)"
 msgstr "Uporabi le na bit natančne algoritme (za preizkušanje kodekov)"
 
 #. the Advanced intra coding checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2175
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2177
 msgid "Advanced intra coding"
 msgstr "Napredno medkodiranje"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2181
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2183
 msgid "Activate intra frame coding (only h263+ CODEC)"
 msgstr "Vključi kodiranje medsličic (le za kodek h263+)"
 
 #. the 4 Motion Vectors checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2189
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2191
 msgid "4 Motion Vectors"
 msgstr "Štirje vektorji gibanja"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2195
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2197
 msgid "Use four motion vectors by macroblock (only MPEG-4 CODEC)"
 msgstr "Uporabi štiri vektorje gibanja za makroblok (velja le za kodek MPEG-4)"
 
 #. the Closed GOP checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2205
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2207
 msgid "Closed GOP"
 msgstr "Zaprti GOP"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2211
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2213
 msgid "Closed group of pictures"
 msgstr "Zaprta skupina slik"
 
 #. the Unlimited motion vector checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2218
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2220
 msgid "Unlimited motion vector"
 msgstr "Neomejeni vektor gibanja"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2224
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2226
 msgid "Enable unlimited motion vector (only h263+ CODEC)"
 msgstr "Omogoči neomejen vektor gibanja (le za kodek h263+)"
 
 #. the Partitioning checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2232
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2234
 msgid "Partitioning"
 msgstr "Porazdeljevanje"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2238
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2240
 msgid "Use data partitioning (only MPEG-4 CODEC)"
 msgstr "Uporabi porazdeljevanje podatkov (le za kodek MPEG-4)"
 
 #. the Strict GOP checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2249
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2251
 msgid "Strict GOP"
 msgstr "Strogi GOP"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2255
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2257
 msgid "Strictly enforce GOP size"
 msgstr "Strogo uveljavljaj velikost GOP"
 
 #. the Use slice struct checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2265
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2267
 msgid "Use slice struct"
 msgstr "Uporabi strukturo rezin"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2271
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2273
 msgid "Enable slice structured mode (only h263+ CODEC)"
 msgstr "Omogoči način strukturiranosti rezin (velja le za kodek h263+)"
 
 #. the Use Alt scantable checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2279
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2281
 msgid "Use alt scantable"
 msgstr "Uporabi alternativno pičlost"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2285
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2287
 msgid "Enable alternate scantable (only MPEG-2 MPEG-4 CODECs)"
 msgstr "Omogoči alternativno pičlost (velja le za kodeka MPEG-2 in MPEG-4)"
 
 #. the Use interlaced me checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2296
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2298
 msgid "Use interlaced me"
 msgstr "Uporabi prepleteni me"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2302
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2304
 msgid "Enable interlaced motion estimation"
 msgstr "Omogoči ocenjevanje prepletenega gibanja"
 
 #. the Use AIV checkbutton
 #. the use_dct8x8 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2310
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2718
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2312
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2720
 msgid "Use AIV"
 msgstr "Uporabi AIV"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2316
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2318
 msgid "Enable Alternative inter vlc (only h263+ CODEC)"
 msgstr "Omogoči alternativni vmesni vlc (velja le za kodek h263+)"
 
 #. the interlace dct checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2326
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2328
 msgid "Interlace DCT"
 msgstr "Prepleti DCT"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2332
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2334
 msgid "Use interlaced dct"
 msgstr "Uporabi prepleteni DCT"
 
 #. the Use OBMC checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2340
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2342
 msgid "Overlapped block"
 msgstr "Prekrivajoči blok"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2346
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2348
 msgid "Enable use overlapped block motion compensation (only h263+ CODEC)"
 msgstr "Omogoči uporabo kompenzacije prekrivajočega blokiranega gibanja (velja le za kodek h263+)"
 
 #. the quarter pel checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2356
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2358
 msgid "quarter pel"
 msgstr "Četrtinski PEL"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2362
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2364
 msgid "Enable 1/4-pel"
 msgstr "Omogoči 1/4-PEL"
 
 #. the Use Loop checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2369
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2371
 msgid "Loop Filter"
 msgstr "Zankaj filter"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2375
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2377
 msgid "Use loop filter (only h263+ CODEC)"
 msgstr "Uporabi zankani filter (velja le za kodek h263+)"
 
 #. the Use qprd checkbutton
 #. the use_skip_rd checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2384
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2822
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2386
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2824
 msgid "Use qprd"
 msgstr "Uporabi QPRD"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2390
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2392
 msgid "Use rate distortion optimization for qp selection"
 msgstr "Uporabi optimizacijo popačenj hitrosti za izbor qp"
 
 #. the Use cbprd checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2399
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2401
 msgid "Use cbprd"
 msgstr "Uporabi CBPRD"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2405
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2407
 msgid "Use rate distortion optimization for cbp"
 msgstr "Uporabi optimizacijo popačenj hitrosti za cbp"
 
 #. the Use MV0 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2414
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2416
 msgid "Use MV0"
 msgstr "Uporabi MV0"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2420
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2422
 msgid "Try to encode each MB with MV=<0,0> and choose the better one (has no effect if mbd=0)"
 msgstr "Poskusi kodirati vsak MB z MV=<0,0>in izberi boljšega (ne učinkuje, če je mbd=0)"
 
 #. the Use Normalize checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2429
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2431
 msgid "Normalize"
 msgstr "Normaliziraj"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2435
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2437
 msgid "Normalize adaptive quantization"
 msgstr "Normaliziraj s prilagodljivo kvantizacijo"
 
 #. the SVCD scan offset checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2446
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2448
 msgid "SVCD scan offset"
 msgstr "Zamik pregledovanja SVCD"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2452
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2454
 msgid "Enable SVCD scan offset placeholder"
 msgstr "Omogoči ogrado zamika pregledovanja SVCD"
 
 #. the dont_recode checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2469
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2471
 msgid "Dont Recode"
 msgstr "Brez ponovnega kodiranja"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2476
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2478
 msgid "Bypass the FFMPEG Vidoencoder where inputframes can be copied 1:1 from an input MPEG videofile.This experimental feature provides lossless MPEG video cut, but works only for the MPEG Fileformats."
 msgstr "Izpusti kodirnik slike FFMPEG, če je mogoče vhodne sličice kopirati 1:1 iz vhodne datoteke MPEG. Ta eksperimentalna možnost zagotavlja rezanje slike MPEG brez stiskanja, vendar deluje le za vrste datotek MPEG."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2507
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2509
 msgid "FFMpeg Expert Flags2"
 msgstr "Napredne zastavice2 FFMpeg"
 
 #. LABELS
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2540
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2542
 msgid "General flags2:"
 msgstr "Splošne zastavice2:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2547
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2549
 msgid "H264:"
 msgstr "H264:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2555
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2557
 msgid "Partition X264:"
 msgstr "Porazdeljevanje X264:"
 
 #. CHECKBUTTONS
 #. the Fast checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2567
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2569
 msgid "Fast Non-Compliant"
 msgstr "Hitro "
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2573
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2575
 msgid "Allow non spec compliant speedup tricks"
 msgstr "Dovoli specifikacijam nezdružljive trike pospeševanja"
 
 #. the use_bpyramid checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2581
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2583
 msgid "Bpyramid"
 msgstr "B-piramida"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2587
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2589
 msgid "allow B-frames to be used as references for predicting.(for H264 codec)"
 msgstr "Dovoli uporabi B-sličic kot sklicnih točk za napovedovanje (za kodek H264)."
 
 #. the partition_X264_PART_I4X4 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2595
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2597
 msgid "I4x4"
 msgstr "I4x4"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2601
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2603
 msgid "enable 4x4 partitions in I-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 4x4 v I-sličicah (za kodek H264)"
 
 #. the use_local_header checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2612
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2614
 msgid "Local Header"
 msgstr "Krajevna glava"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2618
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2620
 msgid "Place global headers at every keyframe instead of in extradata"
 msgstr "Umesti splošno glavo na vsako ključno sličico namesto v posebne podatke"
 
 #. the use_wpred checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2625
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2627
 msgid "Weighted Biprediction"
 msgstr "Utežena bi-napoved"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2631
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2633
 msgid "weighted biprediction for B-frames (for H264 codec)"
 msgstr "Utežena bi-napoved za B-sličice (za kodek H264)"
 
 #. the partition_X264_PART_I8X8 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2639
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2641
 msgid "I8x8"
 msgstr "I8x8"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2645
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2647
 msgid "enable 8x8 partitions in I-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8 v I-sličicah (za kodek H264)"
 
 #. the use_brdo checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2657
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2659
 msgid "B Rate Distortion"
 msgstr "Popačenje hitrosti B"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2663
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2665
 msgid "B-frame rate-distortion optimization"
 msgstr "Uporabi optimizacijo popačenj hitrosti B-sličic"
 
 #. the use_mixed_refs checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2673
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2675
 msgid "Mixed Refs"
 msgstr "Mešane ref."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2679
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2681
 msgid "one reference per partition, as opposed to one reference per macroblock (for H264 codec)"
 msgstr "En sklic na particijo namesto enega sklica na makro-blok (za kodek H264)"
 
 #. the partition_X264_PART_P8X8 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2687
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2689
 msgid "P8x8"
 msgstr "P8x8"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2693
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2695
 msgid "enable 8x8, 16x8 and 8x16 partitions in P-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8, 16x8 in 8x16 v P-sličicah (za kodek H264)"
 
 #. the use_ivlc checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2704
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2706
 msgid "Intra VLC"
 msgstr "Vmesni VLC"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2710
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2712
 msgid "Use MPEG-2 intra VLC table."
 msgstr "Uporabi tabelo vmesnega VLC za MPEG-2."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2724
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2726
 msgid "high profile 8x8 transform (for H264 codec)"
 msgstr "Visoko profilna transformacija 8x8 (za kodek H264)"
 
 #. the partition_X264_PART_P4X4 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2732
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2734
 msgid "P4X4"
 msgstr "P4X4"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2738
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2740
 msgid "enable 4x4, 8x4 and 4x8 partitions in P-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 4x4, 8x4 in 4x8 v P-sličicah (za kodek H264)"
 
 #. the use_memc_only checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2748
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2750
 msgid "Only ME/MC"
 msgstr "Le ME/MC"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2754
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2756
 msgid "Only do ME/MC (I frames -> ref, P frame -> ME+MC)"
 msgstr "Izvajaj le ME/MC (sličice I -> ref, sličice P -> ME+MC)"
 
 #. the use_fastpskip checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2762
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2764
 msgid "Fast Pskip"
 msgstr "Hitri preskok P (pskip)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2768
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2770
 msgid "fast pskip (for H264 codec)"
 msgstr "Hitri P-preskok (za kodek H264)"
 
 #. the partition_X264_PART_B8X8 checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2776
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2778
 msgid "B8x8"
 msgstr "B8x8"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2782
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2784
 msgid "enable 8x8 16x8 and 8x16 partitions in B-frames.(for X264 codec)"
 msgstr "Omogoči razdelke 8x8, 16x8 in 8x16 v B-sličicah (za kodek H264)"
 
 #. the use_drop_frame_timecode checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2793
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2795
 msgid "DropFrame Timecode"
 msgstr "Časovna koda opuščenih sličic (DF)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2799
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2801
 msgid "timecode is in drop frame format"
 msgstr "Časovna koda je v zapisu opuščene sličice"
 
 #. the use_aud checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2806
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2808
 msgid "AccessUnit"
 msgstr "Enota dostopa"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2812
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2814
 msgid "use access unit delimiters (for H264 codec)"
 msgstr "Uporabi omejilnike dostopne enote (za kodek H264)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2828
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2830
 msgid "RD optimal MB level residual skipping"
 msgstr "Optimalna raven MB za rezidualno preskakovanje v RD"
 
 #. the use_MB_Tree ratecontrol checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2835
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2837
 msgid "MB-Tree RC"
 msgstr "Nadz. hitrosti MB-drevesa"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2841
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2843
 msgid "use macroblock tree ratecontrol (x264 only)"
 msgstr "Uporabi nadzo hitrosti drevesa makro bloka (samo x264)"
 
 #. the use_chunks checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2850
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2852
 msgid "Use chunks"
 msgstr "Uporabi koščke"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2856
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2858
 msgid "Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries"
 msgstr "Vhorni bitni tok je lahko porezan ob mejah paketa namesto le pri mejah sličice"
 
 #. the use_non_linear_quant checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2866
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2868
 msgid "Nonlinear Quant"
 msgstr "Nelinearna kvantizacija"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2872
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2874
 msgid "Use MPEG-2 nonlinear quantizer"
 msgstr "Uporabi nelinearni kvantizator MPEG-2"
 
 #. the use_PSY checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2880
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2882
 msgid "PSY"
 msgstr "PSI"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2886
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2888
 msgid "use psycho visual optimizations"
 msgstr "Uporabi psiho-vizualne optimizacije"
 
 #. the use_bit_reservoir checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2895
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2897
 msgid "Bit Reservoir"
 msgstr "Bitni tank"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2901
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2903
 msgid "Use a bit reservoir when encoding if possible"
 msgstr "Uporabi bitni tank pri kodiranju, če je mogoče"
 
 #. the compute_SSIM checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2909
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2911
 msgid "Compute SSIM"
 msgstr "Izračunaj SSIM"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2915
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2917
 msgid "Compute SSIM during encoding, error[] values are undefined."
 msgstr "Izračunaj SSIM med kodiranjem, vrednosti error[] so nedoločene."
 
 #. the use_gmc checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2926
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2932
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2928
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2934
 msgid "Use GMC"
 msgstr "Uporabi GMC"
 
+#. the INTRA_REFRESH checkbutton
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2942
+msgid "Intra Refresh"
+msgstr "Vmesna osvežitev"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2948
+msgid "Use periodic insertion of intra blocks instead of keyframes."
+msgstr "Uporabi periodično vstavljanje vmesnih blokov namesto ključnih sličic."
+
 #. the input_preserved checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2941
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2947
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2959
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2965
 msgid "Input Preserved"
 msgstr "Ohrani vhod"
 
 #. the use_gray checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2956
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2974
 msgid "Use Gray"
 msgstr "Uporabi sivo"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2962
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2980
 msgid "Only encode grayscale"
 msgstr "Kodiraj le sivinsko"
 
 #. the use_emu_edge checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2972
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2990
 msgid "Emu Edges"
 msgstr "Robovi EMU"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2978
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2996
 msgid "Dont draw edges"
 msgstr "Ne riši robov"
 
 #. the use_truncated checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2987
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3005
 msgid "Truncated"
 msgstr "Porezano"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2993
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3011
 msgid "Input bitstream might be truncated at a random location instead of only at frame boundaries"
 msgstr "Vhorni bitni tok je lahko porezan na naključnih mestih namesto le pri mejah sličice"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3025
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3043
 msgid "FFMpeg Expert Encoder Options"
 msgstr "Napredne možnosti kodirnika FFMpeg"
 
 #. the qblur label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3038
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3056
 msgid "qblur:"
 msgstr "kvzabriši (qblur):"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3054
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3072
 msgid "Video quantiser scale blur (VBR) amount of qscale smoothing over time (0.0-1.0)"
 msgstr "Količina spremembe na lestvici kvantizacije zabrisanja slike (VBR) skozi čas (0,0-1,0)"
 
 #. the qcomp label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3068
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3086
 msgid "qcomp:"
 msgstr "kvkomp (qcomp):"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3084
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3102
 msgid "Video quantiser scale compression (VBR) amount of qscale change between easy & hard scenes (0.0-1.0)"
 msgstr "Količina spremembe na lestvici kvantizacije stiskanja slike (VBR) med enostavnimi in težavnimi prizori (0,0-1,0)"
 
 #. the rc-init-cplx label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3095
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3113
 msgid "rc-init-cplx:"
 msgstr "Začetna kompl. (rc-init-cplx):"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3111
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3129
 msgid "Initial complexity for 1-pass encoding"
 msgstr "Začetna kompleksnost za kodiranje v enem prehodu"
 
 #. the b-qfactor label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3122
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3140
 msgid "b-qfactor:"
 msgstr "b-kvfaktor:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3138
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3156
 msgid "qp factor between p and b frames"
 msgstr "Faktor qp med sličicami p in b"
 
 #. the i-qfactor label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3148
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3166
 msgid "i-qfactor:"
 msgstr "i-kvfaktor:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3164
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3182
 msgid "qp factor between p and i frames"
 msgstr "Faktor qp med sličicami p in i"
 
 #. the b-qoffset label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3175
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3193
 msgid "b-qoffset:"
 msgstr "b-kvzamik (b-qoffset):"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3192
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3210
 msgid "qp offset between p and b frames"
 msgstr "Zamik qp med sličicami p in b"
 
 #. the i-qoffset label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3202
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3220
 msgid "i-qoffset:"
 msgstr "i-kvzamik (i-qoffset):"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3218
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3236
 msgid "qp offset between p and i frames"
 msgstr "Zamik qp med sličicami p in i"
 
 #. the Bitrate Tolerance label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3229
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3247
 msgid "Bitrate Tol:"
 msgstr "Tol. bitne hitrosti:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3245
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3263
 msgid "Set video bitrate tolerance (in kbit/s)"
 msgstr "Nastavite toleranco bitne hitrosti slike (v kbitih/s)"
 
 #. the Maxrate Tolerance label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3255
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3273
 msgid "Maxrate Tol:"
 msgstr "Najv. tol. hitr.:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3272
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3290
 msgid "Set max video bitrate tolerance (in kbit/s)"
 msgstr "Nastavite najvišjo toleranco bitne hitrosti slike (v kbitih/s)"
 
 #. the Minrate Tolerance label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3284
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3302
 msgid "Minrate Tol:"
 msgstr "Najm. tol. hitr.:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3300
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3318
 msgid "Set min video bitrate tolerance (in kbit/s)"
 msgstr "Nastavite najmanjšo toleranco bitne hitrosti slike (v kbitih/s)"
 
 #. the Bufsize label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3311
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3329
 msgid "Bufsize:"
 msgstr "Velikost medpomnilnika:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3327
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3345
 msgid "Set ratecontrol buffer size (in kbyte)"
 msgstr "Nastavite velikost medpomnilnika nadzornika hitrosti (v kbajtih)"
 
 #. the strictness label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3338
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3356
 msgid "strictness:"
 msgstr "Strogost:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3354
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3372
 msgid "How strictly to follow the standards"
 msgstr "Kako strogo naj bodo upoštevani standardi"
 
 #. the mb-qmin label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3366
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3384
 msgid "mb-qmin:"
 msgstr "mb-qmin:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3382
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3400
 msgid "Min macroblock quantiser scale (VBR)"
 msgstr "Najmanjši makroblok lestvice kvantizacije (VBR)"
 
 #. the mb-qmax label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3393
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3411
 msgid "mb-qmax:"
 msgstr "mb-qmax:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3409
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3427
 msgid "Max macroblock quantiser scale (VBR)"
 msgstr "Največji makroblok lestvice kvantizacije (VBR)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3438
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3456
 msgid "FFMpeg 2 pass and multiplexer expert settings"
 msgstr "Napredne nastavitve drugega prehoda in multipleksiranja FFMpeg"
 
 #. the pass_logfile checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3450
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3468
 msgid "2 Pass Encoding"
 msgstr "Kodiranje v dveh korakih"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3456
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3474
 msgid "Activate 2 pass encoding when set"
 msgstr "Aktiviraj kodiranje z dvemi prehodi, če je nastavljeno"
 
 #. the pass_logfile label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3465
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3483
 msgid "Pass Logfile:"
 msgstr "Dnevniška datoteka prehoda:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3481
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3499
 msgid "The pass logfile is only used as workfile for 2-pass encoding"
 msgstr "Zapisnik prehodov je uporabljen kot delovna datoteka le za kodiranje v drugem prehodu"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3492
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3510
 msgid "Select pass logfile via file browser"
 msgstr "Izberite datoteko zapisnika prehoda prek izbirnika datotek"
 
 #. the video bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3513
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3531
 msgid "Mux Rate:"
 msgstr "Hitrost multipleksiranja:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3530
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3548
 msgid "Multiplexer rate Bit/sec"
 msgstr "Hitrost multiplekserja bitov/s"
 
 #. the video bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3541
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3559
 msgid "Mux Packetsize:"
 msgstr "Velikost paketov multiplekserja:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3558
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3576
 msgid "Multiplexer packet size"
 msgstr "Velikost paketa multipleksiranja"
 
 #. the video bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3571
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3589
 msgid "Mux Preload:"
 msgstr "Prednaložitev multiplekserja:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3588
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3606
 msgid "Set the initial demux-decode delay (seconds)"
 msgstr "Nastavite začeten časovni zamik demultipleksiranja-dekodiranja (v sekundah)"
 
 #. the video bitrate label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3600
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3618
 msgid "Mux Max Delay:"
 msgstr "Največja zakasnitev multipleksiranja:"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3617
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3635
 msgid "Set the maximum demux-decode delay (seconds)"
 msgstr "Nastavite najmanjši časovni zamik demultipleksiranja-dekodiranja (v sekundah)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3646
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3664
 msgid "FFMpeg File Comment settings"
 msgstr "Nastavitve komentarjev datotek FFMpeg"
 
 #. the title lable
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3659
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3677
 msgid "Title:"
 msgstr "Naslov:"
 
 #. the Author lable
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3682
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3700
 msgid "Author:"
 msgstr "Avtor:"
 
 #. the Copyright lable
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3704
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3722
 msgid "Copyright:"
 msgstr "Avtorske pravice:"
 
 #. the filecomment_label lable
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3749
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3767
 msgid ""
 "\n"
 "Text tags will be inserted in the\n"
@@ -11766,96 +12085,96 @@ msgstr ""
 "končni film za vsa ne prazna vnosna polja."
 
 #. the Set Aspectratio checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3770
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3788
 msgid "Set aspect ratio"
 msgstr "Določite razmerje stranic"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3776
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3794
 msgid "Store aspect ratio information (width/height) in the output video"
 msgstr "Shrani podatke o razmerju stranic (širina/višina) v slikovni izhod"
 
 #. the ASPECT combo
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3784
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3802
 msgid "Auto"
 msgstr "Samodejno"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3785
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3803
 msgid "3:2"
 msgstr "3:2"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3786
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3804
 msgid "4:3"
 msgstr "4:3"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3787
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3805
 msgid "16:9"
 msgstr "16:9"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3796
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3814
 msgid "Select aspect ratio"
 msgstr "Izberite razmerje stranic"
 
 #. the show expert settings label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3816
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3834
 msgid "Expert settings:"
 msgstr "Napredne nastavitve:"
 
 #. the Set Aspectratio checkbutton
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3825
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3843
 msgid "Show expert settings"
 msgstr "Pokaži napredne nastavitve"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3831
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3849
 msgid "Show video encoder expert settings"
 msgstr "Pokaži napredne nastavitve video kodirnika"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3982
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4000
 msgid "FFMPEG Video Encode Parameters"
 msgstr "Parametri kodiranja videa FFMPEG"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4008
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4026
 msgid "Parameter Presets"
 msgstr "Prednastavljeni parametri"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4025
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4043
 msgid "** keep current parameters  **"
 msgstr "** ohrani trenutne parametre **"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4070
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4088
 msgid "Predefined encoder parameter settings"
 msgstr "Vnaprej določene nastavitve parametrov kodirnika"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4093
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4111
 msgid "Parameter Values"
 msgstr "Vrednosti parametrov"
 
 #. the notebook page label for file comment settings
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4117
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4135
 msgid "File Comment"
 msgstr "Komentar datoteke"
 
 #. the notebook page label for basic options
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4131
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4149
 msgid "Basic Options"
 msgstr "Osnovne možnosti"
 
 #. the notebook page label for expert algorithms
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4147
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4165
 msgid "Algorithms"
 msgstr "Algoritmi"
 
 #. the notebook page label for expert flags
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4161
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4179
 msgid "Expert Flags"
 msgstr "Napredne zastavice"
 
 #. the notebook page label for expert flags
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4176
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4194
 msgid "Expert Flags2"
 msgstr "Napredne zastavice2"
 
 #. the notebook page label for 2 Pass Expert settings
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4206
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:4224
 msgid "2Pass/Mux"
 msgstr "2prehoda/mux"
 
@@ -11893,7 +12212,7 @@ msgstr ""
 "zapiše sliko v kodekih AVI/DivX ali MPEG1, MPEG2 (DVD) ali MPEG4\n"
 "temelji na FFMPEG, avtor Fabrice Bellard"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1914
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1950
 #, c-format
 msgid ""
 "The file: %s\n"
@@ -11920,27 +12239,27 @@ msgstr[3] ""
 "vsebuje preveč vhodnih zvočnih sledi\n"
 "(uporabljene bodo le %d sledi, preostale bodo prezrte)."
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2624
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2673
 #, c-format
 msgid "Could not create pass logfile:'%s'%s"
 msgstr "Zapisniške datoteke prehoda ni bilo možno ustvariti:'%s'%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2647
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2696
 #, c-format
 msgid "Could not open pass logfile:'%s'%s"
 msgstr "Zapisniške datoteke prehoda ni bilo mogoče odpreti:'%s'%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2723
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2772
 #, c-format
 msgid "Unknown Audio CODEC: %s"
 msgstr "Neznan zvočni kodek: %s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2730
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2779
 #, c-format
 msgid "CODEC: %s is no AUDIO CODEC!"
 msgstr "KODEK: %s ni ZVOČNI KODEK!"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2792
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2841
 #, c-format
 msgid ""
 "could not open audio codec: %s\n"
@@ -11953,13 +12272,13 @@ msgstr ""
 "(poskusite pretvoriti v mero vzorčenja 48 KHz, 44,1KHz ali 32 kHz,\n"
 "ki jo podpira večina kodekov)"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2850
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2854
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2899
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2903
 #, c-format
 msgid "Frame width and height must be a multiple of 2\n"
 msgstr "Širina in višina kadra oz. sličice mora biti večkratnik števila 2\n"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2929
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2978
 #, c-format
 msgid "Could not create videofile:'%s'%s"
 msgstr "Videodatoteke ni mogoče ustvariti: '%s'%s"
@@ -11971,7 +12290,7 @@ msgstr "Videodatoteke ni mogoče ustvariti: '%s'%s"
 #. * in my tests this case did not happen yet....
 #. * .. but display a warning to find out in further test
 #.
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3168
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3217
 msgid "Black dummy frame was added"
 msgstr "Dodana je bila nadomestna črna sličica"
 
@@ -11983,7 +12302,7 @@ msgstr "Shrani parametre kodirnika ffmpeg"
 msgid "Load ffmpeg-encoder parameters"
 msgstr "Naloži parametre kodirnika ffmpeg"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:399
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:412
 #, c-format
 msgid ""
 "Could not read ffmpeg video encoder parameters from file:\n"
@@ -11992,7 +12311,7 @@ msgstr ""
 "Parametrov kodirnika slike ffmpeg ni mogoče prebrati iz datoteke:\n"
 "%s"
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:476
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:489
 #, c-format
 msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 msgstr "Datoteke parametro kodirnika slike ffmpeg ni mogoče shraniti:'%s'%s"
