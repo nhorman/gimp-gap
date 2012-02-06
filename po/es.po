@@ -5,8 +5,6 @@
 # Copyright (C) 1998-2005, 2006, 2008, 2011, 2012 Free Software Foundation, Inc.
 # Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
 #
-#
-#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2006.
 # Rodrigo Marcos Fombellida <rmarcos_geo@yahoo.es>, 2005.
 # María Majadas <alixis82@gmail.com>, 2008.
@@ -20,8 +18,8 @@ msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-05 18:46+0000\n"
-"PO-Revision-Date: 2012-02-06 09:46+0100\n"
+"POT-Creation-Date: 2012-02-06 08:48+0000\n"
+"PO-Revision-Date: 2012-02-06 12:37+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +85,7 @@ msgstr "Mensaje de GAP"
 #: ../gap/gap_arr_dialog.c:1945
 #, c-format
 msgid "ERROR: could not create directory:'%s'%s"
-msgstr "Error: No se pudo crear la carpeta: «%s»%s"
+msgstr "Error: no se pudo crear la carpeta: «%s»%s"
 
 #: ../gap/gap_arr_dialog.c:1998
 #, c-format
@@ -229,7 +227,7 @@ msgstr "Decrementando la densidad mediante borrados de fotogramas…"
 #: ../gap/gap_base_ops.c:236 ../gap/gap_base_ops.c:291
 #, c-format
 msgid "Error: could not rename frame %d to %d"
-msgstr "Error: No puedo renombrar el fotograma %d a %d"
+msgstr "Error: no se puede renombrar el fotograma %d a %d"
 
 #: ../gap/gap_base_ops.c:213
 msgid "Density duplicating frames..."
@@ -238,7 +236,7 @@ msgstr "Duplicando la densidad de fotogramas…"
 #: ../gap/gap_base_ops.c:368 ../gap/gap_base_ops.c:542
 #, c-format
 msgid "Error: could not save frame %s"
-msgstr "Error: No puedo guardar el fotograma %s"
+msgstr "Error: no se puede guardar el fotograma %s"
 
 #: ../gap/gap_base_ops.c:472 ../gap/gap_base_ops.c:604
 #: ../gap/gap_base_ops.c:697 ../gap/gap_base_ops.c:704
@@ -247,7 +245,7 @@ msgstr "Error: No puedo guardar el fotograma %s"
 #: ../gap/gap_base_ops.c:920 ../gap/gap_base_ops.c:928 ../gap/gap_lib.c:3337
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
-msgstr "Error: No puedo renombrar el fotograma %ld a %ld"
+msgstr "Error: no se puede renombrar el fotograma %ld a %ld"
 
 #: ../gap/gap_base_ops.c:592
 msgid "Duplicating frames..."
@@ -1373,7 +1371,7 @@ msgid ""
 msgstr ""
 "si MPlayer no está en su PATH o no se llama «mplayer»\n"
 "tiene que establecer la variable de entorno GAP_MPLAYER_PROG\n"
-"apuntando a la aplicación mplayer y reiniciar El Gimp"
+"apuntando a la aplicación mplayer y reiniciar Gimp"
 
 #: ../gap/gap_decode_mplayer.c:266
 msgid "An error occurred while trying to call mplayer:"
@@ -1523,7 +1521,7 @@ msgstr "JPEG progresivo:"
 msgid ""
 "Enable progressive jpeg encoding(is ignored when other formats are used)"
 msgstr ""
-"Habilitar codificación JPEG progresiva (se ignora cuando se usan otros "
+"Activar codificación JPEG progresiva (se ignora cuando se usan otros "
 "formatos)"
 
 #: ../gap/gap_decode_mplayer.c:572
@@ -1533,7 +1531,7 @@ msgstr "Línea de base JPEG:"
 #: ../gap/gap_decode_mplayer.c:573
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
 msgstr ""
-"Habilitar codificación de línea de base JPEG (se ignora cuando se usan otros "
+"Activar codificación de línea de base JPEG (se ignora cuando se usan otros "
 "formatos)"
 
 #: ../gap/gap_decode_mplayer.c:584
@@ -1623,7 +1621,7 @@ msgid ""
 "%s\n"
 "maybe mplayer has failed or was cancelled"
 msgstr ""
-"no puedo encontrar ningún fotograma extraído,\n"
+"no se puede encontrar ningún fotograma extraído,\n"
 "%s\n"
 "quizá MPlayer ha fallado o se ha cancelado"
 
@@ -1708,7 +1706,7 @@ msgid ""
 "mplayer has failed or was cancelled"
 msgstr ""
 "No se pudo encontrar ningún fotograma extraído,\n"
-"MPlayer falló o fue cancelado"
+"MPlayer falló o se canceló"
 
 #: ../gap/gap_decode_mplayer.c:1629 ../gap/gap_decode_xanim.c:1198
 msgid "Renaming frames..."
@@ -1741,7 +1739,7 @@ msgid ""
 msgstr ""
 "si su «edición de exportación XAnim» no está en su PATH o no se llama xanim\n"
 "tiene que establecer la variable de entorno GAP_XANIM_PROG\n"
-"a su programa de exportación «XAnim» y reiniciar El Gimp"
+"a su programa de exportación «XAnim» y reiniciar Gimp"
 
 #: ../gap/gap_decode_xanim.c:184
 msgid "An error occurred while trying to call xanim:"
@@ -1844,14 +1842,14 @@ msgid ""
 "%s\n"
 "maybe xanim has failed or was cancelled"
 msgstr ""
-"no puedo encontrar ningún fotograma extraído,\n"
+"no se puede encontrar ningún fotograma extraído,\n"
 "%s\n"
-"quizás XAnim ha fallado o fue cancelado"
+"quizás XAnim ha fallado o se canceló"
 
 #: ../gap/gap_decode_xanim.c:761
 #, c-format
 msgid "could not execute %s (check if xanim is installed)"
-msgstr "no puedo ejecutar %s (compruebe si XAnim está instalado)"
+msgstr "no se puede ejecutar %s (compruebe si XAnim está instalado)"
 
 #: ../gap/gap_decode_xanim.c:769
 #, c-format
@@ -1906,8 +1904,8 @@ msgid ""
 "can't find any extracted frames,\n"
 "xanim has failed or was cancelled"
 msgstr ""
-"no puedo encontrar ningún fotograma extraído,\n"
-"XAnim falló o fue cancelado"
+"no se puede encontrar ningún fotograma extraído,\n"
+"XAnim falló o se canceló"
 
 #: ../gap/gap_detail_align_exec.c:617
 msgid "Frame Phase:"
@@ -1966,6 +1964,13 @@ msgid ""
 "A path with 2 points can be used to move point2 to point1.(via simple move "
 "operation without rotate and scale)"
 msgstr ""
+"Este filtro requiere una ruta actual con 4 puntos, de los cuales el 1 y el 2 "
+"marcan posiciones de referencia y el 3 y el 4 marcan posiciones en la capa "
+"de destino. Transforma la capa de destino de manera que el punto 3 se mueve "
+"al punto 1 y el punto 4 se mueve al punto 2 (lo que puede incluir "
+"transformaciones de rotación y escalado).\n"
+"Se puede usar una ruta con 2 puntos para mover el punto 2 al punto 1 (por "
+"medio de una operación de traslación simple sin rotación ni escalado)"
 
 #: ../gap/gap_detail_tracking_main.c:220
 msgid "DetailTracking Config..."
@@ -1998,6 +2003,9 @@ msgid ""
 "This filter requires a current path with one or 2 anchor points\n"
 "to mark coordinate(s) to be tracked in the target frame(s)"
 msgstr ""
+"Este filtro requiere una ruta actual con uno o dos puntos de ancla\n"
+"para marcar la(s) coordenada(s) que seguir en el fotograma o fotogramas de "
+"destino."
 
 #: ../gap/gap_detail_tracking_exec.c:1336
 msgid "Locate colordiff Thres:"
@@ -2008,6 +2016,8 @@ msgid ""
 "Colordiff threshold value. Locate fails when average color difference is "
 "below this value."
 msgstr ""
+"Valor de umbral de diferencia de colores. La operación de localización falla "
+"cuando la diferencia de color promedio está por debajo de este valor."
 
 #: ../gap/gap_detail_tracking_exec.c:1349 ../gap/gap_morph_tween_dialog.c:818
 msgid "Locate Shape Radius:"
@@ -2018,6 +2028,9 @@ msgid ""
 "The quadratic area surrounding a marked detail coordinate +- this radius is "
 "considered as reference shape, to be tracked in the target frame(s)."
 msgstr ""
+"El área cuadrática que rodea a la coordenada del detalle marcado +- este "
+"radio se considera como la forma de referencia a la que hacer el seguimiento "
+"en el fotograma o fotogramas de destino."
 
 #: ../gap/gap_detail_tracking_exec.c:1363
 msgid "Locate Target Move Radius:"
@@ -2049,6 +2062,9 @@ msgid ""
 "ON: Calculate scaling and rotation when 2 detail Coordinates are tracked.\n"
 "OFF: Calculate only rotation and keep orignal size."
 msgstr ""
+"ACTIVADO: calcular el escalado y la rotación cuando se hace el seguimiento "
+"de 2 coordenadas de detalles.\n"
+"DESACTIVADO: calcular sólo la rotación y mantener el tamaño original."
 
 #: ../gap/gap_detail_tracking_exec.c:1399
 msgid "BG is Reference:"
@@ -2061,6 +2077,11 @@ msgid ""
 "OFF: Use foreground layer as target, and the layer below as reference\n"
 "."
 msgstr ""
+"ACTIVADO: usar la capa de fondo como referencia y la capa de primer plano "
+"como destino para el seguimiento.\n"
+"DESACTIVADO: usar la capa de primer plano como destino, y la capa inferior "
+"como referencia.\n"
+"."
 
 #: ../gap/gap_detail_tracking_exec.c:1408
 msgid "Remove Middle Layers:"
@@ -2072,6 +2093,9 @@ msgid ""
 "detail tracking.\n"
 "OFF: Keep all layers."
 msgstr ""
+"ACTIVADO: elimina las capas (excepto fondo y las 2 capas superiores) que no "
+"son relevantes para el seguimiento de detalles.\n"
+"DESACTIVADO: mantener todas las capas."
 
 #: ../gap/gap_detail_tracking_exec.c:1420
 msgid "Const X Offset:"
@@ -2091,7 +2115,7 @@ msgstr "Se añade este valor al registrar las coordenadas Y capturadas."
 
 #: ../gap/gap_detail_tracking_exec.c:1448
 msgid "Const Rotate Offset:"
-msgstr ""
+msgstr "Desplazamiento de rotación constante:"
 
 #: ../gap/gap_detail_tracking_exec.c:1449
 msgid "This value is added when logging rotation values."
@@ -2106,6 +2130,9 @@ msgid ""
 "Name of the file to log the tracked detail coordinates  as XML parameterfile "
 "for later use in the MovePath plug-in."
 msgstr ""
+"Nombre del archivo en el que registrar las coordenadas de seguimiento del "
+"detalle como un archivo de parámetros XML para uso posterior en el "
+"complemento MovePath."
 
 #: ../gap/gap_detail_tracking_exec.c:1474
 msgid "Detail Tracking"
@@ -6039,7 +6066,7 @@ msgstr "Navegador de VCR…"
 
 #: ../gap/gap_navigator_dialog.c:611
 msgid "Cant open two or more video navigator windows."
-msgstr "No puedo abrir dos o más Ventanas de Navegador de Vídeo."
+msgstr "No se pueden abrir dos o más Ventanas de Navegador de Vídeo."
 
 #: ../gap/gap_navigator_dialog.c:662
 #, c-format
@@ -6510,7 +6537,7 @@ msgstr ""
 "Compruebe que el comando «wavplay» es ejecutable.\n"
 "Si ha instalado el ejecutable wavplay en algún otro lugar\n"
 "puede establecer la variable de entorno WAVPLAYPATH antes\n"
-"del inicio de El Gimp\n"
+"del inicio de Gimp\n"
 
 #: ../gap/gap_player_dialog.c:637
 msgid "Audio Delay"
@@ -6572,7 +6599,7 @@ msgstr ""
 "Si ha instalado «%s»\n"
 "debería añadir la carpeta de instalación a su variable PATH\n"
 "o establecer la variable de entorno %s con el nombre del ejecutable\n"
-"antes de iniciar El GIMP"
+"antes de iniciar GIMP"
 
 #. filename prefix shortcut for storyboard single track playback for specified track number
 #: ../gap/gap_player_dialog.c:2152
@@ -6749,7 +6776,7 @@ msgstr "Volumen del sonido"
 #. check button
 #: ../gap/gap_player_dialog.c:6736
 msgid "Enable"
-msgstr "Habilitar"
+msgstr "Activar"
 
 #: ../gap/gap_player_dialog.c:6741
 msgid ""
@@ -6897,6 +6924,8 @@ msgstr "Caché de enlosado:"
 #: ../gap/gap_player_dialog.c:7344
 msgid "gimp tile cache for the player process. (in tiles 64x64 pixel)"
 msgstr ""
+"Caché de enlosado de GIMP para el proceso del reproductor (en losetas de "
+"64x64 píxeles)."
 
 #. Layout Options label
 #: ../gap/gap_player_dialog.c:7353
@@ -6936,7 +6965,7 @@ msgstr "Configurar seguimiento:"
 
 #: ../gap/gap_player_dialog.c:7408
 msgid "Configure detail tracking options"
-msgstr ""
+msgstr "Configurar las opciones de seguimiento de detalles"
 
 #: ../gap/gap_player_dialog.c:7416
 msgid "Enable Detail Tracking"
@@ -6952,6 +6981,14 @@ msgid ""
 "rotation is calculated too.\n"
 "OFF: Disable detail tracking."
 msgstr ""
+"ACTIVADO: activar el seguimiento de detalles en la instantánea. Maque las "
+"coordenadas de uno o dos detalles significativos en la instantánea usando la "
+"ruta actual con uno o dos puntos. Cada instantánea posterior mueve "
+"automáticamente los puntos marcados a las coordenadas de los detalles "
+"correspondientes y registra el movimiento como parámetros XML para la "
+"funcionalidad MovePath.  En caso de que se marquen 2 puntos, también se "
+"calcula la rotación.\n"
+"DESACTIVADO: desactivar el seguimiento de detalles."
 
 #. Save Player Preferences label
 #: ../gap/gap_player_dialog.c:7441
@@ -12774,6 +12811,7 @@ msgstr "Refresco interno"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2948
 msgid "Use periodic insertion of intra blocks instead of keyframes."
 msgstr ""
+"Usar inserción periódica de bloques interiores en lugar de fotogramas clave."
 
 #. the input_preserved checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2959
