@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-06 08:48+0000\n"
+"POT-Creation-Date: 2012-02-06 11:39+0000\n"
 "PO-Revision-Date: 2012-02-06 12:37+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -6900,7 +6900,7 @@ msgstr "Preferencias de reproducción"
 #. Cache size label
 #: ../gap/gap_player_dialog.c:7252
 msgid "Cache Size (MB):"
-msgstr "Tamaño de la caché (MiB):"
+msgstr "Tamaño de la caché (MB):"
 
 #: ../gap/gap_player_dialog.c:7278
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
