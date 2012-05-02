@@ -856,9 +856,89 @@ gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr)
 
 }    /* end gap_lib_delete_frame */
 
-/* ============================================================================
+
+/* ---------------------------------
+ * gap_lib_count_framenumber_digits
+ * ---------------------------------
+ * count the number of digits used in the framenumber part of the imagename
+ */
+long
+gap_lib_count_framenumber_digits(const char *imagename)
+{
+  char *l_fname;
+  char *l_ptr;
+  long  l_digits_used;
+
+  if(imagename == NULL)
+  {
+    return (-1);
+  }
+
+  /* copy from imagename */
+  l_fname = g_strdup(imagename);
+
+  /* cut off extension */
+  l_ptr = &l_fname[strlen(l_fname)];
+  while(l_ptr != l_fname)
+  {
+    if((*l_ptr == G_DIR_SEPARATOR) || (*l_ptr == DIR_ROOT))  { break; }  /* dont run into dir part */
+    if(*l_ptr == '.')                                        { *l_ptr = '\0'; break; }
+    l_ptr--;
+  }
+  if(gap_debug)
+  {
+    printf("DEBUG gap_lib_count_framenumber_digits (ext_off): '%s'\n", l_fname);
+  }
+
+  /* count the digits at end of fname */
+  l_ptr = &l_fname[strlen(l_fname)];
+  if(l_ptr != l_fname)
+  {
+    l_ptr--;
+  }
+  l_digits_used = 0;
+  while(TRUE)
+  {
+    if((*l_ptr >= '0') && (*l_ptr <= '9'))
+    {
+      l_digits_used++;
+    }
+    else
+    {
+       break;  /* stop when found a character that is n digit */
+    }
+    if(l_ptr == l_fname)
+    {
+      break;  /* stop when no more characters left to check */
+    }
+
+    l_ptr--;
+  }
+  
+  if(gap_debug)
+  {
+    printf("DEBUG gap_lib_count_framenumber_digits  imagename:'%s' digits_used:%d\n"
+      , l_fname
+      , (int)l_digits_used
+      );
+  }
+
+
+  g_free(l_fname);
+  return(l_digits_used);
+
+}    /* end gap_lib_count_framenumber_digits */
+
+
+
+/* ----------------------------------
  * gap_lib_rename_frame
- * ============================================================================
+ * ----------------------------------
+ * rename the frame imagefile with from_nr
+ * by building a filename where the number part is replaced by specified to_nr.
+ *
+ * the number of digits in the new filename is set to same size as in the original
+ * frame imagefile.
  */
 int
 gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
@@ -866,12 +946,30 @@ gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
    char          *l_from_fname;
    char          *l_to_fname;
    int            l_rc;
+   long           l_digits_used;
 
    l_from_fname = gap_lib_alloc_fname(ainfo_ptr->basename, from_nr, ainfo_ptr->extension);
-   if(l_from_fname == NULL) { return(1); }
-
-   l_to_fname = gap_lib_alloc_fname(ainfo_ptr->basename, to_nr, ainfo_ptr->extension);
-   if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
+   if(l_from_fname == NULL)
+   {
+     return(1);
+   }
+   
+   l_digits_used = gap_lib_count_framenumber_digits(l_from_fname);
+   if (l_digits_used > 0)
+   {
+     l_to_fname = gap_lib_alloc_fname6(ainfo_ptr->basename, to_nr, ainfo_ptr->extension, l_digits_used);
+   }
+   else
+   {
+     /* this should not occur when the frame imagfile with from_nr already exists */
+     l_to_fname = gap_lib_alloc_fname(ainfo_ptr->basename, to_nr, ainfo_ptr->extension);
+   }
+   
+   if(l_to_fname == NULL) 
+   {
+     g_free(l_from_fname); 
+     return(1); 
+   }
 
 
    if(gap_debug) printf("\nDEBUG gap_lib_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
@@ -1139,7 +1237,7 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
   l_fname = (char *)g_malloc(l_len);
 
     l_digits_used = default_digits;
-    if(nr < 10000000)
+    if(nr < 100000000)
     {
        /* try to figure out if the frame numbers are in
         * 6-digit style, with leading zeroes  "frame_000001.xcf"
@@ -1234,7 +1332,7 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
     }
     else
     {
-      /* numbers > 10000000 have 9 digits or more */
+      /* numbers > 100000000 have 9 digits or more */
       l_digits_used = 0;
     }
 

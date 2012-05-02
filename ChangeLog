@@ -1,3 +1,10 @@
+2012-05-02 Wolfgang Hofer <hof@gimp.org>
+
+- fixed Bug #675188 Frame filename matching misses 8-digit frame numbers
+- fixed Bug #675187 Frame Sequence Reverse handles filename improperly
+
+ * gap/gap_lib.c
+
 2012-01-29 Wolfgang Hofer <hof@gimp.org>
 
 - fixed a bug in the GAP video API that caused a crash when decoding audio.
