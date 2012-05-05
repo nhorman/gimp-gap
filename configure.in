@@ -1063,12 +1063,15 @@ dnl
 GTHREAD_LIBS=`$PKG_CONFIG --libs gthread-2.0`
 AC_SUBST(GTHREAD_LIBS)
 
-PKGCONFIG=`type pkg-config`
-if test -x "$(PKGCONFIG)" ; then
-  GAP_VLIBS_PNG=`$(PKGCONFIG) --libs libpng`
+pkg_cfg_warning=""
+if test -x "$PKG_CONFIG" ; then
+  dnl pkg_cfg_warning="INFO:pkg-config program is:$PKG_CONFIG"
+  GAP_VLIBS_PNG=`$PKG_CONFIG --libs libpng`
 else
+  pkg_cfg_warning="Error: pkg-config program $PKG_CONFIG could not be executed."
   GAP_VLIBS_PNG="-lpng14"
 fi
+
 
 GAPVIDEOAPI_EXTLIBS="\$(GAP_VLIBS_FFMPEG) \$(GAP_VLIBS_MPEG3) \$(GAP_VLIBS_PNG) -lz \$(GTHREAD_LIBS) \$(GAP_PTHREAD_LIB) -lm"
 GAPVIDEOAPI_EXTINCS="\$(GAP_VINCS_FFMPEG) \$(GAP_VINCS_MPEG3)"
@@ -1215,4 +1218,4 @@ docs/reference/Makefile
 docs/reference/txt/Makefile
 ])
 
-AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $moved_old_ffmpeg_warn $moved_old_libmpeg3_warn $vid_ffmpeg_warning $yasm_warn $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)
+AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $moved_old_ffmpeg_warn $moved_old_libmpeg3_warn $vid_ffmpeg_warning $yasm_warn $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning $pkg_cfg_warning)

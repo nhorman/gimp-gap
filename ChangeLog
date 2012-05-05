@@ -1,3 +1,10 @@
+2012-05-05 Wolfgang Hofer <hof@gimp.org>
+
+- the configure.in script displays error message in case
+  when the pkg-config program is not executable.
+
+ * configure.in
+
 2012-05-02 Wolfgang Hofer <hof@gimp.org>
 
 - fixed Bug #675188 Frame filename matching misses 8-digit frame numbers
