@@ -1,3 +1,11 @@
+2012-05-26 Wolfgang Hofer <hof@gimp.org>
+
+- added AC_CHECK_LIB(gthread-2.0, g_thread_init)
+  as suggested in #676701 to fix build on ubuntu 12.10
+  
+ * configure.in
+
+
 2012-05-05 Wolfgang Hofer <hof@gimp.org>
 
 - the configure.in script displays error message in case

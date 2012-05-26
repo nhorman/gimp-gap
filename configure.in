@@ -175,6 +175,9 @@ AC_CHECK_LIB(pthread, pthread_create,
   fi
 
 
+AC_CHECK_LIB(gthread-2.0, g_thread_init)
+
+
 dnl check for bzip2 library (for ffmpeg matroskadec )
 dnl the check result does not matter unless libavformat is linked or built later on.
 dnl note: the procedures (BZ2_bzDecompressInit) of the bzip2 lib have different number
