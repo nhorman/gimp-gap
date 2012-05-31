@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-"
 "gap&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-06 11:39+0000\n"
+"POT-Creation-Date: 2012-03-29 16:24+0000\n"
 "PO-Revision-Date: 2012-02-06 12:37+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -1336,21 +1336,6 @@ msgstr "Buscando - por favor espere"
 msgid "No matches"
 msgstr "No se encontraron coincidencias"
 
-#: ../gap/gap_decode_mplayer_main.c:110 ../gap/gap_decode_mplayer_main.c:123
-msgid "MPlayer based extraction..."
-msgstr "Extracción basada en MPlayer…"
-
-#. Menu names
-#: ../gap/gap_decode_mplayer_main.c:132 ../gap/gap_frontends_main.c:188
-#: ../gap/gap_vex_main.c:203
-msgid "<Image>/Video/Split Video into Frames/"
-msgstr "<Image>/Vídeo/Dividir imagen en fotogramas/"
-
-#: ../gap/gap_decode_mplayer_main.c:133 ../gap/gap_frontends_main.c:189
-#: ../gap/gap_vex_main.c:204
-msgid "<Toolbox>/Xtns/Split Video into Frames/"
-msgstr "<Toolbox>/Extns/Dividir vídeo en fotogramas/"
-
 #: ../gap/gap_decode_mplayer.c:224
 msgid "Requirements to run the mplayer based video split"
 msgstr "Requisitos para ejecutar la división de vídeo basada en MPlayer"
@@ -1596,7 +1581,7 @@ msgstr "archivo de vídeo «%s» inexistente\n"
 #: ../gap/gap_decode_mplayer.c:659
 #, c-format
 msgid "Illegal starttime %s"
-msgstr "Hora de comienzo inválida «%s»"
+msgstr "Hora de comienzo no válida «%s»"
 
 #: ../gap/gap_decode_mplayer.c:692 ../gap/gap_decode_xanim.c:365
 #: ../gap/gap_range_ops.c:1509 ../gap/gap_split.c:102
@@ -1716,6 +1701,21 @@ msgstr "Renombrando fotogramas…"
 #: ../gap/gap_range_ops.c:1368
 msgid "Converting frames..."
 msgstr "Convirtiendo fotogramas…"
+
+#: ../gap/gap_decode_mplayer_main.c:110 ../gap/gap_decode_mplayer_main.c:123
+msgid "MPlayer based extraction..."
+msgstr "Extracción basada en MPlayer…"
+
+#. Menu names
+#: ../gap/gap_decode_mplayer_main.c:132 ../gap/gap_frontends_main.c:188
+#: ../gap/gap_vex_main.c:203
+msgid "<Image>/Video/Split Video into Frames/"
+msgstr "<Image>/Vídeo/Dividir imagen en fotogramas/"
+
+#: ../gap/gap_decode_mplayer_main.c:133 ../gap/gap_frontends_main.c:189
+#: ../gap/gap_vex_main.c:204
+msgid "<Toolbox>/Xtns/Split Video into Frames/"
+msgstr "<Toolbox>/Extns/Dividir vídeo en fotogramas/"
 
 #: ../gap/gap_decode_xanim.c:138
 msgid "Requirements to run the xanim based video split"
@@ -1972,26 +1972,6 @@ msgstr ""
 "Se puede usar una ruta con 2 puntos para mover el punto 2 al punto 1 (por "
 "medio de una operación de traslación simple sin rotación ni escalado)"
 
-#: ../gap/gap_detail_tracking_main.c:220
-msgid "DetailTracking Config..."
-msgstr "Configurar seguimiento de detalles…"
-
-#: ../gap/gap_detail_tracking_main.c:245
-msgid "DetailTracking"
-msgstr "Seguimiento de detalles:"
-
-#: ../gap/gap_detail_tracking_main.c:267
-msgid "Align Transform via XML file..."
-msgstr "Transformación de alineación mediante un archivo XML…"
-
-#: ../gap/gap_detail_tracking_main.c:287
-msgid "Exact Align via 4-Point Path."
-msgstr "Alineación exacta mediante una ruta de 4 puntos."
-
-#: ../gap/gap_detail_tracking_main.c:299
-msgid "<Image>/Layer/Transform/"
-msgstr "<Image>/Capa/Transformar/"
-
 #: ../gap/gap_detail_tracking_exec.c:1195
 msgid "Detail Tracking Stopped. (could not find corresponding detail)"
 msgstr ""
@@ -2137,6 +2117,151 @@ msgstr ""
 #: ../gap/gap_detail_tracking_exec.c:1474
 msgid "Detail Tracking"
 msgstr "Seguimiento de detalles"
+
+#: ../gap/gap_detail_tracking_main.c:220
+msgid "DetailTracking Config..."
+msgstr "Configurar seguimiento de detalles…"
+
+#: ../gap/gap_detail_tracking_main.c:245
+msgid "DetailTracking"
+msgstr "Seguimiento de detalles:"
+
+#: ../gap/gap_detail_tracking_main.c:267
+msgid "Align Transform via XML file..."
+msgstr "Transformación de alineación mediante un archivo XML…"
+
+#: ../gap/gap_detail_tracking_main.c:287
+msgid "Exact Align via 4-Point Path."
+msgstr "Alineación exacta mediante una ruta de 4 puntos."
+
+#: ../gap/gap_detail_tracking_main.c:299
+msgid "<Image>/Layer/Transform/"
+msgstr "<Image>/Capa/Transformar/"
+
+#. The dialog1 and main vbox
+#: ../gap/gap_fg_from_sel_dialog.c:240 ../gap/gap_fg_matting_dialog.c:372
+msgid "Foreground-Extract"
+msgstr "Foreground-Extract"
+
+#. the frame
+#: ../gap/gap_fg_from_sel_dialog.c:276 ../gap/gap_fg_matting_dialog.c:408
+#: ../gap/gap_mov_dialog.c:1560
+msgid "Options"
+msgstr "Opciones"
+
+#. the InnerRadius spinbutton
+#: ../gap/gap_fg_from_sel_dialog.c:297
+msgid "Inner Radius"
+msgstr "Radio interior"
+
+#: ../gap/gap_fg_from_sel_dialog.c:305
+msgid "Radius for undefined (e.g. trimmable) area inside the selection border"
+msgstr ""
+"Radio para la zona no definida (recortable) dentro del borde de la selección"
+
+#. the OuterRadius spinbutton
+#: ../gap/gap_fg_from_sel_dialog.c:318
+msgid "Outer Radius"
+msgstr "Radio exterior"
+
+#: ../gap/gap_fg_from_sel_dialog.c:326
+msgid "Radius for undefined (e.g. trimmable) area outside the selection border"
+msgstr ""
+"Radio para la zona no definida (recortable) por fuera del borde de la "
+"selección"
+
+#. create_layermask checkbutton
+#: ../gap/gap_fg_from_sel_dialog.c:343 ../gap/gap_fg_matting_dialog.c:491
+msgid "Create Layermask:"
+msgstr "Crear máscara de capa:"
+
+#: ../gap/gap_fg_from_sel_dialog.c:354 ../gap/gap_fg_matting_dialog.c:502
+msgid ""
+"ON: render opacity by creating a new layer mask, OFF: apply rendered opacity "
+"to the alpha channel"
+msgstr ""
+"ACTIVADO: renderizar la opacidad mediante la creación de una máscara de capa "
+"nueva, DESACTIVADO: aplicar la opacidad renderizada al canal alfa"
+
+#. lock_color checkbutton
+#: ../gap/gap_fg_from_sel_dialog.c:368 ../gap/gap_fg_matting_dialog.c:516
+msgid "Lock Colors:"
+msgstr "Bloquear colores:"
+
+#: ../gap/gap_fg_from_sel_dialog.c:378 ../gap/gap_fg_matting_dialog.c:526
+msgid ""
+"ON: Keep RGB channels of the input layer, OFF: allow Background color "
+"removal in processed undefined regions"
+msgstr ""
+"ACTIVADO: guardar los canales RGB de la capa de entrada, DESACTIVADO: "
+"permitir la eliminación del color de fondo en las regiones indefinidas "
+"procesadas"
+
+#. colordiff_threshold spinbutton
+#: ../gap/gap_fg_from_sel_dialog.c:392 ../gap/gap_fg_matting_dialog.c:567
+msgid "Color Diff Threshold"
+msgstr "Umbral para la diferencia de colores"
+
+#: ../gap/gap_fg_from_sel_dialog.c:400 ../gap/gap_fg_matting_dialog.c:575
+msgid "sensitivity for color comparison"
+msgstr "sensibilidad de la comparación de colores"
+
+#. the tri-map drawable selection combo box
+#: ../gap/gap_fg_matting_dialog.c:429
+msgid "Tri-Map:"
+msgstr "Mapa triple:"
+
+#: ../gap/gap_fg_matting_dialog.c:443
+msgid ""
+"Select the tri_map layer (or layermask).  the tri-map shall be of same size "
+"as the input layer and  provides a rough user selection  where WHITE pixels "
+"in the tri map defines FOREGROUND (eg. opaque result)  BLACK pixels define "
+"BACKGROUND (eg. transparent result) GRAY pixels (value 1 upto 240) ar marked "
+"as Undefined  (eg. opacity to be processed by this filter.) )"
+msgstr ""
+"Seleccionar la capa (o máscara de capa) tri_map. El tri-map (mapa triple) "
+"debe ser del mismo tamaño que la capa de entrada y proporciona una selección "
+"aproximada del usuario en la que los píxeles BLANCOS del mapa triple definen "
+"el PRIMER PLANO (resultado opaco), los píxeles NEGROS definen el plano de "
+"FONDO (resultado transparente) y los píxeles de color GRIS (valor de 1 a "
+"240) se marcan como indefinidos (la opacidad se procesará por parte de este "
+"filtro)."
+
+#: ../gap/gap_fg_matting_dialog.c:467
+msgid "Layermask"
+msgstr "Máscara de capa"
+
+#. create_result (create_result checkbutton
+#: ../gap/gap_fg_matting_dialog.c:539
+msgid "Create Result Layer:"
+msgstr "Crear capa resultante:"
+
+#. gtk_widget_show (checkbutton);
+#: ../gap/gap_fg_matting_dialog.c:551
+msgid ""
+"ON: create a new layer as result of the foreground extraction processing. "
+"OFF: render transparency and background color removal on the input drawable"
+msgstr ""
+"ACTIVADO: crear una capa nueva como resultado del proceso de extracción del "
+"primer plano.DESACTIVADO: renderizar la transparencia y la eliminación de "
+"color de fondo sobre el dibujable de entrada"
+
+#: ../gap/gap_fg_matting_exec.c:130
+msgid "Foreground Extract"
+msgstr "Extracción del primer plano"
+
+#: ../gap/gap_fg_matting_main.c:177
+msgid "Foreground Extract..."
+msgstr "Extraer primer plano…"
+
+#: ../gap/gap_fg_matting_main.c:203
+msgid "Foreground Extract Via Selection..."
+msgstr "Extraer primer plano mediante la selección…"
+
+#. Menu names
+#: ../gap/gap_fg_matting_main.c:213
+msgid "<Image>/Layer/Transparency/"
+msgstr "<Image>/Capa/Transparencia/"
 
 #: ../gap/gap_filter_foreach.c:133
 msgid "Backup to file"
@@ -2512,131 +2637,6 @@ msgstr "Patrón del fuego…"
 #: ../gap/gap_fire_pattern.c:2536 ../gap/gap_water_pattern.c:1665
 msgid "<Image>/Video/Layer/Render/"
 msgstr "<Imagen>/Vídeo/Capa/Renderizar/"
-
-#: ../gap/gap_fg_matting_main.c:177
-msgid "Foreground Extract..."
-msgstr "Extraer primer plano…"
-
-#: ../gap/gap_fg_matting_main.c:203
-msgid "Foreground Extract Via Selection..."
-msgstr "Extraer primer plano mediante la selección…"
-
-#. Menu names
-#: ../gap/gap_fg_matting_main.c:213
-msgid "<Image>/Layer/Transparency/"
-msgstr "<Image>/Capa/Transparencia/"
-
-#: ../gap/gap_fg_matting_exec.c:130
-msgid "Foreground Extract"
-msgstr "Extracción del primer plano"
-
-#. The dialog1 and main vbox
-#: ../gap/gap_fg_matting_dialog.c:372 ../gap/gap_fg_from_sel_dialog.c:240
-msgid "Foreground-Extract"
-msgstr "Foreground-Extract"
-
-#. the frame
-#: ../gap/gap_fg_matting_dialog.c:408 ../gap/gap_fg_from_sel_dialog.c:276
-#: ../gap/gap_mov_dialog.c:1560
-msgid "Options"
-msgstr "Opciones"
-
-#. the tri-map drawable selection combo box
-#: ../gap/gap_fg_matting_dialog.c:429
-msgid "Tri-Map:"
-msgstr "Mapa triple:"
-
-#: ../gap/gap_fg_matting_dialog.c:443
-msgid ""
-"Select the tri_map layer (or layermask).  the tri-map shall be of same size "
-"as the input layer and  provides a rough user selection  where WHITE pixels "
-"in the tri map defines FOREGROUND (eg. opaque result)  BLACK pixels define "
-"BACKGROUND (eg. transparent result) GRAY pixels (value 1 upto 240) ar marked "
-"as Undefined  (eg. opacity to be processed by this filter.) )"
-msgstr ""
-"Seleccionar la capa (o máscara de capa) tri_map. El tri-map (mapa triple) "
-"debe ser del mismo tamaño que la capa de entrada y proporciona una selección "
-"aproximada del usuario en la que los píxeles BLANCOS del mapa triple definen "
-"el PRIMER PLANO (resultado opaco), los píxeles NEGROS definen el plano de "
-"FONDO (resultado transparente) y los píxeles de color GRIS (valor de 1 a "
-"240) se marcan como indefinidos (la opacidad se procesará por parte de este "
-"filtro)."
-
-#: ../gap/gap_fg_matting_dialog.c:467
-msgid "Layermask"
-msgstr "Máscara de capa"
-
-#. create_layermask checkbutton
-#: ../gap/gap_fg_matting_dialog.c:491 ../gap/gap_fg_from_sel_dialog.c:343
-msgid "Create Layermask:"
-msgstr "Crear máscara de capa:"
-
-#: ../gap/gap_fg_matting_dialog.c:502 ../gap/gap_fg_from_sel_dialog.c:354
-msgid ""
-"ON: render opacity by creating a new layer mask, OFF: apply rendered opacity "
-"to the alpha channel"
-msgstr ""
-"ACTIVADO: renderizar la opacidad mediante la creación de una máscara de capa "
-"nueva, DESACTIVADO: aplicar la opacidad renderizada al canal alfa"
-
-#. lock_color checkbutton
-#: ../gap/gap_fg_matting_dialog.c:516 ../gap/gap_fg_from_sel_dialog.c:368
-msgid "Lock Colors:"
-msgstr "Bloquear colores:"
-
-#: ../gap/gap_fg_matting_dialog.c:526 ../gap/gap_fg_from_sel_dialog.c:378
-msgid ""
-"ON: Keep RGB channels of the input layer, OFF: allow Background color "
-"removal in processed undefined regions"
-msgstr ""
-"ACTIVADO: guardar los canales RGB de la capa de entrada, DESACTIVADO: "
-"permitir la eliminación del color de fondo en las regiones indefinidas "
-"procesadas"
-
-#. create_result (create_result checkbutton
-#: ../gap/gap_fg_matting_dialog.c:539
-msgid "Create Result Layer:"
-msgstr "Crear capa resultante:"
-
-#. gtk_widget_show (checkbutton);
-#: ../gap/gap_fg_matting_dialog.c:551
-msgid ""
-"ON: create a new layer as result of the foreground extraction processing. "
-"OFF: render transparency and background color removal on the input drawable"
-msgstr ""
-"ACTIVADO: crear una capa nueva como resultado del proceso de extracción del "
-"primer plano.DESACTIVADO: renderizar la transparencia y la eliminación de "
-"color de fondo sobre el dibujable de entrada"
-
-#. colordiff_threshold spinbutton
-#: ../gap/gap_fg_matting_dialog.c:567 ../gap/gap_fg_from_sel_dialog.c:392
-msgid "Color Diff Threshold"
-msgstr "Umbral para la diferencia de colores"
-
-#: ../gap/gap_fg_matting_dialog.c:575 ../gap/gap_fg_from_sel_dialog.c:400
-msgid "sensitivity for color comparison"
-msgstr "sensibilidad de la comparación de colores"
-
-#. the InnerRadius spinbutton
-#: ../gap/gap_fg_from_sel_dialog.c:297
-msgid "Inner Radius"
-msgstr "Radio interior"
-
-#: ../gap/gap_fg_from_sel_dialog.c:305
-msgid "Radius for undefined (e.g. trimmable) area inside the selection border"
-msgstr ""
-"Radio para la zona no definida (recortable) dentro del borde de la selección"
-
-#. the OuterRadius spinbutton
-#: ../gap/gap_fg_from_sel_dialog.c:318
-msgid "Outer Radius"
-msgstr "Radio exterior"
-
-#: ../gap/gap_fg_from_sel_dialog.c:326
-msgid "Radius for undefined (e.g. trimmable) area outside the selection border"
-msgstr ""
-"Radio para la zona no definida (recortable) por fuera del borde de la "
-"selección"
 
 #: ../gap/gap_fmac_base.c:205
 #, c-format
@@ -4330,14 +4330,6 @@ msgstr "Crear fotograma(s) tween:"
 msgid "Local Progress:"
 msgstr "Progreso local:"
 
-#: ../gap/gap_mov_main.c:283
-msgid "Move Path..."
-msgstr "Mover ruta…"
-
-#: ../gap/gap_mov_main.c:370
-msgid "Move Path Singleframe..."
-msgstr "Fotograma único de ruta de movimiento…"
-
 #: ../gap/gap_mov_dialog.c:990
 msgid "Move Path Editor"
 msgstr "Editor de rutas de movimiento"
@@ -5650,6 +5642,14 @@ msgstr ""
 "\n"
 "Error: Hay más puntos de control (%d) que fotogramas manipulados (%d)\n"
 "Por favor, reduzca los puntos de control o seleccione más fotogramas"
+
+#: ../gap/gap_mov_main.c:283
+msgid "Move Path..."
+msgstr "Mover ruta…"
+
+#: ../gap/gap_mov_main.c:370
+msgid "Move Path Singleframe..."
+msgstr "Fotograma único de ruta de movimiento…"
 
 #: ../gap/gap_mpege.c:127
 msgid "Requirements to run mpeg2encode 1.2:"
@@ -9978,6 +9978,20 @@ msgstr ""
 "falló al guardar el archivo:\n"
 "«%s»"
 
+#: ../gap/gap_vex_main.c:274
+msgid "MAIN_TST"
+msgstr "MAIN_TST"
+
+#: ../gap/gap_vex_main.c:398
+msgid ""
+"Videoextract is not available because GIMP-GAP was configured and compiled "
+"with\n"
+" --disable-videoapi-support"
+msgstr ""
+"La extracción de vídeo no está disponible porque GIMP-GAP se ha configurado "
+"y compilado con\n"
+" --disable-videoapi-support"
+
 #: ../gap/gap_video_index_creator.c:208
 msgid "Video Index Creation..."
 msgstr "Creación de índice de vídeo…"
@@ -10159,20 +10173,6 @@ msgstr "Comprobación inteligente %0.3f %% (de %0.3f %%)"
 #, c-format
 msgid "Creating video index %0.3f %%"
 msgstr "Creando archivo de índice de vídeo %0.3f %%"
-
-#: ../gap/gap_vex_main.c:274
-msgid "MAIN_TST"
-msgstr "MAIN_TST"
-
-#: ../gap/gap_vex_main.c:398
-msgid ""
-"Videoextract is not available because GIMP-GAP was configured and compiled "
-"with\n"
-" --disable-videoapi-support"
-msgstr ""
-"La extracción de vídeo no está disponible porque GIMP-GAP se ha configurado "
-"y compilado con\n"
-" --disable-videoapi-support"
 
 #. The dialog1 and main vbox
 #: ../gap/gap_water_pattern.c:1036
@@ -11819,6 +11819,14 @@ msgstr ""
 "Error: Codificador AVI GAP. Códec %s entregó el búfer vacío en el fotograma %"
 "d"
 
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:769
+msgid "Save ffmpeg-encoder parameters"
+msgstr "Guardar los parámetros del codificador FFmpeg"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:773
+msgid "Load ffmpeg-encoder parameters"
+msgstr "Cargar los parámetros del codificador FFmpeg"
+
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:153
 msgid "0 sad"
 msgstr "0 sad"
@@ -13308,14 +13316,6 @@ msgstr "No se pudo crear el archivo de vídeo: «%s»%s"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3217
 msgid "Black dummy frame was added"
 msgstr "Se añadió un falso fotograma negro"
-
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:769
-msgid "Save ffmpeg-encoder parameters"
-msgstr "Guardar los parámetros del codificador FFmpeg"
-
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:773
-msgid "Load ffmpeg-encoder parameters"
-msgstr "Cargar los parámetros del codificador FFmpeg"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:412
 #, c-format
