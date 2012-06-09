@@ -1,4 +1,8 @@
 /*  gap_detail_tracking_main.c
+ *  This main module provides multiple filters:
+ *
+ *  A) Detail Tracking
+ *
  *    This filter locates the position of a small area of one layer
  *    in another layer.
  *    It was implemented for recording postions as XML input
@@ -15,6 +19,15 @@
  *  Player's Snaphot feature where this filter runs on the 2 topmost layers
  *  (or on top and BG layer)
  *  in the snapshot image that is created and updated by the player.
+ *
+ *  B) Transformation of a Layer by 4 or 2 controlpoints.
+ *    4 points: rotate scale and move the layer in a way that 2 reference points match 2 target points. 
+ *       (Note that the 4 point mode works similar to the Exact Aligner script in the plug-in registry)
+ *    2 points: simple move the layer from reference point to target point.
+ *
+ *    This filter transformation is available in 2 variants:
+ *    B1) controlpoints input from current path
+ *    B2) controlpoints from an xml input file recorded by GAP detail tracking feature.
  *
  *  2011/12/01
  */
@@ -134,7 +147,9 @@ static const GimpParamDef in_exalign_args[] =
 {
     { GIMP_PDB_INT32,    "run-mode",      "Interactive, non-interactive" },
     { GIMP_PDB_IMAGE,    "image",         "Input image"                  },
-    { GIMP_PDB_DRAWABLE, "drawable",      "layer to be aligned"          }
+    { GIMP_PDB_DRAWABLE, "drawable",      "layer to be aligned"          },
+    { GIMP_PDB_INT32,    "pointOrder",    "0: use path coordinate points in order: 3 --> 1, 4 --> 2 "
+                                          "1: use path coordinate points in order: 2 --> 1, 4 --> 3 " }
 };
 
 
@@ -346,16 +361,21 @@ runExactAlign (const gchar *name,  /* name of plugin */
 
   if (status == GIMP_PDB_SUCCESS)
   {
-
-    gimp_image_undo_group_start (image_id);
-
-
+    gint32 pointOrder;
+    
+    pointOrder = POINT_ORDER_MODE_31_42;
+    if(nparams >=  global_number_in_exalign_args)
+    {
+      pointOrder = param[3].data.d_int32;
+    }
+    
+ 
     /* Run the main function */
     values[1].data.d_drawable =
-          gap_detail_exact_align_via_4point_path(image_id, activeDrawableId);
+          gap_detail_exact_align_via_4point_path(image_id, activeDrawableId
+                                                , pointOrder,  run_mode);
 
-    gimp_image_undo_group_end (image_id);
-
+ 
     if (values[1].data.d_drawable < 0)
     {
        status = GIMP_PDB_CALLING_ERROR;

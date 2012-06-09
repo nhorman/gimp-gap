@@ -1,11 +1,8 @@
 /*  gap_detail_align_exec.c
- *    This filter locates the position of a small 
- *    outside the selction into the selected area.
- *    It was implemented for fixing small pixel defects of my video camera sensor
- *    and is intended to be used as filter when processing video frames
- *    that are shot by such faulty cameras and typically runs
- *    as filtermacro. Therefore the selection can be provided via an external image
- *    or as path vectors via an extrernal SVG file.
+ *    This transforms and/or moves the active layer with 4 or 2 controlpoints.
+ *    controlpoints input from current path (or from an xml input file recorded by GAP detail tracking feature)
+ *    4 points: rotate scale and move the layer in a way that 2 reference points match 2 target points. 
+ *    2 points: simple move the layer from reference point to target point.
  *
  *  2011/12/01
  */
@@ -49,6 +46,28 @@ extern int gap_debug;
 #include "gap_detail_align_exec.h"
 
 #include "gap-intl.h"
+
+#define GIMPRC_EXACT_ALIGN_PATH_POINT_ORDER "gap-exact-aligner-path-point-order"
+#define GAP_RESPONSE_REFRESH_PATH 1
+
+
+
+typedef struct AlignDialogVals
+{
+  gint32    pointOrder;
+  
+  gboolean  runExactAlign;
+  gint      countVaildPoints;
+  gint32    image_id;
+  gint32    activeDrawableId;
+
+  GtkWidget *radio_order_mode_31_42;
+  GtkWidget *radio_order_mode_21_43;
+  GtkWidget *infoLabel;
+  GtkWidget *okButton;
+  GtkWidget *shell;
+
+} AlignDialogVals;
 
 
 typedef struct PixelCoords
@@ -414,7 +433,7 @@ p_exact_align_drawable(gint32 activeDrawableId, AlingCoords *alingCoords)
   dx2 = px4 - px3;
   dy2 = py4 - py3;
   
-  /* the angle between the two lines. i.e., the angle layer2 must be clockwise rotatet
+  /* the angle between the two lines. i.e., the angle layer2 must be clockwise rotated
    * in order to overlap with initial start layer1
    */
   angle1Rad = 0;
@@ -456,7 +475,7 @@ p_exact_align_drawable(gint32 activeDrawableId, AlingCoords *alingCoords)
                             , 2      /* INTERPOLATION-CUBIC (2) */
                             , TRUE   /* supersample */
                             , 1      /* Maximum recursion level used for supersampling */
-                            , 1      /* TRANSFORM-RESIZE-CLIP (1) */
+                            , 0      /* TRANSFORM-RESIZE-ADJUST (0) TRANSFORM-RESIZE-CLIP (1) */
                             );
 
   if(gap_debug)
@@ -672,20 +691,32 @@ gap_detail_xml_align_dialog(XmlAlignValues *xaVals)
  * p_capture_4_vector_points
  * ------------------------------------------
  * capture the first 4 points of the 1st stroke in the active path vectors
+ * pointOrder POINT_ORDER_MODE_31_42 : order 0,1,2,3  compatible with the exactAligner script
+ *            POINT_ORDER_MODE_21_43 : order 0,2,1,3  
  */
 static gint
-p_capture_4_vector_points(gint32 imageId, AlingCoords *alingCoords)
+p_capture_4_vector_points(gint32 imageId, AlingCoords *alingCoords, gint32 pointOrder)
 {
   gint32  activeVectorsId;
   PixelCoords *coordPtr[4];
   gint         ii;
   gint         countVaildPoints;
   
-  
-  coordPtr[0] = &alingCoords->startCoords;
-  coordPtr[1] = &alingCoords->startCoords2;
-  coordPtr[2] = &alingCoords->currCoords;
-  coordPtr[3] = &alingCoords->currCoords2;
+  if (pointOrder == POINT_ORDER_MODE_31_42)
+  {
+    coordPtr[0] = &alingCoords->startCoords;
+    coordPtr[1] = &alingCoords->startCoords2;
+    coordPtr[2] = &alingCoords->currCoords;
+    coordPtr[3] = &alingCoords->currCoords2;
+  }
+  else
+  {
+    coordPtr[0] = &alingCoords->startCoords;
+    coordPtr[2] = &alingCoords->startCoords2;
+    coordPtr[1] = &alingCoords->currCoords;
+    coordPtr[3] = &alingCoords->currCoords2;
+  }
+
   
   countVaildPoints = 0;
   for(ii=0; ii < 4; ii++)
@@ -772,6 +803,401 @@ p_capture_4_vector_points(gint32 imageId, AlingCoords *alingCoords)
 }  /* end p_capture_4_vector_points */
 
 
+/* ---------------------------------
+ * p_save_gimprc_gint32_value
+ * ---------------------------------
+ */
+static void
+p_save_gimprc_gint32_value(const char *gimprc_option_name, gint32 value)
+{
+  gchar  *value_string;
+
+  value_string = g_strdup_printf("%d", value);
+  gimp_gimprc_set(gimprc_option_name, value_string);
+  g_free(value_string);
+
+}  /* p_save_gimprc_gint32_value */
+
+
+
+
+
+
+
+
+
+
+/* ================= DIALOG stuff Start ================= */
+
+/* -------------------------------------
+ * p_exact_align_calculate_4point_values
+ * -------------------------------------
+ * calculate 4-point alignment transformation setting.
+ * (this procedure is intended for GUI feedback, therfore
+ * deliver angle in degree and scale in percent)
+ */
+static void
+p_exact_align_calculate_4point_values(AlingCoords *alingCoords
+   , gdouble *angleDeg, gdouble *scalePercent, gdouble *moveDx, gdouble *moveDy)
+{
+  gdouble px1, py1, px2, py2;
+  gdouble px3, py3, px4, py4;
+  gdouble dx1, dy1, dx2, dy2;
+  gdouble angle1Rad, angle2Rad, angleRad;
+  gdouble len1, len2;
+  gdouble scaleXY;
+  
+  px1 = alingCoords->startCoords.px;
+  py1 = alingCoords->startCoords.py;
+  px2 = alingCoords->startCoords2.px;
+  py2 = alingCoords->startCoords2.py;
+  
+  px3 = alingCoords->currCoords.px;
+  py3 = alingCoords->currCoords.py;
+  px4 = alingCoords->currCoords2.px;
+  py4 = alingCoords->currCoords2.py;
+
+  dx1 = px2 - px1;
+  dy1 = py2 - py1;
+  dx2 = px4 - px3;
+  dy2 = py4 - py3;
+  
+  /* the angle between the two lines. i.e., the angle layer2 must be clockwise rotated
+   * in order to overlap with initial start layer1
+   */
+  angle1Rad = 0;
+  angle2Rad = 0;
+  if (dx1 != 0.0)
+  {
+    angle1Rad = atan(dy1 / dx1);
+  }
+  if (dx2 != 0.0)
+  {
+    angle2Rad = atan(dy2 / dx2);
+  }
+  angleRad = angle1Rad - angle2Rad;
+  
+  /* the scale factors current layer must be mulitplied by,
+   * in order to fit onto reference start layer.
+   * this is simply the ratio of the two line lenths from the path we created with the 4 points
+   */
+  
+  len1 = sqrt((dx1 * dx1) + (dy1 * dy1));
+  len2 = sqrt((dx2 * dx2) + (dy2 * dy2));
+
+  scaleXY = 1.0;
+  if ((len1 != len2)
+  &&  (len2 != 0.0))
+  {
+    scaleXY = len1 / len2;
+  }
+
+
+  *angleDeg = (angleRad * 180.0) / G_PI;
+  *scalePercent = scaleXY * 100.0;
+  *moveDx = px3 - px1;
+  *moveDy = py3 - py1;
+
+  
+}  /* end p_exact_align_calculate_4point_values */
+
+
+
+/* ------------------------------
+ * p_refresh_and_update_infoLabel
+ * ------------------------------
+ */
+static void
+p_refresh_and_update_infoLabel(GtkWidget *widgetDummy, AlignDialogVals *advPtr)
+{
+  AlingCoords  tmpAlingCoords;
+  gboolean     okSensitiveFlag;
+  gdouble      angleDeg;
+  gdouble      scalePercent;
+  gdouble      moveDx;
+  gdouble      moveDy;
+  gchar        *infoText;
+
+
+  if(gap_debug)
+  {
+    printf("p_refresh_and_update_infoLabel widgetDummy:%d advPtr:%d\n"
+          , (int) widgetDummy
+          , (int) advPtr
+          );
+  }
+
+  if ((advPtr->okButton == NULL) || (advPtr->infoLabel == NULL))
+  {
+    return;
+  }
+
+  angleDeg = 0.0;
+  scalePercent = 100.0;
+  moveDx = 0.0;
+  moveDy = 0.0;
+  
+  advPtr->countVaildPoints = p_capture_4_vector_points(advPtr->image_id, &tmpAlingCoords, advPtr->pointOrder);
+  
+  if (advPtr->countVaildPoints == 4)
+  {
+    p_exact_align_calculate_4point_values(&tmpAlingCoords
+          , &angleDeg, &scalePercent, &moveDx, &moveDy);
+
+
+    infoText = g_strdup_printf(_("Current path with 4 point triggers transformations:\n"
+                            "    Rotation:   %.4f (degree)\n"
+                            "    Scale:      %.1f (%%)\n"
+                            "    Movement X: %.0f (pixels)\n"
+                            "    Movement Y: %.0f (pixels)\n"
+                            "Press OK button to transform the layer\n"
+                            "in a way that point3 moves to point1 and point4 moves to point2")
+                            , (float) angleDeg
+                            , (float) scalePercent
+                            , (float) moveDx
+                            , (float) moveDy
+                            );
+    gtk_label_set_text(GTK_LABEL(advPtr->infoLabel), infoText);
+    g_free(infoText);
+    okSensitiveFlag = TRUE;
+  }
+  else if (advPtr->countVaildPoints == 2)
+  {
+    moveDx = tmpAlingCoords.currCoords.px - tmpAlingCoords.startCoords.px;
+    moveDy = tmpAlingCoords.currCoords.py - tmpAlingCoords.startCoords.py;
+    
+    infoText = g_strdup_printf(_("Current path with 2 points triggers simple move:\n"
+                            "    Movement X: %.0f (pixels)\n"
+                            "    Movement Y: %.0f (pixels)\n"
+                            "Press OK button to move the layer\n"
+                            "in a way that point2 moves to point1")
+                            , (float) moveDx
+                            , (float) moveDy
+                            );
+
+    gtk_label_set_text(GTK_LABEL(advPtr->infoLabel), infoText);
+    g_free(infoText);
+    okSensitiveFlag = TRUE;
+  }
+  else
+  {
+    gtk_label_set_text(GTK_LABEL(advPtr->infoLabel)
+                        , _("This filter requires a current path with 4 or 2 points\n"
+                            "It can transform and/or move the current layer according to such path coordinate points.\n"
+                            "Please create a path and press the Refresh button."));
+    okSensitiveFlag = FALSE;
+  }
+
+  gtk_widget_set_sensitive(advPtr->okButton, okSensitiveFlag);
+  
+}  /* end p_refresh_and_update_infoLabel */
+
+
+
+/* ---------------------------------
+ * on_exact_align_response
+ * ---------------------------------
+ */
+static void
+on_exact_align_response (GtkWidget *widget,
+                 gint       response_id,
+                 AlignDialogVals *advPtr)
+{
+  GtkWidget *dialog;
+
+  switch (response_id)
+  {
+    case GAP_RESPONSE_REFRESH_PATH:
+      if(advPtr != NULL)
+      {
+        p_refresh_and_update_infoLabel(NULL, advPtr);
+      }
+      break;
+    case GTK_RESPONSE_OK:
+      if(advPtr)
+      {
+        if (GTK_WIDGET_VISIBLE (advPtr->shell))
+        {
+          gtk_widget_hide (advPtr->shell);
+        }
+
+        advPtr->runExactAlign = TRUE;
+      }
+
+    default:
+      dialog = NULL;
+      if(advPtr)
+      {
+        dialog = advPtr->shell;
+        if(advPtr)
+        {
+          advPtr->shell = NULL;
+          gtk_widget_destroy (dialog);
+        }
+      }
+      gtk_main_quit ();
+      break;
+  }
+}  /* end on_exact_align_response */
+
+
+/* --------------------------------------
+ * on_order_mode_radio_callback
+ * --------------------------------------
+ */
+static void
+on_order_mode_radio_callback(GtkWidget *wgt, gpointer user_data)
+{
+  AlignDialogVals *advPtr;
+
+  if(gap_debug)
+  {
+    printf("on_order_mode_radio_callback: START\n");
+  }
+  advPtr = (AlignDialogVals*)user_data;
+  if(advPtr != NULL)
+  {
+     if(wgt == advPtr->radio_order_mode_31_42)    { advPtr->pointOrder = POINT_ORDER_MODE_31_42; }
+     if(wgt == advPtr->radio_order_mode_21_43)    { advPtr->pointOrder = POINT_ORDER_MODE_21_43; }
+
+     p_refresh_and_update_infoLabel(NULL, advPtr);
+
+  }
+}
+
+
+/* --------------------------
+ * p_align_dialog
+ * --------------------------
+ */
+static void
+p_align_dialog(AlignDialogVals *advPtr)
+
+{
+  GtkWidget *dialog;
+  GtkWidget *main_vbox;
+  GtkWidget *label;
+  GtkWidget *button;
+  GtkWidget *table;
+  GtkWidget *vbox1;
+  GSList    *vbox1_group = NULL;
+  GtkWidget *radiobutton;
+  gint       row;
+
+
+  advPtr->runExactAlign = FALSE;
+
+  gimp_ui_init (GAP_EXACT_ALIGNER_PLUG_IN_NAME_BINARY, TRUE);
+
+  dialog = gimp_dialog_new (_("Transform Layer via 4 (or 2) point Alignment"), GAP_EXACT_ALIGNER_PLUG_IN_NAME_BINARY,
+                            NULL, 0,
+                            gimp_standard_help_func, GAP_EXACT_ALIGNER_PLUG_IN_NAME,
+
+                            GTK_STOCK_REFRESH, GAP_RESPONSE_REFRESH_PATH,
+                            GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+
+                            NULL);
+  advPtr->shell = dialog;
+  button = gimp_dialog_add_button (GIMP_DIALOG(dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+  advPtr->okButton = button;
+
+  gtk_dialog_set_alternative_button_order (GTK_DIALOG (dialog),
+                                           GTK_RESPONSE_OK,
+                                           GTK_RESPONSE_CANCEL,
+                                           -1);
+
+  gimp_window_set_transient (GTK_WINDOW (dialog));
+
+  main_vbox = gtk_vbox_new (FALSE, 12);
+  gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 12);
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), main_vbox);
+  gtk_widget_show (main_vbox);
+
+  g_signal_connect (G_OBJECT (dialog), "response",
+                      G_CALLBACK (on_exact_align_response),
+                      advPtr);
+
+
+  /* Controls */
+  table = gtk_table_new (3, 3, FALSE);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+  gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+  gtk_box_pack_start (GTK_BOX (main_vbox), table, FALSE, FALSE, 0);
+  gtk_widget_show (table);
+
+  row = 0;
+
+  /* info label  */
+  label = gtk_label_new ("--");
+  advPtr->infoLabel = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
+
+  row++;
+
+
+  /* pointOrder radiobutton
+   * POINT_ORDER_MODE_31_42:  compatible to the exact aligner script (from the plugin registry)
+   */
+  label = gtk_label_new (_("Path Point Order:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* vbox for radio group */
+  vbox1 = gtk_vbox_new (FALSE, 0);
+
+  gtk_widget_show (vbox1);
+  gtk_table_attach (GTK_TABLE (table), vbox1, 1, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* Order Mode the radio buttons */
+  radiobutton = gtk_radio_button_new_with_label (vbox1_group, _("( 3 --> 1 )  ( 4 --> 2 )\nTarget is marked by points 1&2 "));
+  advPtr->radio_order_mode_31_42 = radiobutton;
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton));
+  gtk_widget_show (radiobutton);
+  gtk_box_pack_start (GTK_BOX (vbox1), radiobutton, FALSE, FALSE, 0);
+  g_signal_connect (G_OBJECT (radiobutton),     "clicked",  G_CALLBACK (on_order_mode_radio_callback), advPtr);
+  if(advPtr->pointOrder == POINT_ORDER_MODE_31_42)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (radiobutton), TRUE);
+  }
+
+  radiobutton = gtk_radio_button_new_with_label (vbox1_group, "( 2 --> 1 )  ( 4 --> 3 )\nTarget is marked by points 1&3");
+  advPtr->radio_order_mode_21_43 = radiobutton;
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton));
+  gtk_widget_show (radiobutton);
+  gtk_box_pack_start (GTK_BOX (vbox1), radiobutton, FALSE, FALSE, 0);
+  g_signal_connect (G_OBJECT (radiobutton),     "clicked",  G_CALLBACK (on_order_mode_radio_callback), advPtr);
+  if(advPtr->pointOrder == POINT_ORDER_MODE_21_43)
+  {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (radiobutton), TRUE);
+  }
+
+  p_refresh_and_update_infoLabel(NULL, advPtr);
+
+  /* Done */
+
+  gtk_widget_show (dialog);
+
+  gtk_main ();
+  gdk_flush ();
+
+
+}  /* end p_align_dialog */
+
+
+/* ================= DIALOG stuff End =================== */
+
+
 
 /* ------------------------------------------
  * gap_detail_exact_align_via_4point_path
@@ -779,17 +1205,62 @@ p_capture_4_vector_points(gint32 imageId, AlingCoords *alingCoords)
  *
  */
 gint32
-gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId)
+gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId
+   , gint32 pointOrder, GimpRunMode runMode)
 {
   AlingCoords  alingCoordinates;
   AlingCoords *alingCoords;
   gint         countVaildPoints;
   gint32       ret;
+  AlignDialogVals         advals;
   
   alingCoords = &alingCoordinates;
   ret = -1;
   
-  countVaildPoints = p_capture_4_vector_points(image_id, alingCoords);
+
+  advals.runExactAlign = TRUE;
+  advals.image_id = image_id;
+  advals.activeDrawableId = activeDrawableId;
+
+  if (runMode == GIMP_RUN_NONINTERACTIVE)
+  {
+    advals.pointOrder = pointOrder;
+  }
+  else
+  {
+    /* get last used value (or default) 
+     * from gimprc settings
+     */
+    advals.pointOrder = gap_base_get_gimprc_int_value(GIMPRC_EXACT_ALIGN_PATH_POINT_ORDER
+                                                    , POINT_ORDER_MODE_31_42 /* DEFAULT */
+                                                    , POINT_ORDER_MODE_31_42 /* min */
+                                                    , POINT_ORDER_MODE_21_43 /* max */
+                                                    );
+  }
+
+  
+  if (runMode == GIMP_RUN_INTERACTIVE)
+  {
+    p_align_dialog(&advals);
+  }
+  
+  if (advals.runExactAlign != TRUE)
+  {
+    return (ret);
+  }
+
+  if (runMode == GIMP_RUN_INTERACTIVE)
+  {
+    /* store order flag when entered via userdialog
+     * in gimprc (for next use in same or later gimp session)
+     */
+    p_save_gimprc_gint32_value(GIMPRC_EXACT_ALIGN_PATH_POINT_ORDER, advals.pointOrder);
+  }
+  
+ 
+  gimp_image_undo_group_start (image_id);
+  
+  countVaildPoints = p_capture_4_vector_points(image_id, alingCoords, advals.pointOrder);
   if(countVaildPoints == 4)
   {
     ret = p_exact_align_drawable(activeDrawableId, alingCoords);
@@ -797,14 +1268,17 @@ gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId)
   }
   else if(countVaildPoints == 2)
   {
-    alingCoords->currCoords.px = alingCoords->startCoords2.px;
-    alingCoords->currCoords.py = alingCoords->startCoords2.py;
-    alingCoords->currCoords.valid = alingCoords->startCoords2.valid;
+    /* force order 0213 
+     *  (captures the 2 valid points into startCoords and currCoords)
+     */
+    countVaildPoints = p_capture_4_vector_points(image_id, alingCoords, POINT_ORDER_MODE_21_43);
     ret = p_set_drawable_offsets(activeDrawableId, alingCoords);
   }
   else
   {
-    g_message(_("This filter requires a current path with 4 points,"
+    if (advals.pointOrder == POINT_ORDER_MODE_31_42)
+    {
+      g_message(_("This filter requires a current path with 4 points,"
                 "where point 1 and 2 mark reference positions "
                 "and point 3 and 4 mark postions in the target layer."
                 "It transforms the target layer in a way that "
@@ -812,10 +1286,25 @@ gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId)
                 "(this may include rotate an scale transforamtion).\n"
                 "A path with 2 points can be used to move point2 to point1."
                 "(via simple move operation without rotate and scale)"));
+    }
+    else
+    {
+      g_message(_("This filter requires a current path with 4 points,"
+                "where point 1 and 3 mark reference positions "
+                "and point 2 and 4 mark postions in the target layer."
+                "It transforms the target layer in a way that "
+                "point2 is moved to point1 and point4 moves to point3."
+                "(this may include rotate an scale transforamtion).\n"
+                "A path with 2 points can be used to move point2 to point1."
+                "(via simple move operation without rotate and scale)"));
+    }
   }
+ 
+  gimp_image_undo_group_end (image_id);
   
   return(ret);
   
   
 }  /* end  gap_detail_exact_align_via_4point_path */
+
 

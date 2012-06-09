@@ -1,3 +1,23 @@
+2012-06-07 Wolfgang Hofer <hof@gimp.org>
+
+- Implementation of dialog window for the exact align transform filter.
+  Now supports 2 modes for path point interpretation.
+  The mode is persisted as gimprc setting
+
+     (gap-exact-aligner-path-point-order "0")
+     (gap-exact-aligner-path-point-order "1")
+
+  where value 0 (default) is compatible behavior to previous
+  implementation (and to the exact aligner script
+  that is available in the plug-in regstry)
+
+  use mode TRANSFORM-RESIZE-ADJUST (0) for the transformation
+  because this feature is intended to do no clipping.
+  
+ * gap/gap_detail_align_exec.c [.h]
+ * gap/gap_detail_tracking_main.c
+
+
 2012-05-26 Wolfgang Hofer <hof@gimp.org>
 
 - added AC_CHECK_LIB(gthread-2.0, g_thread_init)

@@ -55,6 +55,12 @@
 
 #define GAP_DETAIL_TRACKING_XML_ALIGNER_PLUG_IN_NAME      "gap-detail-tracking-xml-aligner"
 #define GAP_EXACT_ALIGNER_PLUG_IN_NAME                    "gap-exact-aligner"
+#define GAP_EXACT_ALIGNER_PLUG_IN_NAME_BINARY             "gap_exact_aligner"
+
+
+#define POINT_ORDER_MODE_31_42   0
+#define POINT_ORDER_MODE_21_43   1
+
 
 typedef struct XmlAlignValues {
    gint32     framePhase;
@@ -67,7 +73,8 @@ gint32      gap_detail_xml_align(gint32 drawableId, XmlAlignValues *xaVals);
 void        gap_detail_xml_align_get_values(XmlAlignValues *xaVals);
 gboolean    gap_detail_xml_align_dialog(XmlAlignValues *xaVals);
 
-gint32      gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId);
+gint32      gap_detail_exact_align_via_4point_path(gint32 image_id, gint32 activeDrawableId
+                 ,gint32 pointOrder, GimpRunMode runMode);
 
 
 
